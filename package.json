@@ -2,16 +2,19 @@
   "name": "huibaosc",
   "version": "1.0.0",
   "description": "huibao smart contract project",
-  "main": "truffle-config.js",
+  "main": "server/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "restify": "^6.3.4",
+    "web3": "^1.0.0-beta.26",
     "zeppelin-solidity": "^1.4.0"
   },
   "devDependencies": {
