@@ -1,11 +1,18 @@
 "use strict";
+const init = require('./lib/init');
+
 const restify = require('restify');
+
+const KnotToken = require('./contracts/KnotToken');
 
 
 const server = restify.createServer();
+init(server);
 
-server.get('/balance', (req, res, next) => {
-    res.send('hello world!');
+server.get('/balance', async (req, res, next) => {
+    let knot = new KnotToken('0x345ca3e014aaf5dca488057592ee47305d9b3e10');
+    let balance = await knot.balanceOf();
+    res.send(balance);
     next();
 });
 
