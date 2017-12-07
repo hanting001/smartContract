@@ -1,3 +1,4 @@
 {
-    "rpcProvider": "http://localhost:7545"
+    "httpProvider": "http://localhost:7545",
+    "wsProvider": "ws://localhost:7545"
 }
