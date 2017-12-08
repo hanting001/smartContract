@@ -1,7 +1,8 @@
 const web3 = require('../lib/web3');
 
 module.exports = (server) => {
-    server.get('/account/new', async(req, res, next) => {
+    this.path = '/account';
+    server.get(this.path + '/new', async(req, res, next) => {
         let password = 'alfjahhljalf';
         try {
             let result = web3.account.new(password);
@@ -12,7 +13,7 @@ module.exports = (server) => {
         }
     });
 
-    server.post('/account/restore', async(req, res, next) => {
+    server.post(this.path + '/restore', async(req, res, next) => {
         let password = 'alfjahhljalf';
         let mnemonic = req.body.mnemonic;
         try {
