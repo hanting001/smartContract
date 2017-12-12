@@ -1,7 +1,4 @@
-const main = require('./main');
-const account = require('./account');
-
 module.exports = (server) => {
-    main(server);
-    account(server);
+    require('./main')(server);
+    require('./account')(server);
 }
