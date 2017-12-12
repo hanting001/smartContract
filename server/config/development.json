@@ -1,4 +1,14 @@
 {
     "httpProvider": "http://localhost:7545",
-    "wsProvider": "ws://localhost:7545"
+    "wsProvider": "ws://localhost:7545",
+    "apiHost": "http://localhost:8080",
+    "databaseConfig": {
+        "host": "121.40.82.99",
+        "database": "WEBDB",
+        "options": {
+            "user": "web",
+            "pass": "1qaz2wsx",
+            "useMongoClient": true
+        }
+    }
 }
