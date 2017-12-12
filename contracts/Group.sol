@@ -3,14 +3,14 @@ pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './common/Stoppable.sol';
 
-contract Group is Stoppable,  Ownable {
+/** @title group smart contract. */
+contract Group is Ownable, Stoppable{
     address[] members;
-    string item;
+    string item;//item id
     bool isOpen;
 
-    function Group() public
-        Stoppable(msg.sender) {
-        // constructor
+    function Group(string _item) public Stoppable(msg.sender) {
+        item = _item;
     }
 
     /**
@@ -22,10 +22,19 @@ contract Group is Stoppable,  Ownable {
     }
 
     //manage
-    function open() onlyOwner public  {
+    function open()  public onlyOwner {
         isOpen = true;
     }
-    function close() onlyOwner public {
+    function close() public onlyOwner {
         isOpen = false;
     }
+
+    //member
+    /** @dev join this group. */
+
+    /** @dev get group item. */
+    function getItem() view public returns (string) {
+        return item;
+    }
+
 }
