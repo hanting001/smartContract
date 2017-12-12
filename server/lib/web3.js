@@ -30,6 +30,7 @@ module.exports = (() => {
                 console.log(acc.address);
                 return {
                     mnemonic: mnemonic,
+                    keystore: keystore,
                     address: account.address
                 }
             },
