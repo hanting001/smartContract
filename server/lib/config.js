@@ -2,6 +2,9 @@
 const Configue = require('configue');
 
 module.exports = (() => {
+    if (this.conf) {
+        return this.conf;
+    }
     let configueOptions = {};
     console.log('process.env.NODE_ENV :' + process.env.NODE_ENV);
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
@@ -32,5 +35,6 @@ module.exports = (() => {
         }
     }
     const conf = new Configue(configueOptions);
+    this.conf = conf;
     return conf;
 })()

@@ -7,7 +7,7 @@ import './common/Stoppable.sol';
 contract Group is Ownable, Stoppable{
     address[] members;
     string item;//item id
-    bool isOpen;
+    bool public isOpen;
 
     function Group(string _item) public Stoppable(msg.sender) {
         item = _item;
@@ -22,9 +22,11 @@ contract Group is Ownable, Stoppable{
     }
 
     //manage
+    /** @dev open group,member can join. */
     function open()  public onlyOwner {
         isOpen = true;
     }
+    /** @dev close group,member can not join. */
     function close() public onlyOwner {
         isOpen = false;
     }
