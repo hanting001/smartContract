@@ -1,11 +1,12 @@
 const Mnemonic = require('bitcore-mnemonic');
+const BN = require('bn.js');
 const Web3 = require('web3');
 
 module.exports = (() => {
     return {
         init: (conf) => {
             this.web3 = new Web3();
-            console.log('JSON-RPC:' + conf.get('rpcProvider', 'http://localhost:8545'));
+            console.log('JSON-RPC:' + conf.get('httpProvider', 'http://localhost:8545'));
             this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
         },
         instance: () => {
@@ -35,6 +36,7 @@ module.exports = (() => {
                 }
             },
             restore: (password, mnemonic) => {
+                console.log(mnemonic);
                 const code = new Mnemonic(mnemonic);
                 const web3 = this.web3;
                 const master = code.toHDPrivateKey(password);
@@ -44,6 +46,22 @@ module.exports = (() => {
                     mnemonic: mnemonic,
                     address: account.address
                 }
+            }
+        },
+        eth: {
+            estimateGas: async(abi, params, to) => {
+                const web3 = this.web3;
+                let code = web3.eth.abi.encodeFunctionCall(abi, params);
+                // console.log(code);
+                let dataObject = {
+                    to: to,
+                    data: code
+                };
+                let gas = await web3.eth.estimateGas(dataObject);
+                let gasPrice = await web3.eth.getGasPrice();
+                let total = new BN(gas * Number(gasPrice));
+                // console.log(`gas:${gas}, gasPrice:${gasPrice}, total:${total}`);
+                return web3.utils.fromWei(total);
             }
         }
     }

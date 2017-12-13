@@ -19,6 +19,7 @@ class KnotToken {
         return instance;
     }
     async balanceOf(account) {
+        const web3 = Web3.instance();
         if (!account) {
             let accouts = await web3.eth.getAccounts();
             account = accouts[0];

@@ -1,4 +1,4 @@
-const web3 = require('../lib/web3');
+const Web3 = require('../lib/web3');
 const errors = require('restify-errors');
 
 const Member = require('../models/Member');
@@ -19,7 +19,7 @@ module.exports = (server) => {
             }
             member = new Member(input);
             member = await member.save();
-            let result = web3.account.new(member.password);
+            let result = Web3.account.new(member.password);
             member.account = result.address;
             member.keystore = new Buffer.from(JSON.stringify(result.keystore));
             delete result.keystore;
@@ -32,10 +32,10 @@ module.exports = (server) => {
     });
 
     server.post(this.path + '/restore', async(req, res, next) => {
-        let password = 'alfjahhljalf';
+        let password = '$2a$08$9yhvC/Wph/IhsWecZwepGevKDgbo5d0s3rJfwT9QPTzRoJJCBDxRW';
         let mnemonic = req.body.mnemonic;
         try {
-            let result = web3.account.restore(password, mnemonic);
+            let result = Web3.account.restore(password, mnemonic);
             res.send(result);
             next();
         } catch (err) {
