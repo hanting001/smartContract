@@ -2,15 +2,24 @@ pragma solidity ^0.4.18;
 
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './common/Stoppable.sol';
+import './common/KnotToken.sol';
 
 /** @title group smart contract. */
 contract Group is Ownable, Stoppable{
-    address[] members;
+    // address[] members;
+    mapping(address=>bool) public members;
     string item;//item id
     bool public isOpen;
+    KnotToken knotToken;
 
-    function Group(string _item) public Stoppable(msg.sender) {
+    event Join(
+        address indexed _from,
+        bytes32 indexed _item
+    );
+
+    function Group(string _item, address tokenAddress) public Stoppable(msg.sender) {
         item = _item;
+        knotToken = KnotToken(tokenAddress);
     }
 
     /**
@@ -33,10 +42,25 @@ contract Group is Ownable, Stoppable{
 
     //member
     /** @dev join this group. */
+    function join() external onlyOpen stopInEmergency {
+        require(knotToken.balanceOf(msg.sender) >= 1 * 10 ** knotToken.decimals());
+        
+        members[msg.sender] = true;
+        uint256 value = 1 * 10 ** knotToken.decimals();
+
+        //转出
+        if(!knotToken.transferFrom(msg.sender, this, value)) {
+            members[msg.sender] = false;
+        }
+        Join(msg.sender, keccak256(item));
+    }
 
     /** @dev get group item. */
     function getItem() view public returns (string) {
         return item;
+    }
+    function getToken() view public returns (address) {
+        return knotToken;
     }
 
 }

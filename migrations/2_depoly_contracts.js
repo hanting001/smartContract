@@ -1,16 +1,18 @@
 const utility = require('./utility');
 
-const KnotCoin = artifacts.require('common/KnotToken');
+const KnotCoin = artifacts.require('KnotToken');
 const Group = artifacts.require('Group');
 
 module.exports = async(deployer, network) => {
-    deployer.deploy(KnotCoin).then(async() => {
-        let instance = await KnotCoin.deployed();
-        let result = await utility.updateDB('knotCoin', instance.address);
-        // console.log(result);
-    });
-    deployer.deploy(Group, '00000002').then(async() => {
-        let instance = await Group.deployed();
-        let result = await utility.updateDB('group', instance.address);
-    });
+    try {
+        if (!KnotCoin.address) {
+            await deployer.deploy(KnotCoin);
+            utility.updateDB('knotCoin', KnotCoin.address);
+        }
+    } catch (err) {
+        await deployer.deploy(KnotCoin);
+        utility.updateDB('knotCoin', KnotCoin.address);
+    }
+    await deployer.deploy(Group, 'G00000002', KnotCoin.address);
+    utility.updateDB('G00000002', Group.address);
 }

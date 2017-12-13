@@ -1,3 +1,5 @@
+const errors = require('restify-errors');
+
 const KnotToken = require('../contracts/KnotToken');
 
 const SC = require('../models/SmartContract');
@@ -10,15 +12,15 @@ module.exports = (server) => {
         next();
     });
 
-    server.get('/transfer/:to', async(req, res, next) => {
+    server.get('/transfer/:to/:value', async(req, res, next) => {
         let knot = await KnotToken.instance();
         try {
-            let result = await knot.transfer(req.params.to, 8888);
-            // console.log(result);
+            let value = Number(req.params.value);
+            console.log(value*10**8);
+            let result = await knot.transfer(req.params.to, value*10**8);
             res.send(result);
         } catch (err) {
-            console.log(err);
-            res.send('err');
+            res.send(new errors.InternalServerError(err));
         }
         next()
     });
@@ -36,8 +38,7 @@ module.exports = (server) => {
             });
             res.send(result);
         } catch (err) {
-            console.log(err);
-            res.send('err');
+            res.send(new errors.InternalServerError(err));
         }
     });
 }

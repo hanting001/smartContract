@@ -21,7 +21,7 @@ class KnotToken {
     async balanceOf(account) {
         if (!account) {
             let accouts = await web3.eth.getAccounts();
-            address = accouts[0];
+            account = accouts[0];
         }
         return this.sc.methods.balanceOf(account).call();
     }
