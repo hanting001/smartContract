@@ -3,15 +3,22 @@ const errors = require('restify-errors');
 const Web3 = require('../lib/web3');
 const web3 = Web3.instance()
 const KnotToken = require('../contracts/KnotToken');
+const auth = require('../lib/auth');
 
 const SC = require('../models/SmartContract');
 
 module.exports = (server) => {
-    server.get('/balanceOf/:account', async(req, res, next) => {
-        let knot = await KnotToken.instance();
-        let balance = await knot.balanceOf(req.params.account);
-        res.send(balance);
-        next();
+    server.get('/balanceOf/:account', auth.jwt, async(req, res, next) => {
+        try {
+            let knot = await KnotToken.instance();
+            let balance = await knot.balanceOf(req.params.account);
+            res.send({
+                output: balance
+            });
+            next();
+        } catch (err) {
+            res.send(new errors.InternalServerError(err));
+        }
     });
 
     server.get('/transfer/:to/:value', async(req, res, next) => {

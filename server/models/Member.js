@@ -17,6 +17,11 @@ var schema = new Schema({
     },
     account: String,
     keystore: Buffer,
+    role: {
+        type: String,
+        default: 'member'
+    },
+    accessToken: String,
     createdAt: {
         type: Date,
         default: Date.now
@@ -24,6 +29,7 @@ var schema = new Schema({
 }, {
     collection: 'smartMembers'
 });
+schema.index({ accessToken: 1});
 schema.plugin(updatedTimestamp);
 
 schema.pre('save', function (next) {
@@ -43,12 +49,13 @@ schema.pre('save', function (next) {
     next();
 });
 
+
 schema.methods.generateJWT = function () {
     // set expiration to 60 days
-    var today = new Date();
-    var exp = new Date(today);
+    let today = new Date();
+    let exp = new Date(today);
     exp.setDate(today.getDate() + 60);
-    console.log('process.env.secret' + process.env.secret);
+    // console.log('process.env.secret' + process.env.secret);
     return jwt.sign({
         _id: this._id,
         username: this.name,
