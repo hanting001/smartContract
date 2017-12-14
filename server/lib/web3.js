@@ -40,7 +40,7 @@ module.exports = (() => {
                 const code = new Mnemonic(mnemonic);
                 const web3 = this.web3;
                 const master = code.toHDPrivateKey(password);
-                const masterPrivateKey = master.toObject().privateKey; 
+                const masterPrivateKey = master.toObject().privateKey;
                 let account = web3.eth.accounts.privateKeyToAccount('0x' + masterPrivateKey);
                 return {
                     mnemonic: mnemonic,
@@ -62,7 +62,39 @@ module.exports = (() => {
                 let total = new BN(gas * Number(gasPrice));
                 // console.log(`gas:${gas}, gasPrice:${gasPrice}, total:${total}`);
                 return web3.utils.fromWei(total);
+            },
+            sendEth: async(to, value) => {
+                const web3 = this.web3;
+                const accouts = await web3.eth.getAccounts();
+                try {
+                    value = String(value);
+                } catch (err) {
+                    console.log(err);
+                }
+                const from = accouts[0];
+                const txObject = {
+                    from: from,
+                    to: to,
+                    value: web3.utils.toWei(value)
+                };
+                console.log(`ETH转账 from: ${from}, to: ${to}, value: ${web3.utils.toWei(value)}`);
+                return web3.eth.sendTransaction(txObject)
+                    .on('transactionHash', function (hash) {
+                        console.log(hash);
+                    })
+                    .on('receipt', function (receipt) {
+                        console.log(receipt);
+                    })
+                    .on('confirmation', function (confirmationNumber, receipt) {
+                        console.log(confirmation);
+                        console.log('send eth confirmatin do something');
+                    })
+                    .on('error', console.error);
             }
+        },
+        //计算coin最小单
+        toStrand: function (ktc) {
+            return ktc * 10 ** 8;
         }
     }
 })()

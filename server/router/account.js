@@ -4,6 +4,7 @@ const cache = require('@huibao/cachehelper');
 
 const Member = require('../models/Member');
 const auth = require('../lib/auth');
+const KnotToken = require('../contracts/KnotToken');
 
 module.exports = (server) => {
     this.path = '/account';
@@ -50,8 +51,36 @@ module.exports = (server) => {
         }
     });
 
-    server.post(this.path + '/buyToken', async() => {
-
+    server.post(this.path + '/buyToken', auth.jwt, async(req, res, next) => {
+        try {
+            const input = req.body.input;
+            const knotToken = await KnotToken.instance();
+            //转对应的token到用户账户，第三个账户为空表示从主账户转出
+            const onConfirmation = (confirmationNumber, receipt) => {
+                if (confirmationNumber == 6) {
+                    // Web3.eth.sendEth(req.user.account, 0.02);
+                    // console.log(confirmationNumber);
+                }
+            };
+            const onError = (err, receipt) => {
+                throw err;
+            };
+            const receipt = await knotToken.transfer(
+                req.user.account,//to
+                Web3.toStrand(Number(input.value)),//value
+                null,//from, null use default
+                onConfirmation,
+                onError
+            );
+            //automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
+            Web3.eth.sendEth(req.user.account, 0.02);
+            res.send({
+                output: receipt
+            })
+            next();
+        } catch (err) {
+            next(new errors.InternalServerError(err))
+        }
     });
     server.post(this.path + '/login', async(req, res, next) => {
         let input = req.body.input;

@@ -26,25 +26,26 @@ class KnotToken {
         }
         return this.sc.methods.balanceOf(account).call();
     }
-    async transfer(to, value, from) {
+    async transfer(to, value, from, onConfirmation, onError) {
         const web3 = Web3.instance();
         let accouts = await web3.eth.getAccounts();
         if(!from) {
             from = accouts[0];
         }
-        // console.log(`from: ${from}, to: ${to}`);
+        console.log(`代币转账 from: ${from}, to: ${to}, value: ${value}`);
         return this.sc.methods.transfer(to, value).send({
             from: from
         })
-        .on('transactionHash', (transactionHash) => {
-            console.log(transactionHash);
+        .on('confirmation', function (confirmationNumber, receipt) {
+            if(onConfirmation) {
+                onConfirmation(confirmationNumber, receipt);
+            }
         })
-        .on('confirmation', (confNumber, receipt) => {
-            console.log('confirmation');
-        })
-        .on('error', (error) => {
-            console.log(error);
-        });
+        .on('error', (err, receipt) => {
+            if (onError) {
+                onError(err, receipt);
+            }
+        });;
     }
 }
 

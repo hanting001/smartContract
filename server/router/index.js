@@ -12,6 +12,7 @@ module.exports = (server) => {
     this.path + '/restore'  根据助记码和密码恢复账号
     this.path + '/buyToken' 购买代币
     this.path + '/login'    用户名密码登陆获取token
+    this.path + '/buyToken' 购买代币
     */
     require('./account')(server);
 

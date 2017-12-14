@@ -23,7 +23,6 @@ module.exports = (server) => {
     server.get('/balance', auth.jwt, async(req, res, next) => {
         try {
             let account = req.user.account;
-            console.log(req.user);
             let knot = await KnotToken.instance();
             let balance = await knot.balanceOf(account);
             res.send({
@@ -38,7 +37,7 @@ module.exports = (server) => {
         let knot = await KnotToken.instance();
         try {
             let value = Number(req.params.value);
-            let result = await knot.transfer(req.params.to, value * 10 ** 8, req.user.account);
+            let result = await knot.transfer(req.params.to, Web3.toStrand(value), req.user.account);
             res.send(result);
             next();
         } catch (err) {
