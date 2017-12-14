@@ -1,3 +1,5 @@
+import { valid } from '../../../../../../Library/Caches/typescript/2.6/node_modules/@types/joi';
+
 const Mnemonic = require('bitcore-mnemonic');
 const BN = require('bn.js');
 const Web3 = require('web3');
@@ -69,7 +71,10 @@ module.exports = (() => {
                 try {
                     value = String(value);
                 } catch (err) {
-                    console.log(err);
+                    throw err;
+                }
+                if (value == 0) {
+                    throw 'value不能是0';
                 }
                 const from = accouts[0];
                 const txObject = {
@@ -92,7 +97,7 @@ module.exports = (() => {
                     .on('error', console.error);
             }
         },
-        //计算coin最小单
+        //计算代币最小单位
         toStrand: function (ktc) {
             return ktc * 10 ** 8;
         }

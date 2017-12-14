@@ -58,6 +58,7 @@ module.exports = (server) => {
             //转对应的token到用户账户，第三个账户为空表示从主账户转出
             const onConfirmation = (confirmationNumber, receipt) => {
                 if (confirmationNumber == 6) {
+                    // automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
                     // Web3.eth.sendEth(req.user.account, 0.02);
                     // console.log(confirmationNumber);
                 }
@@ -72,7 +73,7 @@ module.exports = (server) => {
                 onConfirmation,
                 onError
             );
-            //automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
+            //automining的时候可以认为交易已经确认了。在正式的块链上，确认交易提交需要在confirmation的事件里头
             Web3.eth.sendEth(req.user.account, 0.02);
             res.send({
                 output: receipt
