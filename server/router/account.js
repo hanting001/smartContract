@@ -77,6 +77,7 @@ module.exports = (server) => {
                     token: member.accessToken
                 }
             });
+            next();
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err))

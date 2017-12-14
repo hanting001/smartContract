@@ -17,7 +17,7 @@ module.exports = (server) => {
             });
             next();
         } catch (err) {
-            res.send(new errors.InternalServerError(err));
+            next(new errors.InternalServerError(err));
         }
     });
     server.get('/balance', auth.jwt, async(req, res, next) => {
@@ -31,20 +31,19 @@ module.exports = (server) => {
             });
             next();
         } catch (err) {
-            res.send(new errors.InternalServerError(err));
+            next(new errors.InternalServerError(err));
         }
     });
-    server.get('/transfer/:to/:value', async(req, res, next) => {
+    server.get('/transfer/:to/:value', auth.jwt, async(req, res, next) => {
         let knot = await KnotToken.instance();
         try {
             let value = Number(req.params.value);
-            console.log(value * 10 ** 8);
-            let result = await knot.transfer(req.params.to, value * 10 ** 8);
+            let result = await knot.transfer(req.params.to, value * 10 ** 8, req.user.account);
             res.send(result);
+            next();
         } catch (err) {
-            res.send(new errors.InternalServerError(err));
+            next(new errors.InternalServerError(err));
         }
-        next()
     });
 
     server.post('/contract/deployed', async(req, res, next) => {
@@ -52,7 +51,7 @@ module.exports = (server) => {
         contractInfo.$push = {
             historyAddresses: contractInfo.address
         };
-        console.log(contractInfo);
+        
         try {
             let result = await SC.findOneAndUpdate({
                 name: contractInfo.name
@@ -61,8 +60,9 @@ module.exports = (server) => {
                 setDefaultsOnInsert: true
             });
             res.send(result);
+            next();
         } catch (err) {
-            res.send(new errors.InternalServerError(err));
+            next(new errors.InternalServerError(err));
         }
     });
 
@@ -96,9 +96,10 @@ module.exports = (server) => {
             res.send({
                 need: need
             });
+            next();
         } catch (err) {
             console.log(err);
-            res.send(new errors.InternalServerError(err));
+            next(new errors.InternalServerError(err));
         }
     });
 }

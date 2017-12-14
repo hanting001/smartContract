@@ -26,10 +26,12 @@ class KnotToken {
         }
         return this.sc.methods.balanceOf(account).call();
     }
-    async transfer(to, value) {
+    async transfer(to, value, from) {
         const web3 = Web3.instance();
         let accouts = await web3.eth.getAccounts();
-        let from = accouts[0];
+        if(!from) {
+            from = accouts[0];
+        }
         // console.log(`from: ${from}, to: ${to}`);
         return this.sc.methods.transfer(to, value).send({
             from: from
