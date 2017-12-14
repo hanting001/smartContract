@@ -25,12 +25,6 @@ const bearerStrategy = function (req, payload, done) {
     //     req.user = user;
     //     done(err, false);
     // });
-    // cacheHelper.get('token', accessToken, function (user) {
-    //     if (!user) {
-    //         return done(null, false);
-    //     }
-    //     done(null, user);
-    // });
 };
 const fromHeaderOrQuerystring = function (req) {
     let parts = req.headers.authorization ? req.headers.authorization.split(' ') : 0;
