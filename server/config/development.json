@@ -10,5 +10,10 @@
             "pass": "1qaz2wsx",
             "useMongoClient": true
         }
+    },
+    "cacheConfig": {
+        "port": 6379,
+        "host": "localhost",
+        "options": {}
     }
 }

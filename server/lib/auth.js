@@ -1,16 +1,30 @@
 const jwtMiddleware = require('express-jwt');
 
+const cache = require('@huibao/cachehelper');
 const Member = require('../models/Member');
 
 const bearerStrategy = function (req, payload, done) {
     let accessToken = fromHeaderOrQuerystring(req);
-    Member.findOne({accessToken: accessToken}, function(err, member) {
-        if(!member) {
-            return done(err, true);
+    cache.get('token', accessToken).then(user => {
+        if(!user) {
+            return done(null, true);
         }
-        req.user = member;
-        done(err, false);
+        req.user = user;
+        done(null, false);
+    }).catch(err => {
+        console.log(err);
+        done(err);
     });
+    // Member.findOne({accessToken: accessToken}, function(err, member) {
+    //     if(!member) {
+    //         return done(err, true);
+    //     }
+    //     let user = JSON.parse(JSON.stringify(member));
+    //     delete user.password;
+    //     delete user.keystore;
+    //     req.user = user;
+    //     done(err, false);
+    // });
     // cacheHelper.get('token', accessToken, function (user) {
     //     if (!user) {
     //         return done(null, false);

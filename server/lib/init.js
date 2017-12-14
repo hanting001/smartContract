@@ -2,6 +2,7 @@
 const restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware');
 const bunyan = require('bunyan');
+const cache = require('@huibao/cachehelper')
 
 const conf = require('./config');
 const web3 = require('./web3');
@@ -27,4 +28,5 @@ module.exports = (server) => {
     server.use(conf.middleware());
     web3.init(conf);
     db.init(conf.get('databaseConfig'));
+    cache.config(conf.get('cacheConfig'));
 }

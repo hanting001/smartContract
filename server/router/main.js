@@ -8,7 +8,7 @@ const auth = require('../lib/auth');
 const SC = require('../models/SmartContract');
 
 module.exports = (server) => {
-    server.get('/balanceOf/:account', auth.jwt, async(req, res, next) => {
+    server.get('/balanceOf/:account', auth.jwt, auth.manager, async(req, res, next) => {
         try {
             let knot = await KnotToken.instance();
             let balance = await knot.balanceOf(req.params.account);
@@ -20,7 +20,20 @@ module.exports = (server) => {
             res.send(new errors.InternalServerError(err));
         }
     });
-
+    server.get('/balance', auth.jwt, async(req, res, next) => {
+        try {
+            let account = req.user.account;
+            console.log(req.user);
+            let knot = await KnotToken.instance();
+            let balance = await knot.balanceOf(account);
+            res.send({
+                output: balance
+            });
+            next();
+        } catch (err) {
+            res.send(new errors.InternalServerError(err));
+        }
+    });
     server.get('/transfer/:to/:value', async(req, res, next) => {
         let knot = await KnotToken.instance();
         try {

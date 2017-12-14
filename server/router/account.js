@@ -1,5 +1,6 @@
 const Web3 = require('../lib/web3');
 const errors = require('restify-errors');
+const cache = require('@huibao/cachehelper');
 
 const Member = require('../models/Member');
 const auth = require('../lib/auth');
@@ -64,7 +65,12 @@ module.exports = (server) => {
             if (!member || !member.validPassword(input.password)) {
                 throw '用户不存在或密码错误';
             }
+            await cache.del(member.accessToken);
             member.accessToken = member.generateJWT();
+            let user = JSON.parse(JSON.stringify(member));
+            delete user.password;
+            delete user.keystore;
+            cache.put('token', member.accessToken, user);
             await member.save();
             res.send({
                 output: {
