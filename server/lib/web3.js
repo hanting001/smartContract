@@ -123,7 +123,7 @@ module.exports = (() => {
         },
         //计算代币最小单位
         toStrand: function (ktc) {
-            return ktc * 10 ** 8;
+            return Number(ktc) * 10 ** 8;
         },
         getABI: function(name, func) {
             const abi = require('../../build/contracts/' + name).abi;

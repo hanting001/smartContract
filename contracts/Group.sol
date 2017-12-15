@@ -44,8 +44,9 @@ contract Group is Ownable, Stoppable{
     /** @dev join this group. */
     function join() external onlyOpen stopInEmergency {
         uint256 value = 1 * 10 ** knotToken.decimals();
-        
+
         require(knotToken.balanceOf(msg.sender) >= value);
+        require(!members[msg.sender]);
         
         members[msg.sender] = true;
         //转出

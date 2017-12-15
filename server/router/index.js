@@ -20,7 +20,8 @@ module.exports = (server) => {
     require('./account')(server);
 
     /*
-    this.path + '/open/:name'   置开发状态
+    this.path + '/open/:name'   置活动开放状态
+    this.path + '/join/:name'   加入某个活动, 先授权活动合约可以扣代币，然后在把用户加入到活动合约用户组中
     */
     require('./group')(server);
 

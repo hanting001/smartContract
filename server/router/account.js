@@ -55,9 +55,9 @@ module.exports = (server) => {
         try {
             const input = req.body.input;
             const knotToken = await KnotToken.instance();
-            //转对应的token到用户账户，第三个账户为空表示从主账户转出
+
             const onConfirmation = async(confirmationNumber, receipt) => {
-                if (confirmationNumber == 6) {
+                if (confirmationNumber == 2) {
                     // automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
                     await Web3.eth.sendEth(req.user.account, 0.02);
                     // console.log(confirmationNumber);
@@ -66,6 +66,7 @@ module.exports = (server) => {
             const onError = (err, receipt) => {
                 throw err;
             };
+            //转对应的token到用户账户，第三个账户为空表示从主账户转出
             const receipt = await knotToken.transfer(
                 req.user.account, //to
                 Web3.toStrand(Number(input.value)), //value
@@ -73,7 +74,7 @@ module.exports = (server) => {
                 onConfirmation,
                 onError
             );
-            //automining的时候可以认为交易已经确认了。在正式的块链上，确认交易提交需要在confirmation的事件里头
+            // automining的时候可以认为交易已经确认了。在正式的块链上，确认交易提交需要在confirmation的事件里头
             // await Web3.eth.sendEth(req.user.account, 0.02);
             res.send({
                 output: receipt
@@ -112,39 +113,6 @@ module.exports = (server) => {
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err))
-        }
-    });
-
-    server.post(this.path + '/approve/', auth.jwt, async(req, res, next) => {
-        try {
-            const input = req.body.input;
-            const value = Number(input.value);
-            if (!input.password) {
-                throw '用户密码不能为空';
-            }
-            const knotToken = await KnotToken.instance();
-            const account = req.user.account;
-            if (!account) {
-                throw '用户的以太坊account不能为空';
-            }
-            //两次确认后返回前端
-            const onConfirmation = async(confirmationNumber, receipt) => {
-                if (confirmationNumber == 2) {
-                    res.send({
-                        output: receipt
-                    });
-                    next();
-                    
-                }
-            };
-            //unlock用户账户
-            const member = await Member.findOne({name:req.user.name});
-            Web3.account.unlock(member, input.password);
-            await knotToken.approveByMember(member.account, value, onConfirmation);
-            Web3.account.lock(member.account);
-        } catch (err) {
-            console.log(err);
-            next(new errors.InternalServerError(err));
         }
     });
 }

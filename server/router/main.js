@@ -25,6 +25,7 @@ module.exports = (server) => {
             let account = req.user.account;
             let knot = await KnotToken.instance();
             let balance = await knot.balanceOf(account);
+            
             res.send({
                 output: balance
             });

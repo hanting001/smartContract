@@ -21,16 +21,13 @@ class KnotToken {
         return instance;
     }
     async balanceOf(account) {
+        //默认第一个账户发起请求
         return this.sc.methods.balanceOf(account).call();
     }
-    async approveByMember(account, value, onConfirmation, onError) {
+    async approveByMember(account, spender, value, onConfirmation, onError) {
         const web3 = Web3.instance();
-        const accouts = await web3.eth.getAccounts();
-        const to = accouts[0];
-
-
         const abi = Web3.getABI('KnotToken', 'approve');
-        const params = [to, Web3.toStrand(value)];
+        const params = [spender, Web3.toStrand(value)];
         let code = web3.eth.abi.encodeFunctionCall(abi, params);
         const tokenSC = this.sc.options.address;;
         const dataObject = {
