@@ -1,5 +1,3 @@
-import { valid } from '../../../../../../Library/Caches/typescript/2.6/node_modules/@types/joi';
-
 const Mnemonic = require('bitcore-mnemonic');
 const BN = require('bn.js');
 const Web3 = require('web3');
@@ -91,8 +89,9 @@ module.exports = (() => {
                         console.log(receipt);
                     })
                     .on('confirmation', function (confirmationNumber, receipt) {
-                        console.log(confirmation);
-                        console.log('send eth confirmatin do something');
+                        if(confirmationNumber == 6) {
+                            console.log('send eth confirmatin do something');
+                        }
                     })
                     .on('error', console.error);
             }

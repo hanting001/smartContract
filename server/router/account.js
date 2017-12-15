@@ -56,10 +56,10 @@ module.exports = (server) => {
             const input = req.body.input;
             const knotToken = await KnotToken.instance();
             //转对应的token到用户账户，第三个账户为空表示从主账户转出
-            const onConfirmation = (confirmationNumber, receipt) => {
+            const onConfirmation = async(confirmationNumber, receipt) => {
                 if (confirmationNumber == 6) {
                     // automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
-                    // Web3.eth.sendEth(req.user.account, 0.02);
+                    await Web3.eth.sendEth(req.user.account, 0.02);
                     // console.log(confirmationNumber);
                 }
             };
@@ -74,7 +74,7 @@ module.exports = (server) => {
                 onError
             );
             //automining的时候可以认为交易已经确认了。在正式的块链上，确认交易提交需要在confirmation的事件里头
-            Web3.eth.sendEth(req.user.account, 0.02);
+            // await Web3.eth.sendEth(req.user.account, 0.02);
             res.send({
                 output: receipt
             })
@@ -83,6 +83,7 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err))
         }
     });
+
     server.post(this.path + '/login', async(req, res, next) => {
         let input = req.body.input;
         try {

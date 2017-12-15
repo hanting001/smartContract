@@ -37,7 +37,7 @@ class KnotToken {
             from: from
         })
         .on('confirmation', function (confirmationNumber, receipt) {
-            if(onConfirmation) {
+            if(confirmationNumber == 6) {
                 onConfirmation(confirmationNumber, receipt);
             }
         })
