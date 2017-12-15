@@ -50,7 +50,7 @@ module.exports = (server) => {
         contractInfo.$push = {
             historyAddresses: contractInfo.address
         };
-        
+
         try {
             let result = await SC.findOneAndUpdate({
                 name: contractInfo.name
@@ -66,32 +66,15 @@ module.exports = (server) => {
     });
 
     server.get('/estimateETH', async(req, res, next) => {
-        let functionABI = {
-            "constant": false,
-            "inputs": [{
-                    "name": "_spender",
-                    "type": "address"
-                },
-                {
-                    "name": "_value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "approve",
-            "outputs": [{
-                "name": "",
-                "type": "bool"
-            }],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        };
         try {
             let knotCoin = await SC.findOne({
                 name: 'knotCoin'
             });
             let params = [web3.eth.getAccounts()[0], 2 * 10 ** 8];
-            let need = await Web3.eth.estimateGas(functionABI, params, knotCoin.address);
+            let need = await Web3.eth.estimateGas({
+                name: 'KnotToken',
+                func: 'approve'
+            }, params, knotCoin.address);
             res.send({
                 need: need
             });

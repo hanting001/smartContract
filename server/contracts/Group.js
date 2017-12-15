@@ -1,7 +1,6 @@
 const Web3 = require('../lib/web3');
 
-const abi = require('../../build/contracts/Group').abi;
-
+const abi = Web3.getABI('Group');
 const SmartContract = require('../models/SmartContract');
 
 class GroupContract {
@@ -10,8 +9,12 @@ class GroupContract {
             let sc = await SmartContract.findOne({
                 name: name
             });
-            console.log(sc);
-            address = sc.address;
+            if (sc) {
+                address = sc.address;
+            }
+        }
+        if (!address) {
+            return null;
         }
         const web3 = Web3.instance();
         let instance = new GroupContract();
@@ -33,6 +36,9 @@ class GroupContract {
             .on('error', (error) => {
                 console.log(error);
             });
+    }
+    async isOpen(account) {
+        return this.sc.methods.isOpen().call({from:account});
     }
 }
 

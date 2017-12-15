@@ -1,13 +1,15 @@
 const Web3 = require('../lib/web3');
-
-const abi = require('../../build/contracts/KnotToken').abi;
+const BN = require('bn.js');
+const abi = Web3.getABI('KnotToken');
 
 const SmartContract = require('../models/SmartContract');
 
 class KnotToken {
     static async instance(address) {
         if (!address) {
-            let sc = await SmartContract.findOne({name: 'knotCoin'});
+            let sc = await SmartContract.findOne({
+                name: 'knotCoin'
+            });
             address = sc.address;
         }
         const web3 = Web3.instance();
@@ -19,33 +21,76 @@ class KnotToken {
         return instance;
     }
     async balanceOf(account) {
-        const web3 = Web3.instance();
-        if (!account) {
-            let accouts = await web3.eth.getAccounts();
-            account = accouts[0];
-        }
         return this.sc.methods.balanceOf(account).call();
+    }
+    async approveByMember(account, value, onConfirmation, onError) {
+        const web3 = Web3.instance();
+        const accouts = await web3.eth.getAccounts();
+        const to = accouts[0];
+
+
+        const abi = Web3.getABI('KnotToken', 'approve');
+        const params = [to, Web3.toStrand(value)];
+        let code = web3.eth.abi.encodeFunctionCall(abi, params);
+        const tokenSC = this.sc.options.address;;
+        const dataObject = {
+            to: tokenSC,
+            data: code
+        };
+        let gas = await web3.eth.estimateGas(dataObject);
+        // console.log(gas);
+        return web3.eth.sendTransaction({
+                from: account,
+                to: tokenSC,
+                data: code,
+                gasLimit: gas * 2
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                if (onConfirmation) {
+                    onConfirmation(confirmationNumber, receipt);
+                }
+            })
+            .on('error', (err, receipt) => {
+                if (onError) {
+                    onError(err, receipt);
+                }
+            });
+
+        //下面的代码
+        // return this.sc.methods.approve(to, value).send({
+        //         from: account
+        //     })
+        //     .on('confirmation', function (confirmationNumber, receipt) {
+        //         if (onConfirmation) {
+        //             onConfirmation(confirmationNumber, receipt);
+        //         }
+        //     })
+        //     .on('error', (err, receipt) => {
+        //         if (onError) {
+        //             onError(err, receipt);
+        //         }
+        //     });
     }
     async transfer(to, value, from, onConfirmation, onError) {
         const web3 = Web3.instance();
         let accouts = await web3.eth.getAccounts();
-        if(!from) {
+        if (!from) {
             from = accouts[0];
         }
         console.log(`代币转账 from: ${from}, to: ${to}, value: ${value}`);
         return this.sc.methods.transfer(to, value).send({
-            from: from
-        })
-        .on('confirmation', function (confirmationNumber, receipt) {
-            if(confirmationNumber == 6) {
-                onConfirmation(confirmationNumber, receipt);
-            }
-        })
-        .on('error', (err, receipt) => {
-            if (onError) {
-                onError(err, receipt);
-            }
-        });;
+                from: from
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                if (confirmationNumber == 6 && onConfirmation) {
+                    onConfirmation(confirmationNumber, receipt);
+                }
+            })
+            .on('error', (err, receipt) => {
+                if (onError) {
+                    onError(err, receipt);
+                }
+            });
     }
 }
 

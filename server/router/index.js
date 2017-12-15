@@ -1,3 +1,7 @@
+const errors = require('restify-errors');
+
+const wallet = require('../services/wallet');
+
 module.exports = (server) => {
     /*
     /balanceOf/:account     获取账户余额（代币）
@@ -10,9 +14,8 @@ module.exports = (server) => {
     /*
     this.path + '/new'      创建新账号
     this.path + '/restore'  根据助记码和密码恢复账号
-    this.path + '/buyToken' 购买代币
+    this.path + '/buyToken' 购买代币,住账号转账代币和eth到客户账户
     this.path + '/login'    用户名密码登陆获取token
-    this.path + '/buyToken' 购买代币
     */
     require('./account')(server);
 
@@ -20,4 +23,17 @@ module.exports = (server) => {
     this.path + '/open/:name'   置开发状态
     */
     require('./group')(server);
+
+    server.get('/test', async(req, res, next) => {
+        try {
+            const currentWallet = wallet.getCurrent();
+            console.log(currentWallet);
+            res.send({
+                output: currentWallet.length
+            });
+            next();
+        } catch (err) {
+            next(new errors.InternalServerError(err));
+        }
+    });
 }

@@ -8,7 +8,7 @@ const KnotToken = require('../contracts/KnotToken');
 
 module.exports = (server) => {
     this.path = '/account';
-    server.post(this.path + '/new', auth.jwt, async(req, res, next) => {
+    server.post(this.path + '/new', async(req, res, next) => {
         let input = req.body.input;
         try {
             if (!input.name || !input.password) {
@@ -22,7 +22,7 @@ module.exports = (server) => {
             }
             member = new Member(input);
             member = await member.save();
-            let result = Web3.account.new(input.password);
+            let result = await Web3.account.new(input.password);
             member.account = result.address;
             member.keystore = new Buffer.from(JSON.stringify(result.keystore));
             delete result.keystore;
@@ -67,9 +67,9 @@ module.exports = (server) => {
                 throw err;
             };
             const receipt = await knotToken.transfer(
-                req.user.account,//to
-                Web3.toStrand(Number(input.value)),//value
-                null,//from, null use default
+                req.user.account, //to
+                Web3.toStrand(Number(input.value)), //value
+                null, //from, null use default
                 onConfirmation,
                 onError
             );
@@ -112,6 +112,39 @@ module.exports = (server) => {
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err))
+        }
+    });
+
+    server.post(this.path + '/approve/', auth.jwt, async(req, res, next) => {
+        try {
+            const input = req.body.input;
+            const value = Number(input.value);
+            if (!input.password) {
+                throw '用户密码不能为空';
+            }
+            const knotToken = await KnotToken.instance();
+            const account = req.user.account;
+            if (!account) {
+                throw '用户的以太坊account不能为空';
+            }
+            //两次确认后返回前端
+            const onConfirmation = async(confirmationNumber, receipt) => {
+                if (confirmationNumber == 2) {
+                    res.send({
+                        output: receipt
+                    });
+                    next();
+                    
+                }
+            };
+            //unlock用户账户
+            const member = await Member.findOne({name:req.user.name});
+            Web3.account.unlock(member, input.password);
+            await knotToken.approveByMember(member.account, value, onConfirmation);
+            Web3.account.lock(member.account);
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
         }
     });
 }
