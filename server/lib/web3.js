@@ -62,7 +62,6 @@ module.exports = (() => {
             },
             unlock: (member, password, duration) => {
                 const web3 = this.web3;
-                console.log(`${member.account}, ${password}, ${duration}`);
                 const keystore = web3.eth.accounts.decrypt(JSON.parse(member.keystore.toString()), password);
                 web3.eth.accounts.wallet.add(keystore.privateKey);
                 // return web3.eth.personal.unlockAccount(member.account, password, duration);
@@ -127,7 +126,7 @@ module.exports = (() => {
         },
         fromStrand: (strand) => {
             strand = new BN(strand);
-            return this.web3.utils.fromWei(strand.mul(new BN(10 * 10 ** 10)));
+            return this.web3.utils.fromWei(strand.mul(new BN(1 * 10 ** 10)));
         },
         getABI: function (name, func) {
             const abi = require('../../build/contracts/' + name).abi;
@@ -137,6 +136,7 @@ module.exports = (() => {
             for (let i = 0; i < abi.length; i++) {
                 const item = abi[i];
                 if (item.name == func) {
+                    console.log(item);
                     return item;
                 }
             }

@@ -6,6 +6,8 @@ const auth = require('../lib/auth');
 const GroupSC = require('../contracts/Group');
 const KnotToken = require('../contracts/KnotToken');
 
+const Member = require('../models/Member');
+
 module.exports = (server) => {
     this.path = '/group';
     server.get(this.path + '/open/:name', auth.jwt, auth.manager, async(req, res, next) => {
@@ -37,20 +39,20 @@ module.exports = (server) => {
             }
 
             const knotToken = await KnotToken.instance();
-            const group = await GroupSC.instance(null, input.groupName);
+            const groupSC = await GroupSC.instance(null, input.groupName);
             const account = req.user.account;
             if (!account) {
                 throw '用户的以太坊account不能为空';
             }
-            if (!group) {
+            if (!groupSC) {
                 throw '合约地址为空，请检查输入参数';
             }
             const balanceStr = await knotToken.balanceOf(req.user.account);
-            const balance = new BN(balanceStr);
-            if (balance.lt(new BN(myWeb3.toStrand(value)))) {
+            const balance = new BN(balanceStr.token);
+            if (balance.lt(value)) {
                 throw '代币余额不足1个';
             }
-            const isOpen = await group.isOpen();
+            const isOpen = await groupSC.isOpen();
             if (!isOpen) {
                 throw '活动还未开放';
             }
@@ -58,7 +60,9 @@ module.exports = (server) => {
             const confirmApprove = async(confirmationNumber, receipt) => {
                 if (confirmationNumber == 2) {
                     //join group
-
+                    console.log('slfjlajfldjfldsjlf');
+                    await groupSC.joinByMember(account);
+                    myWeb3.account.lock(account);
                     res.send({
                         output: receipt
                     });
@@ -69,9 +73,46 @@ module.exports = (server) => {
             const member = await Member.findOne({
                 name: req.user.name
             });
+            console.log(member);
             myWeb3.account.unlock(member, input.password);
-            await knotToken.approveByMember(member.account, group.sc.options.address, value, confirmApprove);
-            myWeb3.account.lock(member.account);
+            await knotToken.approveByMember(account, groupSC.sc.options.address, value, confirmApprove);
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+
+    server.get(this.path + '/isOpen/:name', auth.jwt, async(req, res, next) => {
+        try {
+            const scName = req.params.name;
+            const groupSC = await GroupSC.instance(null, scName);
+            const result = await groupSC.isOpen();
+            res.send({
+                output: result
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+
+    server.get(this.path + '/isJoined/:name', auth.jwt, async(req, res, next) => {
+        try {
+            const scName = req.params.name;
+            const groupSC = await GroupSC.instance(null, scName);
+            if (!groupSC) {
+                throw '合约地址为空，请检查输入参数';
+            }
+            const account = req.user.account;
+            if (!account) {
+                throw '用户的以太坊account不能为空';
+            }
+            const result = await groupSC.isJoined(account);
+            res.send({
+                output: result
+            });
+            next();
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err));

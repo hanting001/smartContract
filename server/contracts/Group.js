@@ -22,6 +22,7 @@ class GroupContract {
         return instance;
     }
     async open() {
+        const abi = myWeb3.getABI('KnotToken', 'approve');
         let accouts = await myWeb3.instance().eth.getAccounts();
         let from = accouts[0];
         return this.sc.methods.open().send({
@@ -31,14 +32,68 @@ class GroupContract {
                 console.log(transactionHash);
             })
             .on('confirmation', (confNumber, receipt) => {
-                console.log('confirmation');
+                if (confNumber == 1) {
+                    console.log('confirmation');
+                }
             })
             .on('error', (error) => {
                 console.log(error);
             });
     }
-    async isOpen(account) {
-        return this.sc.methods.isOpen().call({from:account});
+    async joinByMember(account, onConfirmation) {
+        const web3 = myWeb3.instance();
+        const abi = myWeb3.getABI('Group', 'join');
+        const params = [];
+        const code = web3.eth.abi.encodeFunctionCall(abi, params);
+        console.log(code);
+        console.log(abi.signature);
+        const to = this.sc.options.address;
+        const dataObject = {
+            to: to,
+            from: account,
+            data: code
+        };
+        console.log(dataObject);
+        let gas = await web3.eth.estimateGas(dataObject);
+        return web3.eth.sendTransaction({
+            from: account,
+            to: to,
+            data: code,
+            gasLimit: gas * 2
+        })
+        .on('confirmation', function (confNumber, receipt) {
+            if (confNumber == 1) {
+                console.log('member join confirmation');
+            }
+            if (onConfirmation) {
+                onConfirmation(confNumber, receipt);
+            }
+        })
+        .on('error', (err, receipt) => {
+            if (onError) {
+                onError(err, receipt);
+            }
+        });
+        // return this.sc.methods.join().send({
+        //     from: account
+        // })
+        // .on('confirmation', (confNumber, receipt) => {
+        //     if (confNumber == 1) {
+        //         console.log('member join confirmation');
+        //     }
+        //     if (onConfirmation) {
+        //         onConfirmation(confNumber, receipt);
+        //     }
+        // })
+        // .on('error', (error) => {
+        //     console.log(error);
+        // });
+    }
+    async isOpen() {
+        return this.sc.methods.isOpen().call();
+    }
+    async isJoined(account) {
+        return this.sc.methods.members(account).call();
     }
 }
 
