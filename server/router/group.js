@@ -1,4 +1,4 @@
-const Web3 = require('../lib/web3');
+const myWeb3 = require('../lib/web3');
 const errors = require('restify-errors');
 const BN = require('bn.js');
 
@@ -47,7 +47,7 @@ module.exports = (server) => {
             }
             const balanceStr = await knotToken.balanceOf(req.user.account);
             const balance = new BN(balanceStr);
-            if (balance.lt(new BN(Web3.toStrand(value)))) {
+            if (balance.lt(new BN(myWeb3.toStrand(value)))) {
                 throw '代币余额不足1个';
             }
             const isOpen = await group.isOpen();
@@ -69,9 +69,9 @@ module.exports = (server) => {
             const member = await Member.findOne({
                 name: req.user.name
             });
-            Web3.account.unlock(member, input.password);
+            myWeb3.account.unlock(member, input.password);
             await knotToken.approveByMember(member.account, group.sc.options.address, value, confirmApprove);
-            Web3.account.lock(member.account);
+            myWeb3.account.lock(member.account);
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err));

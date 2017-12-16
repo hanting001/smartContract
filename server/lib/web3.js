@@ -122,15 +122,19 @@ module.exports = (() => {
             }
         },
         //计算代币最小单位
-        toStrand: function (ktc) {
+        toStrand: (ktc)=> {
             return Number(ktc) * 10 ** 8;
         },
-        getABI: function(name, func) {
+        fromStrand: (strand) => {
+            strand = new BN(strand);
+            return this.web3.utils.fromWei(strand.mul(new BN(10 * 10 ** 10)));
+        },
+        getABI: function (name, func) {
             const abi = require('../../build/contracts/' + name).abi;
             if (!func) {
                 return abi;
             }
-            for (let i = 0; i < abi.length; i ++) {
+            for (let i = 0; i < abi.length; i++) {
                 const item = abi[i];
                 if (item.name == func) {
                     return item;

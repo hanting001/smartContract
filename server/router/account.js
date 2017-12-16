@@ -1,4 +1,4 @@
-const Web3 = require('../lib/web3');
+const myWeb3 = require('../lib/web3');
 const errors = require('restify-errors');
 const cache = require('@huibao/cachehelper');
 
@@ -22,7 +22,7 @@ module.exports = (server) => {
             }
             member = new Member(input);
             member = await member.save();
-            let result = await Web3.account.new(input.password);
+            let result = await myWeb3.account.new(input.password);
             member.account = result.address;
             member.keystore = new Buffer.from(JSON.stringify(result.keystore));
             delete result.keystore;
@@ -41,7 +41,7 @@ module.exports = (server) => {
         let password = input.password;
         let mnemonic = input.mnemonic;
         try {
-            let result = Web3.account.restore(password, mnemonic);
+            let result = myWeb3.account.restore(password, mnemonic);
             res.send({
                 output: result
             });
@@ -59,7 +59,7 @@ module.exports = (server) => {
             const onConfirmation = async(confirmationNumber, receipt) => {
                 if (confirmationNumber == 2) {
                     // automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
-                    await Web3.eth.sendEth(req.user.account, 0.02);
+                    await myWeb3.eth.sendEth(req.user.account, 0.02);
                     // console.log(confirmationNumber);
                 }
             };
@@ -69,13 +69,13 @@ module.exports = (server) => {
             //转对应的token到用户账户，第三个账户为空表示从主账户转出
             const receipt = await knotToken.transfer(
                 req.user.account, //to
-                Web3.toStrand(Number(input.value)), //value
+                myWeb3.toStrand(Number(input.value)), //value
                 null, //from, null use default
                 onConfirmation,
                 onError
             );
             // automining的时候可以认为交易已经确认了。在正式的块链上，确认交易提交需要在confirmation的事件里头
-            // await Web3.eth.sendEth(req.user.account, 0.02);
+            // await myWeb3.eth.sendEth(req.user.account, 0.02);
             res.send({
                 output: receipt
             })

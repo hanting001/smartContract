@@ -1,6 +1,6 @@
-const Web3 = require('../lib/web3');
+const myWeb3 = require('../lib/web3');
 const BN = require('bn.js');
-const abi = Web3.getABI('KnotToken');
+const abi = myWeb3.getABI('KnotToken');
 
 const SmartContract = require('../models/SmartContract');
 
@@ -12,7 +12,7 @@ class KnotToken {
             });
             address = sc.address;
         }
-        const web3 = Web3.instance();
+        const web3 = myWeb3.instance();
         let instance = new KnotToken();
         instance.sc = new web3.eth.Contract(abi, address);
         instance.sc.events.Transfer((err, event) => {
@@ -22,12 +22,18 @@ class KnotToken {
     }
     async balanceOf(account) {
         //默认第一个账户发起请求
-        return this.sc.methods.balanceOf(account).call();
+        const web3 = myWeb3.instance();
+        const eth = await web3.eth.getBalance(account);
+        const token = await this.sc.methods.balanceOf(account).call();
+        return {
+            eth: web3.utils.fromWei(eth),
+            token: myWeb3.fromStrand(token)
+        }
     }
     async approveByMember(account, spender, value, onConfirmation, onError) {
-        const web3 = Web3.instance();
-        const abi = Web3.getABI('KnotToken', 'approve');
-        const params = [spender, Web3.toStrand(value)];
+        const web3 = myWeb3.instance();
+        const abi = myWeb3.getABI('KnotToken', 'approve');
+        const params = [spender, myWeb3.toStrand(value)];
         let code = web3.eth.abi.encodeFunctionCall(abi, params);
         const tokenSC = this.sc.options.address;;
         const dataObject = {
@@ -69,7 +75,7 @@ class KnotToken {
         //     });
     }
     async transfer(to, value, from, onConfirmation, onError) {
-        const web3 = Web3.instance();
+        const web3 = myWeb3.instance();
         let accouts = await web3.eth.getAccounts();
         if (!from) {
             from = accouts[0];

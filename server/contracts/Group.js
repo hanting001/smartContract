@@ -1,6 +1,6 @@
-const Web3 = require('../lib/web3');
+const myWeb3 = require('../lib/web3');
 
-const abi = Web3.getABI('Group');
+const abi = myWeb3.getABI('Group');
 const SmartContract = require('../models/SmartContract');
 
 class GroupContract {
@@ -16,13 +16,13 @@ class GroupContract {
         if (!address) {
             return null;
         }
-        const web3 = Web3.instance();
+        const web3 = myWeb3.instance();
         let instance = new GroupContract();
         instance.sc = new web3.eth.Contract(abi, address);
         return instance;
     }
     async open() {
-        let accouts = await Web3.instance().eth.getAccounts();
+        let accouts = await myWeb3.instance().eth.getAccounts();
         let from = accouts[0];
         return this.sc.methods.open().send({
                 from: from

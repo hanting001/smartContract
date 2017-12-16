@@ -1,7 +1,7 @@
 const errors = require('restify-errors');
 
-const Web3 = require('../lib/web3');
-const web3 = Web3.instance()
+const myWeb3 = require('../lib/web3');
+const web3 = myWeb3.instance()
 const KnotToken = require('../contracts/KnotToken');
 const auth = require('../lib/auth');
 
@@ -38,7 +38,7 @@ module.exports = (server) => {
         let knot = await KnotToken.instance();
         try {
             let value = Number(req.params.value);
-            let result = await knot.transfer(req.params.to, Web3.toStrand(value), req.user.account);
+            let result = await knot.transfer(req.params.to, myWeb3.toStrand(value), req.user.account);
             res.send(result);
             next();
         } catch (err) {
@@ -72,7 +72,7 @@ module.exports = (server) => {
                 name: 'knotCoin'
             });
             let params = [web3.eth.getAccounts()[0], 2 * 10 ** 8];
-            let need = await Web3.eth.estimateGas({
+            let need = await myWeb3.eth.estimateGas({
                 name: 'KnotToken',
                 func: 'approve'
             }, params, knotCoin.address);
