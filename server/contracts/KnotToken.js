@@ -35,8 +35,6 @@ class KnotToken {
         const abi = myWeb3.getABI('KnotToken', 'approve');
         const params = [spender, myWeb3.toStrand(value)];
         let code = web3.eth.abi.encodeFunctionCall(abi, params);
-        console.log(code);
-        console.log(abi.signature);
         const tokenSC = this.sc.options.address;;
         const dataObject = {
             from: account,

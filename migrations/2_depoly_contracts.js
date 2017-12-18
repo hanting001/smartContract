@@ -13,6 +13,6 @@ module.exports = async(deployer, network) => {
         await deployer.deploy(KnotCoin);
         utility.updateDB('knotCoin', KnotCoin.address);
     }
-    await deployer.deploy(Group, 'G00000002', KnotCoin.address);
-    utility.updateDB('G00000002', Group.address);
+    await deployer.deploy(Group, 'G00000001', KnotCoin.address);
+    utility.updateDB('G00000001', Group.address);
 }

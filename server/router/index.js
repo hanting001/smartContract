@@ -1,5 +1,6 @@
 const errors = require('restify-errors');
 
+const myWeb3 = require('../lib/web3');
 const wallet = require('../services/wallet');
 
 module.exports = (server) => {
@@ -29,10 +30,9 @@ module.exports = (server) => {
 
     server.get('/test', async(req, res, next) => {
         try {
-            const currentWallet = wallet.getCurrent();
-            console.log(currentWallet);
+            const abi = myWeb3.getABI('Group', 'join');
             res.send({
-                output: currentWallet.length
+                output: abi
             });
             next();
         } catch (err) {

@@ -124,10 +124,12 @@ module.exports = (() => {
         toStrand: (ktc)=> {
             return Number(ktc) * 10 ** 8;
         },
+        //计算代币最大单位
         fromStrand: (strand) => {
             strand = new BN(strand);
             return this.web3.utils.fromWei(strand.mul(new BN(1 * 10 ** 10)));
         },
+        //得到合约的ABI接口
         getABI: function (name, func) {
             const abi = require('../../build/contracts/' + name).abi;
             if (!func) {
@@ -136,7 +138,6 @@ module.exports = (() => {
             for (let i = 0; i < abi.length; i++) {
                 const item = abi[i];
                 if (item.name == func) {
-                    console.log(item);
                     return item;
                 }
             }
