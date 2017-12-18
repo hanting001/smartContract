@@ -39,6 +39,7 @@ class KnotToken {
         console.log(abi.signature);
         const tokenSC = this.sc.options.address;;
         const dataObject = {
+            from: account,
             to: tokenSC,
             data: code
         };

@@ -45,15 +45,12 @@ class GroupContract {
         const abi = myWeb3.getABI('Group', 'join');
         const params = [];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
-        console.log(code);
-        console.log(abi.signature);
         const to = this.sc.options.address;
         const dataObject = {
-            to: to,
             from: account,
+            to: to,
             data: code
         };
-        console.log(dataObject);
         let gas = await web3.eth.estimateGas(dataObject);
         return web3.eth.sendTransaction({
             from: account,
