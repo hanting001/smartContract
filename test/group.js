@@ -29,7 +29,7 @@ contract('Group', (accounts) => {
         token.transfer(accounts[1], 2 * 10 ** 8, {from:accounts[0]})
         token.approve(instance.address, 2 * 10 ** 8, {from:accounts[1]});
         let result = await instance.join({from:accounts[1]});
-        let join = await instance.members.call(accounts[1]);
+        let join = await instance.membersInGroup.call(accounts[1]);
         assert.equal(join, true, `can not join`);
     });
 
