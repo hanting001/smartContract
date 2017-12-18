@@ -9,7 +9,7 @@ contract Group is Ownable, Stoppable{
     // address[] members;
     mapping(address=>bool) public membersInGroup;
     address[] members;
-    address winner;
+    address public winner;
     string item;//item id
     bool public isOpen;
     KnotToken knotToken;
@@ -57,8 +57,8 @@ contract Group is Ownable, Stoppable{
     }
     function lottery(uint8 _index) external onlyOwner {
         require(!isOpen);
-        require(members.length > 3);
-        require(membersInGroup[_index]);
+        // require(members.length > 3);
+        require(membersInGroup[members[_index]]);
 
         winner = members[_index];
 
