@@ -22,7 +22,6 @@ class GroupContract {
         return instance;
     }
     async open() {
-        const abi = myWeb3.getABI('KnotToken', 'approve');
         let accouts = await myWeb3.instance().eth.getAccounts();
         let from = accouts[0];
         return this.sc.methods.open().send({
@@ -40,37 +39,47 @@ class GroupContract {
                 console.log(error);
             });
     }
+    async closeBy(account, onConfirmation) {
+        const web3 = myWeb3.instance();
+        const accouts = await web3.eth.getAccounts();
+        const from = accouts[0];//因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0]
+        const abi = myWeb3.getABI('Group', 'close');
+        const params = [];
+        const code = web3.eth.abi.encodeFunctionCall(abi, params);
+        const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
+        return web3.eth.sendTransaction(txObj)
+            .on('transactionHash', (transactionHash) => {
+                console.log(transactionHash);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+            });
+    }
     async joinByMember(account, onConfirmation) {
         const web3 = myWeb3.instance();
         const abi = myWeb3.getABI('Group', 'join');
         const params = [];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
-        const to = this.sc.options.address;
-        const dataObject = {
-            from: account,
-            to: to,
-            data: code
-        };
-        let gas = await web3.eth.estimateGas(dataObject);
-        return web3.eth.sendTransaction({
-            from: account,
-            to: to,
-            data: code,
-            gasLimit: gas * 2
-        })
-        .on('confirmation', function (confNumber, receipt) {
-            if (confNumber == 1) {
-                console.log('member join confirmation');
-            }
-            if (onConfirmation) {
-                onConfirmation(confNumber, receipt);
-            }
-        })
-        .on('error', (err, receipt) => {
-            if (onError) {
-                onError(err, receipt);
-            }
-        });
+        const txObj = await myWeb3.getTransactionObj(account, this.sc.options.address, code);
+        return web3.eth.sendTransaction(txObj)
+            .on('confirmation', function (confNumber, receipt) {
+                if (confNumber == 1) {
+                    console.log('member join confirmation');
+                }
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (err, receipt) => {
+                if (onError) {
+                    onError(err, receipt);
+                }
+            });
         // return this.sc.methods.join().send({
         //     from: account
         // })

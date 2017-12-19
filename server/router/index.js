@@ -2,6 +2,7 @@ const errors = require('restify-errors');
 
 const myWeb3 = require('../lib/web3');
 const wallet = require('../services/wallet');
+const GroupSC = require('../contracts/Group');
 
 module.exports = (server) => {
     /*
@@ -28,14 +29,19 @@ module.exports = (server) => {
     */
     require('./group')(server);
 
-    server.get('/test', async(req, res, next) => {
+    server.get('/test/:length', async(req, res, next) => {
         try {
-            const abi = myWeb3.getABI('Group', 'join');
+            const groupSC = await GroupSC.instance(null, 'G00000001');
+            const random = await groupSC.sc.methods.getRandom(Number(req.params.length), 10).call();
+            // const closeNumber = await groupSC.sc.methods.closeBlockNumber().call();
             res.send({
-                output: abi
+                output: {
+                    random: random
+                }
             });
             next();
         } catch (err) {
+            console.log(err);
             next(new errors.InternalServerError(err));
         }
     });

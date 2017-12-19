@@ -37,25 +37,42 @@ contract('Group', (accounts) => {
         const balanceOfMember = await token.balanceOf.call(accounts[1]);
         assert.equal(balanceOfMember.toString(), '0', 'member token not subtract 1');
     });
+    // it("test lottery", async() => {
+    //     const group = await Group.deployed();
+    //     const token = await KnotCoin.deployed();
+
+
+    //     await group.close({from: accounts[0]});
+    //     await group.lottery(0, {from: accounts[0]});
+        
+    //     const winner = await group.winner.call();
+    //     assert(winner, accounts[1], "winner not index 0");
+    //     // const members = await group.getMembers({from: accounts[0]});
+        
+
+    //     await group.receiveBonus({from:accounts[1]});
+
+    //     const balanceOfGroup = await token.balanceOf.call(group.address);
+    //     assert.equal(balanceOfGroup.toString(), '0', 'group token not pay winner');
+
+    //     const balanceOfWinner = await token.balanceOf.call(accounts[1]);
+    //     assert.equal(balanceOfWinner.toString(), '100000000', 'winner not get bonus');
+    // });
     it("test lottery", async() => {
         const group = await Group.deployed();
         const token = await KnotCoin.deployed();
 
 
         await group.close({from: accounts[0]});
-        await group.lottery(0, {from: accounts[0]});
+        await group.lottery(10, {from: accounts[0]});
         
         const winner = await group.winner.call();
-        console.log(winner);
         assert(winner, accounts[1], "winner not index 0");
+        // const members = await group.getMembers({from: accounts[0]});
+        
 
-        await group.receiveBonus({from:accounts[1]});
-
-        const balanceOfGroup = await token.balanceOf.call(group.address);
-        assert.equal(balanceOfGroup.toString(), '0', 'group token not pay winner');
-
-        const balanceOfWinner = await token.balanceOf.call(accounts[1]);
-        assert.equal(balanceOfWinner.toString(), '100000000', 'winner not get bonus');
+        const winnerIndex = await group.winnerIndex.call({from:accounts[1]});
+        console.log(winnerIndex.toString());
     });
 
 });

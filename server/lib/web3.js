@@ -141,6 +141,20 @@ module.exports = (() => {
                     return item;
                 }
             }
+        },
+        getTransactionObj: async(from, to, code) => {
+            const dataObject = {
+                from: from,
+                to: to,
+                data: code
+            };
+            let gas = await this.web3.eth.estimateGas(dataObject);
+            return {
+                from: from,
+                to: to,
+                data: code,
+                gasLimit: gas * 2
+            }
         }
     }
 })()
