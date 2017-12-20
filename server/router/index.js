@@ -16,16 +16,20 @@ module.exports = (server) => {
     /*
     this.path + '/new'      创建新账号
     this.path + '/restore'  根据助记码和密码恢复账号
-    this.path + '/buyToken' 购买代币,往账号转账代币和eth到客户账户
+    this.path + '/buyToken' 购买代币,转账代币和eth到客户账户
     this.path + '/login'    用户名密码登陆获取token
     */
     require('./account')(server);
 
     /*
-    this.path + '/open/:name'   置活动开放状态
+    this.path + '/open/:name'   管理员置活动开放状态
     this.path + '/isOpen/:name  查看活动是否开放
     this.path + '/join/:name'   加入某个活动, 先授权活动合约可以扣代币，然后在把用户加入到活动合约用户组中
     this.path + '/isJoined/:name'   用户查看自己是否已经加入了活动
+    this.path + '/close'        管理员将活动关闭
+    this.path + '/lottery'      管理员开奖
+    this.path + '/getWinner/:name   查看获奖者
+    this.path + '/receiveBonus' 获奖者领取奖金
     */
     require('./group')(server);
 

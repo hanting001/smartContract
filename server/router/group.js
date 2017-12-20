@@ -12,9 +12,20 @@ module.exports = (server) => {
     this.path = '/group';
     server.get(this.path + '/open/:name', auth.jwt, auth.manager, async(req, res, next) => {
         try {
-            const scName = req.params.name;
-            const groupSC = await GroupSC.instance(null, scName);
-            const result = await groupSC.open();
+            const input = req.body.input;
+            if (!input.password) {
+                throw '用户密码不能为空';
+            }
+            if (!input.groupName) {
+                throw 'groupName不能为空';
+            }
+            const groupSC = await GroupSC.instance(null, input.groupName);
+            const member = await Member.findOne({
+                name: req.user.name
+            });
+            myWeb3.account.unlock(member, input.password);
+            const result = await groupSC.openByAdmin(req.user.account);
+            myWeb3.account.lock(req.user.account);
             res.send({
                 output: result
             });
@@ -38,7 +49,75 @@ module.exports = (server) => {
                 name: req.user.name
             });
             myWeb3.account.unlock(member, input.password);
-            const result = await groupSC.closeBy(req.user.account);
+            const result = await groupSC.closeByAdmin(req.user.account);
+            myWeb3.account.lock(req.user.account);
+            res.send({
+                output: result
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+    server.post(this.path + '/lottery', auth.jwt, auth.manager, async(req, res, next) => {
+        try {
+            const input = req.body.input;
+            if (!input.password) {
+                throw '用户密码不能为空';
+            }
+            if (!input.groupName) {
+                throw 'groupName不能为空';
+            }
+            if (!input.interval) {
+                throw 'interval不能为空';
+            }
+            const groupSC = await GroupSC.instance(null, input.groupName);
+            const member = await Member.findOne({
+                name: req.user.name
+            });
+            myWeb3.account.unlock(member, input.password);
+            const params = [Number(input.interval)];
+            const result = await groupSC.lotteryByAdmin(req.user.account, params);
+            myWeb3.account.lock(req.user.account);
+            res.send({
+                output: result
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+    server.get(this.path + '/getWinner/:name', auth.jwt, async(req, res, next) => {
+        try {
+            const scName = req.params.name;
+            const groupSC = await GroupSC.instance(null, scName);
+            const result = await groupSC.getWinner();
+            res.send({
+                output: result
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+    server.post(this.path + '/receiveBonus', auth.jwt, async(req, res, next) => {
+        try {
+            const input = req.body.input;
+            if (!input.password) {
+                throw '用户密码不能为空';
+            }
+            if (!input.groupName) {
+                throw 'groupName不能为空';
+            }
+            const groupSC = await GroupSC.instance(null, input.groupName);
+            const member = await Member.findOne({
+                name: req.user.name
+            });
+            myWeb3.account.unlock(member, input.password);
+            const result = await groupSC.receiveBonusByMember(req.user.account);
             myWeb3.account.lock(req.user.account);
             res.send({
                 output: result
