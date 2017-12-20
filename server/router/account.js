@@ -70,7 +70,7 @@ module.exports = (server) => {
             const receipt = await knotToken.transfer(
                 req.user.account, //to
                 myWeb3.toStrand(Number(input.value)), //value
-                null, //from, null use default
+                null, //from, 因为是默认账户部署的token合约，所以这里也用默认账户发起交易
                 onConfirmation,
                 onError
             );

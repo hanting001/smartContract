@@ -26,7 +26,7 @@ module.exports = (() => {
                 // console.log(mnemonic);
                 const master = code.toHDPrivateKey(password);
                 const masterPrivateKey = master.toObject().privateKey;
-                console.log('0x' + masterPrivateKey);
+                // console.log('0x' + masterPrivateKey);
                 //child_0_1_2h = master.deriveChild("m/0/1/2'");
                 let account = web3.eth.accounts.privateKeyToAccount('0x' + masterPrivateKey);
                 //加到钱包中
@@ -107,7 +107,7 @@ module.exports = (() => {
                 console.log(`ETH转账 from: ${from}, to: ${to}, value: ${web3.utils.toWei(value)}`);
                 return web3.eth.sendTransaction(txObject)
                     .on('transactionHash', function (hash) {
-                        console.log(hash);
+                        console.log(`sendEth: ${hash}`);
                     })
                     .on('receipt', function (receipt) {
                         console.log(receipt);

@@ -21,7 +21,7 @@ class GroupContract {
         instance.sc = new web3.eth.Contract(abi, address);
         return instance;
     }
-    async openByAdmin() {
+    async openByAdmin(account, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; //因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
@@ -29,9 +29,10 @@ class GroupContract {
         const params = [];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
+        console.log(txObj);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
-                console.log(transactionHash);
+                console.log(`group openByAdmin txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
@@ -52,7 +53,7 @@ class GroupContract {
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
-                console.log(transactionHash);
+                console.log(`group closeByAdmin txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
@@ -73,7 +74,7 @@ class GroupContract {
         const txObj = await myWeb3.getTransactionObj(from, to, code);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
-                console.log(transactionHash);
+                console.log(`lotteryByAdmin txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
@@ -94,7 +95,7 @@ class GroupContract {
         const txObj = await myWeb3.getTransactionObj(from, to, code);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
-                console.log(transactionHash);
+                console.log(`receiveBonusByMember txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {

@@ -10,7 +10,7 @@ const Member = require('../models/Member');
 
 module.exports = (server) => {
     this.path = '/group';
-    server.get(this.path + '/open/:name', auth.jwt, auth.manager, async(req, res, next) => {
+    server.post(this.path + '/open', auth.jwt, auth.manager, async(req, res, next) => {
         try {
             const input = req.body.input;
             if (!input.password) {
@@ -25,6 +25,7 @@ module.exports = (server) => {
             });
             myWeb3.account.unlock(member, input.password);
             const result = await groupSC.openByAdmin(req.user.account);
+            console.log(result);
             myWeb3.account.lock(req.user.account);
             res.send({
                 output: result
