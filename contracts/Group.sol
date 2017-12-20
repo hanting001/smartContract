@@ -144,12 +144,22 @@ contract Group is Ownable, Stoppable{
         }
         return string(result);
     }
+    function toBytes(uint256 x) internal pure returns (bytes b) {
+        b = new bytes(32);
+        assembly { mstore(add(b, 32), x) }
+    }
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
         // var length = bytes(uint2str(membersNumber)).length;
         var number = uint(block.blockhash(block.number - interval)) % block.timestamp;
-        while(number >= membersNumber) {
-            var str = uint2str(number);
-            number = parseInt(substring(str, 0, bytes(str).length - 1), 0);
+        // var number = (uint(block.blockhash(block.number - interval)) / (2**31)) & membersNumber;
+        // membersNumber -= 1;
+        // uint index = 0;
+        // while(2 ** index < membersNumber) {
+        //     index += 1;
+        // }
+        // uint number = (uint(block.blockhash(block.number - interval)) / (2**31)) & (2 ** index - 1);
+        if (number >= membersNumber) {
+            number = number % membersNumber;
         }
         return number;
         // return substring(number, numberLength - length, numberLength);
