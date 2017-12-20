@@ -29,7 +29,6 @@ class GroupContract {
         const params = [];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
-        console.log(txObj);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
                 console.log(`group openByAdmin txHash: ${transactionHash}`);
