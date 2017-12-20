@@ -53,7 +53,6 @@ contract Group is Ownable, Stoppable{
     /** @dev close group,member can not join. */
     function close() public onlyOwner {
         isOpen = false;
-        members.push(this);
         closeBlockNumber = block.number;
     }
     /** @dev lottery a winner */
@@ -103,63 +102,63 @@ contract Group is Ownable, Stoppable{
     }
 
     //utility
-    function uint2str(uint i) internal pure returns (string){
-        if (i == 0) return "0";
-        uint j = i;
-        uint len;
-        while (j != 0){
-            len++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(len);
-        uint k = len - 1;
-        while (i != 0){
-            bstr[k--] = byte(48 + i % 10);
-            i /= 10;
-        }
-        return string(bstr);
-    }
-    function parseInt(string _a, uint _b) internal pure returns (uint) {
-        bytes memory bresult = bytes(_a);
-        uint mint = 0;
-        bool decimals = false;
-        for (uint i=0; i<bresult.length; i++){
-            if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
-                if (decimals){
-                   if (_b == 0) break;
-                    else _b--;
-                }
-                mint *= 10;
-                mint += uint(bresult[i]) - 48;
-            } else if (bresult[i] == 46) decimals = true;
-        }
-        if (_b > 0) mint *= 10**_b;
-        return mint;
-    }
-    function substring(string str, uint startIndex, uint endIndex) internal pure returns (string) {
-        bytes memory strBytes = bytes(str);
-        bytes memory result = new bytes(endIndex-startIndex);
-        for(uint i = startIndex; i < endIndex; i++) {
-            result[i-startIndex] = strBytes[i];
-        }
-        return string(result);
-    }
-    function toBytes(uint256 x) internal pure returns (bytes b) {
-        b = new bytes(32);
-        assembly { mstore(add(b, 32), x) }
-    }
+    // function uint2str(uint i) internal pure returns (string){
+    //     if (i == 0) return "0";
+    //     uint j = i;
+    //     uint len;
+    //     while (j != 0){
+    //         len++;
+    //         j /= 10;
+    //     }
+    //     bytes memory bstr = new bytes(len);
+    //     uint k = len - 1;
+    //     while (i != 0){
+    //         bstr[k--] = byte(48 + i % 10);
+    //         i /= 10;
+    //     }
+    //     return string(bstr);
+    // }
+    // function parseInt(string _a, uint _b) internal pure returns (uint) {
+    //     bytes memory bresult = bytes(_a);
+    //     uint mint = 0;
+    //     bool decimals = false;
+    //     for (uint i=0; i<bresult.length; i++){
+    //         if ((bresult[i] >= 48)&&(bresult[i] <= 57)){
+    //             if (decimals){
+    //                if (_b == 0) break;
+    //                 else _b--;
+    //             }
+    //             mint *= 10;
+    //             mint += uint(bresult[i]) - 48;
+    //         } else if (bresult[i] == 46) decimals = true;
+    //     }
+    //     if (_b > 0) mint *= 10**_b;
+    //     return mint;
+    // }
+    // function substring(string str, uint startIndex, uint endIndex) internal pure returns (string) {
+    //     bytes memory strBytes = bytes(str);
+    //     bytes memory result = new bytes(endIndex-startIndex);
+    //     for(uint i = startIndex; i < endIndex; i++) {
+    //         result[i-startIndex] = strBytes[i];
+    //     }
+    //     return string(result);
+    // }
+    // function toBytes(uint256 x) internal pure returns (bytes b) {
+    //     b = new bytes(32);
+    //     assembly { mstore(add(b, 32), x) }
+    // }
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
         // var length = bytes(uint2str(membersNumber)).length;
-        var number = uint(block.blockhash(block.number - interval)) % block.timestamp;
+        var number = uint(block.blockhash(block.number - interval)) / membersNumber;
         // var number = (uint(block.blockhash(block.number - interval)) / (2**31)) & membersNumber;
         // membersNumber -= 1;
-        // uint index = 0;
-        // while(2 ** index < membersNumber) {
-        //     index += 1;
-        // }
-        // uint number = (uint(block.blockhash(block.number - interval)) / (2**31)) & (2 ** index - 1);
+        uint index = 0;
+        while(2 ** index < membersNumber) {
+            index += 1;
+        }
+        number = number & (2 ** index - 1);
         if (number >= membersNumber) {
-            number = number % membersNumber;
+            number = number - membersNumber;
         }
         return number;
         // return substring(number, numberLength - length, numberLength);
