@@ -77,7 +77,7 @@ contract Group is Ownable, Stoppable{
 
         uint winnerIndex = getRandom(members.length, interval % 2);
         winner = members[winnerIndex];
-
+        // assert(knotToken.transfer(knotToken, knotToken.balanceOf(this)));
         Lottery(msg.sender, keccak256(item), block.timestamp);
     }
     /** @dev get all joined members */
@@ -104,7 +104,8 @@ contract Group is Ownable, Stoppable{
 
     /** @dev winner receive bonus */
     function receiveBonus() external onlyWinner {
-        assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this)));
+        assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this) / 10 * 9));
+        assert(knotToken.transfer(owner, knotToken.balanceOf(this) / 10));
     }
     /** @dev get group item. 
       * @return item 返回活动奖品

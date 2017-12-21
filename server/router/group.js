@@ -163,13 +163,17 @@ module.exports = (server) => {
             const confirmApprove = async(confirmationNumber, receipt) => {
                 if (confirmationNumber == 2) {
                     //join group
-                    console.log('slfjlajfldjfldsjlf');
-                    await groupSC.joinByMember(account);
-                    myWeb3.account.lock(account);
-                    res.send({
-                        output: receipt
-                    });
-                    next();
+                    try {
+                        await groupSC.joinByMember(account);
+                        myWeb3.account.lock(account);
+                        res.send({
+                            output: receipt
+                        });
+                        next();
+                    } catch (err) {
+                        console.log(err);
+                    }
+
                 }
             };
             //unlock用户账户,先让用户授权group合约可以扣token

@@ -109,7 +109,7 @@ class GroupContract {
                 console.log(error);
             });
     }
-    async joinByMember(account, onConfirmation) {
+    async joinByMember(account, onConfirmation, onError) {
         const web3 = myWeb3.instance();
         const abi = myWeb3.getABI('Group', 'join');
         const params = [];
@@ -125,6 +125,7 @@ class GroupContract {
                 }
             })
             .on('error', (err, receipt) => {
+                console.log(err);
                 if (onError) {
                     onError(err, receipt);
                 }

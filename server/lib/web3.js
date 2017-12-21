@@ -122,12 +122,15 @@ module.exports = (() => {
         },
         //计算代币最小单位
         toStrand: (ktc)=> {
-            return Number(ktc) * 10 ** 8;
+            // return Number(ktc) * 10 ** 8;
+            ktc = new BN(ktc);
+            return this.web3.utils.toWei(ktc);
         },
         //计算代币最大单位
         fromStrand: (strand) => {
             strand = new BN(strand);
-            return this.web3.utils.fromWei(strand.mul(new BN(1 * 10 ** 10)));
+            // return this.web3.utils.fromWei(strand.mul(new BN(1 * 10 ** 10)));
+            return this.web3.utils.fromWei(strand);
         },
         //得到合约的ABI接口
         getABI: function (name, func) {
