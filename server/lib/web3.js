@@ -89,7 +89,7 @@ module.exports = (() => {
             },
             sendEth: async(to, value) => {
                 const web3 = this.web3;
-                const accouts = await web3.eth.getAccounts();
+                const accounts = await web3.eth.getAccounts();
                 try {
                     value = String(value);
                 } catch (err) {
@@ -98,7 +98,7 @@ module.exports = (() => {
                 if (value == 0) {
                     throw 'value不能是0';
                 }
-                const from = accouts[0];
+                const from = accounts[0];
                 const txObject = {
                     from: from,
                     to: to,
@@ -118,6 +118,37 @@ module.exports = (() => {
                         }
                     })
                     .on('error', console.error);
+            },
+            sendEthFrom: async(from, to, value) => {
+                const web3 = this.web3;
+                if (!to) {
+                    const accounts = await web3.eth.getAccounts();
+                    to = accounts[0];//把以太币还给主账号，目前暂时使用默认账号
+                }
+                const txObject = {
+                    from: from,
+                    to: to,
+                    value: web3.utils.toWei(value)
+                };
+                console.log(`ETH转账 from: ${from}, to: ${to}, value: ${web3.utils.toWei(value)}`);
+                return web3.eth.sendTransaction(txObject)
+                    .on('transactionHash', function (hash) {
+                        console.log(`sendEth: ${hash}`);
+                    })
+                    .on('receipt', function (receipt) {
+                        console.log(receipt);
+                    })
+                    .on('confirmation', function (confirmationNumber, receipt) {
+                        if (confirmationNumber == 6) {
+                            console.log('send eth confirmed. do something');
+                        }
+                    })
+                    .on('error', console.error);
+            },
+            getETHBalance: async(account) => {
+                const web3 = this.web3;
+                const weis = await web3.eth.getBalance(account);
+                return web3.utils.fromWei(weis);
             }
         },
         //计算代币最小单位

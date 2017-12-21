@@ -102,7 +102,9 @@ contract Group is Ownable, Stoppable{
         Join(msg.sender, keccak256(item));
     }
 
-    /** @dev winner receive bonus */
+    /** @dev winner receive bonus 
+      * 赢家拿走90%，创建人拿走10%
+     */
     function receiveBonus() external onlyWinner {
         assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this) / 10 * 9));
         assert(knotToken.transfer(owner, knotToken.balanceOf(this) / 10));
