@@ -25,7 +25,6 @@ module.exports = (server) => {
             });
             myWeb3.account.unlock(member, input.password);
             const result = await groupSC.openByAdmin(req.user.account);
-            console.log(result);
             myWeb3.account.lock(req.user.account);
             res.send({
                 output: result

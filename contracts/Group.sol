@@ -24,7 +24,16 @@ contract Group is Ownable, Stoppable{
         bytes32 indexed _item,
         uint time
     );
-
+    event Open (
+        address indexed _sender,
+        string _item,
+        uint time
+    );
+    event Close (
+        address indexed _sender,
+        string _item,
+        uint time
+    );
     function Group(string _item, address tokenAddress) public Stoppable(msg.sender) {
         item = _item;
         knotToken = KnotToken(tokenAddress);
@@ -49,13 +58,17 @@ contract Group is Ownable, Stoppable{
     /** @dev open group,member can join. */
     function open()  public onlyOwner {
         isOpen = true;
+        Open(msg.sender, item, block.timestamp);
     }
     /** @dev close group,member can not join. */
     function close() public onlyOwner {
         isOpen = false;
         closeBlockNumber = block.number;
+        Close(msg.sender, item, block.timestamp);
     }
-    /** @dev lottery a winner */
+    /** @dev lottery a winner 
+      * @param interval 在关闭活动后，必须经过多少个block才可以开奖.
+      */
     function lottery(uint interval) external onlyOwner {
         require(!isOpen);
         require(members.length > 1);
@@ -93,7 +106,9 @@ contract Group is Ownable, Stoppable{
     function receiveBonus() external onlyWinner {
         assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this)));
     }
-    /** @dev get group item. */
+    /** @dev get group item. 
+      * @return item 返回活动奖品
+      */
     function getItem() view public returns (string) {
         return item;
     }
@@ -147,6 +162,13 @@ contract Group is Ownable, Stoppable{
     //     b = new bytes(32);
     //     assembly { mstore(add(b, 32), x) }
     // }
+
+
+    /** @dev 测试获取随机数 （暂时根据blockhash生成）
+      * @param membersNumber 当前参加活动的人数.
+      * @param interval 在关闭活动后，必须经过多少个block才可以开奖.
+      * @return number 随机数
+      */    
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
         // var length = bytes(uint2str(membersNumber)).length;
         var number = uint(block.blockhash(block.number - interval)) / membersNumber;

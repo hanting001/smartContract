@@ -15,9 +15,10 @@ class KnotToken {
         const web3 = myWeb3.instance();
         let instance = new KnotToken();
         instance.sc = new web3.eth.Contract(abi, address);
-        instance.sc.events.Transfer((err, event) => {
-            console.log('both ganache and testrpc dose not support web socket prvider');
-        });
+        instance.sc.events.allEvents()
+            .on('data', (event) => {
+                console.log('event fired');
+            });;
         return instance;
     }
     async balanceOf(account) {

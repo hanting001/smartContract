@@ -19,6 +19,10 @@ class GroupContract {
         const web3 = myWeb3.instance();
         let instance = new GroupContract();
         instance.sc = new web3.eth.Contract(abi, address);
+        instance.sc.events.allEvents()
+            .on('data', (event) => {
+                console.log('event fired');
+            });
         return instance;
     }
     async openByAdmin(account, onConfirmation) {
