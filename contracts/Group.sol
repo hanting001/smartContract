@@ -179,7 +179,11 @@ contract Group is Ownable, Stoppable{
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
         require(2 <= interval );
         require(interval <= 8 );
-        uint number = uint(block.blockhash(block.number - 2 ** interval)) / membersNumber;
+        uint number = 0;
+        for (uint i = interval; i < 2 ** interval; i++) {
+            number += uint(block.blockhash(block.number - i));
+        }
+        number = number / membersNumber;
         uint index = 0;
         while(2 ** index < membersNumber) {
             index += 1;
