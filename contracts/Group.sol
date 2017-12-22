@@ -79,7 +79,7 @@ contract Group is Ownable, Stoppable{
         require((block.number - closeBlockNumber) > interval);
         require(winner == address(0));
 
-        uint winnerIndex = getRandom(members.length, interval % 2);
+        uint winnerIndex = getRandom(members.length, interval);
         winner = members[winnerIndex];
         // assert(knotToken.transfer(knotToken, knotToken.balanceOf(this)));
         Lottery(msg.sender, keccak256(item), block.timestamp);
@@ -179,14 +179,7 @@ contract Group is Ownable, Stoppable{
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
         require(2 <= interval );
         require(interval <= 8 );
-        // var length = bytes(uint2str(membersNumber)).length;
-        uint number = 0;
-        for (uint i = interval; i < 2 ** interval; i++) {
-            number += uint(block.blockhash(block.number - i));
-        }
-        number = number / membersNumber;
-        // var number = (uint(block.blockhash(block.number - interval)) / (2**31)) & membersNumber;
-        // membersNumber -= 1;
+        uint number = uint(block.blockhash(block.number - 2 ** interval)) / membersNumber;
         uint index = 0;
         while(2 ** index < membersNumber) {
             index += 1;
@@ -196,7 +189,6 @@ contract Group is Ownable, Stoppable{
             number = number - membersNumber;
         }
         return number;
-        // return substring(number, numberLength - length, numberLength);
     }
 
 }
