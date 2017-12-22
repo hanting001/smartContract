@@ -181,7 +181,7 @@ contract Group is Ownable, Stoppable{
         require(interval <= 8 );
         // var length = bytes(uint2str(membersNumber)).length;
         uint number = 0;
-        for (uint i = 0; i < 2 ** interval; i++) {
+        for (uint i = interval; i < 2 ** interval; i++) {
             number += uint(block.blockhash(block.number - i));
         }
         number = number / membersNumber;
