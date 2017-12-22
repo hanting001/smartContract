@@ -36,7 +36,7 @@ module.exports = (server) => {
     server.get('/test/:length', async(req, res, next) => {
         try {
             const groupSC = await GroupSC.instance(null, 'G00000001');
-            const random = await groupSC.sc.methods.getRandom(Number(req.params.length), 10).call();
+            const random = await groupSC.sc.methods.getRandom(Number(req.params.length), 8).call();
             // const closeNumber = await groupSC.sc.methods.closeBlockNumber().call();
             res.send({
                 output: {

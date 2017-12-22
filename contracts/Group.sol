@@ -4,15 +4,19 @@ import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './common/Stoppable.sol';
 import './common/KnotToken.sol';
 
+
 /** @title group smart contract. */
 contract Group is Ownable, Stoppable{
     // address[] members;
     mapping(address=>bool) public membersInGroup;
     address[] members;
+
     address public winner;
     string item;//item id
     bool public isOpen;
+    // coin contract
     KnotToken knotToken;
+
     uint closeBlockNumber;
 
     event Join(
@@ -173,8 +177,14 @@ contract Group is Ownable, Stoppable{
       * @return number 随机数
       */    
     function getRandom(uint membersNumber, uint interval) public view returns(uint) {
+        require(2 <= interval );
+        require(interval <= 8 );
         // var length = bytes(uint2str(membersNumber)).length;
-        var number = uint(block.blockhash(block.number - interval)) / membersNumber;
+        uint number = 0;
+        for (uint i = 0; i < 2 ** interval; i++) {
+            number += uint(block.blockhash(block.number - i));
+        }
+        number = number / membersNumber;
         // var number = (uint(block.blockhash(block.number - interval)) / (2**31)) & membersNumber;
         // membersNumber -= 1;
         uint index = 0;

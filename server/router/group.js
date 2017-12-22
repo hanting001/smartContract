@@ -72,6 +72,9 @@ module.exports = (server) => {
             if (!input.interval) {
                 throw 'interval不能为空';
             }
+            if (input.interval < 2 || input.interval > 8 ) {
+                throw 'interval的区间为[2, 8]';
+            }
             const groupSC = await GroupSC.instance(null, input.groupName);
             const member = await Member.findOne({
                 name: req.user.name
