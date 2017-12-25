@@ -13,7 +13,7 @@ if (args[2]) {
 
 const code = KnotToken.bytecode;
 
-const token = new web3.eth.Contract(KnotToken.api);
+const token = new web3.eth.Contract(KnotToken.abi);
 
 const deploy = async function () {
     const obj = token.deploy({
@@ -21,3 +21,5 @@ const deploy = async function () {
     });
     console.log(obj);
 }
+
+deploy();
