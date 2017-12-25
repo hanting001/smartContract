@@ -3,6 +3,6 @@ const args = process.argv;
 
 
 (async() => {
-    const address = await utility.deploy('KnotCoin', args[2]);
-    utility.updateDB('knotCoin', address);
+    const address = await utility.deploy('KnotToken', args[2]);
+    utility.updateDB('KnotToken', address);
 })();
