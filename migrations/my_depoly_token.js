@@ -8,9 +8,7 @@ web3.setProvider(new web3.providers.HttpProvider('http://localhost:9545'));
 const args = process.argv;
 
 
-if (args[2]) {
-    web3.eth.personal.unlockAccount(account, args[2], web3.toHex(15000));
-}
+
 
 const code = KnotToken.bytecode;
 
@@ -20,7 +18,9 @@ const deploy = async function () {
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
     console.log(account);
-
+    if (args[2]) {
+        web3.eth.personal.unlockAccount(account, args[2], web3.toHex(15000));
+    }
     const obj = token.deploy({
         data: code
     });
