@@ -4,9 +4,10 @@ const KnotToken = require('../build/contracts/KnotToken');
 const web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:9545'));
 
-let account = web3.eth.accounts[0];
-let args = process.argv;
+const account = web3.eth.accounts[0];
+const args = process.argv;
 
+console.log(account);
 if (args[2]) {
     web3.personal.unlockAccount(account, args[2], web3.toHex(15000));
 }
