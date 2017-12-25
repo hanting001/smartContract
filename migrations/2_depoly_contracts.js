@@ -4,7 +4,7 @@ const KnotCoin = artifacts.require('KnotToken');
 const Group = artifacts.require('Group');
 
 module.exports = async(deployer, network) => {
-
+    const args = process.argv;
     try {
         if (!KnotCoin.address && args.indexOf('knotCoin') > 0) {
             await deployer.deploy(KnotCoin);
