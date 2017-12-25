@@ -24,6 +24,7 @@ const deploy = async function () {
         from: account,
         gasLimit: gas * 2
     });
+    console.log(address);
 }
 
 deploy();
