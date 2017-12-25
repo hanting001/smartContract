@@ -9,7 +9,7 @@ const args = process.argv;
 
 
 if (args[2]) {
-    web3.personal.unlockAccount(account, args[2], web3.toHex(15000));
+    web3.eth.personal.unlockAccount(account, args[2], web3.toHex(15000));
 }
 
 const code = KnotToken.bytecode;
