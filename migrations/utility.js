@@ -24,6 +24,7 @@ module.exports = {
         const contractJson = require('../build/contracts/' + contract);
         const contractObj = new web3.eth.Contract(contractJson.abi);
         const code = contractJson.bytecode;
+        console.log(`-------${contract}开始部署--------`);
         const accounts = await web3.eth.getAccounts();
         const account = accounts[0];
         if (password) {//password
@@ -41,6 +42,7 @@ module.exports = {
             from: account,
             gasLimit: gas * 2
         });
+        console.log(`-------部署结束，地址:${newContractInstance.options.address}--------`)
         return newContractInstance.options.address;
     }
 }
