@@ -19,7 +19,11 @@ const deploy = async function () {
     const obj = token.deploy({
         data: code
     });
-    console.log(obj);
+    const gas = await obj.estimateGas();
+    const address = await obj.send({
+        from: account,
+        gasLimit: gas * 2
+    });
 }
 
 deploy();
