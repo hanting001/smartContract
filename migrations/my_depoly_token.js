@@ -17,9 +17,10 @@ const code = KnotToken.bytecode;
 const token = new web3.eth.Contract(KnotToken.abi);
 
 const deploy = async function () {
-    const account = await web3.eth.getAccounts();
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[0];
     console.log(account);
-    
+
     const obj = token.deploy({
         data: code
     });
