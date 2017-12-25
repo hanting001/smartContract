@@ -1,9 +1,9 @@
 const request = require('request-promise-native');
 const Web3 = require('web3');
 const web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(conf.get('httpProvider')));
-
 const conf = require('../server/lib/config');
+
+web3.setProvider(new web3.providers.HttpProvider(conf.get('httpProvider')));
 
 module.exports = {
     updateDB: (name, address) => {
