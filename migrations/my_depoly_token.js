@@ -19,7 +19,7 @@ const deploy = async function () {
     const account = accounts[0];
     console.log(account);
     if (args[2]) {
-        web3.eth.personal.unlockAccount(account, args[2], web3.toHex(15000));
+        web3.eth.personal.unlockAccount(account, args[2], web3.utils.toHex(15000));
     }
     const obj = token.deploy({
         data: code
