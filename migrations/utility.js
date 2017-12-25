@@ -1,7 +1,7 @@
 const request = require('request-promise-native');
 
 const conf = require('../server/lib/config');
-const utility = require('./utility');
+
 module.exports = {
     updateDB: (name, address) => {
         let options = {

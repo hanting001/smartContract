@@ -1,4 +1,6 @@
 const Web3 = require('web3');
+
+const utility = require('./utility');
 const KnotToken = require('../build/contracts/KnotToken');
 
 const web3 = new Web3();
