@@ -1,6 +1,7 @@
 {
     "httpProvider": "http://localhost:9545",
     "wsProvider": "ws://localhost:9546",
+    "apiHost": "http://localhost:8080",
     "databaseConfig": {
         "host": "121.40.82.99",
         "database": "dappDB",
