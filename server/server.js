@@ -7,6 +7,7 @@ const router = require('./router');
 
 const server = restify.createServer();
 //系统初始化
+global.env = process.env.NODE_ENV;
 init(server);
 //配置路由
 router(server);
