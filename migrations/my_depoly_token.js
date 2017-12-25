@@ -4,10 +4,10 @@ const KnotToken = require('../build/contracts/KnotToken');
 const web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:9545'));
 
-const account = web3.eth.accounts[0];
+
 const args = process.argv;
 
-console.log(account);
+
 if (args[2]) {
     web3.personal.unlockAccount(account, args[2], web3.toHex(15000));
 }
@@ -17,6 +17,9 @@ const code = KnotToken.bytecode;
 const token = new web3.eth.Contract(KnotToken.abi);
 
 const deploy = async function () {
+    const account = await web3.eth.getAccounts();
+    console.log(account);
+    
     const obj = token.deploy({
         data: code
     });
