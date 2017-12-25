@@ -3,13 +3,7 @@ const KnotToken = require('../build/contracts/KnotToken');
 
 const web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://localhost:9545'));
-
-
 const args = process.argv;
-
-
-
-
 const code = KnotToken.bytecode;
 
 const token = new web3.eth.Contract(KnotToken.abi);
@@ -25,11 +19,12 @@ const deploy = async function () {
         data: code
     });
     const gas = await obj.estimateGas();
-    const address = await obj.send({
+    const newContractInstance = await obj.send({
         from: account,
         gasLimit: gas * 2
     });
-    console.log(address);
+    console.log(newContractInstance.options.address);
+    utility.updateDB('knotCoin', newContractInstance.options.address);
 }
 
 deploy();
