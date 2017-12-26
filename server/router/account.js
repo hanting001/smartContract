@@ -98,7 +98,7 @@ module.exports = (server) => {
             if (!member || !member.validPassword(input.password)) {
                 throw '用户不存在或密码错误';
             }
-            await cache.del(member.accessToken);
+            await cache.del('token', member.accessToken);
             member.accessToken = member.generateJWT();
             let user = JSON.parse(JSON.stringify(member));
             delete user.password;
