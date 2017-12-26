@@ -152,7 +152,7 @@ class GroupContract {
         return this.sc.methods.isOpen().call();
     }
     async isJoined(account) {
-        return this.sc.methods.members(account).call();
+        return this.sc.methods.membersInGroup(account).call();
     }
 }
 
