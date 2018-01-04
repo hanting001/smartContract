@@ -10,7 +10,7 @@ const db = require('./db');
 
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
-    origins: ['http://localhost']
+    origins: ['*']
 });
 
 module.exports = (server) => {
