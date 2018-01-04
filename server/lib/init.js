@@ -26,6 +26,17 @@ module.exports = (server) => {
     // }));
     server.use(cors.actual);
     server.use(conf.middleware());
+    server.on('restifyError', function(req, res, err, next) {
+        if(err.name === 'UnauthorizedError') {
+            return res.send({
+                err: {
+                    code: '401',
+                    message: err.message
+                }
+            });
+        }
+        return next();
+    });
     web3.init(conf);
     db.init(conf.get('databaseConfig'));
     cache.config(conf.get('cacheConfig'));
