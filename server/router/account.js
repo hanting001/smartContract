@@ -50,7 +50,11 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-
+    server.get(this.path + '/checkLogin', auth.jwt, (req, res, next) => {
+        res.send({
+            output: 'ok'
+        })
+    });
     server.post(this.path + '/buyToken', auth.jwt, async(req, res, next) => {
         try {
             const input = req.body.input;
