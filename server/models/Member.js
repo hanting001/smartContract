@@ -11,6 +11,7 @@ var schema = new Schema({
         required: true,
         unique: true
     },
+    nickname: String,
     password: {
         type: String,
         required: true
