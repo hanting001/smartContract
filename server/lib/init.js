@@ -10,6 +10,7 @@ const db = require('./db');
 
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
+    allowHeaders: ['token', 'authorization'],
     origins: ['*']
 });
 
