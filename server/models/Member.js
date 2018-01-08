@@ -18,10 +18,10 @@ var schema = new Schema({
     },
     account: String,
     keystore: Buffer,
-    role: {
+    role: [{
         type: String,
         default: 'member'
-    },
+    }],
     accessToken: String,
     createdAt: {
         type: Date,
