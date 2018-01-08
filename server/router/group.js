@@ -244,7 +244,8 @@ module.exports = (server) => {
             for (let group of groups) {
                 const g = Object.assign({}, group.toObject());
                 const groupSC = await GroupSC.instance(group.address);
-                g.status = (await groupSC.isOpen()) ? '开放' : '关闭';
+                g.isOpen = await groupSC.isOpen();
+                g.status = g.isOpen ? '开放' : '关闭';
                 const members = await groupSC.members()
                 g.members = members.length;
                 g.isJoined = await groupSC.isJoined(req.user.account);
