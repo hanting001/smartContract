@@ -229,7 +229,6 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-
     server.get(this.path + '/list', auth.jwt, async(req, res, next) => {
         try {
             const groups = await SC.find({
