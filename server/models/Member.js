@@ -18,7 +18,7 @@ var schema = new Schema({
     },
     account: String,
     keystore: Buffer,
-    role: {
+    roles: {
         type: [{
             type: String
         }],
