@@ -18,10 +18,12 @@ var schema = new Schema({
     },
     account: String,
     keystore: Buffer,
-    role: [{
-        type: String,
-        default: 'member'
-    }],
+    role: {
+        type: [{
+            type: String
+        }],
+        default: ['member']
+    },
     accessToken: String,
     createdAt: {
         type: Date,
@@ -30,7 +32,9 @@ var schema = new Schema({
 }, {
     collection: 'smartMembers'
 });
-schema.index({ accessToken: 1});
+schema.index({
+    accessToken: 1
+});
 schema.plugin(updatedTimestamp);
 
 schema.pre('save', function (next) {
