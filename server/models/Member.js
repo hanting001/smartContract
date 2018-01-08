@@ -64,7 +64,7 @@ schema.methods.generateJWT = function () {
     return jwt.sign({
         _id: this._id,
         username: this.name,
-        role: this.role,
+        roles: this.roles,
         exp: parseInt(exp.getTime() / 1000),
     }, process.env.secret || '432sfsdg234gdfgdhuibaokeji');
 };
