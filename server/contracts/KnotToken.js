@@ -8,7 +8,7 @@ class KnotToken {
     static async instance(address) {
         if (!address) {
             let sc = await SmartContract.findOne({
-                name: 'KnotToken'
+                name: 'knotCoin'
             });
             address = sc.address;
         }

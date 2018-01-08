@@ -4,6 +4,6 @@ const args = process.argv;
 if (process.env.NODE_ENV == 'test') {
     (async() => {
         const address = await utility.deploy('KnotToken', args[2]);
-        utility.updateDB('knotToken', address);
+        utility.updateDB('knotCoin', address);
     })();
 }
