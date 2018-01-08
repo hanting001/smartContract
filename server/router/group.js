@@ -7,6 +7,7 @@ const GroupSC = require('../contracts/Group');
 const KnotToken = require('../contracts/KnotToken');
 
 const Member = require('../models/Member');
+const SC = require('../models/SmartContract');
 
 module.exports = (server) => {
     this.path = '/group';
@@ -72,7 +73,7 @@ module.exports = (server) => {
             if (!input.interval) {
                 throw 'interval不能为空';
             }
-            if (input.interval < 2 || input.interval > 8 ) {
+            if (input.interval < 2 || input.interval > 8) {
                 throw 'interval的区间为[2, 8]';
             }
             const groupSC = await GroupSC.instance(null, input.groupName);
@@ -228,4 +229,36 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
+
+    server.get(this.path + '/list', auth.jwt, async(req, res, next) => {
+        try {
+            const groups = await SC.find({
+                name: {
+                    $ne: 'knotCoin'
+                }
+            }).select({
+                name: 1,
+                address: 1,
+                createdAt: 1
+            });
+            const returnGroups = [];
+            for (let group of groups) {
+                const g = Object.assign({}, group.toObject());
+                const groupSC = await GroupSC.instance(group.address);
+                g.status = (await groupSC.isOpen()) ? '开放' : '关闭';
+                const members = await groupSC.members()
+                g.members = members.length;
+                g.isJoined = await groupSC.isJoined(req.user.account);
+                returnGroups.push(g);
+            }
+            res.send({
+                output: {
+                    groups: returnGroups
+                }
+            })
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    })
 }

@@ -154,6 +154,9 @@ class GroupContract {
     async isJoined(account) {
         return this.sc.methods.membersInGroup(account).call();
     }
+    async members() {
+        return this.sc.methods.getMembers().call();
+    }
 }
 
 module.exports = GroupContract;

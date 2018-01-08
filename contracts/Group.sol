@@ -122,7 +122,6 @@ contract Group is Ownable, Stoppable{
     function getToken() view public returns (address) {
         return knotToken;
     }
-
     //utility
     // function uint2str(uint i) internal pure returns (string){
     //     if (i == 0) return "0";

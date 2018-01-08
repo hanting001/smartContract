@@ -30,6 +30,7 @@ module.exports = (server) => {
     this.path + '/lottery'      管理员开奖
     this.path + '/getWinner/:name   查看获奖者
     this.path + '/receiveBonus' 获奖者领取奖金
+    this.path + '/list'         列出所有活动
     */
     require('./group')(server);
 

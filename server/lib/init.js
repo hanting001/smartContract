@@ -2,6 +2,7 @@
 const restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware');
 const bunyan = require('bunyan');
+
 const cache = require('@huibao/cachehelper')
 
 const conf = require('./config');

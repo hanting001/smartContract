@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@huibao/cachehelper": "git+https://code.99bx.cn/huibaotech/modules/cache-helper.git",
     "bcrypt": "^1.0.3",
     "bitcore-mnemonic": "^1.5.0",
     "bn.js": "^4.11.8",
@@ -27,9 +28,9 @@
     "restify": "^6.3.4",
     "restify-cors-middleware": "^1.1.0",
     "restify-errors": "^5.0.0",
+    "socket.io": "^2.0.4",
     "web3": "^1.0.0-beta.26",
-    "zeppelin-solidity": "^1.4.0",
-    "@huibao/cachehelper": "git+https://code.99bx.cn/huibaotech/modules/cache-helper.git"
+    "zeppelin-solidity": "^1.4.0"
   },
   "devDependencies": {
     "solc": "^0.4.19"
