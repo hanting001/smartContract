@@ -56,13 +56,14 @@ module.exports = (server) => {
             if (!member.validPassword(input.password)) {
                 throw '密码不正确';
             }
-            const groupSC = await GroupSC.instance(null, input.groupName);
-            myWeb3.account.unlock(member, input.password);
-            const result = await groupSC.closeByAdmin(req.user.account);
-            myWeb3.account.lock(req.user.account);
+            // const groupSC = await GroupSC.instance(null, input.groupName);
+            // myWeb3.account.unlock(member, input.password);
+            // const result = await groupSC.closeByAdmin(req.user.account);
+            // myWeb3.account.lock(req.user.account);
             res.send({
-                output: result
+                output: {}
             });
+            groupSocket.emit('updated');
             next();
         } catch (err) {
             console.log(err);
