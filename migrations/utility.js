@@ -40,7 +40,7 @@ module.exports = {
         const gas = await obj.estimateGas();
         const newContractInstance = await obj.send({
             from: account,
-            gasLimit: gas * 2
+            gas: gas * 2
         });
         console.log(`-------部署结束，地址:${newContractInstance.options.address}--------`)
         return newContractInstance.options.address;

@@ -48,7 +48,7 @@ class KnotToken {
                 from: account,
                 to: tokenSC,
                 data: code,
-                gasLimit: gas * 2
+                gas: gas * 2
             })
             .on('confirmation', function (confirmationNumber, receipt) {
                 if (onConfirmation) {
