@@ -21,21 +21,20 @@ module.exports = (server) => {
             if (!input.groupName) {
                 throw 'groupName不能为空';
             }
-            const member = await Member.findOne({
-                name: req.user.name
-            });
-            if (!member.validPassword(input.password)) {
-                throw '密码不正确';
-            }
-            const groupSC = await GroupSC.instance(null, input.groupName);
-            myWeb3.account.unlock(member, input.password);
-            const result = await groupSC.openByAdmin(req.user.account);
-            myWeb3.account.lock(req.user.account);
+            // const member = await Member.findOne({
+            //     name: req.user.name
+            // });
+            // if (!member.validPassword(input.password)) {
+            //     throw '密码不正确';
+            // }
+            // const groupSC = await GroupSC.instance(null, input.groupName);
+            // myWeb3.account.unlock(member, input.password);
+            // const result = await groupSC.openByAdmin(req.user.account);
+            // myWeb3.account.lock(req.user.account);
             res.send({
-                output: result
+                output: {}
             });
             groupSocket.emit('updated');
-            groupSocket
             next();
         } catch (err) {
             console.log(err);
