@@ -5,7 +5,7 @@ const BN = require('bn.js');
 const auth = require('../lib/auth');
 const GroupSC = require('../contracts/Group');
 const KnotToken = require('../contracts/KnotToken');
-const groupSocket = require('../lib/socket.io').group;
+const groupSocket = require('../lib/socket.io').group();
 
 const Member = require('../models/Member');
 const SC = require('../models/SmartContract');
