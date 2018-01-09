@@ -99,6 +99,9 @@ module.exports = (() => {
                     throw 'value不能是0';
                 }
                 const from = accounts[0];
+                if (global.env == 'test') {// 测试环境需要先对账户解锁
+                    web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+                }
                 const txObject = {
                     from: from,
                     to: to,
