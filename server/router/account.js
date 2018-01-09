@@ -66,7 +66,7 @@ module.exports = (server) => {
                 if (confirmationNumber == 2) {
                     // automining的时候可以认为交易已经确认了。在正式的快链上，确认交易提交需要在confirmation的事件里头
                     await myWeb3.eth.sendEth(req.user.account, 0.002);
-                    socket.accountUpdated();
+                    socket.accountUpdated(input.socketId);
                 }
             };
             const onError = (err, receipt) => {

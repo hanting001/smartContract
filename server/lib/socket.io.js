@@ -19,6 +19,11 @@ server.listen(8081, () => console.log('socket.io listen on 8081'));
 exports.groupUpdated = function(data) {
     groupNsp.emit('updated', data);
 };
-exports.accountUpdated = function(data) {
-    accountNsp.emit('updated', data);
+exports.accountUpdated = function(id, data) {
+    if (id) {
+        accountNsp.to(id).emit('updated', data);
+    } else {
+        accountNsp.emit('updated', data);
+    }
+    
 }
