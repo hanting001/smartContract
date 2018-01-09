@@ -5,6 +5,7 @@ const BN = require('bn.js');
 const auth = require('../lib/auth');
 const GroupSC = require('../contracts/Group');
 const KnotToken = require('../contracts/KnotToken');
+const groupSocket = require('../lib/socket.io').group;
 
 const Member = require('../models/Member');
 const SC = require('../models/SmartContract');
@@ -33,6 +34,8 @@ module.exports = (server) => {
             res.send({
                 output: result
             });
+            groupSocket.emit('updated');
+            groupSocket
             next();
         } catch (err) {
             console.log(err);

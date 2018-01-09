@@ -28,7 +28,7 @@ class GroupContract {
     async openByAdmin(account, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
-        const from = accouts[0]; //因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
+        const from = accouts[0]; // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
         if (global.env == 'test') {// 测试环境需要先对账户解锁
             web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
         }
