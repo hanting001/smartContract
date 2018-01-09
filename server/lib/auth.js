@@ -49,7 +49,7 @@ const middleeware = jwtMiddleware({
 exports.jwt = middleeware;
 exports.manager = function(req, res, next) {
     let user = req.user;
-    if (!user || user.role != 'admin') {
+    if (!user || user.roles.indexOf('admin') < 0) {
         return next('admin only!');
     }
     next();
