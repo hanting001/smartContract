@@ -1,7 +1,7 @@
 const server = require('http').createServer();
 const socketIO = require('socket.io');
 
-const groupNsp = null;
+let groupNsp = null;
 exports.init = () => {
     this.io = socketIO.listen(server);
     // this.io.on('connection', (socket) => {
