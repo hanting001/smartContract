@@ -99,7 +99,7 @@ module.exports = (server) => {
                 output: result
             });
             next();
-            // socket.groupUpdated();
+            socket.groupUpdated();
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err));
@@ -112,8 +112,8 @@ module.exports = (server) => {
             const address = await groupSC.getWinner();
             const winner = await Member.findOne({account: address}).select({
                 name: 1,
-                address: 1,
-                createdAt: 1
+                nickname: 1,
+                account: 1
             });
             res.send({
                 output: winner
@@ -273,6 +273,10 @@ module.exports = (server) => {
                 const members = await groupSC.members()
                 g.members = members.length;
                 g.isJoined = await groupSC.isJoined(req.user.account);
+                const account = await groupSC.getWinner();
+                if (myWeb3.isAddress(account)) {
+                    g.getWinner = true;
+                }
                 returnGroups.push(g);
             }
             res.send({
