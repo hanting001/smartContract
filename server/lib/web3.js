@@ -180,8 +180,8 @@ module.exports = (() => {
             }
         },
         isAddress: (address) => {
-            console.log(this.web3.utils.hexToNumberString(address));
-            if (!this.web3.utils.hexToNumberString(address)) {
+            // console.log(this.web3.utils.hexToNumberString(address));
+            if (this.web3.utils.hexToNumberString(address) === '0') {
                 return false;
             }
             return this.web3.utils.isAddress(address);
