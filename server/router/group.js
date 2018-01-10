@@ -89,6 +89,9 @@ module.exports = (server) => {
             const member = await Member.findOne({
                 name: req.user.name
             });
+            if (!member.validPassword(input.password)) {
+                throw '密码不正确';
+            }
             myWeb3.account.unlock(member, input.password);
             const params = [Number(input.interval)];
             const result = await groupSC.lotteryByAdmin(req.user.account, params);
@@ -129,6 +132,9 @@ module.exports = (server) => {
             const member = await Member.findOne({
                 name: req.user.name
             });
+            if (!member.validPassword(input.password)) {
+                throw '密码不正确';
+            }
             myWeb3.account.unlock(member, input.password);
             const result = await groupSC.receiveBonusByMember(req.user.account);
             myWeb3.account.lock(req.user.account);
@@ -153,7 +159,6 @@ module.exports = (server) => {
             if (!input.groupName) {
                 throw 'groupName不能为空';
             }
-
             const knotToken = await KnotToken.instance();
             const groupSC = await GroupSC.instance(null, input.groupName);
             const account = req.user.account;
@@ -172,6 +177,13 @@ module.exports = (server) => {
             if (!isOpen) {
                 throw '活动还未开放';
             }
+            const member = await Member.findOne({
+                name: req.user.name
+            });
+            if (!member.validPassword(input.password)) {
+                throw '密码不正确';
+            }
+            console.log(member);
             //两次确认授权后，让用户加入group
             const confirmApprove = async(confirmationNumber, receipt) => {
                 if (confirmationNumber == 2) {
@@ -191,10 +203,6 @@ module.exports = (server) => {
                 }
             };
             //unlock用户账户,先让用户授权group合约可以扣token
-            const member = await Member.findOne({
-                name: req.user.name
-            });
-            console.log(member);
             myWeb3.account.unlock(member, input.password);
             await knotToken.approveByMember(account, groupSC.sc.options.address, value, confirmApprove);
         } catch (err) {
