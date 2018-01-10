@@ -155,18 +155,16 @@ class GroupContract {
         // });
     }
     async getWinner() {
-        const info = await this.sc.methods.info().call();
-        return info.winner;
+        return this.sc.methods.winner().call();
     }
     async isOpen() {
-        const info = await this.sc.methods.info().call();
-        return info.isOpen;
+        return this.sc.methods.isOpen().call();
     }
     async isJoined(account) {
         return this.sc.methods.membersInGroup(account).call();
     }
-    async getInfo() {
-        return this.sc.methods.getInfo().call();
+    async isAwarded() {
+        return this.sc.methods.awarded().call();
     }
     async members() {
         return this.sc.methods.getMembers().call();
