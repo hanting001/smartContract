@@ -17,7 +17,7 @@ contract Group is Ownable, Stoppable{
         bool isOpen;
         bool awarded;
     }
-    Info public info;
+    Info info;
     // address public winner;
     // bool public isOpen;
     // bool public awarded;
@@ -133,6 +133,9 @@ contract Group is Ownable, Stoppable{
     }
     function getToken() view public returns (address) {
         return knotToken;
+    }
+    function getInfo() view public returns (Info) {
+        return info;
     }
     //utility
     // function uint2str(uint i) internal pure returns (string){
