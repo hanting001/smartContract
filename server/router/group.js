@@ -276,6 +276,7 @@ module.exports = (server) => {
                 const account = await groupSC.getWinner();
                 if (myWeb3.isAddress(account)) {
                     g.getWinner = true;
+                    g.status = '已开奖';
                 }
                 returnGroups.push(g);
             }
