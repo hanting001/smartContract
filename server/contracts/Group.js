@@ -166,7 +166,7 @@ class GroupContract {
         return this.sc.methods.membersInGroup(account).call();
     }
     async getInfo() {
-        return this.sc.methods.info().call();
+        return this.sc.methods.getInfo().call();
     }
     async members() {
         return this.sc.methods.getMembers().call();
