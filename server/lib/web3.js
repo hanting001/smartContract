@@ -179,6 +179,9 @@ module.exports = (() => {
                 }
             }
         },
+        isAddress: (address) => {
+            return this.web3.utils.isAddress(address);
+        },
         getTransactionObj: async(from, to, code) => {
             const dataObject = {
                 from: from,

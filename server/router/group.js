@@ -89,7 +89,7 @@ module.exports = (server) => {
             }
             myWeb3.account.unlock(member, input.password);
             const address = await groupSC.getWinner();
-            if (address) {
+            if (myWeb3.isAddress(address)) {
                 throw '不要重复开奖';
             }
             const params = [Number(interval)];
