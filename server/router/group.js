@@ -279,6 +279,7 @@ module.exports = (server) => {
                 if (myWeb3.isAddress(winner)) {
                     g.getWinner = true;
                 }
+                console.log(g);
                 returnGroups.push(g);
             }
             res.send({
