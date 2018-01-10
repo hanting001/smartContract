@@ -109,9 +109,10 @@ module.exports = (server) => {
         try {
             const scName = req.params.name;
             const groupSC = await GroupSC.instance(null, scName);
-            const result = await groupSC.getWinner();
+            const address = await groupSC.getWinner();
+            const winner = await Member.findOne({account: address});
             res.send({
-                output: result
+                output: winner
             });
             next();
         } catch (err) {

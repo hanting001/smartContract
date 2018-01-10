@@ -33,7 +33,8 @@ var schema = new Schema({
     collection: 'smartMembers'
 });
 schema.index({
-    accessToken: 1
+    accessToken: 1,
+    account: 1
 });
 schema.plugin(updatedTimestamp);
 
