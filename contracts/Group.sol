@@ -15,12 +15,12 @@ contract Group is Ownable, Stoppable{
     // struct Info {
     //     address winner;
     //     bool isOpen;
-    //     bool awarded;
+    //     bool isAwarded;
     // }
     // Info info;
     address public winner;
     bool public isOpen;
-    bool public awarded;
+    bool public isAwarded;
     // coin contract
     KnotToken knotToken;
 
@@ -68,13 +68,13 @@ contract Group is Ownable, Stoppable{
     //manage
     /** @dev open group,member can join. */
     function open()  public onlyOwner {
-        require(!awarded);
+        require(!isAwarded);
         isOpen = true;
         Open(msg.sender, item, block.timestamp);
     }
     /** @dev close group,member can not join. */
     function close() public onlyOwner {
-        require(!awarded);
+        require(!isAwarded);
         isOpen = false;
         closeBlockNumber = block.number;
         Close(msg.sender, item, block.timestamp);
@@ -84,7 +84,7 @@ contract Group is Ownable, Stoppable{
       */
     function lottery(uint interval) external onlyOwner {
         require(!isOpen);
-        require(!awarded);
+        require(!isAwarded);
         require(members.length > 1);
         require((block.number - closeBlockNumber) > interval);
         require(winner == address(0));
@@ -120,10 +120,10 @@ contract Group is Ownable, Stoppable{
       * 赢家拿走90%，创建人拿走10%
      */
     function receiveBonus() external onlyWinner {
-        require(!awarded);
+        require(!isAwarded);
         assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this) / 10 * 9));
         assert(knotToken.transfer(owner, knotToken.balanceOf(this) / 10));
-        awarded = true;
+        isAwarded = true;
     }
     /** @dev get group item. 
       * @return item 返回活动奖品
