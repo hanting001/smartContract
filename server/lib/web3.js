@@ -180,6 +180,9 @@ module.exports = (() => {
             }
         },
         isAddress: (address) => {
+            if (!this.web3.utils.hexToNumber(address)) {
+                return false;
+            }
             return this.web3.utils.isAddress(address);
         },
         getTransactionObj: async(from, to, code) => {
