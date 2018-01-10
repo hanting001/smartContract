@@ -79,12 +79,7 @@ module.exports = (server) => {
             if (!input.groupName) {
                 throw 'groupName不能为空';
             }
-            if (!input.interval) {
-                throw 'interval不能为空';
-            }
-            if (input.interval < 2 || input.interval > 8) {
-                throw 'interval的区间为[2, 8]';
-            }
+            const interval = Math.floor(Math.random() * 8) + 2;
             const groupSC = await GroupSC.instance(null, input.groupName);
             const member = await Member.findOne({
                 name: req.user.name
@@ -93,13 +88,18 @@ module.exports = (server) => {
                 throw '密码不正确';
             }
             myWeb3.account.unlock(member, input.password);
-            const params = [Number(input.interval)];
+            const address = await groupSC.getWinner();
+            if (address) {
+                throw '不要重复开奖';
+            }
+            const params = [Number(interval)];
             const result = await groupSC.lotteryByAdmin(req.user.account, params);
             myWeb3.account.lock(req.user.account);
             res.send({
                 output: result
             });
             next();
+            // socket.groupUpdated();
         } catch (err) {
             console.log(err);
             next(new errors.InternalServerError(err));
@@ -110,7 +110,11 @@ module.exports = (server) => {
             const scName = req.params.name;
             const groupSC = await GroupSC.instance(null, scName);
             const address = await groupSC.getWinner();
-            const winner = await Member.findOne({account: address});
+            const winner = await Member.findOne({account: address}).select({
+                name: 1,
+                address: 1,
+                createdAt: 1
+            });
             res.send({
                 output: winner
             });

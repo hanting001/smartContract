@@ -64,7 +64,7 @@ schema.methods.generateJWT = function () {
     // console.log('process.env.secret' + process.env.secret);
     return jwt.sign({
         _id: this._id,
-        username: this.name,
+        name: this.name,
         nickname: this.nickname,
         roles: this.roles,
         exp: parseInt(exp.getTime() / 1000),
