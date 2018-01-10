@@ -10,10 +10,17 @@ contract Group is Ownable, Stoppable{
     // address[] members;
     mapping(address=>bool) public membersInGroup;
     address[] members;
-
-    address public winner;
     string item;//item id
-    bool public isOpen;
+
+    struct Info {
+        address winner;
+        bool isOpen;
+        bool awarded;
+    }
+    Info public info;
+    // address public winner;
+    // bool public isOpen;
+    // bool public awarded;
     // coin contract
     KnotToken knotToken;
 
@@ -47,26 +54,28 @@ contract Group is Ownable, Stoppable{
     * @dev Throws if group is not open.
     */
     modifier onlyOpen() {
-        require(isOpen);
+        require(info.isOpen);
         _;
     }
     /**
     * @dev Throws if sender is not in group.
     */
     modifier onlyWinner() {
-        require(msg.sender == winner);
+        require(msg.sender == info.winner);
         _;
     }
 
     //manage
     /** @dev open group,member can join. */
     function open()  public onlyOwner {
-        isOpen = true;
+        require(!info.awarded);
+        info.isOpen = true;
         Open(msg.sender, item, block.timestamp);
     }
     /** @dev close group,member can not join. */
     function close() public onlyOwner {
-        isOpen = false;
+        require(!info.awarded);
+        info.isOpen = false;
         closeBlockNumber = block.number;
         Close(msg.sender, item, block.timestamp);
     }
@@ -74,13 +83,14 @@ contract Group is Ownable, Stoppable{
       * @param interval 在关闭活动后，必须经过多少个block才可以开奖.
       */
     function lottery(uint interval) external onlyOwner {
-        require(!isOpen);
+        require(!info.isOpen);
+        require(!info.awarded);
         require(members.length > 1);
         require((block.number - closeBlockNumber) > interval);
-        require(winner == address(0));
+        require(info.winner == address(0));
 
         uint winnerIndex = getRandom(members.length, interval);
-        winner = members[winnerIndex];
+        info.winner = members[winnerIndex];
         // assert(knotToken.transfer(knotToken, knotToken.balanceOf(this)));
         Lottery(msg.sender, keccak256(item), block.timestamp);
     }
@@ -110,8 +120,10 @@ contract Group is Ownable, Stoppable{
       * 赢家拿走90%，创建人拿走10%
      */
     function receiveBonus() external onlyWinner {
+        require(!info.awarded);
         assert(knotToken.transfer(msg.sender, knotToken.balanceOf(this) / 10 * 9));
         assert(knotToken.transfer(owner, knotToken.balanceOf(this) / 10));
+        info.awarded = true;
     }
     /** @dev get group item. 
       * @return item 返回活动奖品

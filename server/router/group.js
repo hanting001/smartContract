@@ -88,8 +88,8 @@ module.exports = (server) => {
                 throw '密码不正确';
             }
             myWeb3.account.unlock(member, input.password);
-            const address = await groupSC.getWinner();
-            if (myWeb3.isAddress(address)) {
+            const info = await groupSC.getInfo();
+            if (myWeb3.isAddress(info.winner)) {
                 throw '不要重复开奖';
             }
             const params = [Number(interval)];
@@ -109,8 +109,10 @@ module.exports = (server) => {
         try {
             const scName = req.params.name;
             const groupSC = await GroupSC.instance(null, scName);
-            const address = await groupSC.getWinner();
-            const winner = await Member.findOne({account: address}).select({
+            const info = await groupSC.getInfo();
+            const winner = await Member.findOne({
+                account: info.winner
+            }).select({
                 name: 1,
                 nickname: 1,
                 account: 1
@@ -268,15 +270,14 @@ module.exports = (server) => {
             for (let group of groups) {
                 const g = Object.assign({}, group.toObject());
                 const groupSC = await GroupSC.instance(group.address);
-                g.isOpen = await groupSC.isOpen();
-                g.status = g.isOpen ? '开放' : '关闭';
                 const members = await groupSC.members()
                 g.members = members.length;
                 g.isJoined = await groupSC.isJoined(req.user.account);
-                const account = await groupSC.getWinner();
-                if (myWeb3.isAddress(account)) {
+                const info = await groupSC.getInfo();
+                g.isOpen = info.isOpen();
+                g.awarded = info.awarded;
+                if (myWeb3.isAddress(info.winner)) {
                     g.getWinner = true;
-                    g.status = '已开奖';
                 }
                 returnGroups.push(g);
             }
