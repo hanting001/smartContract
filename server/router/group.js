@@ -141,7 +141,7 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.post(this.path + '/join/', auth.jwt, async(req, res, next) => {
+    server.post(this.path + '/join', auth.jwt, async(req, res, next) => {
         try {
             const input = req.body.input;
             //加入活动扣一个代币
@@ -182,6 +182,7 @@ module.exports = (server) => {
                         res.send({
                             output: receipt
                         });
+                        socket.groupUpdated();
                         next();
                     } catch (err) {
                         console.log(err);
