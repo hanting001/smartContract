@@ -95,8 +95,30 @@ module.exports = (server) => {
     server.post(this.path + '/buyEth', auth.jwt, async(req, res, next) => {
         try {
             const input = req.body.input;
+            if (!input.password) {
+                throw '用户密码不能为空';
+            }
+            const member = await Member.findOne({
+                name: req.user.name
+            });
+            if (!member.validPassword(input.password)) {
+                throw '密码不正确';
+            }
+            const account = req.user.account;
+            const knotToken = await KnotToken.instance();
+            const balance = await knotToken.balanceOf(account)
+            if (Number(balance.token) < 1) {
+                throw '代币不足，请购买代币';
+            }
             const need = await myWeb3.eth.estimateEth();
+            //主账户转eth给用户
             await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
+            //用户授权主账户可以转1个代币
+            myWeb3.account.unlock(member, input.password);
+            await knotToken.approveByMember(account, null, 1);
+            myWeb3.account.lock(account);
+            //主账户将用户的一个代币转给自己
+            await knotToken.transferFrom(account, null, null, 1);
             socket.accountUpdated(input.socketId);
             res.send({
                 output: receipt

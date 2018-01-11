@@ -34,6 +34,11 @@ class KnotToken {
     async approveByMember(account, spender, value, onConfirmation, onError) {
         const web3 = myWeb3.instance();
         const abi = myWeb3.getABI('KnotToken', 'approve');
+        if (!spender) {
+            const web3 = myWeb3.instance();
+            const accouts = await web3.eth.getAccounts();
+            spender = accouts[0];
+        }
         const params = [spender, myWeb3.toStrand(value)];
         let code = web3.eth.abi.encodeFunctionCall(abi, params);
         const tokenSC = this.sc.options.address;;
@@ -85,12 +90,47 @@ class KnotToken {
                 web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
             }
         }
+        if (!to) {
+            to = accouts[0];
+        }
         console.log(`代币转账 from: ${from}, to: ${to}, value: ${value}`);
         return this.sc.methods.transfer(to, value).send({
                 from: from
             })
             .on('confirmation', function (confirmationNumber, receipt) {
-                onConfirmation(confirmationNumber, receipt);
+                if (onConfirmation) {
+                    onConfirmation(confirmationNumber, receipt);
+                }
+            })
+            .on('error', (err, receipt) => {
+                if (onError) {
+                    onError(err, receipt);
+                }
+            });
+    }
+    async transferFrom(transFrom, transTo, txFrom, value, onConfirmation, onError) {
+        const web3 = myWeb3.instance();
+        let accouts = await web3.eth.getAccounts();
+        if (!transFrom) { // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
+            transFrom = accouts[0];
+        }
+        if (!transTo) {
+            transTo = accouts[0];
+        }
+        if (!txFrom) {
+            txFrom = accouts[0];
+            if (global.env == 'test') { // 测试环境需要先对账户解锁
+                web3.eth.personal.unlockAccount(txFrom, 'Huibao12346', web3.utils.toHex(15000));
+            }
+        }
+        console.log(`代币转账 from: ${transFrom}, to: ${transTo}, value: ${value}`);
+        return this.sc.methods.transferFrom(transFrom, transTo, value).send({
+                from: txFrom
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                if (onConfirmation) {
+                    onConfirmation(confirmationNumber, receipt);
+                }
             })
             .on('error', (err, receipt) => {
                 if (onError) {
