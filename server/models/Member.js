@@ -71,6 +71,7 @@ schema.methods.generateJWT = function () {
         name: this.name,
         nickname: this.nickname,
         roles: this.roles,
+        account: this.account,
         exp: parseInt(exp.getTime() / 1000),
     }, process.env.secret || '432sfsdg234gdfgdhuibaokeji');
 };
