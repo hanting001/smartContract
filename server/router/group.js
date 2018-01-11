@@ -145,6 +145,8 @@ module.exports = (server) => {
             myWeb3.account.unlock(member, input.password);
             const result = await groupSC.receiveBonusByMember(req.user.account);
             myWeb3.account.lock(req.user.account);
+            member.winTimes++;
+            member.save();
             res.send({
                 output: result
             });

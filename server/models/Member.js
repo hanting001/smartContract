@@ -24,6 +24,10 @@ var schema = new Schema({
         }],
         default: ['member']
     },
+    winTimes: {
+        type: Number,
+        default: 0
+    },
     accessToken: String,
     createdAt: {
         type: Date,
