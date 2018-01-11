@@ -72,7 +72,7 @@ module.exports = (() => {
             }
         },
         eth: {
-            estimateGas: async(contract, params, to) => {
+            estimateGas: async(contract, params, to, from) => {
                 const abi = self.getABI(contract.name, contract.func);
                 const web3 = this.web3;
                 let code = web3.eth.abi.encodeFunctionCall(abi, params);
@@ -81,6 +81,9 @@ module.exports = (() => {
                     to: to,
                     data: code
                 };
+                if (from) {
+                    dataObject.from = from;
+                }
                 let gas = await web3.eth.estimateGas(dataObject);
                 let gasPrice = await web3.eth.getGasPrice();
                 let total = new BN(gas * Number(gasPrice));
