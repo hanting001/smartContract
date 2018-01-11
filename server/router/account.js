@@ -92,7 +92,21 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err))
         }
     });
-
+    server.post(this.path + '/buyEth', auth.jwt, async(req, res, next) => {
+        try {
+            const input = req.body.input;
+            const need = await myWeb3.eth.estimateEth();
+            await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
+            socket.accountUpdated(input.socketId);
+            res.send({
+                output: receipt
+            })
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err))
+        }
+    });
     server.post(this.path + '/login', async(req, res, next) => {
         let input = req.body.input;
         try {
