@@ -1,7 +1,7 @@
 const Mnemonic = require('bitcore-mnemonic');
 const BN = require('bn.js');
 const Web3 = require('web3');
-
+const SC = require('../models/SmartContract');
 module.exports = (() => {
     return self = {
         init: (conf) => {
@@ -72,6 +72,16 @@ module.exports = (() => {
             }
         },
         eth: {
+            estimateEth: async() => {
+                let knotCoin = await SC.findOne({
+                    name: 'knotCoin'
+                });
+                let params = [this.web3.eth.getAccounts()[0], 2 * 10 ** 8];
+                return self.eth.estimateGas({
+                    name: 'KnotToken',
+                    func: 'approve'
+                }, params, knotCoin.address);
+            },
             estimateGas: async(contract, params, to, from) => {
                 const abi = self.getABI(contract.name, contract.func);
                 const web3 = this.web3;

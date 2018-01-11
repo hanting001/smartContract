@@ -71,21 +71,14 @@ module.exports = (server) => {
             let knotCoin = await SC.findOne({
                 name: 'knotCoin'
             });
-            let group = await SC.findOne({
-                name: 'G00000002'
-            });
+            
             let params = [web3.eth.getAccounts()[0], 2 * 10 ** 8];
             let need = await myWeb3.eth.estimateGas({
                 name: 'KnotToken',
                 func: 'approve'
             }, params, knotCoin.address);
-            const need1 = await myWeb3.eth.estimateGas({
-                name: 'Group',
-                func: 'join'
-            }, [], group.address, req.user.account);
-            const total = Number(need) + Number(need1);
             res.send({
-                need: total
+                need: need
             });
             next();
         } catch (err) {
