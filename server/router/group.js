@@ -277,7 +277,7 @@ module.exports = (server) => {
                 g.isJoined = await groupSC.isJoined(req.user.account);
                 const winner = await groupSC.getWinner();
                 g.isOpen = await groupSC.isOpen();
-                g.awarded = await groupSC.isAwarded();
+                g.isAwarded = await groupSC.isAwarded();
                 if (myWeb3.isAddress(winner)) {
                     g.getWinner = true;
                 }
