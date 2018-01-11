@@ -271,7 +271,7 @@ module.exports = (server) => {
                 name: 1,
                 address: 1,
                 createdAt: 1
-            });
+            }).sort('-createdAt');
             const returnGroups = [];
             for (let group of groups) {
                 const g = Object.assign({}, group.toObject());
