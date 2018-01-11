@@ -1,5 +1,5 @@
 const errors = require('restify-errors');
-
+const BN = require('bn.js');
 const myWeb3 = require('../lib/web3');
 const web3 = myWeb3.instance()
 const KnotToken = require('../contracts/KnotToken');
@@ -76,8 +76,13 @@ module.exports = (server) => {
                 name: 'KnotToken',
                 func: 'approve'
             }, params, knotCoin.address);
+            const need1 = await myWeb3.eth.estimateGas({
+                name: 'Group',
+                func: 'join'
+            }, [], knotCoin.address);
+            const total = Number(need) + Number(need1);
             res.send({
-                need: need
+                need: total
             });
             next();
         } catch (err) {
