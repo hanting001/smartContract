@@ -142,6 +142,10 @@ module.exports = (server) => {
             if (!member.validPassword(input.password)) {
                 throw '密码不正确';
             }
+            const isAwarded = await groupSC.isAwarded();
+            if (isAwarded) {
+                throw '奖金已被领取';
+            }
             myWeb3.account.unlock(member, input.password);
             const result = await groupSC.receiveBonusByMember(req.user.account);
             myWeb3.account.lock(req.user.account);
