@@ -82,7 +82,7 @@ module.exports = (server) => {
             const need1 = await myWeb3.eth.estimateGas({
                 name: 'Group',
                 func: 'join'
-            }, [], group.address);
+            }, [], group.address, req.user.account);
             const total = Number(need) + Number(need1);
             res.send({
                 need: total

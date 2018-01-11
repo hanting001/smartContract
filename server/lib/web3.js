@@ -200,7 +200,7 @@ module.exports = (() => {
                 from: from,
                 to: to,
                 data: code,
-                gas: gas * 2
+                gas: gas * 1.1
             }
         }
     }
