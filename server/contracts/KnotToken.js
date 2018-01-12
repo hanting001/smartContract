@@ -81,7 +81,7 @@ class KnotToken {
         //         }
         //     });
     }
-    async transfer(to, value, from, onConfirmation, onError) {
+    async transfer(transTo, value, from, onConfirmation, onError) {
         const web3 = myWeb3.instance();
         let accouts = await web3.eth.getAccounts();
         if (!from) { // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
@@ -90,23 +90,15 @@ class KnotToken {
                 web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
             }
         }
-        if (!to) {
-            to = accouts[0];
+        if (!transTo) {
+            transTo = accouts[0];
         }
         const abi = myWeb3.getABI('KnotToken', 'transfer');
-        const params = [to, value];
+        const params = [transTo, value];
         let code = web3.eth.abi.encodeFunctionCall(abi, params);
-        const dataObject = {
-            from: from,
-            to: to,
-            data: code
-        };
-        let gas = await web3.eth.estimateGas(dataObject);
-        console.log(`代币转账 from: ${from}, to: ${to}, value: ${value}`);
-        return this.sc.methods.transfer(to, value).send({
-                from: from,
-                gas: gas
-            })
+        const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
+        console.log(`代币转账 from: ${from}, to: ${transTo}, value: ${value}`);
+        return web3.eth.sendTransaction(txObj)
             .on('confirmation', function (confirmationNumber, receipt) {
                 if (onConfirmation) {
                     onConfirmation(confirmationNumber, receipt);
