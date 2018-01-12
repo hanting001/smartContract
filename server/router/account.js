@@ -115,8 +115,8 @@ module.exports = (server) => {
             const receipt1 = await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
 
             myWeb3.account.unlock(member, input.password);
-            //用户转1个代币到token账户,to:knotToken.sc.options.address from: account
-            const receipt2 = await knotToken.transfer(knotToken.sc.options.address, myWeb3.toStrand(1), account);
+            //用户转1个代币到token账户,to:null 转到默认账户 from: account
+            const receipt2 = await knotToken.transfer(null, myWeb3.toStrand(1), account);
             myWeb3.account.lock(account);
             socket.accountUpdated(input.socketId);
             res.send({
