@@ -112,15 +112,17 @@ module.exports = (server) => {
             }
             const need = await myWeb3.eth.estimateEth();
             //主账户转eth给用户
-            await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
-            
+            const receipt1 = await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
+
             myWeb3.account.unlock(member, input.password);
             //用户转1个代币到token账户,to:knotToken.sc.options.address from: account
-            await knotToken.transfer(knotToken.sc.options.address, myWeb3.toStrand(1), account);
+            const receipt2 = await knotToken.transfer(knotToken.sc.options.address, myWeb3.toStrand(1), account);
             myWeb3.account.lock(account);
             socket.accountUpdated(input.socketId);
             res.send({
-                output: receipt
+                output: {
+                    receipts: [receipt1, receipt2]
+                }
             })
             next();
         } catch (err) {
