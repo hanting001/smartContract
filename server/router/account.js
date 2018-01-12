@@ -113,12 +113,11 @@ module.exports = (server) => {
             const need = await myWeb3.eth.estimateEth();
             //主账户转eth给用户
             await myWeb3.eth.sendEth(req.user.account, Number(need) * 4);
-            //用户授权主账户可以转1个代币
+            
             myWeb3.account.unlock(member, input.password);
-            await knotToken.approveByMember(account, null, 1);
+            //用户转1个代币到token账户,to:knotToken.sc.options.address from: account
+            await knotToken.transfer(knotToken.sc.options.address, 1, account);
             myWeb3.account.lock(account);
-            //主账户将用户的一个代币转给自己
-            await knotToken.transferFrom(account, null, null, 1);
             socket.accountUpdated(input.socketId);
             res.send({
                 output: receipt
