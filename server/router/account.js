@@ -23,7 +23,7 @@ module.exports = (server) => {
                 throw `该用户名：${input.name}已经存在`;
             }
             member = new Member(input);
-            member = await member.save();
+            // member = await member.save();
             let result = await myWeb3.account.new(input.password);
             member.account = result.address;
             member.keystore = new Buffer.from(JSON.stringify(result.keystore));
@@ -116,7 +116,7 @@ module.exports = (server) => {
             
             myWeb3.account.unlock(member, input.password);
             //用户转1个代币到token账户,to:knotToken.sc.options.address from: account
-            await knotToken.transfer(knotToken.sc.options.address, 1, account);
+            await knotToken.transfer(knotToken.sc.options.address, myWeb3.toStrand(1), account);
             myWeb3.account.lock(account);
             socket.accountUpdated(input.socketId);
             res.send({

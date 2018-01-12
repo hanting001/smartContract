@@ -93,9 +93,19 @@ class KnotToken {
         if (!to) {
             to = accouts[0];
         }
+        const abi = myWeb3.getABI('KnotToken', 'transfer');
+        const params = [to, value];
+        let code = web3.eth.abi.encodeFunctionCall(abi, params);
+        const dataObject = {
+            from: from,
+            to: to,
+            data: code
+        };
+        let gas = await web3.eth.estimateGas(dataObject);
         console.log(`代币转账 from: ${from}, to: ${to}, value: ${value}`);
         return this.sc.methods.transfer(to, value).send({
-                from: from
+                from: from,
+                gas: gas
             })
             .on('confirmation', function (confirmationNumber, receipt) {
                 if (onConfirmation) {
