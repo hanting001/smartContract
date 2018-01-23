@@ -36,6 +36,7 @@ class DelayOracle {
         const params = [flightNo, moment(flightDate).format('YYYY-MM-DD')];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
+        txObj.value = 2 * txObj.gas;
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
