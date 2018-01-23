@@ -3,7 +3,7 @@ const moment = require('moment');
 const abi = myWeb3.getABI('DelayOracle');
 const SmartContract = require('../models/SmartContract');
 
-class GroupContract {
+class DelayOracle {
     static async instance(address) {
         if (!address) {
             let sc = await SmartContract.findOne({
@@ -17,7 +17,7 @@ class GroupContract {
             return null;
         }
         const web3 = myWeb3.instance();
-        let instance = new GroupContract();
+        let instance = new DelayOracle();
         instance.sc = new web3.eth.Contract(abi, address);
         instance.sc.events.allEvents()
             .on('data', (event) => {
@@ -55,3 +55,5 @@ class GroupContract {
         return this.sc.methods.results(key).call();
     }
 }
+
+module.exports = DelayOracle;
