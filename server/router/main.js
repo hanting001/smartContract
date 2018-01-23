@@ -3,6 +3,7 @@ const BN = require('bn.js');
 const myWeb3 = require('../lib/web3');
 const web3 = myWeb3.instance()
 const KnotToken = require('../contracts/KnotToken');
+const DelayOracle = require('../contracts/DelayOracle');
 const auth = require('../lib/auth');
 
 const SC = require('../models/SmartContract');
@@ -79,6 +80,70 @@ module.exports = (server) => {
             }, params, knotCoin.address);
             res.send({
                 need: need
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+
+    //测试环境可以调用
+    server.get('/test/oracle', auth.jwt, async(req, res, next) => {
+        if (global.env != 'test') {
+            return res.send({
+                output: {
+                    message: '测试环境可用'
+                }
+            });
+            next();
+        }
+        try {
+            const flightNo = req.params.flightNo;
+            if (!flightNo) {
+                throw '航班号不能为空';
+            }
+            const flightDate = req.params.flightDate;
+            if (!flightDate) {
+                throw '航班日期不能为空';
+            }
+
+            const delayOracleSC = await DelayOracle.instance();
+            
+            const result = await delayOracleSC.doQueryByAdmin(flightNo, flightDate);
+            res.send({
+                output: result
+            });
+            next();
+        } catch (err) {
+            console.log(err);
+            next(new errors.InternalServerError(err));
+        }
+    });
+    server.get('/test/oracle/result', auth.jwt, async(req, res, next) => {
+        if (global.env != 'test') {
+            return res.send({
+                output: {
+                    message: '测试环境可用'
+                }
+            });
+            next();
+        }
+        try {
+            const flightNo = req.params.flightNo;
+            if (!flightNo) {
+                throw '航班号不能为空';
+            }
+            const flightDate = req.params.flightDate;
+            if (!flightDate) {
+                throw '航班日期不能为空';
+            }
+
+            const delayOracleSC = await DelayOracle.instance();
+            
+            const result = await delayOracleSC.getResult(flightNo, flightDate);
+            res.send({
+                output: result
             });
             next();
         } catch (err) {
