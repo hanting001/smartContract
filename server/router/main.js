@@ -99,11 +99,11 @@ module.exports = (server) => {
             next();
         }
         try {
-            const flightNo = req.params.flightNo;
+            const flightNo = req.query.flightNo;
             if (!flightNo) {
                 throw '航班号不能为空';
             }
-            const flightDate = req.params.flightDate;
+            const flightDate = req.query.flightDate;
             if (!flightDate) {
                 throw '航班日期不能为空';
             }
@@ -130,11 +130,11 @@ module.exports = (server) => {
             next();
         }
         try {
-            const flightNo = req.params.flightNo;
+            const flightNo = req.query.flightNo;
             if (!flightNo) {
                 throw '航班号不能为空';
             }
-            const flightDate = req.params.flightDate;
+            const flightDate = req.query.flightDate;
             if (!flightDate) {
                 throw '航班日期不能为空';
             }
