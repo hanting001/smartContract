@@ -18,6 +18,8 @@ const cors = corsMiddleware({
 module.exports = (server) => {
     server.pre(cors.preflight);
     server.use(restify.plugins.bodyParser());
+    server.use(restify.plugins.queryParser());
+    
     // server.on('after', restify.plugins.auditLogger({
     //     log: bunyan.createLogger({
     //         name: 'audit',
