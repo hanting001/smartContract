@@ -58,7 +58,7 @@ class DelayOracle {
     async getResult(flightNo, flightDate) {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-        return this.sc.methods.results(key).call();
+        return this.sc.methods.results().call();
     }
 }
 
