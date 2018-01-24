@@ -43,7 +43,8 @@ class DelayOracle {
         // txObj.gas = 2 * txObj.gas;
         console.log(params);
         console.log(txObj);
-        return web3.eth.sendTransaction(txObj)
+        // return web3.eth.sendTransaction(txObj)
+        return this.sc.methods.getInfo().send()
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
             })
