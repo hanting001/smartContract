@@ -17,7 +17,9 @@ contract DelayOracle is usingOraclize {
     event LogDelayInfoUpdated(string condition);
     event LogNewOraclizeQuery(string description);
     
+    function() public payable { 
 
+    }
     function __callback(bytes32 queryId, string result) public {
         require(msg.sender == oraclize_cbAddress());
         require(queryRecords[queryId].isValue);
