@@ -3,32 +3,32 @@ import "../../installed_contracts/ethereum-api//oraclizeAPI_0.5.sol";
 
 /** @title group smart contract. */
 contract DelayOracle is usingOraclize {
-    struct Info {
-        string depScheduled;
-        string depActual;
-    }
-    struct Record {
-        string record;
-        bool isValue;
-    }
-    mapping(bytes32=>Record) public queryRecords;
+    // struct Info {
+    //     string depScheduled;
+    //     string depActual;
+    // }
+    // struct Record {
+    //     string record;
+    //     bool isValue;
+    // }
+    // mapping(bytes32=>Record) public queryRecords;
     // mapping(bytes32=>string) public results;
     string public results;
 
-    event LogDelayInfoUpdated(string condition);
-    event LogNewOraclizeQuery(string description);
+    // event LogDelayInfoUpdated(string condition);
+    // event LogNewOraclizeQuery(string description);
     
     function() public payable { 
 
     }
-    function __callback(bytes32 queryId, string result) public {
-        require(msg.sender == oraclize_cbAddress());
-        require(queryRecords[queryId].isValue);
-        // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
-        // results[keccak256(queryRecords[queryId].record)] = result;
-        LogDelayInfoUpdated(queryRecords[queryId].record);
+    // function __callback(bytes32 queryId, string result) public {
+    //     require(msg.sender == oraclize_cbAddress());
+    //     require(queryRecords[queryId].isValue);
+    //     // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
+    //     // results[keccak256(queryRecords[queryId].record)] = result;
+    //     LogDelayInfoUpdated(queryRecords[queryId].record);
         
-    }
+    // }
 
     function getInfo() public  {
         // require(this.balance > oraclize_getPrice("URL"));
