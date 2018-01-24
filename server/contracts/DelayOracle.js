@@ -37,6 +37,7 @@ class DelayOracle {
         flightDate = moment(flightDate).format('YYYY-MM-DD');
         const params = [];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
+        console.log(`sendTransaction from ${from} to ${this.sc.options.address}`);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
         // txObj.value = 2 * txObj.gas;
         // txObj.gas = 2 * txObj.gas;
