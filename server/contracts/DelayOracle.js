@@ -33,7 +33,9 @@ class DelayOracle {
             web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
         }
         const abi = myWeb3.getABI('DelayOracle', 'getInfo');
-        const params = [flightNo, moment(flightDate).format('YYYY-MM-DD')];
+        console.log(abi);
+        flightDate = moment(flightDate).format('YYYY-MM-DD');
+        const params = [flightNo, flightDate];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
         // txObj.value = 2 * txObj.gas;
