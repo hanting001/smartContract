@@ -44,7 +44,7 @@ class DelayOracle {
         console.log(params);
         console.log(txObj);
         // return web3.eth.sendTransaction(txObj)
-        return this.sc.methods.getInfo().send()
+        return this.sc.methods.getInfo().send({from: from})
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
             })
