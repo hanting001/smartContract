@@ -30,10 +30,10 @@ contract DelayOracle is usingOraclize {
         
     }
 
-    function getInfo(string flightNo, string flightDate) public payable  {
-        require(this.balance > oraclize_getPrice("URL"));
+    function getInfo(string flightNo, string flightDate) public  {
+        // require(this.balance > oraclize_getPrice("URL"));
         
-        LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+        // LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
         // string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
         // string memory b = "&flightDate=";
         // string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
