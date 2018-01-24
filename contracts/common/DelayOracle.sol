@@ -41,6 +41,7 @@ contract DelayOracle is usingOraclize {
         // bytes32 queryId = oraclize_query("URL", queryStr);
 
         // queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
-        results = strConcat(flightNo, flightDate);
+        // results = strConcat(flightNo, flightDate);
+        results = flightDate;
     }
 }
