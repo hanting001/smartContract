@@ -265,7 +265,7 @@ module.exports = (server) => {
         try {
             const groups = await SC.find({
                 name: {
-                    $ne: 'knotCoin'
+                    $nin: ['knotCoin', 'delayOracle']
                 }
             }).select({
                 name: 1,
