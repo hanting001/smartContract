@@ -33,11 +33,12 @@ contract DelayOracle is usingOraclize {
         require(this.balance > oraclize_getPrice("URL"));
         
         LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
-        string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
-        string memory b = "&flightDate=";
-        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
-        string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
-        bytes32 queryId = oraclize_query("URL", queryStr);
+        // string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
+        // string memory b = "&flightDate=";
+        // string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
+        // string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
+        // bytes32 queryId = oraclize_query("URL", queryStr);
+        bytes32 queryId = "121212121212";
         queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
         
     }
