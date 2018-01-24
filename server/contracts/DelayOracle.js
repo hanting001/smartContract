@@ -32,7 +32,7 @@ class DelayOracle {
         if (global.env == 'test') { // 测试环境需要先对账户解锁
             web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
         }
-        const abi = myWeb3.getABI('DelayOracle', 'getInfo');
+        const abi = myWeb3.getABI('DelayOracle', 'query');
         console.log(abi);
         flightDate = moment(flightDate).format('YYYY-MM-DD');
         const params = [];

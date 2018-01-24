@@ -30,7 +30,7 @@ contract DelayOracle {
         
     // }
 
-    function getInfo() public  {
+    function query() public  {
         // require(this.balance > oraclize_getPrice("URL"));
         
         // LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
