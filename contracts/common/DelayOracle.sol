@@ -30,7 +30,7 @@ contract DelayOracle is usingOraclize {
         
     }
 
-    function getInfo(string flightNo, string flightDate) public  {
+    function getInfo() public  {
         // require(this.balance > oraclize_getPrice("URL"));
         
         // LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
@@ -42,6 +42,6 @@ contract DelayOracle is usingOraclize {
 
         // queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
         // results = strConcat(flightNo, flightDate);
-        results = flightDate;
+        results = "hello world!";
     }
 }
