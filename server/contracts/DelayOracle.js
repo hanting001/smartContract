@@ -37,6 +37,7 @@ class DelayOracle {
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
         txObj.value = 2 * txObj.gas;
+        console.log(txObj.value);
         return web3.eth.sendTransaction(txObj)
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);

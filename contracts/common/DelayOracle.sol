@@ -28,16 +28,15 @@ contract DelayOracle is usingOraclize {
     }
 
     function getInfo(string flightNo, string flightDate) public payable  {
-        if (oraclize_getPrice("URL") > this.balance) {
-            LogNewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-        } else {
-            LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
-            string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
-            string memory b = "&flightDate=";
-            string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
-            string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
-            bytes32 queryId = oraclize_query("URL", queryStr);
-            queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
-        }
+        require(this.balance > oraclize_getPrice("URL"));
+        
+        LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+        string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
+        string memory b = "&flightDate=";
+        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
+        string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
+        bytes32 queryId = oraclize_query("URL", queryStr);
+        queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
+        
     }
 }
