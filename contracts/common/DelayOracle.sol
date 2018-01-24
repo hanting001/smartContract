@@ -1,8 +1,8 @@
 pragma solidity ^0.4.18;
-import "../../installed_contracts/ethereum-api//oraclizeAPI_0.5.sol";
+// import "../../installed_contracts/ethereum-api//oraclizeAPI_0.5.sol";
 
 /** @title group smart contract. */
-contract DelayOracle is usingOraclize {
+contract DelayOracle {
     // struct Info {
     //     string depScheduled;
     //     string depActual;
@@ -42,6 +42,6 @@ contract DelayOracle is usingOraclize {
 
         // queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
         // results = strConcat(flightNo, flightDate);
-        results = "hello world!";
+        results = "hello HT!";
     }
 }
