@@ -29,10 +29,12 @@ contract DelayOracle is usingOraclize {
         // require(queryRecords[queryId].isValue);
         // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
         // results[keccak256(queryRecords[queryId].record)] = result;
-        strings.slice memory part;
+        // strings.slice memory part;
         var s = result.toSlice();
-        string memory _depScheduled = s.split(",".toSlice(), part).toString();
-        string memory _depActual = s.split(",".toSlice(), part).toString();
+        var d = s.split(", ".toSlice());
+        d = d.beyond("[".toSlice());
+        string memory _depScheduled = d.toString();
+        string memory _depActual = s.until("]".toSlice()).toString();
         results[keccak256(queryRecords[queryId].record)] = Info({depScheduled: _depScheduled, depActual: _depActual});
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
