@@ -27,7 +27,7 @@ contract DelayOracle is usingOraclize {
         // require(queryRecords[queryId].isValue);
         // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
         // results[keccak256(queryRecords[queryId].record)] = result;
-        results = result;
+        results = strConcat("hello:", result);
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
     }
