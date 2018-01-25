@@ -57,7 +57,15 @@ class DelayOracle {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
         console.log(`key: ${key}`);
-        return this.sc.methods.results(key).call();
+        const queryID = await this.sc.methods.queryID().call();
+        console.log(`queryID: ${queryID}`);
+        const record = await this.methods.queryRecords(queryID).call()
+        const result = await this.sc.methods.results(key).call();
+        return {
+            queryID: queryID,
+            record: record,
+            result: result
+        }
     }
 }
 
