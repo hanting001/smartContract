@@ -32,9 +32,9 @@ contract DelayOracle is usingOraclize {
         // strings.slice memory part;
         var s = result.toSlice();
         var d = s.split(", ".toSlice());
-        d = d.beyond("[".toSlice());
+        d = d.beyond("[\"".toSlice());
         string memory _depScheduled = d.toString();
-        string memory _depActual = s.until("]".toSlice()).toString();
+        string memory _depActual = s.until("\"]".toSlice()).toString();
         results[keccak256(queryRecords[queryId].record)] = Info({depScheduled: _depScheduled, depActual: _depActual});
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
