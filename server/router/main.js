@@ -90,14 +90,14 @@ module.exports = (server) => {
 
     //测试环境可以调用
     server.get('/test/oracle', auth.jwt, async(req, res, next) => {
-        if (global.env != 'test') {
-            return res.send({
-                output: {
-                    message: '测试环境可用'
-                }
-            });
-            next();
-        }
+        // if (global.env != 'test') {
+        //     return res.send({
+        //         output: {
+        //             message: '测试环境可用'
+        //         }
+        //     });
+        //     next();
+        // }
         try {
             const flightNo = req.query.flightNo;
             if (!flightNo) {
@@ -120,15 +120,15 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.get('/test/oracle/result', auth.jwt, async(req, res, next) => {
-        if (global.env != 'test') {
-            return res.send({
-                output: {
-                    message: '测试环境可用'
-                }
-            });
-            next();
-        }
+    server.get('/test/result', auth.jwt, async(req, res, next) => {
+        // if (global.env != 'test') {
+        //     return res.send({
+        //         output: {
+        //             message: '测试环境可用'
+        //         }
+        //     });
+        //     next();
+        // }
         try {
             const flightNo = req.query.flightNo;
             if (!flightNo) {

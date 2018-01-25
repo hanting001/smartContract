@@ -25,7 +25,7 @@ class DelayOracle {
             });
         return instance;
     }
-    async doQueryByAdmin(flightNo, flightDate) {
+    async doQueryByAdmin(flightNo, flightDate, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
@@ -33,18 +33,14 @@ class DelayOracle {
             web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
         }
         const abi = myWeb3.getABI('DelayOracle', 'query');
-        console.log(abi);
         flightDate = moment(flightDate).format('YYYY-MM-DD');
-        const params = [];
+        const params = [flightNo, flightDate];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
-        console.log(`sendTransaction from ${from} to ${this.sc.options.address}`);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
-        // txObj.value = 2 * txObj.gas;
-        // txObj.gas = 2 * txObj.gas;
-        console.log(params);
-        console.log(txObj);
-        // return web3.eth.sendTransaction(txObj)
-        return this.sc.methods.query().send({from: from})
+        txObj.value = 2 * txObj.gas;
+        console.log(`sendTransaction from ${from} to ${this.sc.options.address}`);
+        return web3.eth.sendTransaction(txObj)
+        // return this.sc.methods.query(100).send({from: from})
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
             })
@@ -60,7 +56,8 @@ class DelayOracle {
     async getResult(flightNo, flightDate) {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-        return this.sc.methods.results().call();
+        console.log(`key: ${key}`);
+        return this.sc.methods.results(key).call();
     }
 }
 
