@@ -36,12 +36,13 @@ contract DelayOracle is usingOraclize {
         require(this.balance > oraclize_getPrice("URL"));
         
         
-        string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
+        string memory a = "http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
-        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
+        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result[DepScheduled, DepActual]";
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
         queryStr1 = queryStr;
-        bytes32 queryId = oraclize_query("URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHXBT).result.XETHXXBT.c.0");
+        bytes32 queryId = oraclize_query("URL", queryStr);
+        // bytes32 queryId = oraclize_query("URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHXBT).result.XETHXXBT.c.0");
         queryID = queryId;
         LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
         queryRecords[queryId] = Record({record: strConcat(flightNo, flightDate), isValue: true});
