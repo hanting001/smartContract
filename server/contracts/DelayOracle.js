@@ -61,10 +61,12 @@ class DelayOracle {
         console.log(`queryID: ${queryID}`);
         const record = await this.sc.methods.queryRecords(queryID).call()
         const result = await this.sc.methods.results(key).call();
+        const queryStr = await this.sc.methods.queryStr1().call();
         return {
             queryID: queryID,
             record: record,
-            result: result
+            result: result,
+            queryStr: queryStr
         }
     }
 }

@@ -12,6 +12,7 @@ contract DelayOracle is usingOraclize {
         bool isValue;
     }
     bytes32 public queryID;
+    string public queryStr1;
     mapping(bytes32=>Record) public queryRecords;
     mapping(bytes32=>string) public results;
     event LogDelayInfoUpdated(string condition);
@@ -37,6 +38,7 @@ contract DelayOracle is usingOraclize {
         string memory b = "&flightDate=";
         string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
+        queryStr1 = queryStr;
         bytes32 queryId = oraclize_query("URL", queryStr);
         queryID = queryId;
         LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
