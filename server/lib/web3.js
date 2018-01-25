@@ -7,9 +7,9 @@ module.exports = (() => {
         init: (conf) => {
             this.web3 = new Web3();
             console.log('JSON-RPC:' + conf.get('httpProvider', 'http://localhost:8545'));
-            if (global.env == 'test') { // 测试环境需要先对账户解锁
-                this.web3.setProvider(conf.get('wsProvider'));
-            } 
+            // if (global.env == 'test') {
+            //     this.web3.setProvider(conf.get('wsProvider'));
+            // } 
             this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
             
         },
