@@ -6,8 +6,8 @@ import "../../installed_contracts/solidity-stringutils/strings.sol";
 contract DelayOracle is usingOraclize {
     using strings for *;
     struct Info {
-        string depScheduled;
-        string depActual;
+        string arrScheduled;
+        string arrActual;
     }
     struct Record {
         string record;
@@ -33,9 +33,9 @@ contract DelayOracle is usingOraclize {
         var s = result.toSlice();
         var d = s.split(", ".toSlice());
         d = d.beyond("[\"".toSlice());
-        string memory _depScheduled = d.toString();
-        string memory _depActual = s.until("\"]".toSlice()).toString();
-        results[keccak256(queryRecords[queryId].record)] = Info({depScheduled: _depScheduled, depActual: _depActual});
+        string memory _arrScheduled = d.toString();
+        string memory _arrActual = s.until("\"]".toSlice()).toString();
+        results[keccak256(queryRecords[queryId].record)] = Info({arrScheduled: _arrScheduled, arrActual: _arrActual});
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
     }
@@ -44,7 +44,7 @@ contract DelayOracle is usingOraclize {
         // require(this.balance > oraclize_getPrice("URL"));
         string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
-        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result[DepScheduled, DepActual]";
+        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result[ArrScheduled, ArrActual]";
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
         queryStr1 = queryStr;
         bytes32 queryId = oraclize_query("URL", queryStr);
