@@ -9,9 +9,9 @@ module.exports = (() => {
             console.log('JSON-RPC:' + conf.get('httpProvider', 'http://localhost:8545'));
             if (global.env == 'test') { // 测试环境需要先对账户解锁
                 this.web3.setProvider(conf.get('wsProvider'));
-            } else {
-                this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
-            }
+            } 
+            this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
+            
         },
         instance: () => {
             return this.web3;
@@ -206,15 +206,12 @@ module.exports = (() => {
         getTransactionObj: async(from, to, code) => {
             const dataObject = {
                 to: to,
-                data: code,
-                gas: '4000000'
+                data: code
             };
             if (from) {
                 dataObject.from = from;
             }
-            console.log(dataObject);
-            // dataObject.gas = await this.web3.eth.estimateGas(dataObject);
-            console.log(222222);
+            dataObject.gas = await this.web3.eth.estimateGas(dataObject);
             return dataObject;
         }
     }
