@@ -1,8 +1,10 @@
 pragma solidity ^0.4.18;
-import "../../installed_contracts/ethereum-api//oraclizeAPI_0.5.sol";
+import "../../installed_contracts/ethereum-api/oraclizeAPI_0.5.sol";
+import "../../installed_contracts/solidity-stringutils/strings.sol";
 
 /** @title DelayOracle smart contract. */
 contract DelayOracle is usingOraclize {
+    using strings for *;
     struct Info {
         string depScheduled;
         string depActual;
@@ -14,8 +16,8 @@ contract DelayOracle is usingOraclize {
     bytes32 public queryID;
     string public queryStr1;
     mapping(bytes32=>Record) public queryRecords;
-    // mapping(bytes32=>string) public results;
-    string public results;
+    mapping(bytes32=>Info) public results;
+    // string public results;
     event LogDelayInfoUpdated(string condition);
     event LogNewOraclizeQuery(string description);
     
@@ -27,7 +29,11 @@ contract DelayOracle is usingOraclize {
         // require(queryRecords[queryId].isValue);
         // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
         // results[keccak256(queryRecords[queryId].record)] = result;
-        results = strConcat("hello:", result);
+        strings.slice memory part;
+        var s = result.toSlice();
+        string memory _depScheduled = s.split(",".toSlice(), part).toString();
+        string memory _depActual = s.split(",".toSlice(), part).toString();
+        results[keccak256(queryRecords[queryId].record)] = Info({depScheduled: _depScheduled, depActual: _depActual});
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
     }
