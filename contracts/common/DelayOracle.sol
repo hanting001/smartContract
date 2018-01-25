@@ -34,7 +34,7 @@ contract DelayOracle is usingOraclize {
         // require(this.balance > oraclize_getPrice("URL"));
         
         
-        string memory a = "json(https://api.fixer.io/latest?dtype=&flightNo=";
+        string memory a = "json(http://op.juhe.cn/flight/df/fs?dtype=&flightNo=";
         string memory b = "&flightDate=";
         string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result";
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
