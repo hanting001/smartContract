@@ -8,6 +8,8 @@ contract DelayOracle is usingOraclize {
     struct Info {
         string arrScheduled;
         string arrActual;
+        int delays;
+        bool isDelay;
     }
     struct Record {
         string record;
@@ -37,11 +39,50 @@ contract DelayOracle is usingOraclize {
         string memory _arrScheduled = d.toString();
         s = s.until("\"]".toSlice());
         string memory _arrActual = s.beyond("\"".toSlice()).toString();
-        results[keccak256(queryRecords[queryId].record)] = Info({arrScheduled: _arrScheduled, arrActual: _arrActual});
+        var (, , delays, isDelay) = checkDelay(_arrScheduled, _arrActual);
+        results[keccak256(queryRecords[queryId].record)] = 
+            Info({arrScheduled: _arrScheduled, arrActual: _arrActual, delays: delays, isDelay: isDelay });
         LogDelayInfoUpdated(queryRecords[queryId].record);
         
     }
-
+    function checkDelay(string _arrScheduled, string _arrActual) internal returns (uint scheduledM, uint acrualM, int delays, bool isDelay){
+        uint aReturn = getDatetime(_arrScheduled);
+        uint bReturn = getDatetime(_arrActual);
+        delays = int(bReturn - aReturn);
+        if (delays > 3600) {
+            isDelay = true;
+        } else {
+            isDelay = false;
+        }
+        return (aReturn, bReturn, delays, isDelay);
+    }
+    function getDatetime(string scheduled) internal returns (uint) {
+        var a = scheduled.toSlice();
+        var aDate = a.split("T".toSlice());
+        var aTime = a;
+        strings.slice memory part;
+        string memory aYear = aDate.split("-".toSlice(), part).toString();
+        string memory aMonth = aDate.split("-".toSlice(), part).toString();
+        string memory aDay = aDate.split("-".toSlice(), part).toString();
+        string memory aHour = aTime.split(":".toSlice(), part).toString();
+        string memory aMinute = aTime.split(":".toSlice(), part).toString();
+        string memory aSecond = aTime.split(":".toSlice(), part).toString();
+        uint aReturn = getDate(aYear, aMonth, aDay);
+        aReturn += getTime(aHour, aMinute, aSecond);
+        return aReturn;
+    }
+    function getDate(string year, string month, string day) internal pure returns (uint) {
+        uint aIntYear = parseInt(year);
+        uint aIntMonth = parseInt(month);
+        uint aIntDay = parseInt(day);
+        return aIntYear * 1 years + aIntMonth * 30 days  + aIntDay * 1 days;
+    }
+    function getTime(string hour, string minute, string second) internal pure returns (uint) {
+        uint aIntHour = parseInt(hour);
+        uint aIntMinute = parseInt(minute);
+        uint aIntSecond = parseInt(second);
+        return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
+    }
     function query(string flightNo, string flightDate) public payable {
         // require(this.balance > oraclize_getPrice("URL"));
         string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";

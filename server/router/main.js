@@ -130,14 +130,14 @@ module.exports = (server) => {
         //     next();
         // }
         try {
-            const flightNo = req.query.flightNo;
-            if (!flightNo) {
-                throw '航班号不能为空';
-            }
-            const flightDate = req.query.flightDate;
-            if (!flightDate) {
-                throw '航班日期不能为空';
-            }
+            // const flightNo = req.query.flightNo;
+            // if (!flightNo) {
+            //     throw '航班号不能为空';
+            // }
+            // const flightDate = req.query.flightDate;
+            // if (!flightDate) {
+            //     throw '航班日期不能为空';
+            // }
 
             const delayOracleSC = await DelayOracle.instance();
             
