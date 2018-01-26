@@ -5,15 +5,13 @@ const SC = require('../models/SmartContract');
 module.exports = (() => {
     return self = {
         init: (conf) => {
-            this.web3 = new Web3();
             console.log('JSON-RPC:' + conf.get('httpProvider', 'http://localhost:8545'));
             if (global.env == 'test') {
-                this.web3.setProvider(conf.get('wsProvider'));
+                this.web3 = new Web3(new Web3.providers.WebsocketProvider(conf.get('httpProvider', 'http://localhost:8545')));
             } else {
+                this.web3 = new Web3();
                 this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
             }
-            
-            
         },
         instance: () => {
             return this.web3;
