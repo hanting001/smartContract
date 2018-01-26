@@ -14,6 +14,7 @@ module.exports = (() => {
             //     this.web3 = new Web3();
             //     this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
             // }
+            this.web3 = new Web3();
             this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
         },
         instance: () => {
