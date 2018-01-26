@@ -9,8 +9,10 @@ module.exports = (() => {
             console.log('JSON-RPC:' + conf.get('httpProvider', 'http://localhost:8545'));
             if (global.env == 'test') {
                 this.web3.setProvider(conf.get('wsProvider'));
-            } 
-            this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
+            } else {
+                this.web3.setProvider(conf.get('httpProvider', 'http://localhost:8545'));
+            }
+            
             
         },
         instance: () => {
