@@ -19,13 +19,16 @@ class DelayOracle {
         const web3 = myWeb3.instance();
         let instance = new DelayOracle();
         instance.sc = new web3.eth.Contract(abi, address);
-        instance.sc.events.LogDelayInfoUpdated(function (err, event) {
-            console.log(event);
-        })
+        instance.sc.events.LogDelayInfoUpdated()
             .on('data', (event) => {
-                console.log('event fired');
-                console.log(event);
-            });
+                console.log('LogDelayInfoUpdated fired');
+            })
+            .on('error', console.error);
+        instance.sc.events.LogNewOraclizeQuery()
+            .on('data', (event) => {
+                console.log('LogNewOraclizeQuery fired');
+            })
+            .on('error', console.error);
         return instance;
     }
     async doQueryByAdmin(flightNo, flightDate, onConfirmation) {
@@ -43,7 +46,7 @@ class DelayOracle {
         txObj.value = 2 * txObj.gas;
         console.log(`sendTransaction from ${from} to ${this.sc.options.address}`);
         return web3.eth.sendTransaction(txObj)
-        // return this.sc.methods.query(100).send({from: from})
+            // return this.sc.methods.query(100).send({from: from})
             .on('transactionHash', (transactionHash) => {
                 console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
             })
