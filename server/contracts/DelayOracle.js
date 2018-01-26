@@ -19,7 +19,9 @@ class DelayOracle {
         const web3 = myWeb3.instance();
         let instance = new DelayOracle();
         instance.sc = new web3.eth.Contract(abi, address);
-        instance.sc.events.LogDelayInfoUpdated()
+        instance.sc.events.LogDelayInfoUpdated(function (err, event) {
+            console.log(event);
+        })
             .on('data', (event) => {
                 console.log('event fired');
                 console.log(event);
