@@ -5,6 +5,7 @@ import "../../installed_contracts/solidity-stringutils/strings.sol";
 /** @title DelayOracle smart contract. */
 contract DelayOracle is usingOraclize {
     using strings for *;
+    string private key;
     struct Info {
         string arrScheduled;
         string arrActual;
@@ -22,9 +23,11 @@ contract DelayOracle is usingOraclize {
     // string public results;
     event LogDelayInfoUpdated(string condition);
     event LogNewOraclizeQuery(string description);
-    
+    function DelayOracle(string _key) public {
+        key = _key;
+    }
     function() public payable { 
-
+        
     }
     function __callback(bytes32 queryId, string result) public {
         // require(msg.sender == oraclize_cbAddress());
@@ -83,11 +86,16 @@ contract DelayOracle is usingOraclize {
         uint aIntSecond = parseInt(second);
         return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
     }
+    /** @dev query delay info 
+      * @param flightNo 航班号
+      * @param flightDate 航班日期
+      */
     function query(string flightNo, string flightDate) public payable {
         // require(this.balance > oraclize_getPrice("URL"));
-        string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
+        string memory a = "json(https://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
-        string memory c = "&key=a7303040ad45b48f53e11331af27cdca).result[ArrScheduled, ArrActual]";
+        string memory end = ").result[ArrScheduled, ArrActual]";
+        string memory c = strConcat("&key=", key, end);
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
         queryStr1 = queryStr;
         bytes32 queryId = oraclize_query("URL", queryStr);
