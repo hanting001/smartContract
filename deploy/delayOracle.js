@@ -4,7 +4,7 @@ const args = process.argv;
 
 if (process.env.NODE_ENV == 'test') {
     (async() => {
-        const address = await utility.deploy('DelayOracle', args[2]);
+        const address = await utility.deploy('DelayOracle', args[2], args.slice(3));
         utility.updateDB('delayOracle', address);
     })();
 } else {

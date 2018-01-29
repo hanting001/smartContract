@@ -21,6 +21,6 @@ module.exports = async(deployer, network) => {
     //     await deployer.deploy(Group, 'G00000001', KnotCoin.address);
     //     utility.updateDB('G00000001', Group.address);
     // // }
-    await deployer.deploy(DelayOracle);
+    await deployer.deploy(DelayOracle, 'a7303040ad45b48f53e11331af27cdca');
     utility.updateDB('delayOracle', DelayOracle.address);
 }
