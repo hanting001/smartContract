@@ -94,7 +94,8 @@ contract DelayOracle is usingOraclize {
         // require(this.balance > oraclize_getPrice("URL"));
         string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
-        string memory c = strConcat("&key=", key, ").result[ArrScheduled, ArrActual]");
+        string memory end = ").result[ArrScheduled, ArrActual]";
+        string memory c = strConcat("&key=", key, end);
         string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
         queryStr1 = queryStr;
         bytes32 queryId = oraclize_query("URL", queryStr);
