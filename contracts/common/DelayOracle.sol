@@ -92,7 +92,7 @@ contract DelayOracle is usingOraclize {
       */
     function query(string flightNo, string flightDate) public payable {
         // require(this.balance > oraclize_getPrice("URL"));
-        string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
+        string memory a = "json(https://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
         string memory end = ").result[ArrScheduled, ArrActual]";
         string memory c = strConcat("&key=", key, end);
