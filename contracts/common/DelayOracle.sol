@@ -30,11 +30,9 @@ contract DelayOracle is usingOraclize {
         
     }
     function __callback(bytes32 queryId, string result) public {
-        // require(msg.sender == oraclize_cbAddress());
-        // require(queryRecords[queryId].isValue);
-        // results[queryRecords[queryId].record] = Info({depScheduled: result.DepScheduled, depActual: result.DepActual});
-        // results[keccak256(queryRecords[queryId].record)] = result;
-        // strings.slice memory part;
+        require(msg.sender == oraclize_cbAddress());
+        require(queryRecords[queryId].isValue);
+
         var s = result.toSlice();
         var d = s.split(", ".toSlice());
         d = d.beyond("[\"".toSlice());
