@@ -89,12 +89,12 @@ contract DelayOracle is usingOraclize {
       * @param flightNo 航班号
       * @param flightDate 航班日期
       */
-    function query(string flightNo, string flightDate, string key) public payable {
+    function query(string flightNo, string flightDate) public payable {
         // require(this.balance > oraclize_getPrice("URL"));
         string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
-        string memory b = "&flightDate=&key=";
+        string memory b = strConcat("&flightDate=&key=", key);
         string memory c = ").result[ArrScheduled, ArrActual]";
-        string memory queryStr = strConcat(a, flightNo, b, key, flightDate, c);
+        string memory queryStr = strConcat(a, flightNo, b, flightDate, c);
         queryStr1 = queryStr;
         bytes32 queryId = oraclize_query("URL", queryStr);
         // bytes32 queryId = oraclize_query("URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHXBT).result.XETHXXBT.c.0");
