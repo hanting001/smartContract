@@ -83,7 +83,11 @@ contract DelayOracle is usingOraclize {
         uint aIntSecond = parseInt(second);
         return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
     }
-    function query(string flightNo, string flightDate) public payable {
+    /** @dev query delay info 
+      * @param flightNo 航班号
+      * @param flightDate 航班日期
+      */
+    function query(string flightNo, string flightDate, string key) public payable {
         // require(this.balance > oraclize_getPrice("URL"));
         string memory a = "json(http://op.juhe.cn/flight/df/hfs?dtype=&flightNo=";
         string memory b = "&flightDate=";
