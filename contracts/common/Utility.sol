@@ -6,7 +6,7 @@ library Utility {
     /** @dev getDatetime 
       * @param dateTimeStr 日期字符串，格式为"2018-01-30T17:23:15"
       */   
-    function getDatetime(string dateTimeStr) public returns (uint) {
+    function getDatetime(string dateTimeStr) public view returns (uint) {
         var a = dateTimeStr.toSlice();
         var aDate = a.split("T".toSlice());
         var aTime = a;
