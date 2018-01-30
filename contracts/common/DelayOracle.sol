@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 import "../../installed_contracts/ethereum-api/oraclizeAPI_0.5.sol";
 import "../../installed_contracts/solidity-stringutils/strings.sol";
+import "./Utility.sol";
 
 /** @title DelayOracle smart contract. */
 contract DelayOracle is usingOraclize {
@@ -47,8 +48,8 @@ contract DelayOracle is usingOraclize {
         
     }
     function checkDelay(string _arrScheduled, string _arrActual) internal returns (uint scheduledM, uint acrualM, int delays, bool isDelay){
-        uint aReturn = getDatetime(_arrScheduled);
-        uint bReturn = getDatetime(_arrActual);
+        uint aReturn = Utility.getDatetime(_arrScheduled);
+        uint bReturn = Utility.getDatetime(_arrActual);
         delays = int(bReturn - aReturn);
         if (delays > 3600) {
             isDelay = true;
@@ -57,33 +58,33 @@ contract DelayOracle is usingOraclize {
         }
         return (aReturn, bReturn, delays, isDelay);
     }
-    function getDatetime(string scheduled) internal returns (uint) {
-        var a = scheduled.toSlice();
-        var aDate = a.split("T".toSlice());
-        var aTime = a;
-        strings.slice memory part;
-        string memory aYear = aDate.split("-".toSlice(), part).toString();
-        string memory aMonth = aDate.split("-".toSlice(), part).toString();
-        string memory aDay = aDate.split("-".toSlice(), part).toString();
-        string memory aHour = aTime.split(":".toSlice(), part).toString();
-        string memory aMinute = aTime.split(":".toSlice(), part).toString();
-        string memory aSecond = aTime.split(":".toSlice(), part).toString();
-        uint aReturn = getDate(aYear, aMonth, aDay);
-        aReturn += getTime(aHour, aMinute, aSecond);
-        return aReturn;
-    }
-    function getDate(string year, string month, string day) internal pure returns (uint) {
-        uint aIntYear = parseInt(year);
-        uint aIntMonth = parseInt(month);
-        uint aIntDay = parseInt(day);
-        return aIntYear * 1 years + aIntMonth * 30 days  + aIntDay * 1 days;
-    }
-    function getTime(string hour, string minute, string second) internal pure returns (uint) {
-        uint aIntHour = parseInt(hour);
-        uint aIntMinute = parseInt(minute);
-        uint aIntSecond = parseInt(second);
-        return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
-    }
+    // function getDatetime(string scheduled) internal returns (uint) {
+    //     var a = scheduled.toSlice();
+    //     var aDate = a.split("T".toSlice());
+    //     var aTime = a;
+    //     strings.slice memory part;
+    //     string memory aYear = aDate.split("-".toSlice(), part).toString();
+    //     string memory aMonth = aDate.split("-".toSlice(), part).toString();
+    //     string memory aDay = aDate.split("-".toSlice(), part).toString();
+    //     string memory aHour = aTime.split(":".toSlice(), part).toString();
+    //     string memory aMinute = aTime.split(":".toSlice(), part).toString();
+    //     string memory aSecond = aTime.split(":".toSlice(), part).toString();
+    //     uint aReturn = getDate(aYear, aMonth, aDay);
+    //     aReturn += getTime(aHour, aMinute, aSecond);
+    //     return aReturn;
+    // }
+    // function getDate(string year, string month, string day) internal pure returns (uint) {
+    //     uint aIntYear = parseInt(year);
+    //     uint aIntMonth = parseInt(month);
+    //     uint aIntDay = parseInt(day);
+    //     return aIntYear * 1 years + aIntMonth * 30 days  + aIntDay * 1 days;
+    // }
+    // function getTime(string hour, string minute, string second) internal pure returns (uint) {
+    //     uint aIntHour = parseInt(hour);
+    //     uint aIntMinute = parseInt(minute);
+    //     uint aIntSecond = parseInt(second);
+    //     return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
+    // }
     /** @dev query delay info 
       * @param flightNo 航班号
       * @param flightDate 航班日期
