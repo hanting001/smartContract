@@ -2,7 +2,7 @@ const myWeb3 = require('../lib/web3');
 
 const abi = myWeb3.getABI('Group');
 const SmartContract = require('../models/SmartContract');
-
+const secret = require('../lib/secret');
 class GroupContract {
     static async instance(address, name) {
         if (!address) {
@@ -30,7 +30,7 @@ class GroupContract {
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
         if (global.env == 'test') {// 测试环境需要先对账户解锁
-            web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+            web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
         }
         const abi = myWeb3.getABI('Group', 'open');
         const params = [];
@@ -54,7 +54,7 @@ class GroupContract {
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; //因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
         if (global.env == 'test') {// 测试环境需要先对账户解锁
-            web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+            web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
         }
         const abi = myWeb3.getABI('Group', 'close');
         const params = [];
@@ -78,7 +78,7 @@ class GroupContract {
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; //因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
         if (global.env == 'test') {// 测试环境需要先对账户解锁
-            web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+            web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
         }
         const to = this.sc.options.address;
         const abi = myWeb3.getABI('Group', 'lottery');

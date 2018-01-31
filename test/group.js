@@ -20,23 +20,23 @@ contract('Group', (accounts) => {
     //     let address = await instance.getToken.call();
     //     assert.equal(address, KnotCoin.address, `address not equal ${KnotCoin.address}`);
     // });
-    it("test group join", async() => {
-        let instance = await Group.deployed();
-        await instance.open({from: accounts[0]});
-        //add money
-        let token = await KnotCoin.deployed();
-        await token.transfer(accounts[1], 1 * 10 ** 8, {from:accounts[0]})
-        await token.approve(instance.address, 1 * 10 ** 8, {from:accounts[1]});
-        let result = await instance.join({from:accounts[1]});
-        let join = await instance.membersInGroup.call(accounts[1]);
-        assert.equal(join, true, `can not join`);
+    // it("test group join", async() => {
+    //     let instance = await Group.deployed();
+    //     await instance.open({from: accounts[0]});
+    //     //add money
+    //     let token = await KnotCoin.deployed();
+    //     await token.transfer(accounts[1], 1 * 10 ** 8, {from:accounts[0]})
+    //     await token.approve(instance.address, 1 * 10 ** 8, {from:accounts[1]});
+    //     let result = await instance.join({from:accounts[1]});
+    //     let join = await instance.membersInGroup.call(accounts[1]);
+    //     assert.equal(join, true, `can not join`);
 
-        const balanceOfGroup = await token.balanceOf.call(instance.address);
-        assert.equal(balanceOfGroup.toString(), '100000000', 'group token not add 1');
+    //     const balanceOfGroup = await token.balanceOf.call(instance.address);
+    //     assert.equal(balanceOfGroup.toString(), '100000000', 'group token not add 1');
 
-        const balanceOfMember = await token.balanceOf.call(accounts[1]);
-        assert.equal(balanceOfMember.toString(), '0', 'member token not subtract 1');
-    });
+    //     const balanceOfMember = await token.balanceOf.call(accounts[1]);
+    //     assert.equal(balanceOfMember.toString(), '0', 'member token not subtract 1');
+    // });
     // it("test lottery", async() => {
     //     const group = await Group.deployed();
     //     const token = await KnotCoin.deployed();
@@ -58,21 +58,21 @@ contract('Group', (accounts) => {
     //     const balanceOfWinner = await token.balanceOf.call(accounts[1]);
     //     assert.equal(balanceOfWinner.toString(), '100000000', 'winner not get bonus');
     // });
-    it("test lottery", async() => {
-        const group = await Group.deployed();
-        const token = await KnotCoin.deployed();
+    // it("test lottery", async() => {
+    //     const group = await Group.deployed();
+    //     const token = await KnotCoin.deployed();
 
 
-        await group.close({from: accounts[0]});
-        await group.lottery(10, {from: accounts[0]});
+    //     await group.close({from: accounts[0]});
+    //     await group.lottery(10, {from: accounts[0]});
         
-        const winner = await group.winner.call();
-        assert(winner, accounts[1], "winner not index 0");
-        // const members = await group.getMembers({from: accounts[0]});
+    //     const winner = await group.winner.call();
+    //     assert(winner, accounts[1], "winner not index 0");
+    //     // const members = await group.getMembers({from: accounts[0]});
         
 
-        const winnerIndex = await group.winnerIndex.call({from:accounts[1]});
-        console.log(winnerIndex.toString());
-    });
+    //     const winnerIndex = await group.winnerIndex.call({from:accounts[1]});
+    //     console.log(winnerIndex.toString());
+    // });
 
 });

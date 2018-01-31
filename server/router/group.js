@@ -264,9 +264,7 @@ module.exports = (server) => {
     server.get(this.path + '/list', auth.jwt, async(req, res, next) => {
         try {
             const groups = await SC.find({
-                name: {
-                    $nin: ['knotCoin', 'delayOracle']
-                }
+                scName: 'Group'
             }).select({
                 name: 1,
                 address: 1,

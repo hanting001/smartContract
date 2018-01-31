@@ -3,13 +3,14 @@ const BN = require('bn.js');
 const myWeb3 = require('../lib/web3');
 const web3 = myWeb3.instance()
 const KnotToken = require('../contracts/KnotToken');
-const DelayOracle = require('../contracts/DelayOracle');
+// const DelayOracle = require('../contracts/DelayOracle');
+const FlightDelay = require('../contracts/FlightDelay');
 const auth = require('../lib/auth');
 
 const SC = require('../models/SmartContract');
 
 module.exports = (server) => {
-    server.get('/balanceOf/:account', auth.jwt, auth.manager, async(req, res, next) => {
+    server.get('/balanceOf/:account', auth.jwt, auth.manager, async (req, res, next) => {
         try {
             let knot = await KnotToken.instance();
             let balance = await knot.balanceOf(req.params.account);
@@ -21,12 +22,12 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.get('/balance', auth.jwt, async(req, res, next) => {
+    server.get('/balance', auth.jwt, async (req, res, next) => {
         try {
             let account = req.user.account;
             let knot = await KnotToken.instance();
             let balance = await knot.balanceOf(account);
-            
+
             res.send({
                 output: balance
             });
@@ -35,7 +36,7 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.get('/transfer/:to/:value', auth.jwt, async(req, res, next) => {
+    server.get('/transfer/:to/:value', auth.jwt, async (req, res, next) => {
         let knot = await KnotToken.instance();
         try {
             let value = Number(req.params.value);
@@ -47,7 +48,7 @@ module.exports = (server) => {
         }
     });
 
-    server.post('/contract/deployed', async(req, res, next) => {
+    server.post('/contract/deployed', async (req, res, next) => {
         let contractInfo = req.body.contractInfo;
         contractInfo.$push = {
             historyAddresses: contractInfo.address
@@ -67,12 +68,12 @@ module.exports = (server) => {
         }
     });
 
-    server.get('/estimateETH', auth.jwt, async(req, res, next) => {
+    server.get('/estimateETH', auth.jwt, async (req, res, next) => {
         try {
             let knotCoin = await SC.findOne({
                 name: 'knotCoin'
             });
-            
+
             let params = [web3.eth.getAccounts()[0], 2 * 10 ** 8];
             let need = await myWeb3.eth.estimateGas({
                 name: 'KnotToken',
@@ -89,7 +90,7 @@ module.exports = (server) => {
     });
 
     //测试环境可以调用
-    server.get('/test/oracle', auth.jwt, async(req, res, next) => {
+    server.get('/test/sf', auth.jwt, async (req, res, next) => {
         // if (global.env != 'test') {
         //     return res.send({
         //         output: {
@@ -108,9 +109,13 @@ module.exports = (server) => {
                 throw '航班日期不能为空';
             }
 
-            const delayOracleSC = await DelayOracle.instance();
-            
-            const result = await delayOracleSC.doQueryByAdmin(flightNo, flightDate);
+            const flightDelaySC = await FlightDelay.instance();
+
+            const result = await flightDelaySC.addMemberToSF({
+                flightNo: flightNo,
+                flightDate: flightDate,
+                account: req.user.account
+            });
             res.send({
                 output: result
             });
@@ -120,7 +125,7 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.get('/test/result', auth.jwt, async(req, res, next) => {
+    server.get('/test/result', auth.jwt, async (req, res, next) => {
         // if (global.env != 'test') {
         //     return res.send({
         //         output: {
@@ -139,9 +144,9 @@ module.exports = (server) => {
                 throw '航班日期不能为空';
             }
 
-            const delayOracleSC = await DelayOracle.instance();
-            
-            const result = await delayOracleSC.getResult(flightNo, flightDate);
+            const flightDelaySC = await FlightDelay.instance();
+
+            const result = await flightDelaySC.getResult(flightNo, flightDate, req.user.account);
             res.send({
                 output: result
             });

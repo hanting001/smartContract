@@ -28,7 +28,6 @@ contract DelayOracle is usingOraclize {
         key = _key;
     }
     function() public payable { 
-        
     }
     function __callback(bytes32 queryId, string result) public {
         require(msg.sender == oraclize_cbAddress());

@@ -1,13 +1,14 @@
 const myWeb3 = require('../lib/web3');
 const moment = require('moment');
-const abi = myWeb3.getABI('DelayOracle');
+const abi = myWeb3.getABI('HbStorage');
 const SmartContract = require('../models/SmartContract');
 const secret = require('../lib/secret');
-class DelayOracle {
+
+class FlightDelay {
     static async instance(address) {
         if (!address) {
             let sc = await SmartContract.findOne({
-                name: 'delayOracle'
+                name: 'hbStorage'
             });
             if (sc) {
                 address = sc.address;
@@ -17,38 +18,34 @@ class DelayOracle {
             return null;
         }
         const web3 = myWeb3.instance();
-        let instance = new DelayOracle();
+        let instance = new FlightDelay();
         instance.sc = new web3.eth.Contract(abi, address);
-        instance.sc.events.LogDelayInfoUpdated()
-            .on('data', (event) => {
-                console.log('LogDelayInfoUpdated fired');
-            })
-            .on('error', console.error);
-        instance.sc.events.LogNewOraclizeQuery()
-            .on('data', (event) => {
-                console.log('LogNewOraclizeQuery fired');
-            })
-            .on('error', console.error);
         return instance;
     }
-    async doQueryByAdmin(flightNo, flightDate, onConfirmation) {
+    async addMemberToSF(data, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
-        const from = accouts[0]; // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
+        const from = accouts[0]; // 默认由管理员发起交易
         if (global.env == 'test') { // 测试环境需要先对账户解锁
             web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
         }
-        const abi = myWeb3.getABI('DelayOracle', 'query');
-        flightDate = moment(flightDate).format('YYYY-MM-DD');
-        const params = [flightNo, flightDate];
+
+        const flightNo = data.flightNo;
+        const flightDate = moment(data.flightDate).format('YYYY-MM-DD');;
+        const account = data.account;
+        const votedSFIndex = data.votedSFIndex? data.votedSFIndex: web3.utils.asciiToHex('');
+        const vote = data.vote? data.vote: false;
+
+        const abi = myWeb3.getABI('HbStorage', 'addMemberToSF');
+        
+        const params = [web3.utils.keccak256(flightNo + flightDate), account, votedSFIndex, vote];
         const code = web3.eth.abi.encodeFunctionCall(abi, params);
         const txObj = await myWeb3.getTransactionObj(from, this.sc.options.address, code);
-        txObj.value = 2 * txObj.gas;
         console.log(`sendTransaction from ${from} to ${this.sc.options.address}`);
         return web3.eth.sendTransaction(txObj)
             // return this.sc.methods.query(100).send({from: from})
             .on('transactionHash', (transactionHash) => {
-                console.log(`delayOracle doQueryByAdmin txHash: ${transactionHash}`);
+                console.log(`FlightDelay addMemberToSF txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
@@ -59,25 +56,23 @@ class DelayOracle {
                 console.log(error);
             });
     }
-    async getResult(flightNo, flightDate) {
+    async getResult(flightNo, flightDate, account) {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-        console.log(`key: ${key}`);
-        const queryID = await this.sc.methods.queryID().call();
-        console.log(`queryID: ${queryID}`);
-        const record = await this.sc.methods.queryRecords(queryID).call();
-        const result = await this.sc.methods.results(key).call();
-        const queryStr = await this.sc.methods.queryStr1().call();
+        const result = await this.sc.methods.scheduledFlights(key).call({from: account});
+        const isInSF = await this.sc.methods.isInSF(key).call({from: account});
+        const sfs = await this.sc.methods.returnSFs().call({from: account});
+        const members = await this.sc.methods.returnMembers(key).call();
+        result.members = members;
         return {
-            queryID: queryID,
-            record: record,
             result: result,
-            queryStr: queryStr
-        }
+            isInSF: isInSF,
+            sfs: sfs
+        };
     }
     async test() {
         return this.sc.methods.checkDelay().call();
     }
 }
 
-module.exports = DelayOracle;
+module.exports = FlightDelay;

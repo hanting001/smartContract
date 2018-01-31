@@ -8,6 +8,7 @@ const cache = require('@huibao/cachehelper')
 const conf = require('./config');
 const web3 = require('./web3');
 const db = require('./db');
+const secret = require('./secret');
 
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
@@ -44,4 +45,5 @@ module.exports = (server) => {
     web3.init(conf);
     db.init(conf.get('databaseConfig'));
     cache.config(conf.get('cacheConfig'));
+    secret.init(conf.get('pass'));
 }

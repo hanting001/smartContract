@@ -9,6 +9,7 @@ var schema = new Schema({
         required: true,
         unique: true
     },
+    scName: String,
     address: {
         type: String,
         required: true

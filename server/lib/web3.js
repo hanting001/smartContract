@@ -1,6 +1,7 @@
 const Mnemonic = require('bitcore-mnemonic');
 const BN = require('bn.js');
 const Web3 = require('web3');
+const secret = require('./secret');
 const SC = require('../models/SmartContract');
 module.exports = (() => {
     return self = {
@@ -121,7 +122,7 @@ module.exports = (() => {
                 }
                 const from = accounts[0];
                 if (global.env == 'test') {// 测试环境需要先对账户解锁
-                    web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+                    web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
                 }
                 const txObject = {
                     from: from,

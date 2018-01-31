@@ -1,7 +1,7 @@
 const myWeb3 = require('../lib/web3');
 const BN = require('bn.js');
 const abi = myWeb3.getABI('KnotToken');
-
+const secret = require('../lib/secret');
 const SmartContract = require('../models/SmartContract');
 
 class KnotToken {
@@ -87,7 +87,7 @@ class KnotToken {
         if (!from) { // 因为group合约使用accounts[0]部署的，所以这里还是使用accounts[0],将来admin部署合约就要使用admin的account
             from = accouts[0];
             if (global.env == 'test') { // 测试环境需要先对账户解锁
-                web3.eth.personal.unlockAccount(from, 'Huibao12346', web3.utils.toHex(15000));
+                web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
             }
         }
         if (!transTo) {
@@ -122,7 +122,7 @@ class KnotToken {
         if (!txFrom) {
             txFrom = accouts[0];
             if (global.env == 'test') { // 测试环境需要先对账户解锁
-                web3.eth.personal.unlockAccount(txFrom, 'Huibao12346', web3.utils.toHex(15000));
+                web3.eth.personal.unlockAccount(txFrom, secret.getPass(), web3.utils.toHex(15000));
             }
         }
         console.log(`代币转账 from: ${transFrom}, to: ${transTo}, value: ${value}`);

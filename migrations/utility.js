@@ -6,13 +6,14 @@ const conf = require('../server/lib/config');
 web3.setProvider(new web3.providers.HttpProvider(conf.get('httpProvider')));
 
 module.exports = {
-    updateDB: (name, address) => {
+    updateDB: (name, scName, address) => {
         let options = {
             uri: conf.get('apiHost') + '/contract/deployed',
             method: 'POST',
             body: {
                 contractInfo: {
                     name: name,
+                    scName: scName,
                     address: address
                 }
             },
