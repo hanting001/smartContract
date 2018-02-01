@@ -1,5 +1,6 @@
 pragma solidity ^0.4.18;
 import "../../installed_contracts/solidity-stringutils/strings.sol";
+import "./DateTime.sol";
 
 library Utility {
     using strings for *;
@@ -19,9 +20,7 @@ library Utility {
         aTime.split(":".toSlice(), aHoursl);
         strings.slice memory aMinutesl;
         aTime.split(":".toSlice(), aMinutesl);
-        uint aReturn = getDate(aYearsl.toString(), aMonthsl.toString(), aDate.toString());
-        aReturn += getTime(aHoursl.toString(), aMinutesl.toString(), aTime.toString());
-        return aReturn;
+        return getDateTime(aYearsl.toString(), aMonthsl.toString(), aDate.toString(),aHoursl.toString(), aMinutesl.toString(), aTime.toString());
     }
     function checkDateFomat(string date) internal returns (bool, uint) {
         var aDate = date.toSlice();
@@ -98,22 +97,39 @@ library Utility {
         }
         return (true, 0);
     }
-    function getDate(string year, string month, string day) internal pure returns (uint) {
-        uint aIntYear = parseInt(year);
-        uint aIntMonth = parseInt(month);
-        uint aIntDay = parseInt(day);
-        uint monthDays = 0;
-        for (uint i = 1; i <= aIntMonth; i ++) {
-            monthDays += getMonthDays(aIntYear, i);
+    function getDateTime(string year, string month, string day, string hour, string minute, string second) internal pure returns (uint) {
+        uint16 aIntYear = uint16(parseInt(year));
+        uint8 aIntMonth = uint8(parseInt(month));
+        uint8 aIntDay = uint8(parseInt(day));
+        uint8 aIntHour = uint8(parseInt(hour));
+        uint8 aIntMinute = uint8(parseInt(minute));
+        uint8 aIntSecond = uint8(parseInt(second));
+        
+        return DateTime.toTimestamp(aIntYear, aIntMonth, aIntDay, aIntHour, aIntMinute, aIntSecond);
+    }
+    // function getTime(string hour, string minute, string second) internal pure returns (uint) {
+    //     uint aIntHour = parseInt(hour);
+    //     uint aIntMinute = parseInt(minute);
+    //     uint aIntSecond = parseInt(second);
+    //     return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
+    // }
+    function checkDate(string date, uint interval) internal returns (bool, uint, uint) {
+        var aDate = date.toSlice();
+        strings.slice memory aYearsl;
+        aDate.split("-".toSlice(), aYearsl);
+        strings.slice memory aMonthsl;
+        aDate.split("-".toSlice(), aMonthsl);
+        uint aTimestamp = getDateTime(aYearsl.toString(), aMonthsl.toString(), aDate.toString(), "00", "00", "00");
+        if (aTimestamp <= block.timestamp) {
+            return (false, aTimestamp, block.timestamp);
         }
-        return aIntYear * 1 years + monthDays * 1 days  + aIntDay * 1 days;
+        if (aTimestamp - block.timestamp < interval * 1 days) {
+            return (false, aTimestamp, block.timestamp);
+        } else {
+            return (true, aTimestamp, block.timestamp);
+        }
     }
-    function getTime(string hour, string minute, string second) internal pure returns (uint) {
-        uint aIntHour = parseInt(hour);
-        uint aIntMinute = parseInt(minute);
-        uint aIntSecond = parseInt(second);
-        return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
-    }
+
 
     function isLeapYear(uint year) internal pure returns (bool) {
                 if (year % 4 != 0) {

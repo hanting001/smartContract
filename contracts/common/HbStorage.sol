@@ -7,6 +7,7 @@ import "./Utility.sol";
 contract HbStorage is Ownable {
     using strings for *; 
     
+    uint interval = 2;
     enum SFStatus { opening, closed, claiming, ended }
     struct SFInfo {
         address[] members;
@@ -131,7 +132,15 @@ contract HbStorage is Ownable {
     function returnMembers(bytes32 _sfIndex) public view returns (address[]) {
         return scheduledFlights[_sfIndex].members;
     }
-    function testDateParser(string date) public  returns (bool, uint) {
-       return Utility.checkTimeFomat(date);
+    function testDateParser(string date) public  returns (bool, string, uint, uint) {
+       var (result,) = Utility.checkDateFomat(date);
+       if (!result) {
+           return (false, '日期格式不对', 0, 0);
+       }
+       var (r, a, b) = Utility.checkDate(date, interval);
+       if (!r) {
+           return (false, '已过购买时间', a, b);
+       }
+       return (true, '通过', a, b);
     }
 }
