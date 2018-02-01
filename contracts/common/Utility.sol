@@ -6,7 +6,7 @@ library Utility {
     /** @dev getDatetime 
       * @param dateTimeStr 日期字符串，格式为"2018-01-30T17:23:15"
       */   
-    function getDatetime(string dateTimeStr) public returns (uint) {
+    function getDatetime(string dateTimeStr) internal returns (uint) {
         var a = dateTimeStr.toSlice();
         var aDate = a.split("T".toSlice());
         var aTime = a;
@@ -65,7 +65,7 @@ library Utility {
         return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
     }
 
-    function isLeapYear(uint year) public pure returns (bool) {
+    function isLeapYear(uint year) internal pure returns (bool) {
                 if (year % 4 != 0) {
                         return false;
                 }
@@ -77,7 +77,7 @@ library Utility {
                 }
                 return true;
     }
-    function getMonthDays(uint year, uint month) public pure returns (uint) {
+    function getMonthDays(uint year, uint month) internal pure returns (uint) {
         if (month == 2) {
             if (isLeapYear(year)) {
                 return 29;
@@ -113,7 +113,7 @@ library Utility {
         return mint;
     }
     
-    // function strConcat(string _a, string _b, string _c, string _d, string _e) public pure returns (string) {
+    // function strConcat(string _a, string _b, string _c, string _d, string _e) internal pure returns (string) {
     //     bytes memory _ba = bytes(_a);
     //     bytes memory _bb = bytes(_b);
     //     bytes memory _bc = bytes(_c);
@@ -130,11 +130,11 @@ library Utility {
     //     return string(babcde);
     // }
 
-    // function strConcat(string _a, string _b, string _c, string _d) public pure returns (string) {
+    // function strConcat(string _a, string _b, string _c, string _d) internal pure returns (string) {
     //     return strConcat(_a, _b, _c, _d, "");
     // }
 
-    // function strConcat(string _a, string _b, string _c) public pure returns (string) {
+    // function strConcat(string _a, string _b, string _c) internal pure returns (string) {
     //     return strConcat(_a, _b, _c, "", "");
     // }
 

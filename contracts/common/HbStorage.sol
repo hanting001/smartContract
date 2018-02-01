@@ -53,7 +53,6 @@ contract HbStorage is Ownable {
     // function HbStorage() public {
     //     // constructor
     // }
-
     function isMemberInSF(bytes32 _sfIndex, address member) private view returns (bool) {
         if (memberInfos[member].isValued) {
             var sfs = memberInfos[member].memberSFInfos;
