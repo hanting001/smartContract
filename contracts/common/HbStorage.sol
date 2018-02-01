@@ -75,6 +75,8 @@ contract HbStorage is Ownable {
       * @param _vote 投票
       */
     function addMemberToSF(string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, bool _vote) external onlyOwner {
+        
+        
         bytes32 _sfIndex = keccak256(Utility.strConcat(_flightNO, _flightDate));
         if (scheduledFlights[_sfIndex].isValued) {
             require(scheduledFlights[_sfIndex].status == SFStatus.opening);
@@ -131,4 +133,7 @@ contract HbStorage is Ownable {
         return scheduledFlights[_sfIndex].members;
     }
     
+    function testDateParser(string datetime) public  returns (uint, uint, uint) {
+       return Utility.checkDatetime(datetime);
+    }
 }

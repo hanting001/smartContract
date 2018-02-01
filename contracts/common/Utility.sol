@@ -21,6 +21,33 @@ library Utility {
         aReturn += getTime(aHour, aMinute, aSecond);
         return aReturn;
     }
+    function checkDatetime(string datetime) internal returns (uint, uint, uint) {
+        var a = datetime.toSlice();
+        var aDate = a.split("T".toSlice());
+        // var aTime = a;
+        strings.slice memory part;
+        var aYearsl = aDate.split("-".toSlice(), part);
+        var aMonthsl = aDate.split("-".toSlice(), part);
+        var aDaysl = aDate.split("-".toSlice(), part);
+        // var aHoursl = aTime.split(":".toSlice(), part);
+        // var aMinutesl = aTime.split(":".toSlice(), part);
+        // var aSecondsl = aTime.split(":".toSlice(), part);
+        if (aYearsl.len() != 4 || aMonthsl.len() != 2 || aDaysl.len() != 2) {
+            return (4, 4, 4);
+        }
+        // if (aHoursl.len() != 2 || aMinutesl.len() != 2 || aSecondsl.len() != 2) {
+        //     return (1, 1, 1, str);
+        // }
+        // return (parseInt(aYearsl.toString()), parseInt(aMonthsl.toString()), parseInt(aDaysl.toString()));
+        return (2, 2, 2);
+        // string memory aYear = aYearsl.toString();
+        // string memory aMonth = aMonthsl.toString();
+        // string memory aDay = aDaysl.toString();
+        // string memory aHour = aHoursl.toString();
+        // string memory aMinute = aMinutesl.toString();
+        // string memory aSecond = aSecondsl.toString();
+
+    }
     function getDate(string year, string month, string day) internal pure returns (uint) {
         uint aIntYear = parseInt(year);
         uint aIntMonth = parseInt(month);

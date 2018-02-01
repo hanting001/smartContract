@@ -59,16 +59,20 @@ class FlightDelay {
     async getResult(flightNo, flightDate, account) {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-        const result = await this.sc.methods.scheduledFlights(key).call({from: account});
-        const isInSF = await this.sc.methods.isInSF(key).call({from: account});
-        const sfs = await this.sc.methods.returnSFs().call({from: account});
-        const members = await this.sc.methods.returnMembers(key).call();
-        result.members = members;
+        // const result = await this.sc.methods.scheduledFlights(key).call({from: account});
+        // const isInSF = await this.sc.methods.isInSF(key).call({from: account});
+        // const sfs = await this.sc.methods.returnSFs().call({from: account});
+        // const members = await this.sc.methods.returnMembers(key).call();
+        // result.members = members;
+        // return {
+        //     result: result,
+        //     isInSF: isInSF,
+        //     sfs: sfs
+        // };
+        const result = await this.sc.methods.testDateParser('2018-02-01T14:31:21').call();
         return {
-            result: result,
-            isInSF: isInSF,
-            sfs: sfs
-        };
+            result: result
+        }
     }
     async test() {
         return this.sc.methods.checkDelay().call();
