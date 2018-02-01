@@ -131,8 +131,7 @@ contract HbStorage is Ownable {
     function returnMembers(bytes32 _sfIndex) public view returns (address[]) {
         return scheduledFlights[_sfIndex].members;
     }
-    
-    function testDateParser(string datetime) public  returns (uint, uint, uint) {
-       return Utility.checkDatetime(datetime);
+    function testDateParser(string date) public  returns (bool, uint) {
+       return Utility.checkTimeFomat(date);
     }
 }

@@ -69,7 +69,7 @@ class FlightDelay {
         //     isInSF: isInSF,
         //     sfs: sfs
         // };
-        const result = await this.sc.methods.testDateParser('2018-02-01T14:31:21').call();
+        const result = await this.sc.methods.testDateParser(flightNo).call();
         return {
             result: result
         }

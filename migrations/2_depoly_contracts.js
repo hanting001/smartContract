@@ -25,8 +25,8 @@ module.exports = async(deployer, network) => {
     // // }
     // await deployer.deploy(DelayOracle, 'a7303040ad45b48f53e11331af27cdca');
     // utility.updateDB('delayOracle', 'DelayOracle', DelayOracle.address);
-    await deployer.deploy(Utility);
-    deployer.link(Utility, HbStorage);
+    // await deployer.deploy(Utility);
+    // deployer.link(Utility, HbStorage);
     await deployer.deploy(HbStorage);
     utility.updateDB('hbStorage', 'HbStorage', HbStorage.address);
 }

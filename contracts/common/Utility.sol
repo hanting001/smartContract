@@ -10,43 +10,93 @@ library Utility {
         var a = dateTimeStr.toSlice();
         var aDate = a.split("T".toSlice());
         var aTime = a;
-        strings.slice memory part;
-        string memory aYear = aDate.split("-".toSlice(), part).toString();
-        string memory aMonth = aDate.split("-".toSlice(), part).toString();
-        string memory aDay = aDate.split("-".toSlice(), part).toString();
-        string memory aHour = aTime.split(":".toSlice(), part).toString();
-        string memory aMinute = aTime.split(":".toSlice(), part).toString();
-        string memory aSecond = aTime.split(":".toSlice(), part).toString();
-        uint aReturn = getDate(aYear, aMonth, aDay);
-        aReturn += getTime(aHour, aMinute, aSecond);
+        strings.slice memory aYearsl;
+        aDate.split("-".toSlice(), aYearsl);
+        strings.slice memory aMonthsl;
+        aDate.split("-".toSlice(), aMonthsl);
+
+        strings.slice memory aHoursl;
+        aTime.split(":".toSlice(), aHoursl);
+        strings.slice memory aMinutesl;
+        aTime.split(":".toSlice(), aMinutesl);
+        uint aReturn = getDate(aYearsl.toString(), aMonthsl.toString(), aDate.toString());
+        aReturn += getTime(aHoursl.toString(), aMinutesl.toString(), aTime.toString());
         return aReturn;
     }
-    function checkDatetime(string datetime) internal returns (uint, uint, uint) {
-        var a = datetime.toSlice();
-        var aDate = a.split("T".toSlice());
+    function checkDateFomat(string date) internal returns (bool, uint) {
+        var aDate = date.toSlice();
         // var aTime = a;
-        strings.slice memory part;
-        var aYearsl = aDate.split("-".toSlice(), part);
-        var aMonthsl = aDate.split("-".toSlice(), part);
-        var aDaysl = aDate.split("-".toSlice(), part);
-        // var aHoursl = aTime.split(":".toSlice(), part);
-        // var aMinutesl = aTime.split(":".toSlice(), part);
-        // var aSecondsl = aTime.split(":".toSlice(), part);
-        if (aYearsl.len() != 4 || aMonthsl.len() != 2 || aDaysl.len() != 2) {
-            return (4, 4, 4);
-        }
-        // if (aHoursl.len() != 2 || aMinutesl.len() != 2 || aSecondsl.len() != 2) {
-        //     return (1, 1, 1, str);
+        strings.slice memory aYearsl;
+        aDate.split("-".toSlice(), aYearsl);
+        strings.slice memory aMonthsl;
+        aDate.split("-".toSlice(), aMonthsl);
+        aMonthsl.beyond("0".toSlice());
+        var aDaysl = aDate.beyond("0".toSlice());
+        uint aYearInt= parseInt(aYearsl.toString());
+        // if (aYearsl.len() != 4) {
+        //     return (false, 10);
         // }
-        // return (parseInt(aYearsl.toString()), parseInt(aMonthsl.toString()), parseInt(aDaysl.toString()));
-        return (2, 2, 2);
-        // string memory aYear = aYearsl.toString();
-        // string memory aMonth = aMonthsl.toString();
-        // string memory aDay = aDaysl.toString();
-        // string memory aHour = aHoursl.toString();
-        // string memory aMinute = aMinutesl.toString();
-        // string memory aSecond = aSecondsl.toString();
-
+        if (aYearInt < 2018) {
+            return (false, 101);
+        }
+        uint aMonthInt= parseInt(aMonthsl.toString());
+        // if (!(aMonthsl.len() == 2 || aMonthsl.len() == 1)) {
+        //     return (false, 11);
+        // }
+        if (aMonthInt > 12 || aMonthInt == 0) {
+            return (false, 111);
+        }
+        uint aDayMaxInt = getMonthDays(aYearInt, aMonthInt);
+        uint aDayInt = parseInt(aDaysl.toString());
+        // if (!(aDaysl.len() == 2 || aDaysl.len() == 1)) {
+        //     return (false, 12);
+        // }
+        if (aDayInt > aDayMaxInt || aDayInt == 0) {
+            return (false, 121);
+        }
+        if (aYearsl.compare(uint2str(aYearInt).toSlice()) != 0) {
+            return (false, 20);
+        }
+        if (aMonthsl.compare(uint2str(aMonthInt).toSlice()) != 0) {
+            return (false, 21);
+        }
+        if (aDaysl.compare(uint2str(aDayInt).toSlice()) != 0) {
+            return (false, 22);
+        }
+        return (true, 0);
+    }
+    function checkTimeFomat(string time) internal returns (bool, uint) {
+        var aTime = time.toSlice();
+        // var aTime = a;
+        strings.slice memory aHoursl;
+        aTime.split(":".toSlice(), aHoursl);
+        aHoursl.beyond("0".toSlice());
+        strings.slice memory aMinutesl;
+        aTime.split(":".toSlice(), aMinutesl);
+        aMinutesl.beyond("0".toSlice());
+        var aSecondsl = aTime.beyond("0".toSlice());
+        uint aHourInt= parseInt(aHoursl.toString());
+        if (aHourInt > 23 ) {
+            return (false, 101);
+        }
+        uint aMinuteInt= parseInt(aMinutesl.toString());
+        if (aMinuteInt > 59) {
+            return (false, 111);
+        }
+        uint aSecondInt = parseInt(aSecondsl.toString());
+        if (aSecondInt > 59) {
+            return (false, 121);
+        }
+        if (aHoursl.compare(uint2str(aHourInt).toSlice()) != 0) {
+            return (false, 20);
+        }
+        if (aMinutesl.compare(uint2str(aMinuteInt).toSlice()) != 0) {
+            return (false, aMinuteInt);
+        }
+        if (aSecondsl.compare(uint2str(aSecondInt).toSlice()) != 0) {
+            return (false, 22);
+        }
+        return (true, 0);
     }
     function getDate(string year, string month, string day) internal pure returns (uint) {
         uint aIntYear = parseInt(year);
@@ -112,7 +162,22 @@ library Utility {
         if (_b > 0) mint *= 10**_b;
         return mint;
     }
-    
+    function uint2str(uint i) internal pure returns (string){
+        if (i == 0) return "0";
+        uint j = i;
+        uint len;
+        while (j != 0){
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (i != 0){
+            bstr[k--] = byte(48 + i % 10);
+            i /= 10;
+        }
+        return string(bstr);
+    }   
     // function strConcat(string _a, string _b, string _c, string _d, string _e) internal pure returns (string) {
     //     bytes memory _ba = bytes(_a);
     //     bytes memory _bb = bytes(_b);
@@ -139,13 +204,6 @@ library Utility {
     // }
 
     function strConcat(string _a, string _b) internal returns (string) {
-        bytes memory _ba = bytes(_a);
-        bytes memory _bb = bytes(_b);
-        string memory abcde = new string(_ba.length + _bb.length);
-        bytes memory babcde = bytes(abcde);
-        uint k = 0;
-        for (uint i = 0; i < _ba.length; i++) babcde[k++] = _ba[i];
-        for (i = 0; i < _bb.length; i++) babcde[k++] = _bb[i];
-        return string(babcde);
+        return _a.toSlice().concat(_b.toSlice());
     }
 }
