@@ -4,9 +4,7 @@ import "./DateTime.sol";
 
 library Utility {
     using strings for *;
-    /** @dev getDatetime 
-      * @param dateTimeStr 日期字符串，格式为"2018-01-30T17:23:15"
-      */   
+  
     function getDatetime(string dateTimeStr) internal returns (uint) {
         var a = dateTimeStr.toSlice();
         var aDate = a.split("T".toSlice());
@@ -22,7 +20,8 @@ library Utility {
         aTime.split(":".toSlice(), aMinutesl);
         return getDateTime(aYearsl.toString(), aMonthsl.toString(), aDate.toString(),aHoursl.toString(), aMinutesl.toString(), aTime.toString());
     }
-    function checkDateFomat(string date) internal returns (bool, uint) {
+    // function checkDateFomat(string date) internal returns (bool, uint) {
+    function checkDateFomat(string date) internal returns (bool) {
         var aDate = date.toSlice();
         // var aTime = a;
         strings.slice memory aYearsl;
@@ -36,14 +35,16 @@ library Utility {
         //     return (false, 10);
         // }
         if (aYearInt < 2018) {
-            return (false, 101);
+            // return (false, 101);
+            return false;
         }
         uint aMonthInt= parseInt(aMonthsl.toString());
         // if (!(aMonthsl.len() == 2 || aMonthsl.len() == 1)) {
         //     return (false, 11);
         // }
         if (aMonthInt > 12 || aMonthInt == 0) {
-            return (false, 111);
+            // return (false, 111);
+            return false;
         }
         uint aDayMaxInt = getMonthDays(aYearInt, aMonthInt);
         uint aDayInt = parseInt(aDaysl.toString());
@@ -51,20 +52,25 @@ library Utility {
         //     return (false, 12);
         // }
         if (aDayInt > aDayMaxInt || aDayInt == 0) {
-            return (false, 121);
+            // return (false, 121);
+            return false;
         }
         if (aYearsl.compare(uint2str(aYearInt).toSlice()) != 0) {
-            return (false, 20);
+            // return (false, 20);
+            return false;
         }
         if (aMonthsl.compare(uint2str(aMonthInt).toSlice()) != 0) {
-            return (false, 21);
+            // return (false, 21);
+            return false;
         }
         if (aDaysl.compare(uint2str(aDayInt).toSlice()) != 0) {
-            return (false, 22);
+            // return (false, 22);
+            return false;
         }
-        return (true, 0);
+        // return (true, 0);
+        return true;
     }
-    function checkTimeFomat(string time) internal returns (bool, uint) {
+    function checkTimeFomat(string time) internal returns (bool) {
         var aTime = time.toSlice();
         // var aTime = a;
         strings.slice memory aHoursl;
@@ -76,26 +82,26 @@ library Utility {
         var aSecondsl = aTime.beyond("0".toSlice());
         uint aHourInt= parseInt(aHoursl.toString());
         if (aHourInt > 23 ) {
-            return (false, 101);
+            return false;
         }
         uint aMinuteInt= parseInt(aMinutesl.toString());
         if (aMinuteInt > 59) {
-            return (false, 111);
+            return false;
         }
         uint aSecondInt = parseInt(aSecondsl.toString());
         if (aSecondInt > 59) {
-            return (false, 121);
+            return false;
         }
         if (aHoursl.compare(uint2str(aHourInt).toSlice()) != 0) {
-            return (false, 20);
+            return false;
         }
         if (aMinutesl.compare(uint2str(aMinuteInt).toSlice()) != 0) {
-            return (false, aMinuteInt);
+            return false;
         }
         if (aSecondsl.compare(uint2str(aSecondInt).toSlice()) != 0) {
-            return (false, 22);
+            return false;
         }
-        return (true, 0);
+        return true;
     }
     function getDateTime(string year, string month, string day, string hour, string minute, string second) internal pure returns (uint) {
         uint16 aIntYear = uint16(parseInt(year));
@@ -113,7 +119,7 @@ library Utility {
     //     uint aIntSecond = parseInt(second);
     //     return aIntHour * 1 hours + aIntMinute * 1 minutes + aIntSecond;
     // }
-    function checkDate(string date, uint interval) internal returns (bool, uint, uint) {
+    function checkDate(string date, uint interval) internal returns (bool) {
         var aDate = date.toSlice();
         strings.slice memory aYearsl;
         aDate.split("-".toSlice(), aYearsl);
@@ -121,12 +127,12 @@ library Utility {
         aDate.split("-".toSlice(), aMonthsl);
         uint aTimestamp = getDateTime(aYearsl.toString(), aMonthsl.toString(), aDate.toString(), "00", "00", "00");
         if (aTimestamp <= block.timestamp) {
-            return (false, aTimestamp, block.timestamp);
+            return false;
         }
-        if (aTimestamp - block.timestamp < interval * 1 days) {
-            return (false, aTimestamp, block.timestamp);
+        if (aTimestamp - block.timestamp < interval * 1 hours) {
+            return false;
         } else {
-            return (true, aTimestamp, block.timestamp);
+            return true;
         }
     }
 
