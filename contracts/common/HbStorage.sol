@@ -39,6 +39,7 @@ contract HbStorage is Ownable {
         mapping(bytes32 => MemberSF) memberSFInfos;
         bytes32[] scheduledFlights;
         uint winCounts;
+        string canBuyFlightNO;
         bool isValued;
     }
     mapping(address => bool) admins;
@@ -87,7 +88,7 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-    
+
     function addMemberToSF(bytes32 _sfIndex, address _member, bytes32 _votedSFIndex, DelayStatus _vote) external onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
             scheduledFlights[_sfIndex].isValued = true;
@@ -124,6 +125,16 @@ contract HbStorage is Ownable {
         } else {
             return false;
         }
+    }
+    function canBuy(address member, string flightNO) external returns (bool) {
+        if (flightNO.toSlice().compare(memberInfos[member].canBuyFlightNO.toSlice()) == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function setCanBuy(address member, string flightNO) external {
+        memberInfos[member].canBuyFlightNO = flightNO;
     }
     /** @dev 返回用户的航班计划 
       */

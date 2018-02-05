@@ -68,7 +68,7 @@ module.exports = (server) => {
         }
     });
 
-    server.get('/estimateETH', auth.jwt, async (req, res, next) => {
+    server.get('/estimateETH/:contract/:function', auth.jwt, async (req, res, next) => {
         try {
             let knotCoin = await SC.findOne({
                 name: 'knotCoin'
