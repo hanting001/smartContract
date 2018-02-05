@@ -1,5 +1,6 @@
 pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import "../installed_contracts/solidity-stringutils/strings.sol";
 import './common/Stoppable.sol';
 import './common/HbStorage.sol';
 import './common/KnotToken.sol';
@@ -7,6 +8,7 @@ import './common/Utility.sol';
 
 /** @title group smart contract. */
 contract FlightDelay is Ownable, Stoppable {
+    using strings for *; 
     HbStorage hbs;
     KnotToken token;
     uint interval = 24;//只能买24小时以后的产品
@@ -34,6 +36,8 @@ contract FlightDelay is Ownable, Stoppable {
       * @param price 价格
       */
     function getQualification(string flightNO, uint price) public {
+        require(!flightNO.toSlice().empty());
+        require(price > 0);
         require(token.balanceOf(msg.sender) >= price);
 
         hbs.setCanBuy(msg.sender, flightNO);
@@ -45,6 +49,7 @@ contract FlightDelay is Ownable, Stoppable {
       * @param flightNO 航班号
       */
     function hasQualification(string flightNO) public view returns (bool) {
+        require(!flightNO.toSlice().empty());
         return hbs.canBuy(msg.sender, flightNO);
     }
 
