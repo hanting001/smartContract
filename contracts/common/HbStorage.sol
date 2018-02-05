@@ -138,7 +138,7 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-    function setCanBuy(address member, string flightNO) external {
+    function setCanBuy(address member, string flightNO) external onlyAdmin{
         memberInfos[member].canBuyFlightNO = flightNO;
     }
     /** @dev 返回用户的航班计划 

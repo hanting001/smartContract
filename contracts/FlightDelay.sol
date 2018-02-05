@@ -70,12 +70,12 @@ contract FlightDelay is Ownable, Stoppable {
         require(Utility.checkDate(flightDate, interval));
         //check user can buy
         require(hbs.canBuy(msg.sender, flightNO));
-
         bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
         require(hbs.isOpening(sfIndex));
         require(!hbs.isMemberInSF(sfIndex, msg.sender));
 
         hbs.addMemberToSF(sfIndex, msg.sender, votedSfIndex, vote);
+        hbs.setCanBuy(msg.sender, "");
         UserJoin(flightNO, flightDate, msg.sender);
     }  
 
