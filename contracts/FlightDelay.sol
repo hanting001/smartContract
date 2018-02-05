@@ -14,8 +14,8 @@ contract FlightDelay is Ownable, Stoppable {
     event UserJoin(string flightNO, string flightDate, address user);
 
 
-    function FlightDelay(address hbsAddress, address tokenAddress) public {
-        hbs = HbStorage(hbsAddress);
+    function FlightDelay(address tokenAddress) public {
+        // hbs = HbStorage(hbsAddress);
         token = KnotToken(tokenAddress);
     }
 
