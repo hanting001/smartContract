@@ -9,7 +9,10 @@ var schema = new Schema({
         required: true,
         unique: true
     },
-    scName: String,
+    scName: {
+        type: String,
+        required: true
+    },
     address: {
         type: String,
         required: true
