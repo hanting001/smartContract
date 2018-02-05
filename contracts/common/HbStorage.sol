@@ -9,6 +9,9 @@ contract HbStorage is Ownable {
 
     enum SFStatus { opening, closed, claiming, ended }
     enum DelayStatus { no, delay1, delay2, delay3 }
+
+    event MemberAdded(bytes32 _sfIndex, address member);
+
     struct SFInfo {
         address[] members;
         SFStatus status;
@@ -101,7 +104,9 @@ contract HbStorage is Ownable {
             vote: _vote,
             isValued: true});
         memberInfos[_member].scheduledFlights.push(_sfIndex);
-        memberInfos[_member].isValued = true;    
+        memberInfos[_member].isValued = true;  
+
+        MemberAdded(_sfIndex, _member);  
     }
 
     function isOpening(bytes32 _sfIndex) external returns (bool) {
