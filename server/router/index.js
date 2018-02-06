@@ -40,6 +40,12 @@ module.exports = (server) => {
     */
     require('./flightDelay')(server);
 
+    /*
+    this.path + /setInterval/:interval   设置可购买间隔
+
+    */
+    require('./flightDelayAdmin')(server);
+
     server.get('/test/:length', async(req, res, next) => {
         try {
             const groupSC = await GroupSC.instance(null, 'G00000001');

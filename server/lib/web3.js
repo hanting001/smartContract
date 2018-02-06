@@ -6,7 +6,7 @@ const SC = require('../models/SmartContract');
 module.exports = (() => {
     return self = {
         init: (conf) => {
-            
+
             // if (global.env == 'test') {
             //     console.log('JSON-RPC:' + conf.get('wsProvider'));
             //     this.web3 = new Web3(new Web3.providers.WebsocketProvider(conf.get('wsProvider')));
@@ -28,7 +28,7 @@ module.exports = (() => {
             }
         },
         account: {
-            new: async(password) => {
+            new: async (password) => {
                 const code = new Mnemonic(Mnemonic.Words.CHINESE);
                 const web3 = this.web3;
                 let mnemonic = code.toString();
@@ -81,7 +81,7 @@ module.exports = (() => {
             }
         },
         eth: {
-            estimateEth: async() => {
+            estimateEth: async () => {
                 let knotCoin = await SC.findOne({
                     name: 'knotCoin'
                 });
@@ -91,7 +91,7 @@ module.exports = (() => {
                     func: 'approve'
                 }, params, knotCoin.address);
             },
-            estimateGas: async(contract, params, to, from) => {
+            estimateGas: async (contract, params, to, from) => {
                 const abi = self.getABI(contract.name, contract.func);
                 const web3 = this.web3;
                 let code = web3.eth.abi.encodeFunctionCall(abi, params);
@@ -109,7 +109,7 @@ module.exports = (() => {
                 // console.log(`gas:${gas}, gasPrice:${gasPrice}, total:${total}`);
                 return web3.utils.fromWei(total);
             },
-            sendEth: async(to, value) => {
+            sendEth: async (to, value) => {
                 const web3 = this.web3;
                 const accounts = await web3.eth.getAccounts();
                 try {
@@ -121,7 +121,7 @@ module.exports = (() => {
                     throw 'value不能是0';
                 }
                 const from = accounts[0];
-                if (global.env == 'test') {// 测试环境需要先对账户解锁
+                if (global.env == 'test') { // 测试环境需要先对账户解锁
                     web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
                 }
                 const txObject = {
@@ -144,11 +144,11 @@ module.exports = (() => {
                     })
                     .on('error', console.error);
             },
-            sendEthFrom: async(from, to, value) => {
+            sendEthFrom: async (from, to, value) => {
                 const web3 = this.web3;
                 if (!to) {
                     const accounts = await web3.eth.getAccounts();
-                    to = accounts[0];//把以太币还给主账号，目前暂时使用默认账号
+                    to = accounts[0]; //把以太币还给主账号，目前暂时使用默认账号
                 }
                 const txObject = {
                     from: from,
@@ -170,14 +170,14 @@ module.exports = (() => {
                     })
                     .on('error', console.error);
             },
-            getETHBalance: async(account) => {
+            getETHBalance: async (account) => {
                 const web3 = this.web3;
                 const weis = await web3.eth.getBalance(account);
                 return web3.utils.fromWei(weis);
             }
         },
         //计算代币最小单位
-        toStrand: (ktc)=> {
+        toStrand: (ktc) => {
             // return Number(ktc) * 10 ** 8;
             ktc = new BN(ktc);
             return this.web3.utils.toWei(ktc);
@@ -208,7 +208,7 @@ module.exports = (() => {
             }
             return this.web3.utils.isAddress(address);
         },
-        getTransactionObj: async(from, to, code) => {
+        getTransactionObj: async (from, to, code) => {
             const dataObject = {
                 to: to,
                 data: code
@@ -218,6 +218,30 @@ module.exports = (() => {
             }
             dataObject.gas = await this.web3.eth.estimateGas(dataObject);
             return dataObject;
+        },
+        sendTransactionByAdmin: async (abi, params, scAddress, onConfirmation) => {
+            const web3 = this.web3;
+            const accouts = await web3.eth.getAccounts();
+            const from = accouts[0]; // 默认由管理员发起交易
+            if (global.env == 'test') { // 测试环境需要先对账户解锁
+                web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
+            }
+            const code = web3.eth.abi.encodeFunctionCall(abi, params);
+            const txObj = await this.getTransactionObj(from, scAddress, code);
+            console.log(`sendTransaction from ${from} to ${scAddress}`);
+            return web3.eth.sendTransaction(txObj)
+                // return this.sc.methods.query(100).send({from: from})
+                .on('transactionHash', (transactionHash) => {
+                    console.log(`FlightDelay addMemberToSF txHash: ${transactionHash}`);
+                })
+                .on('confirmation', (confNumber, receipt) => {
+                    if (onConfirmation) {
+                        onConfirmation(confNumber, receipt);
+                    }
+                })
+                .on('error', (error) => {
+                    console.log(error);
+                });
         }
     }
 })()

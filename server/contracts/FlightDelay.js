@@ -3,23 +3,26 @@ const moment = require('moment');
 const abi = myWeb3.getABI('FlightDelay');
 const SmartContract = require('../models/SmartContract');
 const secret = require('../lib/secret');
-
+let instance;
 class FlightDelay {
+    
     static async instance(address) {
-        if (!address) {
-            let sc = await SmartContract.findOne({
-                name: 'flightDelay'
-            });
-            if (sc) {
-                address = sc.address;
+        if (!instance) {
+            if (!address) {
+                let sc = await SmartContract.findOne({
+                    name: 'flightDelay'
+                });
+                if (sc) {
+                    address = sc.address;
+                }
             }
+            if (!address) {
+                return null;
+            }
+            const web3 = myWeb3.instance();
+            instance = new FlightDelay();
+            instance.sc = new web3.eth.Contract(abi, address);
         }
-        if (!address) {
-            return null;
-        }
-        const web3 = myWeb3.instance();
-        let instance = new FlightDelay();
-        instance.sc = new web3.eth.Contract(abi, address);
         return instance;
     }
     async addMemberToSF(data, onConfirmation) {
@@ -55,6 +58,14 @@ class FlightDelay {
             .on('error', (error) => {
                 console.log(error);
             });
+    }
+
+    async setInterval(interval) {
+        const params = [interval];
+        const abi = myWeb3.getABI('FlightDelay', 'setInterval');
+        const scAddress = this.sc.options.address;
+        await myWeb3.sendTransactionByAdmin(abi, params, scAddress);
+        return this.sc.methods.interval().call();
     }
     // async getResult(flightNo, flightDate, account) {
     //     const web3 = myWeb3.instance();
