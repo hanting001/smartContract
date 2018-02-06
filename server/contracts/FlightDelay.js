@@ -78,7 +78,7 @@ class FlightDelay {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
         const price = await this.sc.methods.getPrice(flightNO).call();
-        const hasQualification = await this.sc.methods.hasQualification(flightNO).call({from: accout});
+        const hasQualification = await this.sc.methods.hasQualification(flightNO).call({from: account});
         const interval = await this.sc.methods.interval().call();
         const count = await this.sc.methods.getSFCount(key).call();
     }
