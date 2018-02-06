@@ -7,7 +7,7 @@ const HbStorage = require('../contracts/HbStorage');
 
 module.exports = (server) => {
     this.path = '/flightDelayAdmin';
-    server.get(this.path + '/setInterval/:interval', auth.jwt, auth.admin, async(req, res, next) => {
+    server.get(this.path + '/setInterval/:interval', auth.jwt, auth.manager, async(req, res, next) => {
         try {
             const interval = Number(req.params.interval);
             
