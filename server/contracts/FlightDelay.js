@@ -1,6 +1,6 @@
 const myWeb3 = require('../lib/web3');
 const moment = require('moment');
-const abi = myWeb3.getABI('HbStorage');
+const abi = myWeb3.getABI('FlightDelay');
 const SmartContract = require('../models/SmartContract');
 const secret = require('../lib/secret');
 
@@ -56,26 +56,30 @@ class FlightDelay {
                 console.log(error);
             });
     }
-    async getResult(flightNo, flightDate, account) {
-        const web3 = myWeb3.instance();
+    // async getResult(flightNo, flightDate, account) {
+    //     const web3 = myWeb3.instance();
+    //     const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
+    //     // const result = await this.sc.methods.scheduledFlights(key).call({from: account});
+    //     // const isInSF = await this.sc.methods.isInSF(key).call({from: account});
+    //     // const sfs = await this.sc.methods.returnSFs().call({from: account});
+    //     // const members = await this.sc.methods.returnMembers(key).call();
+    //     // result.members = members;
+    //     // return {
+    //     //     result: result,
+    //     //     isInSF: isInSF,
+    //     //     sfs: sfs
+    //     // };
+    //     const result = await this.sc.methods.testDateParser(flightNo).call();
+    //     return {
+    //         result: result
+    //     }
+    // }
+    async getSFInfo(flightNO, flightDate, account) {
         const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-        // const result = await this.sc.methods.scheduledFlights(key).call({from: account});
-        // const isInSF = await this.sc.methods.isInSF(key).call({from: account});
-        // const sfs = await this.sc.methods.returnSFs().call({from: account});
-        // const members = await this.sc.methods.returnMembers(key).call();
-        // result.members = members;
-        // return {
-        //     result: result,
-        //     isInSF: isInSF,
-        //     sfs: sfs
-        // };
-        const result = await this.sc.methods.testDateParser(flightNo).call();
-        return {
-            result: result
-        }
-    }
-    async test() {
-        return this.sc.methods.checkDelay().call();
+        const price = await this.sc.methods.getPrice(flightNO).call();
+        const hasQualification = await this.sc.methods.hasQualification().call({from: accout});
+        const interval = await this.sc.methods.interval().call();
+        const count = await this.sc.methods.getSFCount(key).call();
     }
 }
 

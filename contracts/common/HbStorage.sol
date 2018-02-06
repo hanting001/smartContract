@@ -15,6 +15,7 @@ contract HbStorage is Ownable {
     struct SFInfo {
         address[] members;
         SFStatus status;
+        uint count;
         DelayStatus delayStatus;
         bool isValued;
     }
@@ -91,13 +92,17 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-
+    function getSFCount(bytes32 _sfIndex) external view returns (uint) {
+        return scheduledFlights[_sfIndex].count;
+    }
     function addMemberToSF(bytes32 _sfIndex, address _member, bytes32 _votedSFIndex, DelayStatus _vote) external onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
             scheduledFlights[_sfIndex].isValued = true;
         }
         //航班记录中加入用户
         scheduledFlights[_sfIndex].members.push(_member);
+        //用户数加1
+        scheduledFlights[_sfIndex].count += 1;
         // 用户记录中加入航班
         memberInfos[_member].memberSFInfos[_sfIndex] = MemberSF({
             votedSF: _votedSFIndex,
