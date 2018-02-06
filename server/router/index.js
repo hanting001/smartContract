@@ -34,6 +34,12 @@ module.exports = (server) => {
     */
     require('./group')(server);
 
+    /*
+    this.path + /getSFInfo/:flightNO/:flightDate   获取航班相关信息
+
+    */
+    require('./flightDelay')(server);
+
     server.get('/test/:length', async(req, res, next) => {
         try {
             const groupSC = await GroupSC.instance(null, 'G00000001');
