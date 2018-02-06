@@ -26,8 +26,8 @@ module.exports = (server) => {
         try {
             const address = req.params.address;
             
-            const flightDelaySC = await FlightDelay.instance();
-            const result = await flightDelaySC.setAdmin(address);
+            const hbStorageSC = await HbStorage.instance();
+            const result = await hbStorageSC.setAdmin(address);
             res.send({
                 output: result
             });
@@ -40,8 +40,8 @@ module.exports = (server) => {
     server.get(this.path + '/isAdminSC/:address', auth.jwt, auth.manager, async(req, res, next) => {
         try {
             const address = req.params.address;
-            const flightDelaySC = await FlightDelay.instance();
-            const result = await flightDelaySC.isAdmin(address);
+            const hbStorageSC = await HbStorage.instance();
+            const result = await hbStorageSC.isAdmin(address);
             res.send({
                 output: result
             });
