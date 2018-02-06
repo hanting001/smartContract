@@ -38,7 +38,7 @@ class HbStorage {
         const abi = myWeb3.getABI('HbStorage', 'setAdmin');
         const scAddress = this.sc.options.address;
         await myWeb3.sendTransactionByAdmin(abi, params, scAddress);
-        isAdmin = await this.sc.methods.admins(address).call();
+        const isAdmin = await this.sc.methods.admins(address).call();
         return {
             address: {
                 isAdmin: isAdmin
