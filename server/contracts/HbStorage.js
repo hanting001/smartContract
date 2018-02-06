@@ -25,5 +25,32 @@ class HbStorage {
         }
         return instance;
     }
+    async setAdmin(address) {
+        const web3 = myWeb3.instance();
+        if (!web3.utils.isAddress(address)) {
+            return {
+                address: {
+                    isAdmin: false
+                }
+            };
+        }
+        const params = [address];
+        const abi = myWeb3.getABI('HbStorage', 'setAdmin');
+        const scAddress = this.sc.options.address;
+        await myWeb3.sendTransactionByAdmin(abi, params, scAddress);
+        isAdmin = await this.sc.methods.admins(address).call();
+        return {
+            address: {
+                isAdmin: isAdmin
+            }
+        };
+    }
+    async isAdmin(address) {
+        const web3 = myWeb3.instance();
+        if (!web3.utils.isAddress(address)) {
+            return false;
+        }
+        return this.sc.methods.admins(address).call();
+    }
 }
 module.exports = HbStorage;

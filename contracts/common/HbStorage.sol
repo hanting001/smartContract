@@ -46,7 +46,7 @@ contract HbStorage is Ownable {
         string canBuyFlightNO;
         bool isValued;
     }
-    mapping(address => bool) admins;
+    mapping(address => bool) public admins;
     //已出单航班信息 {keccak256(航班号+日期): [SFInfo]}
     mapping(bytes32 => SFInfo) public scheduledFlights;
     //记录航班的投票信息 {keccak256(航班号+日期): [VoteInfo]}
