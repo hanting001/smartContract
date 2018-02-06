@@ -45,6 +45,26 @@ class HbStorage {
         };
         return obj;
     }
+    async removeAdmin(address) {
+        const web3 = myWeb3.instance();
+        if (!web3.utils.isAddress(address)) {
+            return {
+                address: {
+                    isAdmin: false
+                }
+            };
+        }
+        const params = [address];
+        const abi = myWeb3.getABI('HbStorage', 'removeAdmin');
+        const scAddress = this.sc.options.address;
+        await myWeb3.sendTransactionByAdmin(abi, params, scAddress);
+        const isAdmin = await this.sc.methods.admins(address).call();
+        const obj = {};
+        obj[address] = {
+            isAdmin: isAdmin
+        };
+        return obj; 
+    }
     async isAdmin(address) {
         const web3 = myWeb3.instance();
         if (!web3.utils.isAddress(address)) {
