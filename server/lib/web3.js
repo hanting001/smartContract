@@ -227,7 +227,7 @@ module.exports = (() => {
                 web3.eth.personal.unlockAccount(from, secret.getPass(), web3.utils.toHex(15000));
             }
             const code = web3.eth.abi.encodeFunctionCall(abi, params);
-            const txObj = await this.getTransactionObj(from, scAddress, code);
+            const txObj = await self.getTransactionObj(from, scAddress, code);
             console.log(`sendTransaction from ${from} to ${scAddress}`);
             return web3.eth.sendTransaction(txObj)
                 // return this.sc.methods.query(100).send({from: from})
