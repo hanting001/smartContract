@@ -25,7 +25,7 @@ class FlightDelay {
         }
         return instance;
     }
-    async addMemberToSF(data, onConfirmation) {
+    async joinToSF(data, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
         const from = accouts[0]; // 默认由管理员发起交易

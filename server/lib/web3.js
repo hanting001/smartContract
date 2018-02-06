@@ -232,7 +232,27 @@ module.exports = (() => {
             return web3.eth.sendTransaction(txObj)
                 // return this.sc.methods.query(100).send({from: from})
                 .on('transactionHash', (transactionHash) => {
-                    console.log(`FlightDelay addMemberToSF txHash: ${transactionHash}`);
+                    console.log(`txHash: ${transactionHash}`);
+                })
+                .on('confirmation', (confNumber, receipt) => {
+                    if (onConfirmation) {
+                        onConfirmation(confNumber, receipt);
+                    }
+                })
+                .on('error', (error) => {
+                    console.log(error);
+                });
+        },
+        sendTransactionByUser: async (account, abi, params, scAddress, onConfirmation) => {
+            const web3 = this.web3;
+            const from = account; 
+            const code = web3.eth.abi.encodeFunctionCall(abi, params);
+            const txObj = await self.getTransactionObj(from, scAddress, code);
+            console.log(`sendTransaction from ${from} to ${scAddress}`);
+            return web3.eth.sendTransaction(txObj)
+                // return this.sc.methods.query(100).send({from: from})
+                .on('transactionHash', (transactionHash) => {
+                    console.log(`txHash: ${transactionHash}`);
                 })
                 .on('confirmation', (confNumber, receipt) => {
                     if (onConfirmation) {
