@@ -85,6 +85,9 @@ contract FlightDelay is Ownable, Stoppable {
 
         hbs.addMemberToSF(sfIndex, msg.sender, votedSfIndex, vote);
         hbs.setCanBuy(msg.sender, "");
+        if (hbs.getSFCount(sfIndex) == maxCount) {
+            hbs.setClose(sfIndex);
+        }
         UserJoin(flightNO, flightDate, msg.sender);
     }  
 

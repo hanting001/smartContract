@@ -91,10 +91,12 @@ class FlightDelay {
         const price = await this.sc.methods.getPrice(flightNO).call();
         const hasQualification = await this.sc.methods.hasQualification(flightNO).call({from: account});
         const interval = await this.sc.methods.interval().call();
+        const maxCount = await this.sc.methods.maxCount().call();
         const count = await this.sc.methods.getSFCount(key).call();
         return {
             price: price,
             interval: interval,
+            maxCount: maxCount,
             count: count,
             hasQualification: hasQualification
         };

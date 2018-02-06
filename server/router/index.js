@@ -41,8 +41,9 @@ module.exports = (server) => {
     require('./flightDelay')(server);
 
     /*
-    this.path + /setInterval/:interval   设置可购买间隔
-
+    this.path + /setInterval/:interval      设置可购买时间距离当前时间的间隔（单位小时）
+    this.path + '/setAdminSC/:address'      将某合约地址设置到hbStorage的管理地址列表中
+    this.path + '/isAdminSC/:address'       查询某合约地址是否在hbStorage的管理地址中
     */
     require('./flightDelayAdmin')(server);
 
