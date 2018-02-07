@@ -59,8 +59,6 @@ contract FlightDelay is Ownable, Stoppable {
         require(!flightNO.toSlice().empty());
         return hbs.canBuy(msg.sender, flightNO);
     }
-
-
     /** @dev 用户加入航班计划 
       * @param flightNO 航班号
       * @param flightDate 航班日期，格式:yyyy-mm-dd
@@ -90,6 +88,4 @@ contract FlightDelay is Ownable, Stoppable {
         }
         UserJoin(flightNO, flightDate, msg.sender);
     }  
-
-    
 }

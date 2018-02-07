@@ -35,8 +35,8 @@ module.exports = (server) => {
     require('./group')(server);
 
     /*
-    this.path + /getSFInfo/:flightNO/:flightDate   获取航班相关信息
-
+    this.path + /getSFInfo/:flightNO/:flightDate    获取航班相关信息
+    this.path + '/getVotingSF'                      得到当前投票中的航班
     */
     require('./flightDelay')(server);
 

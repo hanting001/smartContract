@@ -12,7 +12,7 @@ module.exports = (server) => {
             const interval = Number(req.params.interval);
             
             const flightDelaySC = await FlightDelay.instance();
-            const result = await flightDelaySC.setInterval(interval);
+            const result = await flightDelaySC.setIntervalByAdmin(interval);
             res.send({
                 output: result
             });

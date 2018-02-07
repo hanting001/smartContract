@@ -25,6 +25,8 @@ class FlightDelay {
         }
         return instance;
     }
+
+    /*------------发起交易的方法 start-----------------*/
     async joinToSF(data, onConfirmation) {
         const web3 = myWeb3.instance();
         const accouts = await web3.eth.getAccounts();
@@ -59,32 +61,16 @@ class FlightDelay {
                 console.log(error);
             });
     }
-
-    async setInterval(interval) {
+    async setIntervalByAdmin(interval) {
         const params = [interval];
         const abi = myWeb3.getABI('FlightDelay', 'setInterval');
         const scAddress = this.sc.options.address;
         await myWeb3.sendTransactionByAdmin(abi, params, scAddress);
         return this.sc.methods.interval().call();
     }
-    // async getResult(flightNo, flightDate, account) {
-    //     const web3 = myWeb3.instance();
-    //     const key = web3.utils.keccak256(flightNo + moment(flightDate).format('YYYY-MM-DD'));
-    //     // const result = await this.sc.methods.scheduledFlights(key).call({from: account});
-    //     // const isInSF = await this.sc.methods.isInSF(key).call({from: account});
-    //     // const sfs = await this.sc.methods.returnSFs().call({from: account});
-    //     // const members = await this.sc.methods.returnMembers(key).call();
-    //     // result.members = members;
-    //     // return {
-    //     //     result: result,
-    //     //     isInSF: isInSF,
-    //     //     sfs: sfs
-    //     // };
-    //     const result = await this.sc.methods.testDateParser(flightNo).call();
-    //     return {
-    //         result: result
-    //     }
-    // }
+    /*------------发起交易的方法 end-----------------*/
+
+    /*------------发起查询的方法 start-----------------*/
     async getSFInfo(flightNO, flightDate, account) {
         const web3 = myWeb3.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
@@ -101,6 +87,11 @@ class FlightDelay {
             hasQualification: hasQualification
         };
     }
+    async getVotingSF() {
+        const web3 = myWeb3.instance();
+        
+    }
+    /*------------发起查询的方法 end-----------------*/
 }
 
 module.exports = FlightDelay;

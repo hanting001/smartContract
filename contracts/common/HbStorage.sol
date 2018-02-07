@@ -29,9 +29,12 @@ contract HbStorage is Ownable {
         bool isValued;
     }
     struct VoteInfo {
-        VotedMember[] votedMembers;
-        uint yesCounts;
+        // VotedMember[] votedMembers;
+        uint delay1Counts;
+        uint delay2Counts;
+        uint delay3Counts;
         uint noCounts;
+        bool ended;
         bool isValued;
     }
     struct MemberSF {
@@ -50,7 +53,9 @@ contract HbStorage is Ownable {
     //已出单航班信息 {keccak256(航班号+日期): [SFInfo]}
     mapping(bytes32 => SFInfo) public scheduledFlights;
     //记录航班的投票信息 {keccak256(航班号+日期): [VoteInfo]}
-    mapping(bytes32 => VoteInfo[])  public votes;
+    mapping(bytes32 => VoteInfo)  public voteInfos;
+    //当前需要投票的航班，该投票结束后清零或者赋值下一个需要投票的航班
+    bytes32 public  currentVote;
     //记录航班的历史延误信息 {keccak256(航班号+日期): SFHistroy}
     mapping(bytes32 => SFHistroy) public sfHistroy;
     //记录用户的航班信息
@@ -80,7 +85,7 @@ contract HbStorage is Ownable {
     // function HbStorage() public {
     //     // constructor
     // }
-    function isMemberInSF(bytes32 _sfIndex, address member) external view returns (bool) {
+    function isMemberInSF(bytes32 _sfIndex, address member) public view returns (bool) {
         if (memberInfos[member].isValued) {
             var sfs = memberInfos[member].memberSFInfos;
             if (sfs[_sfIndex].isValued) {
@@ -92,10 +97,10 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-    function getSFCount(bytes32 _sfIndex) external view returns (uint) {
+    function getSFCount(bytes32 _sfIndex) public view returns (uint) {
         return scheduledFlights[_sfIndex].count;
     }
-    function addMemberToSF(bytes32 _sfIndex, address _member, bytes32 _votedSFIndex, DelayStatus _vote) external onlyAdmin {
+    function addMemberToSF(bytes32 _sfIndex, address _member, bytes32 _votedSFIndex, DelayStatus _vote) public onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
             scheduledFlights[_sfIndex].isValued = true;
         }
@@ -113,10 +118,10 @@ contract HbStorage is Ownable {
 
         MemberAdded(_sfIndex, _member);  
     }
-    function setClose(bytes32 _sfIndex) external onlyAdmin{
+    function setClose(bytes32 _sfIndex) public onlyAdmin{
         scheduledFlights[_sfIndex].status = SFStatus.closed;
     }
-    function isOpening(bytes32 _sfIndex) external returns (bool) {
+    function isOpening(bytes32 _sfIndex) public returns (bool) {
         if (scheduledFlights[_sfIndex].status == SFStatus.opening) {
             return true;
         } else {
@@ -126,7 +131,7 @@ contract HbStorage is Ownable {
     /** @dev 检查用户是否加入航班计划 
       * @param _sfIndex 航班号+航班日期
       */
-    function isInSF(bytes32 _sfIndex) external view returns (bool) {
+    function isInSF(bytes32 _sfIndex) public view returns (bool) {
         if (memberInfos[msg.sender].isValued) {
             var sfs = memberInfos[msg.sender].memberSFInfos;
             if (sfs[_sfIndex].isValued) {
@@ -138,14 +143,14 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-    function canBuy(address member, string flightNO) external returns (bool) {
+    function canBuy(address member, string flightNO) public returns (bool) {
         if (flightNO.toSlice().compare(memberInfos[member].canBuyFlightNO.toSlice()) == 0) {
             return true;
         } else {
             return false;
         }
     }
-    function setCanBuy(address member, string flightNO) external onlyAdmin{
+    function setCanBuy(address member, string flightNO) public onlyAdmin{
         memberInfos[member].canBuyFlightNO = flightNO;
     }
     /** @dev 返回用户的航班计划 

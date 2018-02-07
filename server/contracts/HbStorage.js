@@ -72,5 +72,15 @@ class HbStorage {
         }
         return this.sc.methods.admins(address).call();
     }
+    async getVotingInfo() {
+        const web3 = myWeb3.instance();
+        const currentVote = await this.sc.methods.currentVote().call();
+        // if (currentVote != '') {
+        return {
+            sfIndex: currentVote,
+            sfinfo: await this.sc.methods.voteInfos(currentVote).call()
+        }
+        // }
+    }
 }
 module.exports = HbStorage;
