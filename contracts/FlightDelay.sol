@@ -49,6 +49,9 @@ contract FlightDelay is Ownable, Stoppable {
             hbs.setCanBuy(msg.sender, "");
         }
     }
+    /** @dev 获取已经购买该航班的用户数
+      * @param _sfIndex 航班序列号（航班号+航班日期）
+      */
     function getSFCount(bytes32 _sfIndex) public view returns (uint) {
         return hbs.getSFCount(_sfIndex);
     }

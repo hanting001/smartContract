@@ -1,5 +1,6 @@
 const myWeb3 = require('../lib/web3');
 const errors = require('restify-errors');
+const moment = require('moment');
 const auth = require('../lib/auth');
 
 const FlightDelay = require('../contracts/FlightDelay');
@@ -35,9 +36,10 @@ module.exports = (server) => {
             next(new errors.InternalServerError(err));
         }
     });
-    server.post(this.path + '/joinSF/:flightNO/:flightDate', auth.jwt, async (req, res, next) => {
+    server.get(this.path + '/joinSF/:flightNO/:flightDate', auth.jwt, async (req, res, next) => {
         try {
-            const input = req.body.input;
+            const flightNO = req.params.flightNO;
+            const flightDate = req.params.flightDate;
             /*
                 开始校验
                 1 日期格式校验
@@ -50,9 +52,20 @@ module.exports = (server) => {
                 1 对投票做校验
                 2 对投票的航班做校验
             */
-
+            const m = moment(flightDate);
+            if (!m.isValid()) {
+                throw '日期格式不正确';
+            }
+            const flightDelaySC = await FlightDelay.instance();
+            const sfInfo = await flightDelaySC.getSFInfo(flightNO, flightDate, req.user.account);
+            
+            res.send({
+                output: 'ok'
+            });
+            next();
         } catch (err) {
-
+            console.log(err);
+            next(new errors.InternalServerError(err));
         }
     });
 };
