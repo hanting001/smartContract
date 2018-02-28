@@ -82,5 +82,17 @@ class HbStorage {
         }
         // }
     }
-}
+    //查询航班是否开放购买
+    async isOpening(flightNO, flightDate) {
+        const web3 = myWeb3.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        return this.sc.methods.isOpening(key).call();
+    }
+    //查询用户是否已经购买了该航班
+    async isInSF(flightNO, flightDate, account) {
+        const web3 = myWeb3.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        return this.sc.methods.isInSF(key).call({from: account});
+    }
+} 
 module.exports = HbStorage;

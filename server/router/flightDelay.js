@@ -57,8 +57,27 @@ module.exports = (server) => {
                 throw '日期格式不正确';
             }
             const flightDelaySC = await FlightDelay.instance();
+            const hbStorageSC = await HbStorage.instance();
             const sfInfo = await flightDelaySC.getSFInfo(flightNO, flightDate, req.user.account);
-            
+            console.log(sfInfo);
+            const now = moment();
+            if(now.add(sfInfo.interval, 'hours').isAfter(m)) {
+                throw `航班日期必须大于当前日期${sfInfo.interval}个小时`;
+            }
+            if (sfInfo.count >= sfInfo.maxCount) {
+                throw `该航班已满额`;
+            }
+            const isOpening = await hbStorageSC.isOpening(flightNO, flightDate);
+            if (!isOpening) {
+                throw '该航班已关闭购买';
+            }
+            const isInSF = await hbStorageSC.isInSF(flightNO, flightDate, req.user.account);
+            if (isInSF) {
+                throw '不能重复购买'
+            }
+            if (!sfInfo.hasQualification) {//无购买资格，需用token换取购买资格
+
+            }
             res.send({
                 output: 'ok'
             });
