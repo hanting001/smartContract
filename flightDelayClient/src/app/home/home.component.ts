@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Web3Service } from '../service/index';
+import { Web3Service, FlightDelayService } from '../service/index';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +9,15 @@ import { Web3Service } from '../service/index';
 })
 export class HomeComponent implements OnInit {
   account: string;
-  constructor(private web3: Web3Service) { }
+  sfInfo: string;
+  constructor(private web3: Web3Service, private flightDelayService: FlightDelayService) { }
 
   ngOnInit() {
     this.web3.getMainAccount().then(account => {
       this.account = account;
     });
+    this.flightDelayService.getSFInfo('SF5050', '2018-03-09').then(result => {
+      this.sfInfo = JSON.stringify(result);
+    });
   }
-
 }
