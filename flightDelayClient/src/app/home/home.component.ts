@@ -25,4 +25,13 @@ export class HomeComponent implements OnInit {
       this.sfInfo = JSON.stringify(result);
     });
   }
+  async sendTx() {
+    const confirmApprove = async (confirmationNumber, receipt) => {
+      if (confirmationNumber === 2) {
+        const result = await this.flightDelayService.getSFInfo('SF5050', '2018-03-09');
+        this.sfInfo = JSON.stringify(result);
+      }
+    };
+    this.flightDelayService.setMaxCount(Math.random() * 100, confirmApprove);
+  }
 }

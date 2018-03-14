@@ -13,6 +13,9 @@ export class Web3Service {
     this.web3.setProvider('http://localhost:7545');
   }
   async getMainAccount() {
+    if (this.web3.eth.defaultAccount) {
+      return this.web3.eth.defaultAccount;
+    }
     const accounts = await this.web3.eth.getAccounts();
     this.web3.eth.defaultAccount = accounts[0];
     return accounts[0];
@@ -49,5 +52,38 @@ export class Web3Service {
     const sc = new this.web3.eth.Contract(abi, address);
     this.contracts[name] = sc;
     return sc;
+  }
+  // 通过组装参数，调用web3.eth.sendTransaction发起交易，一般不需要
+  async sendTx(params, to, scName, func, onConfirmation) {
+    const from = await this.getMainAccount();
+    const abi = await this.getABI(scName, func);
+    const code = this.web3.eth.abi.encodeFunctionCall(abi, params);
+    const txObj = await this.getTransactionObj(from, to, code);
+    console.log(`sendTransaction from ${from} to ${to}`);
+    return this.web3.eth.sendTransaction(txObj)
+      // return this.sc.methods.query(100).send({from: from})
+      .on('transactionHash', (transactionHash) => {
+        console.log(`${scName} ${func} txHash: ${transactionHash}`);
+      })
+      .on('confirmation', (confNumber, receipt) => {
+        if (onConfirmation) {
+          onConfirmation(confNumber, receipt);
+        }
+      })
+      .on('error', (error) => {
+        console.log(error);
+      });
+  }
+
+  async getTransactionObj(from, to, code) {
+    const dataObject: any = {
+      to: to,
+      data: code
+    };
+    if (from) {
+      dataObject.from = from;
+    }
+    dataObject.gas = await this.web3.eth.estimateGas(dataObject);
+    return dataObject;
   }
 }
