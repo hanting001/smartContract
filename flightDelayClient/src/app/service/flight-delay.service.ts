@@ -27,7 +27,6 @@ export class FlightDelayService {
   // 设置最大可购买数
   async setMaxCount(count, onConfirmation) {
     const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
-    const web3 = this.web3Service.instance();
     const options = {
       from: await this.web3Service.getMainAccount()
     };
