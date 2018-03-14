@@ -1,4 +1,40 @@
-<div class="container-fluid">
+<div class="container-fluid" style="background-image: url('/assets/images/flight.jpg');background-size:cover;height:100%">
   <!-- Content here -->
-  <img class="img-fluid" src="assets/images/flight.jpg">
+  <header style="height:100px;"></header>
+  <div class="row">
+    <div class="col col-md-1 ">
+    </div>
+    <div class="col col-md-3 ">
+      <h1 style="color: #FFFFFF;font-size:2rem">WORLD CUP</h1>
+    </div>
+    <div class="col-md-7">
+      <tabset #staticTabs>
+        <tab heading="首页">
+          <div [ngStyle]="{'height':winHeight}">
+          </div>
+        </tab>
+        <tab heading="关于我们">
+          <div style="background-color: #FFFFFF;" [ngStyle]="{'height':winHeight}">
+            <p class="text-justify">Ambitioni dedisse scripsisse iudicaretur. Cras mattis iudicium purus sit amet fermentum. Donec sed odio operae,
+              eu vulputate felis rhoncus. Praeterea iter est quasdam res quas ex communi. At nos hinc posthac, sitientis
+              piros Afros. Petierunt uti sibi concilium totius Galliae in diem certam indicere. Cras mattis iudicium purus
+              sit amet fermentum.</p>
+
+            <p class="text-left">Left aligned text on all viewport sizes.</p>
+            <p class="text-center">Center aligned text on all viewport sizes.</p>
+            <p class="text-right">Right aligned text on all viewport sizes.</p>
+
+            <p class="text-sm-left">Left aligned text on viewports sized SM (small) or wider.</p>
+            <p class="text-md-left">Left aligned text on viewports sized MD (medium) or wider.</p>
+            <p class="text-lg-left">Left aligned text on viewports sized LG (large) or wider.</p>
+            <p class="text-xl-left">Left aligned text on viewports sized XL (extra-large) or wider.</p>
+          </div>
+        </tab>
+      </tabset>
+    </div>
+
+  </div>
+  <div class="col-md-6 col-md-offset-3">
+
+  </div>
 </div>

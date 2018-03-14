@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-
+import { TabsModule } from 'ngx-bootstrap';
 import { Web3Service, FlightDelayService } from './service/index';
 
 @NgModule({
@@ -17,7 +17,8 @@ import { Web3Service, FlightDelayService } from './service/index';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    TabsModule.forRoot()
   ],
   providers: [Web3Service, FlightDelayService],
   bootstrap: [AppComponent]

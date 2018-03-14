@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Web3Service, FlightDelayService } from '../service/index';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +11,11 @@ import { Web3Service, FlightDelayService } from '../service/index';
 export class HomeComponent implements OnInit {
   account: string;
   sfInfo: string;
-  constructor(private web3: Web3Service, private flightDelayService: FlightDelayService) { }
+  winHeight: any;
+  constructor(private web3: Web3Service, private flightDelayService: FlightDelayService) {
+    this.winHeight = ($(window).height() - 100) + 'px';
+
+  }
 
   ngOnInit() {
     this.web3.getMainAccount().then(account => {
