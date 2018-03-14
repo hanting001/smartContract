@@ -3,4 +3,4 @@ node_modules/
 /build/
 installed_contracts/
 dump.rdb
-/client/node_modules/
+/flightDelayClient/node_modules/
