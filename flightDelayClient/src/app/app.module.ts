@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +19,8 @@ import { Web3Service, FlightDelayService } from './service/index';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    ScrollToModule.forRoot()
   ],
   providers: [Web3Service, FlightDelayService],
   bootstrap: [AppComponent]
