@@ -6,17 +6,18 @@
   </div>
 </div>
 
-<div class="jumbotron bg-info" id="changePage" >
+<div class="jumbotron bg-info" id="changePage">
   <h1>参加互助</h1>
   <p class="lead">参加说明</p>
-  <form class="form-inline" (ngSubmit)="buyToken()" [formGroup]="form">
+  <form class="form-inline" (ngSubmit)="join()" [formGroup]="form">
     <div class="form-group mb-2">
       <label for="flightNO" class="sr-only">flightNO</label>
       <input type="text" class="form-control-lg" id="flightNO" formControlName="flightNO" placeholder="航班号">
     </div>
     <div class="form-group mx-sm-3 mb-2">
       <label for="flightDate" class="sr-only">Password</label>
-      <input type="text" class="form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+      <input type="text" class="form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker [minDate]="minDate"
+        placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
     </div>
     <button type="submit" class="btn btn-primary btn-lg mb-2">加入</button>
   </form>
@@ -32,5 +33,16 @@
     <div *ngIf="flightDate.errors.required">
       航班日期必须输入
     </div>
+    <div *ngIf="flightDate.errors.bsDate">
+      日期格式不正确
+    </div>
   </div>
 </div>
+
+<ng-template #confirmTemplate>
+  <div class="modal-body text-center">
+    <p>{{confirmMessage}}</p>
+    <button type="button" class="btn btn-primary" (click)="goChange()">前往兑换</button>
+    <button type="button" class="btn btn-default" (click)="decline()">不</button>
+  </div>
+</ng-template>

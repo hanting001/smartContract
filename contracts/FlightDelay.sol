@@ -62,6 +62,14 @@ contract FlightDelay is Ownable, Stoppable {
         require(!flightNO.toSlice().empty());
         return hbs.canBuy(msg.sender, flightNO);
     }
+    // /** @dev 获取当前处于投票中的航班信息
+    //   */
+    // function getCurrentVote() public view returns (bytes32) {
+    //     bytes32 currentVote = hbs.currentVote();
+    //     return currentVote;
+    // }
+
+
     /** @dev 用户加入航班计划 
       * @param flightNO 航班号
       * @param flightDate 航班日期，格式:yyyy-mm-dd

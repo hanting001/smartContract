@@ -17,7 +17,7 @@ export class Web3Service {
       return this.web3.eth.defaultAccount;
     }
     const accounts = await this.web3.eth.getAccounts();
-    this.web3.eth.defaultAccount = accounts[0];
+    this.web3.eth.defaultAccount = accounts[accounts.length - 1];
     return accounts[0];
   }
   instance() {
