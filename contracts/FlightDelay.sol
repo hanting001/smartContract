@@ -13,6 +13,7 @@ contract FlightDelay is Ownable, Stoppable {
     KnotToken token;
     uint public interval = 24;//只能买24小时以后的产品
     uint public maxCount = 150;//每个航班最大的组员数量
+    uint public rate = 4000;
 
     event UserJoin(string flightNO, string flightDate, address user);
 
@@ -26,6 +27,9 @@ contract FlightDelay is Ownable, Stoppable {
     }
     function setMaxCount(uint count) public onlyOwner {
         maxCount = count;
+    }
+    function setRate(uint _rate) public onlyOwner {
+        rate = _rate;
     }
 
     /** @dev 用户获取航班价格
@@ -99,4 +103,14 @@ contract FlightDelay is Ownable, Stoppable {
         }
         UserJoin(flightNO, flightDate, msg.sender);
     }  
+    /** @dev 用户兑换token 
+      */  
+    function exchange() public payable stopInEmergency {
+        uint eth = msg.value;
+        uint min = 1 wei / rate;
+        uint max = 1 wei * 1000 / rate;
+        require( eth >= min);
+        require( eth <= max);
+        owner.transfer(eth);
+    }
 }

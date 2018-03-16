@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-
+import { Router } from '@angular/router';
 import { Web3Service, FlightDelayService } from '../service/index';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -22,7 +22,8 @@ export class HomeComponent implements OnInit {
   @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
   constructor(private fb: FormBuilder, private web3: Web3Service,
     private flightDelayService: FlightDelayService, private localService: BsLocaleService,
-    private modalService: BsModalService) {
+    private modalService: BsModalService,
+    private router: Router) {
     this.form = this.fb.group({
       flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
       flightDate: ['', [Validators.required]]
@@ -66,12 +67,13 @@ export class HomeComponent implements OnInit {
   }
 
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-lg'});
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
   }
   decline() {
     this.modalRef.hide();
   }
-  goChange() {
+  goExchange() {
+    this.router.navigate(['/exchange']);
   }
   get flightNO() { return this.form.get('flightNO'); }
   get flightDate() { return this.form.get('flightDate'); }

@@ -10,16 +10,22 @@ defineLocale('zh-cn', zhCnLocale);
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
+import { Web3Service, FlightDelayService } from './service/index';
+
+
+
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-
-import { Web3Service, FlightDelayService } from './service/index';
+import { ExchangeComponent } from './exchange/exchange.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ExchangeComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

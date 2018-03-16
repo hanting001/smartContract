@@ -45,6 +45,21 @@ export class FlightDelayService {
       token: web3.utils.fromWei(token)
     };
   }
+  async getBalanceByAccount(account) {
+    const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
+    const web3 = this.web3Service.instance();
+    const eth = await web3.eth.getBalance(account);
+    const token = await tokenSC.methods.balanceOf(account).call();
+    return {
+      eth: web3.utils.fromWei(eth),
+      token: web3.utils.fromWei(token)
+    };
+  }
+  // 获取eth和token的汇率
+  async getRate() {
+    const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+    return sc.methods.rate().call();
+  }
   // 获取航班价格
   async getPrice(flightNO) {
     const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
