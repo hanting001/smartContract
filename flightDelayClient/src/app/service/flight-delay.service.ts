@@ -84,4 +84,41 @@ export class FlightDelayService {
         console.log(error);
       });
   }
+  // 兑换token
+  async exchange(value, onConfirmation) {
+    const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+    // const address = await this.web3Service.getAddress('flightDelay');
+    // console.log(address);
+    const options = {
+      from: await this.web3Service.getMainAccount(),
+      value: value
+    };
+    console.log(options);
+    sc.methods.exchange().send(options)
+      .on('transactionHash', (transactionHash) => {
+        console.log(`exchange txHash: ${transactionHash}`);
+      })
+      .on('confirmation', (confNumber, receipt) => {
+        if (onConfirmation) {
+          onConfirmation(confNumber, receipt);
+        }
+      })
+      .on('error', (error) => {
+        console.log(error);
+      });
+    // const web3 = this.web3Service.instance();
+    // return web3.eth.sendTransaction(options)
+    //   // return this.sc.methods.query(100).send({from: from})
+    //   .on('transactionHash', (transactionHash) => {
+    //     console.log(`exchange txHash: ${transactionHash}`);
+    //   })
+    //   .on('confirmation', (confNumber, receipt) => {
+    //     if (onConfirmation) {
+    //       onConfirmation(confNumber, receipt);
+    //     }
+    //   })
+    //   .on('error', (error) => {
+    //     console.log(error);
+    //   });
+  }
 }

@@ -28,6 +28,7 @@ export class AdminComponent implements OnInit {
     const accounts = await web3.eth.getAccounts();
     // 第一个账户用于部署合约
     const from = accounts[0];
+    console.log(from);
     const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
     tokenSC.methods.transfer(this.account, web3.utils.toWei('10000')).send({from: from})
     .on('confirmation', async (confNumber, receipt) => {

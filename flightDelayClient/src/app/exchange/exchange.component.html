@@ -2,9 +2,9 @@
   <h1>兑换说明</h1>
   <p class="lead">说明详细文案</p>
 
-  <div class="card w-50">
+  <div class="card w-80">
     <div class="card-body">
-      <h5 class="card-title">账户余额</h5>
+      <h5 class="card-title">{{account}}账户余额</h5>
       <div class="row">
         <div class="col">
           <h6 class="card-subtitle mb-2 mr-2 text-muted">ETH</h6>
@@ -18,10 +18,10 @@
       <div class="row mt-3 mb-3">
         <div class="col">
           <div class="input-group mb-3">
-            <input type="number" class="form-control" placeholder="ETH" aria-label="input ETH">
-            <input type="number" class="form-control" readonly aria-label="input token">
+            <input type="number" class="form-control" #eth (change)="countToken($event)" placeholder="ETH" aria-label="input ETH">
+            <input type="number" class="form-control" value="{{tokenCount}}" readonly aria-label="input token">
             <div class="input-group-append">
-              <button class="btn btn-info" type="button">兑换</button>
+              <button class="btn btn-info" type="button" (click)="exchange(eth.value)">兑换</button>
             </div>
           </div>
         </div>

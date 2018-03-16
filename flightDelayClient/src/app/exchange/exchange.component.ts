@@ -9,16 +9,44 @@ import { Web3Service, FlightDelayService } from '../service/index';
 })
 export class ExchangeComponent implements OnInit {
   balance: any;
+  rate: any;
+  tokenCount: any;
+  account: any;
+  value: any;
   constructor(
-    private web3: Web3Service,
+    private web3Service: Web3Service,
     private flightDelayService: FlightDelayService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // this.flightDelayService.getBalance().then( balance => {
-    //   this.balance = balance;
-    // });
     this.balance = this.route.snapshot.data.balance;
+    this.flightDelayService.getRate().then(rate => {
+      this.rate = rate;
+    });
+    this.web3Service.getMainAccount().then(account => {
+      this.account = account;
+    });
   }
-
+  async countToken($event) {
+    if (!this.rate) {
+      this.rate = await this.flightDelayService.getRate();
+    }
+    const value = Number($event.target.value);
+    if (value) {
+      this.tokenCount = value * this.rate;
+    }
+  }
+  async exchange(inputValue) {
+    const value = Number(inputValue);
+    if (value) {
+      const web3 = this.web3Service.instance();
+      const confirmApprove = async (confirmationNumber, receipt) => {
+        if (confirmationNumber === 2) {
+          this.balance = await this.flightDelayService.getBalance();
+        }
+      };
+      const valueInWei = web3.utils.toWei(String(value));
+      this.flightDelayService.exchange(valueInWei, confirmApprove);
+    }
+  }
 }

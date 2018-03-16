@@ -105,12 +105,11 @@ contract FlightDelay is Ownable, Stoppable {
     }  
     /** @dev 用户兑换token 
       */  
-    function exchange() public payable stopInEmergency {
-        uint eth = msg.value;
-        uint min = 1 wei / rate;
-        uint max = 1 wei * 1000 / rate;
-        require( eth >= min);
-        require( eth <= max);
-        owner.transfer(eth);
+    function exchange() public payable {
+        uint eth = msg.value; 
+        uint tokenCount = eth * rate;
+        // require( tokenCount >= 1 ether);
+        // require( tokenCount <= 1 ether * 1000);
+        token.transfer(msg.sender, tokenCount);
     }
 }
