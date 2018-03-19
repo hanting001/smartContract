@@ -1,3 +1,4 @@
+import { LoadingService } from '../service/loading.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Web3Service, FlightDelayService } from '../service/index';
@@ -16,11 +17,11 @@ export class ExchangeComponent implements OnInit {
     constructor(
         private web3Service: Web3Service,
         private flightDelayService: FlightDelayService,
-        private route: ActivatedRoute) { }
+        private route: ActivatedRoute,
+        public loadingSer: LoadingService) { }
 
     ngOnInit() {
         this.balance = this.route.snapshot.data.balance;
-        console.log(this.balance);
         this.flightDelayService.getRate().then(rate => {
             this.rate = rate;
         });
@@ -38,12 +39,15 @@ export class ExchangeComponent implements OnInit {
         }
     }
     async exchange(inputValue) {
+
         const value = Number(inputValue);
         if (value) {
+            this.loadingSer.show();
             const web3 = this.web3Service.instance();
             const confirmApprove = async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 2) {
                     this.balance = await this.flightDelayService.getBalance();
+                    this.loadingSer.hide();
                 }
             };
             const valueInWei = web3.utils.toWei(String(value));
