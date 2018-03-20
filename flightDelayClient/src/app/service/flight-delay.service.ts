@@ -26,6 +26,9 @@ export class FlightDelayService {
   // 获取当前投票信息
   async getCurrentVote() {
     const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
+
+    console.log(storage);
+
     const currentVote = await storage.methods.currentVote().call();
     const voteInfo = await storage.methods.voteInfos(currentVote).call();
     if (voteInfo.isValued) {
@@ -98,10 +101,8 @@ export class FlightDelayService {
       .on('transactionHash', (transactionHash) => {
         console.log(`exchange txHash: ${transactionHash}`);
       })
-      .on('confirmation', async (confNumber, receipt) => {
+      .on('confirmation', (confNumber, receipt) => {
         if (onConfirmation) {
-          // const tokenCount = await sc.methods.tokenCount().call();
-          // console.log(tokenCount);
           onConfirmation(confNumber, receipt);
         }
       })

@@ -1,3 +1,4 @@
+import { LoadingService } from '../service/loading.service';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Web3Service, FlightDelayService } from '../service/index';
@@ -7,74 +8,105 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  account: string;
-  sfInfo: string;
-  winHeight: any;
-  form: FormGroup;
-  minDate: Date;
-  modalRef: BsModalRef;
-  confirmMessage: string;
-  @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
-  constructor(private fb: FormBuilder, private web3: Web3Service,
-    private flightDelayService: FlightDelayService, private localService: BsLocaleService,
-    private modalService: BsModalService,
-    private router: Router) {
-    this.form = this.fb.group({
-      flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
-      flightDate: ['', [Validators.required]]
-    });
-  }
+    account: string;
+    sfInfo: string;
+    winHeight: any;
+    form: FormGroup;
+    minDate: Date;
+    modalRef: BsModalRef;
+    confirmMessage: string;
+    isSupportBrowser: Boolean = true;
+    checkEnv: Boolean = true;
 
-  ngOnInit() {
-    this.web3.getMainAccount().then(account => {
-      this.account = account;
-    });
-    // 测试
-    this.flightDelayService.getCurrentVote();
-    this.localService.use('zh-cn');
-    this.minDate = new Date();
-    this.minDate.setDate(this.minDate.getDate() + 1);
-  }
-  async sendTx() {
-    const confirmApprove = async (confirmationNumber, receipt) => {
-      if (confirmationNumber === 2) {
-        const result = await this.flightDelayService.getSFInfo('SF5050', '2018-03-09');
-        this.sfInfo = JSON.stringify(result);
-      }
-    };
-    this.flightDelayService.setMaxCount(Math.random() * 100, confirmApprove);
-  }
-  async join() {
-    if (this.form.valid) {
-      const model = this.form.value;
-      const currentVote = await this.flightDelayService.getCurrentVote();
-      const balance = await this.flightDelayService.getBalance();
-      const price = await this.flightDelayService.getPrice(model.flightNO);
-      console.log(balance);
-      console.log(price);
-      if (balance.token < price) {
-        this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
-        this.openModal(this.confirmTemplate);
-      }
-      // this.router.navigate(['/']);
+
+    @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
+    constructor(private fb: FormBuilder, private web3: Web3Service,
+        private flightDelayService: FlightDelayService, private localService: BsLocaleService,
+        private modalService: BsModalService,
+        private router: Router, public loadingSer: LoadingService) {
+        this.isSupportBrowser = this.getIsSupportBrowser();
+        this.form = this.fb.group({
+            flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
+            flightDate: ['', [Validators.required]]
+        });
+
     }
-    const flightDate = this.form.get('flightDate');
-  }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
-  }
-  decline() {
-    this.modalRef.hide();
-  }
-  goExchange() {
-    this.router.navigate(['/exchange']);
-  }
-  get flightNO() { return this.form.get('flightNO'); }
-  get flightDate() { return this.form.get('flightDate'); }
+    ngOnInit() {
+        this.web3.getMainAccount().then(account => {
+            this.account = account;
+        });
+        // 测试
+        this.flightDelayService.getCurrentVote();
+        this.localService.use('zh-cn');
+        this.minDate = new Date();
+        this.minDate.setDate(this.minDate.getDate() + 1);
+    }
+    async sendTx() {
+        const confirmApprove = async (confirmationNumber, receipt) => {
+            if (confirmationNumber === 2) {
+                const result = await this.flightDelayService.getSFInfo('SF5050', '2018-03-09');
+                this.sfInfo = JSON.stringify(result);
+            }
+        };
+        this.flightDelayService.setMaxCount(Math.random() * 100, confirmApprove);
+    }
+    async join() {
+
+        if (this.form.valid) {
+            this.loadingSer.show();
+            const model = this.form.value;
+            const currentVote = await this.flightDelayService.getCurrentVote();
+            const balance = await this.flightDelayService.getBalance();
+            const price = await this.flightDelayService.getPrice(model.flightNO);
+            console.log(balance);
+            console.log(price);
+            if (balance.token < price) {
+                this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
+                this.openModal(this.confirmTemplate);
+
+            }
+            this.loadingSer.hide();
+            // this.router.navigate(['/']);
+        }
+        const flightDate = this.form.get('flightDate');
+    }
+
+    openModal(template: TemplateRef<any>) {
+        this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
+    }
+    decline() {
+        this.modalRef.hide();
+    }
+    goExchange() {
+        this.router.navigate(['/exchange']);
+        this.modalRef.hide();
+    }
+
+    installWallet() {
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
+
+
+    getIsSupportBrowser() {
+        const userAgent = navigator.userAgent; // 取得浏览器的userAgent字符串
+        const isOpera = userAgent.indexOf('Opera') > -1; // 判断是否Opera浏览器
+        const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1 && !isOpera; // 判断是否IE浏览器
+        const isEdge = userAgent.indexOf('Windows NT 6.1; Trident/7.0;') > -1 && !isIE; // 判断是否IE的Edge浏览器
+        const isFF = userAgent.indexOf('Firefox') > -1; // 判断是否Firefox浏览器
+        const isSafari = userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1; // 判断是否Safari浏览器
+        const isChrome = userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Safari') > -1; // 判断Chrome浏览器
+
+        return isFF || isChrome;
+    }
+
+
+
+    get flightNO() { return this.form.get('flightNO'); }
+    get flightDate() { return this.form.get('flightDate'); }
 }

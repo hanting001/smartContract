@@ -1,48 +1,67 @@
 <div style="background-attachment: fixed;background-image: url('/assets/images/flight.jpg');background-size:cover;height:100%;min-height: 640px;">
-  <div class="jumbotron" style="opacity: 0.9;">
-    <h1>互助说明</h1>
-    <p class="lead">说明详细文案</p>
-    <a class="btn btn-lg btn-primary" [ngx-scroll-to]="'changePage'" href="javascript:void(0)" role="button">参加 &raquo;</a>
-  </div>
+    <div class="jumbotron" style="opacity: 0.9;">
+        <h1>互助说明</h1>
+        <p class="lead">说明详细文案</p>
+        <a class="btn btn-lg btn-primary" [ngx-scroll-to]="'changePage'" href="javascript:void(0)" role="button">参加 &raquo;</a>
+    </div>
+</div>
+<div *ngIf="isSupportBrowser&&!web3" class="jumbotron bg-warning text-center">
+    <h1>您要购买航班延误互助计划？</h1>
+    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包正常购买航班延误互助计划（无需另设密码）</p>
+    <button type="button" class="btn btn-primary" (click)="installWallet()">
+        安装MetaMask
+    </button>
 </div>
 
-<div class="jumbotron bg-info" id="changePage">
-  <h1>参加互助</h1>
-  <p class="lead">参加说明</p>
-  <form class="form-inline" (ngSubmit)="join()" [formGroup]="form">
-    <div class="form-group mb-2">
-      <label for="flightNO" class="sr-only">flightNO</label>
-      <input type="text" class="form-control-lg" id="flightNO" formControlName="flightNO" placeholder="航班号">
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-      <label for="flightDate" class="sr-only">Password</label>
-      <input type="text" class="form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker [minDate]="minDate"
-        placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
-    </div>
-    <button type="submit" class="btn btn-primary btn-lg mb-2">加入</button>
-  </form>
-  <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="alert alert-danger">
-    <div *ngIf="flightNO.errors.required">
-      航班号必须输入
-    </div>
-    <div *ngIf="flightNO.errors.pattern">
-      航班号格式为两位字母+四位数字
-    </div>
-  </div>
-  <div *ngIf="flightDate.invalid && (flightDate.dirty || flightDate.touched)" class="alert alert-danger">
-    <div *ngIf="flightDate.errors.required">
-      航班日期必须输入
-    </div>
-    <div *ngIf="flightDate.errors.bsDate">
-      日期格式不正确
-    </div>
-  </div>
+
+<div *ngIf="isSupportBrowser&&!(web3&&web3.givenProvider)" class="jumbotron bg-warning text-center">
+    <h1>您要购买航班延误互助计划</h1>
+    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包正常购买航班延误互助计划（无需另设密码）</p>
+    <button type="button" class="btn btn-primary" (click)="installWallet()">
+        安装MetaMask
+    </button>
 </div>
+
+<div *ngIf="checkEnv" class="jumbotron bg-info" id="changePage">
+    <h1>参加互助</h1>
+    <p class="lead">参加说明</p>
+    <form class="form-inline" (ngSubmit)="join()" [formGroup]="form">
+        <div class="form-group mb-2">
+            <label for="flightNO" class="sr-only">flightNO</label>
+            <input type="text" class="form-control-lg" id="flightNO" formControlName="flightNO" placeholder="航班号">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="flightDate" class="sr-only">Password</label>
+            <input type="text" class="form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker [minDate]="minDate"
+                placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg mb-2">加入</button>
+    </form>
+    <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="alert alert-danger">
+        <div *ngIf="flightNO.errors.required">
+            航班号必须输入
+        </div>
+        <div *ngIf="flightNO.errors.pattern">
+            航班号格式为两位字母+四位数字
+        </div>
+    </div>
+    <div *ngIf="flightDate.invalid && (flightDate.dirty || flightDate.touched)" class="alert alert-danger">
+        <div *ngIf="flightDate.errors.required">
+            航班日期必须输入
+        </div>
+        <div *ngIf="flightDate.errors.bsDate">
+            日期格式不正确
+        </div>
+    </div>
+</div>
+
+
+
 
 <ng-template #confirmTemplate>
-  <div class="modal-body text-center">
-    <p>{{confirmMessage}}</p>
-    <button type="button" class="btn btn-primary" (click)="goExchange()">前往兑换</button>
-    <button type="button" class="btn btn-default" (click)="decline()">不</button>
-  </div>
+    <div class="modal-body text-center">
+        <p>{{confirmMessage}}</p>
+        <button type="button" class="btn btn-primary" (click)="goExchange()">前往兑换</button>
+        <button type="button" class="btn btn-default" (click)="decline()">不</button>
+    </div>
 </ng-template>

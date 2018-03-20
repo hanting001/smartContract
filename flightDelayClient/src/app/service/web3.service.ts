@@ -20,11 +20,16 @@ export class Web3Service {
     this.web3.eth.defaultAccount = accounts[accounts.length - 1];
     return this.web3.eth.defaultAccount;
   }
+
+  async getFirstAccount() {
+    const accounts = await this.web3.eth.getAccounts();
+    return accounts[0];
+  }
   instance() {
     return this.web3;
   }
   async getABI(name, func) {
-    const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json?' + new Date().getTime()).toPromise();
+    const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json').toPromise();
     const abi = raw.abi;
     // const abi = require('../../../../build/contracts/' + name).abi;
     if (!func) {
@@ -38,7 +43,7 @@ export class Web3Service {
     }
   }
   async getAddress(name) {
-    const db = await this.http.get<any>('assets/db.json?' + new Date().getTime()).toPromise();
+    const db = await this.http.get<any>('assets/db.json').toPromise();
     console.log(db);
     // const db = require('../../../../migrations/db');
     return db[name].address;
@@ -49,7 +54,6 @@ export class Web3Service {
     }
     const abi = await this.getABI(scName, null);
     const address = await this.getAddress(name);
-    console.log(`sc ${name} address ${address}`);
     const sc = new this.web3.eth.Contract(abi, address);
     this.contracts[name] = sc;
     return sc;
