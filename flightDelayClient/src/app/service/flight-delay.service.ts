@@ -98,8 +98,10 @@ export class FlightDelayService {
       .on('transactionHash', (transactionHash) => {
         console.log(`exchange txHash: ${transactionHash}`);
       })
-      .on('confirmation', (confNumber, receipt) => {
+      .on('confirmation', async (confNumber, receipt) => {
         if (onConfirmation) {
+          // const tokenCount = await sc.methods.tokenCount().call();
+          // console.log(tokenCount);
           onConfirmation(confNumber, receipt);
         }
       })

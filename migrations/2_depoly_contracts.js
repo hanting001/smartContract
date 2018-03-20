@@ -24,7 +24,7 @@ module.exports = async (deployer, network, accounts) => {
     //     await deployer.deploy(HbStorage, {form: account});
     //     utility.updateDB('hbStorage', 'HbStorage', HbStorage.address);
     // }
-    await deployer.deploy(KnotToken, {form: account, overwrite: false});
+    await deployer.deploy(KnotToken, {form: account});
     utility.updateDB('knotToken', 'KnotToken', KnotToken.address);
     await deployer.deploy(HbStorage, {form: account});
     utility.updateDB('hbStorage', 'HbStorage', HbStorage.address);
