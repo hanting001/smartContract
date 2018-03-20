@@ -6,7 +6,7 @@ declare var window: any;
 
 @Injectable()
 export class Web3Service {
-    private checkEnvSub: Subject<object> = new Subject<object>();
+
     web3: any;
     contracts: any = {};
     constructor(private http: HttpClient) {
@@ -26,18 +26,14 @@ export class Web3Service {
     }
 
     async getFirstAccount() {
-        if (this.web3.eth.defaultAccount) {
-            return this.web3.eth.defaultAccount;
-        }
         const accounts = await this.web3.eth.getAccounts();
-
         return accounts[0];
     }
     instance() {
         return this.web3;
     }
     async getABI(name, func) {
-        const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json').toPromise();
+        const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json?' + new Date().getTime()).toPromise();
         const abi = raw.abi;
         // const abi = require('../../../../build/contracts/' + name).abi;
         if (!func) {
@@ -51,8 +47,7 @@ export class Web3Service {
         }
     }
     async getAddress(name) {
-        const db = await this.http.get<any>('assets/db.json').toPromise();
-        console.log(db);
+        const db = await this.http.get<any>('assets/db.json?' + new Date().getTime()).toPromise();
         // const db = require('../../../../migrations/db');
         return db[name].address;
     }
@@ -62,6 +57,7 @@ export class Web3Service {
         }
         const abi = await this.getABI(scName, null);
         const address = await this.getAddress(name);
+        console.log(`sc ${name} address: ${address}`);
         const sc = new this.web3.eth.Contract(abi, address);
         this.contracts[name] = sc;
         return sc;
@@ -147,10 +143,6 @@ export class Web3Service {
         state.checkEnv = state.checkAccount && state.checkWeb3;
 
         return state;
-    }
-
-    getCheckEnvSub(): Subject<object> {
-        return this.checkEnvSub;
     }
 
     async getTransactionObj(from, to, code) {

@@ -14,6 +14,7 @@ contract FlightDelay is Ownable, Stoppable {
     uint public interval = 24;//只能买24小时以后的产品
     uint public maxCount = 150;//每个航班最大的组员数量
     uint public rate = 4000;
+    // uint public tokenCount = 0;
 
     event UserJoin(string flightNO, string flightDate, address user);
 
@@ -108,8 +109,8 @@ contract FlightDelay is Ownable, Stoppable {
     function exchange() public payable {
         uint eth = msg.value; 
         uint tokenCount = eth * rate;
-        // require( tokenCount >= 1 ether);
-        // require( tokenCount <= 1 ether * 1000);
+        require( tokenCount >= 1 ether);
+        require( tokenCount <= 1000 ether );
         token.transfer(msg.sender, tokenCount);
     }
 }
