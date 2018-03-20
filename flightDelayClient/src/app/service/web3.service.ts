@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs/Rx';
+
+declare var window: any;
 
 @Injectable()
 export class Web3Service {
+    private checkEnvSub: Subject<object> = new Subject<object>();
     web3: any;
     contracts: any = {};
     constructor(private http: HttpClient) {
-        this.web3 = new Web3();
+        // this.web3 = new Web3();
         // Web3.givenProvider一般为浏览器内的metaMask
         // this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
         // 这里直接连接到本地的Ganache
-        this.web3.setProvider('http://localhost:7545');
+        // this.web3.setProvider('http://localhost:7545');
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
@@ -82,6 +86,71 @@ export class Web3Service {
             .on('error', (error) => {
                 console.log(error);
             });
+    }
+
+    async check() {
+        console.log('开始环境检测');
+        const state = { checkEnv: true, checkWeb3: true, checkAccount: true, netName: '', netType: '' };
+        console.log(typeof window.web3);
+        // if (typeof window.web3 !== 'undefined') {
+        //     this.web3 = new Web3(window.web3.currentProvider);
+        // } else {
+        this.web3 = new Web3();
+        // const ret = this.web3.setProvider(Web3.givenProvider);
+        const ret = this.web3.setProvider('http://localhost:7545');
+        if (!ret) {
+            state.checkWeb3 = false;
+        } else {
+            const accounts = await this.web3.eth.getAccounts();
+            if (!accounts || accounts.length === 0) {
+                state.checkAccount = false;
+            }
+
+            const netType = await this.web3.eth.net.getNetworkType();
+            console.log(netType);
+            state.netType = netType;
+
+            switch (netType) {
+                case 'main':
+                    console.log('This is mainnet');
+                    state.netName = '主网络';
+                    break;
+                case 'morden':
+                    console.log('This is the deprecated Morden test network.');
+                    state.netName = 'Morden测试网络';
+                    break;
+                case 'ropsten':
+                    state.netName = 'ropsten测试网路';
+                    console.log('This is the ropsten test network.');
+                    break;
+                case 'rinkeby':
+                    console.log('This is the Rinkeby test network.');
+                    state.netName = 'Rinkeby测试网路';
+                    break;
+                case 'kovan':
+                    state.netName = 'Kovan测试网路';
+                    console.log('This is the Kovan test network.');
+                    break;
+                case 'private':
+                    state.netName = '未知网络';
+                    console.log('This is the private test network.');
+                    break;
+                default:
+                    state.netName = '未知网络';
+                    state.checkEnv = false;
+                    state.checkAccount = false;
+                    state.checkWeb3 = false;
+                    console.log('This is an unknown network.');
+            }
+        }
+
+        state.checkEnv = state.checkAccount && state.checkWeb3;
+
+        return state;
+    }
+
+    getCheckEnvSub(): Subject<object> {
+        return this.checkEnvSub;
     }
 
     async getTransactionObj(from, to, code) {

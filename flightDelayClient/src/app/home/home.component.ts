@@ -20,8 +20,8 @@ export class HomeComponent implements OnInit {
     minDate: Date;
     modalRef: BsModalRef;
     confirmMessage: string;
-    isSupportBrowser: Boolean = true;
-    checkEnv: Boolean = true;
+
+    envState: object = {};
 
 
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -29,12 +29,19 @@ export class HomeComponent implements OnInit {
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
         private router: Router, public loadingSer: LoadingService) {
-        this.isSupportBrowser = this.getIsSupportBrowser();
+
+        // this.web3.getCheckEnvSub().subscribe((data) => {
+        //     console.log(data);
+        // });
+        this.checkEnv();
+        setInterval(() => {
+            this.checkEnv();
+        }, 60000);
+
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
             flightDate: ['', [Validators.required]]
         });
-
     }
 
     ngOnInit() {
@@ -75,6 +82,11 @@ export class HomeComponent implements OnInit {
             // this.router.navigate(['/']);
         }
         const flightDate = this.form.get('flightDate');
+    }
+
+    async checkEnv() {
+        this.envState = await this.web3.check();
+        console.log(JSON.stringify(this.envState));
     }
 
     openModal(template: TemplateRef<any>) {

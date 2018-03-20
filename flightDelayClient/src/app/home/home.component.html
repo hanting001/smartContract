@@ -5,24 +5,24 @@
         <a class="btn btn-lg btn-primary" [ngx-scroll-to]="'changePage'" href="javascript:void(0)" role="button">参加 &raquo;</a>
     </div>
 </div>
-<div *ngIf="isSupportBrowser&&!web3" class="jumbotron bg-warning text-center">
-    <h1>您要购买航班延误互助计划？</h1>
-    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包正常购买航班延误互助计划（无需另设密码）</p>
-    <button type="button" class="btn btn-primary" (click)="installWallet()">
-        安装MetaMask
-    </button>
-</div>
 
 
-<div *ngIf="isSupportBrowser&&!(web3&&web3.givenProvider)" class="jumbotron bg-warning text-center">
+
+<div *ngIf="!envState.checkWeb3" class="jumbotron bg-warning text-center">
     <h1>您要购买航班延误互助计划</h1>
-    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包正常购买航班延误互助计划（无需另设密码）</p>
+    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
     <button type="button" class="btn btn-primary" (click)="installWallet()">
         安装MetaMask
     </button>
 </div>
 
-<div *ngIf="checkEnv" class="jumbotron bg-info" id="changePage">
+<div *ngIf="envState.checkWeb3&&!envState.checkAccount" class="jumbotron bg-warning text-center">
+    <h1>您的账号被锁住了</h1>
+    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
+
+</div>
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info" id="changePage">
     <h1>参加互助</h1>
     <p class="lead">参加说明</p>
     <form class="form-inline" (ngSubmit)="join()" [formGroup]="form">
