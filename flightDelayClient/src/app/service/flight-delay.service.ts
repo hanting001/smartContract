@@ -93,8 +93,7 @@ export class FlightDelayService {
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
         const options = {
-            from: await this.web3Service.getFirstAccount(),
-            to: await this.web3Service.getMainAccount(),
+            from: await this.web3Service.getMainAccount(),
             value: value
         };
         console.log(options);

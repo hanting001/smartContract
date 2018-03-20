@@ -66,8 +66,9 @@ export class HomeComponent implements OnInit {
             if (balance.token < price) {
                 this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
                 this.openModal(this.confirmTemplate);
-                this.loadingSer.hide();
+
             }
+            this.loadingSer.hide();
             // this.router.navigate(['/']);
         }
         const flightDate = this.form.get('flightDate');
