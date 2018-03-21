@@ -10,7 +10,7 @@
 
 
 
-<div *ngIf="!envState.checkWeb3" class="jumbotron bg-warning text-center">
+<div *ngIf="!envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
     <h1>您要购买航班延误互助计划</h1>
     <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
     <button type="button" class="btn btn-primary" (click)="installWallet()">
@@ -18,43 +18,48 @@
     </button>
 </div>
 
-<div *ngIf="envState.checkWeb3&&!envState.checkAccount" class="jumbotron bg-warning text-center">
+<div *ngIf="envState.checkWeb3&&!envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
     <h1>您的账号被锁住了</h1>
     <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
 
 </div>
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info" id="changePage">
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center" id="changePage">
     <h1>参加互助</h1>
     <p class="lead">参加说明</p>
-    <form class="form-inline" (ngSubmit)="confirm()" [formGroup]="form">
+    <form (ngSubmit)="confirm()" [formGroup]="form">
         <div class="form-group mb-2">
-            <label for="flightNO" class="sr-only">flightNO</label>
+            <label for="flightNO" class="col-sm-4 text-right" style="font-size:1.5rem">您的航班号：</label>
             <input type="text" class="form-control-lg" id="flightNO" [(ngModel)]="mySfInfo.flightNO" formControlName="flightNO" placeholder="航班号">
         </div>
-        <div class="form-group mx-sm-3 mb-2">
-            <label for="flightDate" class="sr-only">Password</label>
+        <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="alert alert-danger">
+            <div *ngIf="flightNO.errors.required">
+                航班号必须输入
+            </div>
+            <div *ngIf="flightNO.errors.pattern">
+                航班号格式为两位字母+四位数字
+            </div>
+        </div>
+        <div class="form-group  mb-2">
+            <label for="flightDate" class="col-sm-4 text-right" style="font-size:1.5rem">出发日期：</label>
             <input type="text" class="form-control-lg" id="flightDate" [(ngModel)]="mySfInfo.flightDate" formControlName="flightDate"
                 placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
         </div>
-        <button type="submit" class="btn btn-primary btn-lg mb-2">加入</button>
+        <div *ngIf="flightDate.invalid && (flightDate.dirty || flightDate.touched)" class="alert alert-danger">
+            <div *ngIf="flightDate.errors.required">
+                航班日期必须输入
+            </div>
+            <div *ngIf="flightDate.errors.bsDate">
+                日期格式不正确
+            </div>
+        </div>
+
+        <div class="form-group  mb-2" style="margin-top: 50px;">
+            <button type="submit" class="btn btn-primary btn-lg  ">申请加入</button>
+        </div>
     </form>
-    <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="alert alert-danger">
-        <div *ngIf="flightNO.errors.required">
-            航班号必须输入
-        </div>
-        <div *ngIf="flightNO.errors.pattern">
-            航班号格式为两位字母+四位数字
-        </div>
-    </div>
-    <div *ngIf="flightDate.invalid && (flightDate.dirty || flightDate.touched)" class="alert alert-danger">
-        <div *ngIf="flightDate.errors.required">
-            航班日期必须输入
-        </div>
-        <div *ngIf="flightDate.errors.bsDate">
-            日期格式不正确
-        </div>
-    </div>
+
+
 </div>
 
 

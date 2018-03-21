@@ -143,6 +143,7 @@ export class Web3Service {
         }
 
         state.checkEnv = state.checkAccount && state.checkWeb3;
+        // state.checkEnv = false;
         this.checkEnvSubject.next(state);
         return state;
     }
