@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         // 测试
-        this.flightDelayService.getCurrentVote();
+        // this.flightDelayService.getCurrentVote();
         this.localService.use('zh-cn');
         this.minDate = new Date();
         this.minDate.setDate(this.minDate.getDate() + 1);

@@ -92,17 +92,22 @@ contract FlightDelay is Ownable, Stoppable {
         bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
         require(hbs.getSFCount(sfIndex) <= maxCount);
         //check user can buy
-        require(hbs.canBuy(msg.sender, flightNO));
+        // require(hbs.canBuy(msg.sender, flightNO));
         
         require(hbs.isOpening(sfIndex));
         require(!hbs.isMemberInSF(sfIndex, msg.sender));
 
+        uint tokenCount = getPrice(flightNO);
+        require(token.balanceOf(msg.sender) >= tokenCount);
+        require(token.transfer(this, tokenCount));
+
         hbs.addMemberToSF(sfIndex, msg.sender, votedSfIndex, vote);
-        hbs.setCanBuy(msg.sender, "");
+        // hbs.setCanBuy(msg.sender, "");
         if (hbs.getSFCount(sfIndex) == maxCount) {
             hbs.setClose(sfIndex);
         }
         UserJoin(flightNO, flightDate, msg.sender);
+        
     }  
     /** @dev 用户兑换token 
       */  
