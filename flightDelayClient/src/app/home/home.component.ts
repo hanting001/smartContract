@@ -68,10 +68,8 @@ export class HomeComponent implements OnInit {
                 target: '#mainNav',
                 offset: 56
             });
-            let count = 0;
             // Collapse Navbar
             const navbarCollapse = function () {
-                console.log(count++);
                 if ($('#mainNav').offset().top > 100) {
                     $('#mainNav').addClass('navbar-shrink');
                 } else {

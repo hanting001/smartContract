@@ -206,11 +206,9 @@ header.masthead .intro-text {
 }
 
 header.masthead .intro-text .intro-lead-in {
-    font-size: 22px;
-    font-style: italic;
+    font-size: 18px;
     line-height: 22px;
     margin-bottom: 25px;
-    font-family: 'Droid Serif', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 header.masthead .intro-text .intro-heading {
