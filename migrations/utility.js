@@ -39,9 +39,9 @@ module.exports = {
         console.log(`-------${contract}开始部署--------`);
         const accounts = await web3.eth.getAccounts();
         const account = accounts[0];
-        if (password) {//password
-            web3.eth.personal.unlockAccount(account, password, web3.utils.toHex(15000));
-        }
+        // if (password) {//password
+        //     web3.eth.personal.unlockAccount(account, password, web3.utils.toHex(15000));
+        // }
         let options = {
             data: code
         };

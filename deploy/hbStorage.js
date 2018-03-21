@@ -2,7 +2,7 @@ const utility = require('../migrations/utility');
 const args = process.argv;
 
 
-if (process.env.NODE_ENV == 'test') {
+if ('test'== 'test') {
     (async() => {
         const address = await utility.deploy('HbStorage', args[2], args.slice(3));
         utility.updateDB('hbStorage', 'HbStorage', address);
