@@ -19,7 +19,8 @@ export class HomeComponent implements OnInit {
     winHeight: any;
     form: FormGroup;
     minDate: Date;
-    modalRef: BsModalRef;
+    confirmModalRef: BsModalRef;
+    exchangeModalRef: BsModalRef;
     confirmMessage: string;
     envState: object = {};
 
@@ -74,18 +75,27 @@ export class HomeComponent implements OnInit {
             console.log(price);
             if (balance.token && balance.token * 1 < price * 1) {
                 this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
-                this.openModal(this.exchangeTemplate);
+                this.exchangeModalRef = this.openModal(this.exchangeTemplate);
 
             } else {
                 this.mySfInfo.price = price;
-                this.openModal(this.confirmTemplate);
+                this.confirmModalRef = this.openModal(this.confirmTemplate);
             }
             // this.router.navigate(['/']);
         }
     }
 
     async join() {
-
+        this.loadingSer.show();
+        this.flightDelayService.join(this.mySfInfo, (confirmNumber, receipt) => {
+            if (confirmNumber === 2) {
+                this.loadingSer.hide();
+                this.confirmModalRef.hide();
+                alert('加入成功');
+            }
+        }, (err) => {
+            this.loadingSer.hide();
+        });
     }
 
     async checkEnv() {
@@ -93,14 +103,14 @@ export class HomeComponent implements OnInit {
     }
 
     openModal(template: TemplateRef<any>) {
-        this.modalRef = this.modalService.show(template, { class: 'modal-lg' });
+        return this.modalService.show(template, { class: 'modal-lg' });
     }
     decline() {
-        this.modalRef.hide();
+        this.exchangeModalRef.hide();
     }
     goExchange() {
         this.router.navigate(['/exchange']);
-        this.modalRef.hide();
+        this.exchangeModalRef.hide();
     }
 
     installWallet() {
