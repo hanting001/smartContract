@@ -6,7 +6,7 @@ declare var window: any;
 
 @Injectable()
 export class Web3Service {
-
+    private checkEnvSubject: Subject<object> = new Subject<object>();
     web3: any;
     contracts: any = {};
     constructor(private http: HttpClient) {
@@ -15,6 +15,7 @@ export class Web3Service {
         // this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
         // 这里直接连接到本地的Ganache
         // this.web3.setProvider('http://localhost:7545');
+        this.check();
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
@@ -141,8 +142,12 @@ export class Web3Service {
         }
 
         state.checkEnv = state.checkAccount && state.checkWeb3;
-
+        this.checkEnvSubject.next(state);
         return state;
+    }
+
+    getCheckEnvSubject(): Subject<object> {
+        return this.checkEnvSubject;
     }
 
     async getTransactionObj(from, to, code) {

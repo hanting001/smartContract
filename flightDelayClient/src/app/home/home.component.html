@@ -25,15 +25,15 @@
 <div *ngIf="envState.checkEnv" class="jumbotron bg-info" id="changePage">
     <h1>参加互助</h1>
     <p class="lead">参加说明</p>
-    <form class="form-inline" (ngSubmit)="join()" [formGroup]="form">
+    <form class="form-inline" (ngSubmit)="confirm()" [formGroup]="form">
         <div class="form-group mb-2">
             <label for="flightNO" class="sr-only">flightNO</label>
-            <input type="text" class="form-control-lg" id="flightNO" formControlName="flightNO" placeholder="航班号">
+            <input type="text" class="form-control-lg" id="flightNO" [(ngModel)]="mySfInfo.flightNO" formControlName="flightNO" placeholder="航班号">
         </div>
         <div class="form-group mx-sm-3 mb-2">
             <label for="flightDate" class="sr-only">Password</label>
-            <input type="text" class="form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker [minDate]="minDate"
-                placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+            <input type="text" class="form-control-lg" id="flightDate" [(ngModel)]="mySfInfo.flightDate" formControlName="flightDate"
+                placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
         </div>
         <button type="submit" class="btn btn-primary btn-lg mb-2">加入</button>
     </form>
@@ -58,10 +58,35 @@
 
 
 
-<ng-template #confirmTemplate>
+<ng-template #exchangeTemplate>
     <div class="modal-body text-center">
         <p>{{confirmMessage}}</p>
         <button type="button" class="btn btn-primary" (click)="goExchange()">前往兑换</button>
         <button type="button" class="btn btn-default" (click)="decline()">不</button>
+    </div>
+</ng-template>
+
+<ng-template #confirmTemplate>
+    <div class="modal-body text-center">
+        <div class="form-group row">
+            <label for="staticEmail" class="col-sm-4 col-form-label">航班号</label>
+            <div class="col-sm-8">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{mySfInfo.flightNO}}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword" class="col-sm-4 col-form-label">出发日期</label>
+            <div class="col-sm-8">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{mySfInfo.flightDate| date: 'yyyy-MM-dd'}}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="inputPassword" class="col-sm-4 col-form-label">所需代币数</label>
+            <div class="col-sm-8">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{mySfInfo.price}}">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="join()">确认</button>
     </div>
 </ng-template>

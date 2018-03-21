@@ -15,28 +15,28 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class HomeComponent implements OnInit {
     account: string;
     sfInfo: string;
+    mySfInfo: any = { flightNo: '', flightDate: '', price: 0 };
     winHeight: any;
     form: FormGroup;
     minDate: Date;
     modalRef: BsModalRef;
     confirmMessage: string;
-
     envState: object = {};
 
 
+    @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder, private web3: Web3Service,
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
         private router: Router, public loadingSer: LoadingService) {
 
-        // this.web3.getCheckEnvSub().subscribe((data) => {
-        //     console.log(data);
-        // });
-        this.checkEnv();
+        this.web3.getCheckEnvSubject().subscribe((data) => {
+            this.envState = data;
+        });
         setInterval(() => {
             this.checkEnv();
-        }, 60000);
+        }, 600000);
 
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
@@ -63,30 +63,33 @@ export class HomeComponent implements OnInit {
         };
         this.flightDelayService.setMaxCount(Math.random() * 100, confirmApprove);
     }
-    async join() {
+    async confirm() {
 
         if (this.form.valid) {
-            this.loadingSer.show();
             const model = this.form.value;
             const currentVote = await this.flightDelayService.getCurrentVote();
             const balance = await this.flightDelayService.getBalance();
             const price = await this.flightDelayService.getPrice(model.flightNO);
             console.log(balance);
             console.log(price);
-            if (balance.token < price) {
+            if (balance.token && balance.token * 1 < price * 1) {
                 this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
-                this.openModal(this.confirmTemplate);
+                this.openModal(this.exchangeTemplate);
 
+            } else {
+                this.mySfInfo.price = price;
+                this.openModal(this.confirmTemplate);
             }
-            this.loadingSer.hide();
             // this.router.navigate(['/']);
         }
-        const flightDate = this.form.get('flightDate');
+    }
+
+    async join() {
+
     }
 
     async checkEnv() {
-        this.envState = await this.web3.check();
-        console.log(JSON.stringify(this.envState));
+        await this.web3.check();
     }
 
     openModal(template: TemplateRef<any>) {
