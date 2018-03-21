@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home/home.component';
 import { ExchangeComponent } from './exchange/exchange.component';
 import { AdminComponent } from './admin/admin.component';
+import { AboutUsComponent } from './about-us/about-us.component';
+import { OrderComponent } from './order/order.component';
+import { FaqComponent } from './faq/faq.component';
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
@@ -13,6 +16,9 @@ const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'exchange', component: ExchangeComponent, resolve: { balance: BalanceResolver } },
+    { path: 'myorder', component: OrderComponent },
+    { path: 'aboutus', component: AboutUsComponent },
+    { path: 'faq', component: FaqComponent },
     { path: 'admin/:account', component: AdminComponent, resolve: { balance: BalanceWithAccountResolver } },
     // { path: 'airDelay', canActivate: [AuthGuard], component: AirDelayComponent },
     // { path: 'buyToken', canActivate: [AuthGuard], component: BuyTokenComponent },

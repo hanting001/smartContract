@@ -21,13 +21,19 @@ import { HomeComponent } from './home/home.component';
 import { ExchangeComponent } from './exchange/exchange.component';
 import { AdminComponent } from './admin/admin.component';
 import { LoadingModule } from 'ngx-loading';
+import { OrderComponent } from './order/order.component';
+import { AboutUsComponent } from './about-us/about-us.component';
+import { FaqComponent } from './faq/faq.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         ExchangeComponent,
-        AdminComponent
+        AdminComponent,
+        OrderComponent,
+        AboutUsComponent,
+        FaqComponent
     ],
     imports: [
         BrowserModule,
