@@ -88,7 +88,7 @@ export class Web3Service {
 
     async check() {
         console.log('开始环境检测');
-        const state = { checkEnv: true, checkWeb3: true, checkAccount: true, netName: '', netType: '' };
+        const state = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
         console.log(typeof window.web3);
         // if (typeof window.web3 !== 'undefined') {
         //     this.web3 = new Web3(window.web3.currentProvider);
@@ -99,8 +99,8 @@ export class Web3Service {
         if (!ret) {
             state.checkWeb3 = false;
         } else {
-            const accounts = await this.web3.eth.getAccounts();
-            if (!accounts || accounts.length === 0) {
+            state.account = await this.getMainAccount();
+            if (!state.account) {
                 state.checkAccount = false;
             }
 
