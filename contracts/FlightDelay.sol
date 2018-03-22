@@ -14,14 +14,23 @@ contract FlightDelay is Ownable, Stoppable {
     uint public interval = 24;//只能买24小时以后的产品
     uint public maxCount = 150;//每个航班最大的组员数量
     uint public rate = 4000;
+    struct DelayPayInfo {
+        uint times;
+        uint payCount;
+        bool isValued;
+    }
     // uint public tokenCount = 0;
-
+    mapping(uint => DelayPayInfo)  public delayPayInfos;
     event UserJoin(string flightNO, string flightDate, address user);
 
 
     function FlightDelay(address hbsAddress, address tokenAddress) public Stoppable(msg.sender){
         hbs = HbStorage(hbsAddress);
         token = KnotToken(tokenAddress);
+        delayPayInfos[uint(HbStorage.DelayStatus.no)] = DelayPayInfo({times: 0, payCount: getDelayClaimRate(HbStorage.DelayStatus.no), isValued: true});
+        delayPayInfos[uint(HbStorage.DelayStatus.delay1)] = DelayPayInfo({times: 30, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay1), isValued: true});
+        delayPayInfos[uint(HbStorage.DelayStatus.delay2)] = DelayPayInfo({times: 60, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay2), isValued: true});
+        delayPayInfos[uint(HbStorage.DelayStatus.delay3)] = DelayPayInfo({times: 120, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay3), isValued: true});
     }
     function setInterval(uint _interval) public onlyOwner {
         interval = _interval;
@@ -32,7 +41,23 @@ contract FlightDelay is Ownable, Stoppable {
     function setRate(uint _rate) public onlyOwner {
         rate = _rate;
     }
-
+    /** @dev 获取各个时间段的赔付率
+      * @param status 赔付时间段
+      */    
+    function getDelayClaimRate(HbStorage.DelayStatus status) internal returns (uint){
+        if (status == HbStorage.DelayStatus.no) {
+            return 0;
+        }
+        if (status == HbStorage.DelayStatus.delay1 ) {
+            return 30 * 2;
+        }
+        if ( status == HbStorage.DelayStatus.delay2) {
+            return 30 * 5;
+        }
+        if ( status == HbStorage.DelayStatus.delay3) {
+            return 30 * 10;
+        }
+    }
     /** @dev 用户获取航班价格
       * @param flightNO 航班号
       */
@@ -40,6 +65,13 @@ contract FlightDelay is Ownable, Stoppable {
         //暂时默认价格30
         return 30;
     }
+    /** @dev 获取延误状态信息
+      * 
+      */  
+    function getFlightSts() public view returns (uint) {
+        //暂时默认价格30
+        return 30;
+    }       
     /** @dev 用户获取购买资格
       * @param flightNO 航班号
       * @param price 价格

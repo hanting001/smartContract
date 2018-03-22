@@ -26,9 +26,6 @@ export class FlightDelayService {
     // 获取当前投票信息
     async getCurrentVote() {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
-
-        console.log(storage);
-
         const currentVote = await storage.methods.currentVote().call();
         const voteInfo = await storage.methods.voteInfos(currentVote).call();
         if (voteInfo.isValued) {
@@ -86,6 +83,16 @@ export class FlightDelayService {
             .on('error', (error) => {
                 console.log(error);
             });
+    }
+    // 得到各时间段赔付信息
+    async getDelayPayInfos() {
+        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        return {
+            0: await sc.methods.delayPayInfos(0).call(),
+            1: await sc.methods.delayPayInfos(1).call(),
+            2: await sc.methods.delayPayInfos(2).call(),
+            3: await sc.methods.delayPayInfos(3).call(),
+        };
     }
 
     async join(mySfInfo: any, onConfirmation, onError?) {

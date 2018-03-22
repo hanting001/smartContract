@@ -117,6 +117,7 @@ export class HomeComponent implements OnInit {
             const currentVote = await this.flightDelayService.getCurrentVote();
             const balance = await this.flightDelayService.getBalance();
             const price = await this.flightDelayService.getPrice(model.flightNO);
+            console.log(currentVote);
             console.log(balance);
             console.log(price);
             if (balance.token && balance.token * 1 < price * 1) {
