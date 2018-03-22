@@ -39,17 +39,15 @@
                         <div class="col">
                             <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="CU2344">
                         </div>
-                    </div>
-                    <div class="form-group row">
                         <label class="col col-form-label text-right" style="font-size:1.2rem">出发日期：</label>
                         <div class="col">
                             <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="2018-04-06">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">是否延误：</label>
+                        <label class="col col-form-label text-right " style="font-size:1.2rem">是否延误：</label>
                         <div class="col">
-                            <select class="form-control">
+                            <select class="form-control form-control-lg">
                                 <option>
                                     未延误
                                 </option>
@@ -67,12 +65,19 @@
                                 </option>
                             </select>
                         </div>
+
+                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
+                        <div class="col">
+                        </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">当前投票结果：</label>
+                        <label class="col col-form-label text-right" style="font-size:1.2rem;color:#FFFFFF;">当前投票结果：</label>
                         <div class="col">
 
+                        </div>
+                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
+                        <div class="col">
                         </div>
                     </div>
 
@@ -81,8 +86,6 @@
                         <div class="col align-self-center">
                             <progressbar [value]="55"></progressbar>
                         </div>
-                    </div>
-                    <div class="row">
                         <label class="col col-form-label text-right" style="font-size:1.2rem">延误1小时：</label>
                         <div class="col align-self-center">
                             <progressbar [value]="22" type="warning" [striped]="true">22%</progressbar>
@@ -94,8 +97,6 @@
                             <progressbar max="200" [value]="166" type="danger" [striped]="true" [animate]="true"><i>166 / 200</i></progressbar>
 
                         </div>
-                    </div>
-                    <div class="row">
                         <label class="col col-form-label text-right" style="font-size:1.2rem">延误3小时：</label>
                         <div class="col align-self-center">
                             <progressbar [value]="50"></progressbar>
@@ -105,6 +106,9 @@
                         <label class="col col-form-label text-right" style="font-size:1.2rem">航班已取消：</label>
                         <div class="col align-self-center">
                             <progressbar [value]="50"></progressbar>
+                        </div>
+                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
+                        <div class="col">
                         </div>
                     </div>
 
@@ -116,9 +120,12 @@
                     您的航班
                 </div>
                 <div class="card-body">
-                    <div class="form-group col">
-                        <label for="flightNO" class="col-sm-4 text-right" style="font-size:1.2rem">您的航班号：</label>
-                        <input type="text" class="form-control-lg" id="flightNO" [(ngModel)]="mySfInfo.flightNO" formControlName="flightNO" placeholder="航班号">
+                    <div class="form-group row">
+                        <label for="flightNO" class="col text-right align-self-center" style="font-size:1.2rem">您的航班号：</label>
+                        <input type="text" class="col form-control-lg" id="flightNO" [(ngModel)]="mySfInfo.flightNO" formControlName="flightNO" placeholder="航班号">
+                        <label for="flightDate" class="col text-right align-self-center" style="font-size:1.2rem">出发日期：</label>
+                        <input type="text" class="col form-control-lg" id="flightDate" [(ngModel)]="mySfInfo.flightDate" formControlName="flightDate"
+                            placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
                     </div>
                     <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="form-group col alert alert-danger">
                         <div *ngIf="flightNO.errors.required">
@@ -127,11 +134,8 @@
                         <div *ngIf="flightNO.errors.pattern">
                             航班号格式为两位字母+四位数字
                         </div>
-                    </div>
-                    <div class="form-group  col">
-                        <label for="flightDate" class="col-sm-4 text-right" style="font-size:1.2rem">出发日期：</label>
-                        <input type="text" class="form-control-lg" id="flightDate" [(ngModel)]="mySfInfo.flightDate" formControlName="flightDate"
-                            placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+
+
                     </div>
                     <div *ngIf="flightDate.invalid && (flightDate.dirty || flightDate.touched)" class="form-group col alert alert-danger">
                         <div *ngIf="flightDate.errors.required">
