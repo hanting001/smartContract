@@ -4,7 +4,7 @@ import { NgModule, Injectable } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { AlertModule, ButtonsModule } from 'ngx-bootstrap';
+import { AlertModule, ButtonsModule, ProgressbarModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { zhCnLocale } from 'ngx-bootstrap/locale';
@@ -45,6 +45,7 @@ import { FaqComponent } from './faq/faq.component';
         ModalModule.forRoot(),
         AlertModule.forRoot(),
         ButtonsModule.forRoot(),
+        ProgressbarModule.forRoot(),
         FormsModule,
         LoadingModule,
         ReactiveFormsModule

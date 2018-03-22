@@ -76,21 +76,38 @@
                         </div>
                     </div>
 
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">无延误：</label>
+                        <div class="col align-self-center">
+                            <progressbar [value]="55"></progressbar>
+                        </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误1小时：</label>
+                        <div class="col align-self-center">
+                            <progressbar [value]="22" type="warning" [striped]="true">22%</progressbar>
+                        </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误2小时：</label>
+                        <div class="col align-self-center">
+                            <progressbar max="200" [value]="166" type="danger" [striped]="true" [animate]="true"><i>166 / 200</i></progressbar>
+
+                        </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误3小时：</label>
+                        <div class="col align-self-center">
+                            <progressbar [value]="50"></progressbar>
+                        </div>
                     </div>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">航班已取消：</label>
+                        <div class="col align-self-center">
+                            <progressbar [value]="50"></progressbar>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
