@@ -20,7 +20,7 @@ contract FlightDelay is Ownable, Stoppable {
         bool isValued;
     }
     // uint public tokenCount = 0;
-    mapping(uint => DelayPayInfo)  public delayPayInfos;
+    mapping(uint => DelayPayInfo) public delayPayInfos;
     event UserJoin(string flightNO, string flightDate, address user);
 
 
@@ -58,6 +58,7 @@ contract FlightDelay is Ownable, Stoppable {
             return 30 * 10;
         }
     }
+
     /** @dev 用户获取航班价格
       * @param flightNO 航班号
       */
