@@ -8,7 +8,7 @@ contract HbStorage is Ownable {
     using strings for *; 
 
     enum SFStatus { opening, closed, claiming, ended }
-    enum DelayStatus { no, delay1, delay2, delay3 }
+    enum DelayStatus { no, delay1, delay2, delay3, delay4 }
 
     event MemberAdded(bytes32 _sfIndex, address member);
 
@@ -38,15 +38,17 @@ contract HbStorage is Ownable {
         bool isValued;
     }
     struct MemberSF {
+        string flightNO;
+        string flightDate;
         bytes32 votedSF;
         DelayStatus vote;
         bool isValued;
     }
     struct MemberInfo {
-        mapping(bytes32 => MemberSF) memberSFInfos;
         bytes32[] scheduledFlights;
+        mapping(bytes32 => MemberSF) memberSFs;
         uint winCounts;
-        string canBuyFlightNO;
+        mapping(bytes32 => bool) canClaim;
         bool isValued;
     }
     mapping(address => bool) public admins;
@@ -87,7 +89,7 @@ contract HbStorage is Ownable {
     // }
     function isMemberInSF(bytes32 _sfIndex, address member) public view returns (bool) {
         if (memberInfos[member].isValued) {
-            var sfs = memberInfos[member].memberSFInfos;
+            var sfs = memberInfos[member].memberSFs;
             if (sfs[_sfIndex].isValued) {
                 return true;
             } else {
@@ -100,7 +102,7 @@ contract HbStorage is Ownable {
     function getSFCount(bytes32 _sfIndex) public view returns (uint) {
         return scheduledFlights[_sfIndex].count;
     }
-    function addMemberToSF(bytes32 _sfIndex, address _member, bytes32 _votedSFIndex, DelayStatus _vote) public onlyAdmin {
+    function addMemberToSF(bytes32 _sfIndex, string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, DelayStatus _vote) public onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
             scheduledFlights[_sfIndex].isValued = true;
         }
@@ -109,7 +111,9 @@ contract HbStorage is Ownable {
         //用户数加1
         scheduledFlights[_sfIndex].count += 1;
         // 用户记录中加入航班
-        memberInfos[_member].memberSFInfos[_sfIndex] = MemberSF({
+        memberInfos[_member].memberSFs[_sfIndex] = MemberSF({
+            flightNO: _flightNO,
+            flightDate: _flightDate,
             votedSF: _votedSFIndex,
             vote: _vote,
             isValued: true});
@@ -133,7 +137,7 @@ contract HbStorage is Ownable {
       */
     function isInSF(bytes32 _sfIndex) public view returns (bool) {
         if (memberInfos[msg.sender].isValued) {
-            var sfs = memberInfos[msg.sender].memberSFInfos;
+            var sfs = memberInfos[msg.sender].memberSFs;
             if (sfs[_sfIndex].isValued) {
                 return true; 
             } else {
@@ -143,15 +147,16 @@ contract HbStorage is Ownable {
             return false;
         }
     }
-    function canBuy(address member, string flightNO) public returns (bool) {
-        if (flightNO.toSlice().compare(memberInfos[member].canBuyFlightNO.toSlice()) == 0) {
-            return true;
-        } else {
-            return false;
-        }
+    function canClaim(address member, bytes32 _sfIndex) public returns (bool) {
+        // if (flightNO.toSlice().compare(memberInfos[member].canClaim.toSlice()) == 0) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+        return memberInfos[member].canClaim[_sfIndex];
     }
-    function setCanBuy(address member, string flightNO) public onlyAdmin{
-        memberInfos[member].canBuyFlightNO = flightNO;
+    function setCanBuy(address member, bytes32 _sfIndex) public onlyAdmin{
+        memberInfos[member].canClaim[_sfIndex] = true;
     }
     /** @dev 返回用户的航班计划 
       */
@@ -163,7 +168,7 @@ contract HbStorage is Ownable {
       * @param _sfIndex 航班号+航班日期
       */
     function returnSFInfo(bytes32 _sfIndex) public view returns (MemberSF) {
-        MemberSF memory sfsInfo = memberInfos[msg.sender].memberSFInfos[_sfIndex];
+        MemberSF memory sfsInfo = memberInfos[msg.sender].memberSFs[_sfIndex];
         return sfsInfo ;
     }
     /** @dev 返回航班的所有加入会员 

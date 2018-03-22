@@ -31,6 +31,7 @@ contract FlightDelay is Ownable, Stoppable {
         delayPayInfos[uint(HbStorage.DelayStatus.delay1)] = DelayPayInfo({times: 30, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay1), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay2)] = DelayPayInfo({times: 60, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay2), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay3)] = DelayPayInfo({times: 120, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay3), isValued: true});
+        delayPayInfos[uint(HbStorage.DelayStatus.delay4)] = DelayPayInfo({times: 999, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay4), isValued: true});
     }
     function setInterval(uint _interval) public onlyOwner {
         interval = _interval;
@@ -57,6 +58,9 @@ contract FlightDelay is Ownable, Stoppable {
         if ( status == HbStorage.DelayStatus.delay3) {
             return 30 * 10;
         }
+        if ( status == HbStorage.DelayStatus.delay4) {
+            return 30 * 15;
+        }
     }
 
     /** @dev 用户获取航班价格
@@ -77,16 +81,16 @@ contract FlightDelay is Ownable, Stoppable {
       * @param flightNO 航班号
       * @param price 价格
       */
-    function getQualification(string flightNO, uint price) public {
-        require(!flightNO.toSlice().empty());
-        require(price > 0);
-        require(token.balanceOf(msg.sender) >= price);
+    // function getQualification(string flightNO, uint price) public {
+    //     require(!flightNO.toSlice().empty());
+    //     require(price > 0);
+    //     require(token.balanceOf(msg.sender) >= price);
 
-        hbs.setCanBuy(msg.sender, flightNO);
-        if (!token.transferFrom(msg.sender, this, price)) {
-            hbs.setCanBuy(msg.sender, "");
-        }
-    }
+    //     hbs.setCanBuy(msg.sender, flightNO);
+    //     if (!token.transferFrom(msg.sender, this, price)) {
+    //         hbs.setCanBuy(msg.sender, "");
+    //     }
+    // }
     /** @dev 获取已经购买该航班的用户数
       * @param _sfIndex 航班序列号（航班号+航班日期）
       */
@@ -96,10 +100,10 @@ contract FlightDelay is Ownable, Stoppable {
     /** @dev 用户查看自己是否有购买资格
       * @param flightNO 航班号
       */
-    function hasQualification(string flightNO) public view returns (bool) {
-        require(!flightNO.toSlice().empty());
-        return hbs.canBuy(msg.sender, flightNO);
-    }
+    // function hasQualification(string flightNO) public view returns (bool) {
+    //     require(!flightNO.toSlice().empty());
+    //     return hbs.canBuy(msg.sender, flightNO);
+    // }
     // /** @dev 获取当前处于投票中的航班信息
     //   */
     // function getCurrentVote() public view returns (bytes32) {
@@ -132,9 +136,9 @@ contract FlightDelay is Ownable, Stoppable {
 
         uint tokenCount = getPrice(flightNO);
         require(token.balanceOf(msg.sender) >= tokenCount);
-        require(token.transfer(this, tokenCount));
+        require(token.transferFrom(msg.sender, this, tokenCount));
 
-        hbs.addMemberToSF(sfIndex, msg.sender, votedSfIndex, vote);
+        hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
         // hbs.setCanBuy(msg.sender, "");
         if (hbs.getSFCount(sfIndex) == maxCount) {
             hbs.setClose(sfIndex);

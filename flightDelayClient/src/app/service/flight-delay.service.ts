@@ -92,6 +92,7 @@ export class FlightDelayService {
             1: await sc.methods.delayPayInfos(1).call(),
             2: await sc.methods.delayPayInfos(2).call(),
             3: await sc.methods.delayPayInfos(3).call(),
+            4: await sc.methods.delayPayInfos(4).call()
         };
     }
 

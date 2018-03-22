@@ -228,4 +228,8 @@ library Utility {
     function strConcat(string _a, string _b) internal returns (string) {
         return _a.toSlice().concat(_b.toSlice());
     }
+    function strConcat(string _a, string _b, string _c) internal returns (string) {
+        string memory tmp = _a.toSlice().concat(_b.toSlice());
+        return tmp.toSlice().concat(_c.toSlice());
+    }
 }
