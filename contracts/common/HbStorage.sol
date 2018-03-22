@@ -125,7 +125,7 @@ contract HbStorage is Ownable {
     function setClose(bytes32 _sfIndex) public onlyAdmin{
         scheduledFlights[_sfIndex].status = SFStatus.closed;
     }
-    function isOpening(bytes32 _sfIndex) public returns (bool) {
+    function isOpening(bytes32 _sfIndex) public view returns (bool) {
         if (scheduledFlights[_sfIndex].status == SFStatus.opening) {
             return true;
         } else {

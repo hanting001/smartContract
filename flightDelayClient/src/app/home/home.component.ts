@@ -15,7 +15,6 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class HomeComponent implements OnInit {
     account: string;
     sfInfo: string;
-    mySfInfo: any = { flightNo: '', flightDate: '', price: 0 };
     winHeight: any;
     form: FormGroup;
     minDate: Date;
@@ -23,7 +22,7 @@ export class HomeComponent implements OnInit {
     exchangeModalRef: BsModalRef;
     confirmMessage: string;
     envState: object = {};
-
+    price;
 
     @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -116,28 +115,35 @@ export class HomeComponent implements OnInit {
             const model = this.form.value;
             const currentVote = await this.flightDelayService.getCurrentVote();
             const balance = await this.flightDelayService.getBalance();
-            const price = await this.flightDelayService.getPrice(model.flightNO);
+            this.price = await this.flightDelayService.getPrice(model.flightNO);
             console.log(currentVote);
             console.log(balance);
-            console.log(price);
-            if (balance.token && balance.token * 1 < price * 1) {
-                this.confirmMessage = `token余额不足${price}，是否前往兑换？`;
+            console.log(this.price);
+            if (balance.token && balance.token * 1 < this.price * 1) {
+                this.confirmMessage = `token余额不足${this.price}，是否前往兑换？`;
                 this.exchangeModalRef = this.openModal(this.exchangeTemplate);
 
             } else {
-                this.mySfInfo.price = price;
                 this.confirmModalRef = this.openModal(this.confirmTemplate);
             }
             // this.router.navigate(['/']);
         }
     }
-
     async join() {
         this.loadingSer.show();
-        this.flightDelayService.join(this.mySfInfo, (confirmNumber, receipt) => {
+        const model = this.form.value;
+        console.log(model);
+        const price = await this.flightDelayService.getPrice(model.flightNO);
+        // 授权合约可以扣代币
+        const web3 = this.web3.instance();
+        const priceInWei = web3.utils.toWei(String(price * 1.1));
+        await this.flightDelayService.approve(priceInWei);
+        this.flightDelayService.join(model, async(confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
+                const testOK = await this.flightDelayService.testOK();
+                console.log(testOK);
                 alert('加入成功');
             }
         }, (err) => {

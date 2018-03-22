@@ -23,6 +23,7 @@ contract FlightDelay is Ownable, Stoppable {
     mapping(uint => DelayPayInfo) public delayPayInfos;
     event UserJoin(string flightNO, string flightDate, address user);
 
+    string public testOK = 'NO';
 
     function FlightDelay(address hbsAddress, address tokenAddress) public Stoppable(msg.sender){
         hbs = HbStorage(hbsAddress);
@@ -134,11 +135,12 @@ contract FlightDelay is Ownable, Stoppable {
         require(hbs.isOpening(sfIndex));
         require(!hbs.isMemberInSF(sfIndex, msg.sender));
 
-        uint tokenCount = getPrice(flightNO);
+        uint tokenCount = getPrice(flightNO) * 1 ether;
         require(token.balanceOf(msg.sender) >= tokenCount);
         require(token.transferFrom(msg.sender, this, tokenCount));
 
-        hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
+        // hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
+        testOK = 'OK!';
         // hbs.setCanBuy(msg.sender, "");
         if (hbs.getSFCount(sfIndex) == maxCount) {
             hbs.setClose(sfIndex);
