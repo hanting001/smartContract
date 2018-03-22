@@ -1,6 +1,8 @@
+import { LocalOrderService } from './local-order.service';
 import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
 import * as moment from 'moment';
+
 @Injectable()
 export class FlightDelayService {
     constructor(private web3Service: Web3Service) { }
@@ -109,6 +111,8 @@ export class FlightDelayService {
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
+
+
                     onConfirmation(confNumber, receipt);
                 }
             })

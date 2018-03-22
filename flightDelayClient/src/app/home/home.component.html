@@ -112,6 +112,16 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">航班已取消：</label>
+                        <div class="col align-self-center">
+                            <progressbar [value]="50"></progressbar>
+                        </div>
+                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
+                        <div class="col">
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -121,7 +131,7 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="flightNO" class="col text-right align-self-center" style="font-size:1.2rem">您的航班号：</label>
+                        <label for="flightNO" class="col text-right align-self-center" style="font-size:1.2rem">航班号：</label>
                         <input type="text" class="col form-control-lg" id="flightNO" [(ngModel)]="mySfInfo.flightNO" formControlName="flightNO" placeholder="航班号">
                         <label for="flightDate" class="col text-right align-self-center" style="font-size:1.2rem">出发日期：</label>
                         <input type="text" class="col form-control-lg" id="flightDate" [(ngModel)]="mySfInfo.flightDate" formControlName="flightDate"

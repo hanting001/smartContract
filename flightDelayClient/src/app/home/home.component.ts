@@ -1,3 +1,4 @@
+import { LocalOrderService } from '../service/local-order.service';
 import { LoadingService } from '../service/loading.service';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -15,7 +17,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class HomeComponent implements OnInit {
     account: string;
     sfInfo: string;
-    mySfInfo: any = { flightNo: '', flightDate: '', price: 0 };
+    mySfInfo: any = { flightNO: '', flightDate: '', price: 0 };
     winHeight: any;
     form: FormGroup;
     minDate: Date;
@@ -30,7 +32,7 @@ export class HomeComponent implements OnInit {
     constructor(private fb: FormBuilder, private web3: Web3Service,
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
-        private router: Router, public loadingSer: LoadingService) {
+        private router: Router, public loadingSer: LoadingService, protected localOrderSer: LocalOrderService) {
 
         this.web3.getCheckEnvSubject().subscribe((data) => {
             this.envState = data;
@@ -134,8 +136,12 @@ export class HomeComponent implements OnInit {
 
     async join() {
         this.loadingSer.show();
-        this.flightDelayService.join(this.mySfInfo, (confirmNumber, receipt) => {
+        this.flightDelayService.join(this.mySfInfo, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
+
+                const result = await this.localOrderSer.addOrder(this.mySfInfo);
+                console.log(result);
+                console.log(await this.localOrderSer.getMyOrders());
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
                 alert('加入成功');

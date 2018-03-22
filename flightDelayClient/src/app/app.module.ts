@@ -11,8 +11,9 @@ import { zhCnLocale } from 'ngx-bootstrap/locale';
 defineLocale('zh-cn', zhCnLocale);
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { AsyncLocalStorageModule } from 'angular-async-local-storage';
 
-import { Web3Service, FlightDelayService, LoadingService } from './service/index';
+import { Web3Service, FlightDelayService, LoadingService, LocalOrderService } from './service/index';
 
 
 
@@ -48,9 +49,10 @@ import { FaqComponent } from './faq/faq.component';
         ProgressbarModule.forRoot(),
         FormsModule,
         LoadingModule,
+        AsyncLocalStorageModule,
         ReactiveFormsModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService],
+    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
