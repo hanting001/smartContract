@@ -123,8 +123,8 @@ export class FlightDelayService {
             flightNO: flightNO,
             flightDate: flightDate
         });
-        const checkData = await sc.methods.checkData(flightNO, flightDate).call(options);
-        console.log(checkData);
+        // const checkData = await sc.methods.checkData(flightNO, flightDate).call(options);
+        // console.log(checkData);
         const approve = await tokenSC.methods.allowance(options.from, address).call(options);
         console.log(approve);
         sc.methods.joinFlight(flightNO, flightDate)

@@ -118,6 +118,14 @@ contract FlightDelay is Ownable, Stoppable {
       * @param flightDate 航班日期，格式:yyyy-mm-dd
       */
     function joinFlight(string flightNO, string flightDate) external stopInEmergency {
+        joinFlightByVote(flightNO, flightDate, bytes32(""), HbStorage.DelayStatus.no);
+    }
+
+    /** @dev 用户通过投票加入航班计划 
+      * @param flightNO 航班号
+      * @param flightDate 航班日期，格式:yyyy-mm-dd
+      */  
+    function joinFlightByVote(string flightNO, string flightDate, bytes32 votedSfIndex, HbStorage.DelayStatus vote) public stopInEmergency {
         require(Utility.checkDateFomat(flightDate));
         require(Utility.checkDate(flightDate, interval));
         bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
@@ -131,35 +139,8 @@ contract FlightDelay is Ownable, Stoppable {
         require(token.balanceOf(msg.sender) >= tokenCount);
         require(token.transferFrom(msg.sender, this, tokenCount));
 
-        // hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
-        testOK = 'OK!';
-        if (hbs.getSFCount(sfIndex) == maxCount) {
-            hbs.setClose(sfIndex);
-        }
-        UserJoin(flightNO, flightDate, msg.sender);
-    }
-    /** @dev 用户通过投票加入航班计划 
-      * @param flightNO 航班号
-      * @param flightDate 航班日期，格式:yyyy-mm-dd
-      */  
-    function joinFlightByVote(string flightNO, string flightDate, bytes32 votedSfIndex, HbStorage.DelayStatus vote) external stopInEmergency {
-        require(Utility.checkDateFomat(flightDate));
-        require(Utility.checkDate(flightDate, interval));
-        bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
-        require(hbs.getSFCount(sfIndex) <= maxCount);
-        //check user can buy
-        // require(hbs.canBuy(msg.sender, flightNO));
-        
-        require(hbs.isOpening(sfIndex));
-        require(!hbs.isMemberInSF(sfIndex, msg.sender));
+        hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
 
-        uint tokenCount = getPrice(flightNO) * 1 ether;
-        require(token.balanceOf(msg.sender) >= tokenCount);
-        // require(token.transferFrom(msg.sender, this, tokenCount));
-
-        // hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
-        testOK = 'OK!';
-        // hbs.setCanBuy(msg.sender, "");
         if (hbs.getSFCount(sfIndex) == maxCount) {
             hbs.setClose(sfIndex);
         }
@@ -167,14 +148,15 @@ contract FlightDelay is Ownable, Stoppable {
         
     }  
 
-    function checkData(string flightNO, string flightDate) public returns (bool, bool, bool, bool, bool, bool) {
-        bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
-        bool isMemberInSF = !hbs.isMemberInSF(sfIndex, msg.sender);
-        uint tokenCount = getPrice(flightNO) * 1 ether;
-        return (Utility.checkDateFomat(flightDate), Utility.checkDate(flightDate, interval), hbs.getSFCount(sfIndex) <= maxCount, 
-        hbs.isOpening(sfIndex), isMemberInSF, token.balanceOf(msg.sender) >= tokenCount);
+    // function checkData(string flightNO, string flightDate) public returns (bool, bool, bool, bool, bool, bool) {
+    //     bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
+    //     bool isMemberInSF = !hbs.isMemberInSF(sfIndex, msg.sender);
+    //     uint tokenCount = getPrice(flightNO) * 1 ether;
+    //     return (Utility.checkDateFomat(flightDate), Utility.checkDate(flightDate, interval), hbs.getSFCount(sfIndex) <= maxCount, 
+    //     hbs.isOpening(sfIndex), isMemberInSF, token.balanceOf(msg.sender) >= tokenCount);
 
-    }
+    // }
+
     /** @dev 用户兑换token 
       */  
     function exchange() public payable {
