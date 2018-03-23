@@ -140,6 +140,7 @@ contract FlightDelay is Ownable, Stoppable {
         require(token.transferFrom(msg.sender, this, tokenCount));
 
         hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
+        testOK = 'OKOKOK';
 
         if (hbs.getSFCount(sfIndex) == maxCount) {
             hbs.setClose(sfIndex);

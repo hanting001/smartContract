@@ -137,7 +137,6 @@ export class FlightDelayService {
                 console.log(`join txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
-                console.log(confNumber);
                 if (onConfirmation) {
 
 
