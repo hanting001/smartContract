@@ -1,3 +1,4 @@
+import { Web3Service } from './';
 import { Injectable } from '@angular/core';
 import { AsyncLocalStorage } from 'angular-async-local-storage';
 
@@ -10,14 +11,22 @@ export class LocalOrderService {
 
     }
 
-    async getMyOrders() {
+    async getMyOrders(account) {
         const myPromise = () => {
             return new Promise((resolve, reject) => {
-                this.localStorage.getItem(this.MY_ORDER).subscribe((orders) => {
-                    if (!orders || orders.length === 0) {
-                        orders = [];
+                this.localStorage.getItem(this.MY_ORDER).subscribe((obj) => {
+                    if (!obj) {
+                        resolve([]);
+                        return;
                     }
-                    resolve(orders);
+
+                    if (!obj[account]) {
+                        resolve([]);
+                        return;
+                    }
+
+
+                    resolve(obj[account]);
                 }, (err) => {
                     reject(err);
                 });
@@ -28,17 +37,24 @@ export class LocalOrderService {
         return await myPromise();
     }
 
-    async addOrder(sfInfo: any) {
+    async addOrder(sfInfo: any, account) {
 
         const myPromise = () => {
             return new Promise((resolve, reject) => {
                 try {
-                    this.localStorage.getItem(this.MY_ORDER).subscribe((orders) => {
-                        if (!orders || orders.length === 0) {
-                            orders = [];
+                    this.localStorage.getItem(this.MY_ORDER).subscribe((obj) => {
+                        if (!obj) {
+                            obj = {};
                         }
-                        orders.push(sfInfo);
-                        this.localStorage.setItem(this.MY_ORDER, orders).subscribe((result) => {
+
+                        if (!obj[account]) {
+                            obj[account] = [];
+                        }
+                        obj[account].push(sfInfo);
+
+                        console.log(account);
+                        console.log(obj);
+                        this.localStorage.setItem(this.MY_ORDER, obj).subscribe((result) => {
                             console.log(result);
                             resolve(result);
                         });

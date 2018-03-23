@@ -46,6 +46,8 @@ export class HomeComponent implements OnInit {
             flightDate: ['', [Validators.required]]
         });
 
+
+
         $(() => {
             $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
                 if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '')) {
@@ -144,10 +146,10 @@ export class HomeComponent implements OnInit {
         await this.flightDelayService.approve(priceInWei);
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
-
-                const result = await this.localOrderSer.addOrder(model);
+                model.price = price;
+                const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
                 console.log(result);
-                console.log(await this.localOrderSer.getMyOrders());
+                console.log(await this.localOrderSer.getMyOrders(await this.web3.getMainAccount()));
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
                 const testOK = await this.flightDelayService.testOK();
