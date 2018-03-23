@@ -125,17 +125,17 @@ contract FlightDelay is Ownable, Stoppable {
         
         require(hbs.isOpening(sfIndex));
         bool isMemberNotInSF = !hbs.isMemberInSF(sfIndex, msg.sender);
-        // require(isMemberNotInSF);
+        require(isMemberNotInSF);
 
-        // uint tokenCount = getPrice(flightNO) * 1 ether;
-        // require(token.balanceOf(msg.sender) >= tokenCount);
-        // require(token.transferFrom(msg.sender, this, tokenCount));
+        uint tokenCount = getPrice(flightNO) * 1 ether;
+        require(token.balanceOf(msg.sender) >= tokenCount);
+        require(token.transferFrom(msg.sender, this, tokenCount));
 
         // hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
         testOK = 'OK!';
-        // if (hbs.getSFCount(sfIndex) == maxCount) {
-        //     hbs.setClose(sfIndex);
-        // }
+        if (hbs.getSFCount(sfIndex) == maxCount) {
+            hbs.setClose(sfIndex);
+        }
         UserJoin(flightNO, flightDate, msg.sender);
     }
     /** @dev 用户通过投票加入航班计划 

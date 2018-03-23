@@ -87,7 +87,7 @@ contract HbStorage is Ownable {
     // function HbStorage() public {
     //     // constructor
     // }
-    function isMemberInSF(bytes32 _sfIndex, address member) public view returns (bool) {
+    function isMemberInSF(bytes32 _sfIndex, address member) external view returns (bool) {
         if (memberInfos[member].isValued) {
             var sfs = memberInfos[member].memberSFs;
             if (sfs[_sfIndex].isValued) {
