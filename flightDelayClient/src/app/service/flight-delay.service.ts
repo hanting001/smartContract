@@ -99,6 +99,7 @@ export class FlightDelayService {
     async approve(price) {
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         const address = await this.web3Service.getAddress('flightDelay');
+        console.log(address);
         const options = {
             from: await this.web3Service.getMainAccount()
         };
@@ -106,14 +107,25 @@ export class FlightDelayService {
     }
     // 加入航延计划，不带投票信息
     async join(mySfInfo: any, onConfirmation, onError?) {
-        console.log(mySfInfo);
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
-        // const address = await this.web3Service.getAddress('flightDelay');
+        const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
+        const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
         const options = {
             from: await this.web3Service.getMainAccount()
         };
-        sc.methods.joinFlight(mySfInfo.flightNO, moment(mySfInfo.flightDate).format('yyyy-MM-dd'))
+        console.log(options);
+        const flightNO = mySfInfo.flightNO;
+        const flightDate = moment(mySfInfo.flightDate).format('YYYY-MM-DD');
+        console.log({
+            flightNO: flightNO,
+            flightDate: flightDate
+        });
+        const checkData = await sc.methods.checkData(flightNO, flightDate).call(options);
+        console.log(checkData);
+        const approve = await tokenSC.methods.allowance(options.from, address).call(options);
+        console.log(approve);
+        sc.methods.joinFlight(flightNO, flightDate)
         .send(options, function(err, transactionHash) {
             if (err) {
                 console.log(err);
