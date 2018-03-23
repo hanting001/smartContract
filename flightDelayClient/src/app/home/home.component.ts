@@ -1,3 +1,4 @@
+import { LocalOrderService } from '../service/local-order.service';
 import { LoadingService } from '../service/loading.service';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -15,6 +17,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 export class HomeComponent implements OnInit {
     account: string;
     sfInfo: string;
+
     winHeight: any;
     form: FormGroup;
     minDate: Date;
@@ -29,7 +32,7 @@ export class HomeComponent implements OnInit {
     constructor(private fb: FormBuilder, private web3: Web3Service,
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
-        private router: Router, public loadingSer: LoadingService) {
+        private router: Router, public loadingSer: LoadingService, protected localOrderSer: LocalOrderService) {
 
         this.web3.getCheckEnvSubject().subscribe((data) => {
             this.envState = data;
@@ -42,6 +45,8 @@ export class HomeComponent implements OnInit {
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
             flightDate: ['', [Validators.required]]
         });
+
+
 
         $(() => {
             $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
@@ -131,6 +136,7 @@ export class HomeComponent implements OnInit {
     }
     async join() {
         this.loadingSer.show();
+
         const model = this.form.value;
         console.log(model);
         const price = await this.flightDelayService.getPrice(model.flightNO);
@@ -138,8 +144,12 @@ export class HomeComponent implements OnInit {
         const web3 = this.web3.instance();
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
-        this.flightDelayService.join(model, async(confirmNumber, receipt) => {
+        this.flightDelayService.join(model, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
+                model.price = price;
+                const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
+                console.log(result);
+                console.log(await this.localOrderSer.getMyOrders(await this.web3.getMainAccount()));
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
                 const testOK = await this.flightDelayService.testOK();

@@ -29,7 +29,29 @@
     <p class="lead">参加说明</p>
     <div class="row justify-content-md-center">
         <form (ngSubmit)="confirm()" [formGroup]="form" class="col-sm-8">
-            <div class="card text-center bg-info">
+
+            <div class="card text-center bg-info" style="border: none;">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-3 col-form-label text-right" style="font-size:1.2rem">当前网络：</label>
+                        <div *ngIf="envState.netType=='main'" class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.netName}}">
+                        </div>
+                        <div *ngIf="envState.netType!='main'" class="col-9">
+                            <input type="text" readonly class="form-control-plaintext bg-warning" id="staticEmail" value="{{envState.netName}}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem">钱包地址：</label>
+                        <div class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card text-center bg-info" style="margin-top:15px">
                 <div class="card-header  text-left">
                     请先投票
                 </div>
@@ -112,6 +134,15 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col align-self-center">
+                            <a href="#">投票规则</a>
+                        </div>
+                        <div class="col">
+                            <a href="#">如何查询航班是否延误？</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -121,11 +152,12 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
+
                         <label for="flightNO" class="col text-right align-self-center" style="font-size:1.2rem">您的航班号：</label>
-                        <input type="text" class="col form-control-lg" id="flightNO"  formControlName="flightNO" placeholder="航班号">
+                        <input type="text" class="col form-control-lg" id="flightNO" formControlName="flightNO" placeholder="航班号">
                         <label for="flightDate" class="col text-right align-self-center" style="font-size:1.2rem">出发日期：</label>
-                        <input type="text" class="col form-control-lg" id="flightDate"  formControlName="flightDate"
-                            placeholder="航班日期" bsDatepicker [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+                        <input type="text" class="col form-control-lg" id="flightDate" formControlName="flightDate" placeholder="航班日期" bsDatepicker
+                            [minDate]="minDate" placement="top" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
                     </div>
                     <div *ngIf="flightNO.invalid && (flightNO.dirty || flightNO.touched)" class="form-group col alert alert-danger">
                         <div *ngIf="flightNO.errors.required">
