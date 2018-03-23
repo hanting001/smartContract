@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
     confirmMessage: string;
     envState: object = {};
     price;
+    myOrders: any;
 
     @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -36,6 +37,7 @@ export class HomeComponent implements OnInit {
 
         this.web3.getCheckEnvSubject().subscribe((data) => {
             this.envState = data;
+            this.getMyOrders();
         });
         setInterval(() => {
             this.checkEnv();
@@ -147,9 +149,10 @@ export class HomeComponent implements OnInit {
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 model.price = price;
+                model.createdAt = new Date();
                 const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
                 console.log(result);
-                console.log(await this.localOrderSer.getMyOrders(await this.web3.getMainAccount()));
+                this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
                 const testOK = await this.flightDelayService.testOK();
@@ -178,6 +181,10 @@ export class HomeComponent implements OnInit {
 
     installWallet() {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
+
+    async getMyOrders() {
+        this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
     }
 
 

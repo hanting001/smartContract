@@ -1,4 +1,4 @@
-<header class="masthead">
+<header class="masthead" id="home">
     <div class="container">
         <div class="intro-text">
             <p style="font-size:18px;">参与者共同承担来自风险标的产生的风险，将个人风险化为整个风险互助体系共同承担的系统性风险，参与者为如上提到的用户；</p>
@@ -188,6 +188,51 @@
     </div>
 
 
+</div>
+
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
+    <h1>我的订单</h1>
+    <div class="row justify-content-md-center">
+        <p *ngIf="!myOrders||myOrders.length==0">您还未加入航班延迟互助计划</p>
+        <table *ngIf="myOrders&&myOrders.length!=0" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">航班号</th>
+                    <th scope="col">出发日期</th>
+                    <th scope="col">价格</th>
+                    <th scope="col">购买时间</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of myOrders;">
+                    <th scope="row">{{order.flightNO}}</th>
+                    <td>{{order.flightDate | date:'yyyy-MM-dd' }}</td>
+                    <td>{{order.price}}</td>
+                    <td>{{order.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                    <td></td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="aboutus">
+    <h1>关于我们</h1>
+    <div class="row justify-content-md-center">
+
+    </div>
+</div>
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="faq">
+    <h1>常见问题</h1>
+    <div class="row justify-content-md-center">
+
+
+    </div>
 </div>
 
 
