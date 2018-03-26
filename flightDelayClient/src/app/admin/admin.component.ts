@@ -11,7 +11,7 @@ import { LoadingService } from '../service/loading.service';
 export class AdminComponent implements OnInit {
   balance: any;
   account: string;
-  isAdmin: bool;
+  isAdmin: boolean;
   constructor(
     private route: ActivatedRoute,
     private web3Service: Web3Service,
