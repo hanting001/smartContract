@@ -93,8 +93,8 @@ export class Web3Service {
         //     this.web3 = new Web3(window.web3.currentProvider);
         // } else {
         this.web3 = new Web3();
-        // const ret = this.web3.setProvider(Web3.givenProvider);
-        const ret = this.web3.setProvider('http://localhost:7545');
+        const ret = this.web3.setProvider(Web3.givenProvider);
+        // const ret = this.web3.setProvider('http://localhost:7545');
         if (!ret) {
             state.checkWeb3 = false;
         } else {

@@ -147,6 +147,7 @@ export class HomeComponent implements OnInit {
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
+            console.log(confirmNumber);
             if (confirmNumber === 2) {
                 model.price = price;
                 model.createdAt = new Date();
