@@ -128,11 +128,11 @@ export class FlightDelayService {
         const approve = await tokenSC.methods.allowance(options.from, address).call(options);
         console.log(approve);
         sc.methods.joinFlight(flightNO, flightDate)
-        .send(options, function(err, transactionHash) {
-            if (err) {
-                console.log(err);
-            }
-        })
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
             .on('transactionHash', (transactionHash) => {
                 console.log(`join txHash: ${transactionHash}`);
             })
