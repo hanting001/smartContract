@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
         });
         setInterval(() => {
             this.checkEnv();
-        }, 600000);
+        }, 10000);
 
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit {
             });
             // Collapse Navbar
             const navbarCollapse = function () {
-                if ($('#mainNav').offset().top > 100) {
+                if ($('#mainNav').length > 0 && $('#mainNav').offset().top > 100) {
                     $('#mainNav').addClass('navbar-shrink');
                 } else {
                     $('#mainNav').removeClass('navbar-shrink');
