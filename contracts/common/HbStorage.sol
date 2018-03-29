@@ -44,11 +44,18 @@ contract HbStorage is Ownable {
         DelayStatus vote;
         bool isValued;
     }
+    // struct MemberInfo {
+    //     bytes32[] scheduledFlights;
+    //     mapping(bytes32 => MemberSF) memberSFs;
+    //     uint winCounts;
+    //     mapping(bytes32 => bool) canClaim;
+    //     bool isValued;
+    // }
     struct MemberInfo {
         bytes32[] scheduledFlights;
         mapping(bytes32 => MemberSF) memberSFs;
-        uint winCounts;
-        mapping(bytes32 => bool) canClaim;
+        // uint winCounts;
+        // mapping(bytes32 => bool) canClaim;
         bool isValued;
     }
     mapping(address => bool) public admins;
@@ -153,11 +160,12 @@ contract HbStorage is Ownable {
         // } else {
         //     return false;
         // }
-        return memberInfos[member].canClaim[_sfIndex];
+        // return memberInfos[member].canClaim[_sfIndex];
+        return false;
     }
-    function setCanBuy(address member, bytes32 _sfIndex) public onlyAdmin{
-        memberInfos[member].canClaim[_sfIndex] = true;
-    }
+    // function setCanBuy(address member, bytes32 _sfIndex) public onlyAdmin{
+    //     memberInfos[member].canClaim[_sfIndex] = true;
+    // }
     /** @dev 返回用户的航班计划 
       */
     function returnSFs() public view returns (bytes32[]) {

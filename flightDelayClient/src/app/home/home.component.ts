@@ -101,8 +101,10 @@ export class HomeComponent implements OnInit {
         this.web3.getMainAccount().then(account => {
             this.account = account;
         });
-        // 测试
-        // this.flightDelayService.getCurrentVote();
+        // 测试是否已加入航延计划
+        this.flightDelayService.getFlights().then(flights => {
+            console.log(flights);
+        });
         this.localService.use('zh-cn');
         this.minDate = new Date();
         this.minDate.setDate(this.minDate.getDate() + 1);
@@ -147,7 +149,6 @@ export class HomeComponent implements OnInit {
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
-            console.log(confirmNumber);
             if (confirmNumber === 2) {
                 model.price = price;
                 model.createdAt = new Date();

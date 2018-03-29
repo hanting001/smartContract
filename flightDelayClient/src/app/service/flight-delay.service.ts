@@ -192,4 +192,9 @@ export class FlightDelayService {
         //     console.log(error);
         //   });
     }
+    async getFlights() {
+        const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
+        const account = await this.web3Service.getMainAccount();
+        return  await storage.methods.memberInfos(account).call();
+    }
 }
