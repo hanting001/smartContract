@@ -24,9 +24,11 @@ export class HomeComponent implements OnInit {
     confirmModalRef: BsModalRef;
     exchangeModalRef: BsModalRef;
     confirmMessage: string;
-    envState: object = {};
+    envState: any = {};
     price;
     myOrders: any;
+    voteInfo: any;
+    balance: any = {};
 
     @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -35,13 +37,18 @@ export class HomeComponent implements OnInit {
         private modalService: BsModalService,
         private router: Router, public loadingSer: LoadingService, protected localOrderSer: LocalOrderService) {
 
-        this.web3.getCheckEnvSubject().subscribe((data) => {
+        this.web3.getCheckEnvSubject().subscribe((data: any) => {
+            if (data.checkEnv === true && this.envState.checkEnv !== true) {
+                this.getMyOrders();
+                this.getCurrentVoteInfo();
+                this.getBalance();
+            }
             this.envState = data;
-            this.getMyOrders();
         });
         setInterval(() => {
             this.checkEnv();
-        }, 600000);
+        }, 10000);
+        this.checkEnv();
 
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
@@ -76,7 +83,7 @@ export class HomeComponent implements OnInit {
             });
             // Collapse Navbar
             const navbarCollapse = function () {
-                if ($('#mainNav').offset().top > 100) {
+                if ($('#mainNav').length > 0 && $('#mainNav').offset().top > 100) {
                     $('#mainNav').addClass('navbar-shrink');
                 } else {
                     $('#mainNav').removeClass('navbar-shrink');
@@ -155,6 +162,7 @@ export class HomeComponent implements OnInit {
                 const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
                 console.log(result);
                 this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+                console.log(this.myOrders);
                 this.loadingSer.hide();
                 this.confirmModalRef.hide();
                 const testOK = await this.flightDelayService.testOK();
@@ -178,7 +186,10 @@ export class HomeComponent implements OnInit {
     }
     goExchange() {
         this.router.navigate(['/exchange']);
-        this.exchangeModalRef.hide();
+        if (this.exchangeModalRef) {
+            this.exchangeModalRef.hide();
+        }
+
     }
 
     installWallet() {
@@ -187,6 +198,15 @@ export class HomeComponent implements OnInit {
 
     async getMyOrders() {
         this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+    }
+
+    async getCurrentVoteInfo() {
+        this.voteInfo = await this.flightDelayService.getCurrentVote();
+        console.log(this.voteInfo);
+    }
+
+    async getBalance() {
+        this.balance = await this.flightDelayService.getBalance();
     }
 
 
