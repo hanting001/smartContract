@@ -135,6 +135,10 @@ export class HomeComponent implements OnInit {
             console.log(currentVote);
             console.log(balance);
             console.log(this.price);
+            const isInSF = await this.flightDelayService.checkIsInSF(model.flightNO, model.flightDate);
+            if (isInSF) {
+                return alert('你已加入该航班计划');
+            }
             if (balance.token && balance.token * 1 < this.price * 1) {
                 this.confirmMessage = `token余额不足${this.price}，是否前往兑换？`;
                 this.exchangeModalRef = this.openModal(this.exchangeTemplate);

@@ -220,4 +220,12 @@ export class FlightDelayService {
         }
         return returnArray;
     }
+
+    // 检查是否已经加入过了
+    async checkIsInSF(flightNO, flightDate) {
+        const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        return storage.methods.isInSF(key).call();
+    }
 }
