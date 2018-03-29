@@ -109,7 +109,7 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         // 测试是否已加入航延计划
-        this.flightDelayService.getFlights('mu4545', '2018-03-31').then(flights => {
+        this.flightDelayService.getSfInfo().then(flights => {
             console.log(flights);
         });
         this.localService.use('zh-cn');
