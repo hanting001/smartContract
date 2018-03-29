@@ -59,8 +59,8 @@ export class AdminComponent implements OnInit {
     this.loadingSer.show();
     hbStorageSC.methods.setAdmin(this.account).send({ from: from })
       .on('confirmation', async (confNumber, receipt) => {
-        this.loadingSer.hide();
         this.isAdmin = await hbStorageSC.methods.admins(this.account).call();
+        this.loadingSer.hide();
       });
   }
 }

@@ -192,9 +192,21 @@ export class FlightDelayService {
         //     console.log(error);
         //   });
     }
-    async getFlights() {
+    async getFlights(flightNO, flightDate) {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
         const account = await this.web3Service.getMainAccount();
-        return  await storage.methods.memberInfos(account).call();
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        const sf = await storage.methods.memberSFs(account, 0).call();
+
+        console.log(`${flightNO}   ${moment(flightDate).format('YYYY-MM-DD')}`);
+        console.log(key);
+        console.log(sf);
+        // const memberSFInfo = await storage.methods.returnMemberSFInfo(key).call();
+        const sfInfo = await storage.methods.returnSFInfo(key).call();
+        return {
+            sfInfo: sfInfo,
+            memberSFInfo: 'memberSFInfo'
+        };
     }
 }

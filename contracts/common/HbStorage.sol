@@ -44,20 +44,19 @@ contract HbStorage is Ownable {
         DelayStatus vote;
         bool isValued;
     }
+    struct MemberInfo {
+        mapping(bytes32 => MemberSF) memberSFs;
+        uint winCounts;
+        mapping(bytes32 => bool) canClaim;
+        bool isValued;
+    }
     // struct MemberInfo {
     //     bytes32[] scheduledFlights;
     //     mapping(bytes32 => MemberSF) memberSFs;
-    //     uint winCounts;
-    //     mapping(bytes32 => bool) canClaim;
+    //     // uint winCounts;
+    //     // mapping(bytes32 => bool) canClaim;
     //     bool isValued;
     // }
-    struct MemberInfo {
-        bytes32[] scheduledFlights;
-        mapping(bytes32 => MemberSF) memberSFs;
-        // uint winCounts;
-        // mapping(bytes32 => bool) canClaim;
-        bool isValued;
-    }
     mapping(address => bool) public admins;
     //已出单航班信息 {keccak256(航班号+日期): [SFInfo]}
     mapping(bytes32 => SFInfo) public scheduledFlights;
@@ -69,6 +68,7 @@ contract HbStorage is Ownable {
     mapping(bytes32 => SFHistroy) public sfHistroy;
     //记录用户的航班信息
     mapping(address => MemberInfo) public memberInfos;
+    mapping(address => bytes32[]) public memberSFs;
 
     modifier onlyAdmin() {
         require(admins[msg.sender]);
@@ -94,7 +94,7 @@ contract HbStorage is Ownable {
     // function HbStorage() public {
     //     // constructor
     // }
-    function isMemberInSF(bytes32 _sfIndex, address member) external view returns (bool) {
+    function isMemberInSF(bytes32 _sfIndex, address member) public view returns (bool) {
         if (memberInfos[member].isValued) {
             var sfs = memberInfos[member].memberSFs;
             if (sfs[_sfIndex].isValued) {
@@ -108,6 +108,9 @@ contract HbStorage is Ownable {
     }
     function getSFCount(bytes32 _sfIndex) public view returns (uint) {
         return scheduledFlights[_sfIndex].count;
+    }
+    function getScheduledFlights() external view returns (bytes32[]) {
+       return memberSFs[msg.sender];
     }
     function addMemberToSF(bytes32 _sfIndex, string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, DelayStatus _vote) public onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
@@ -124,7 +127,7 @@ contract HbStorage is Ownable {
             votedSF: _votedSFIndex,
             vote: _vote,
             isValued: true});
-        memberInfos[_member].scheduledFlights.push(_sfIndex);
+        memberSFs[_member].push(_sfIndex);
         memberInfos[_member].isValued = true;  
 
         MemberAdded(_sfIndex, _member);  
@@ -143,16 +146,7 @@ contract HbStorage is Ownable {
       * @param _sfIndex 航班号+航班日期
       */
     function isInSF(bytes32 _sfIndex) public view returns (bool) {
-        if (memberInfos[msg.sender].isValued) {
-            var sfs = memberInfos[msg.sender].memberSFs;
-            if (sfs[_sfIndex].isValued) {
-                return true; 
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return isMemberInSF(_sfIndex, msg.sender);
     }
     function canClaim(address member, bytes32 _sfIndex) public returns (bool) {
         // if (flightNO.toSlice().compare(memberInfos[member].canClaim.toSlice()) == 0) {
@@ -166,23 +160,33 @@ contract HbStorage is Ownable {
     // function setCanBuy(address member, bytes32 _sfIndex) public onlyAdmin{
     //     memberInfos[member].canClaim[_sfIndex] = true;
     // }
-    /** @dev 返回用户的航班计划 
-      */
-    function returnSFs() public view returns (bytes32[]) {
-        bytes32[] memory sfs = memberInfos[msg.sender].scheduledFlights;
-        return sfs ;
-    }
     /** @dev 返回用户的航班计划详细信息 
       * @param _sfIndex 航班号+航班日期
       */
-    function returnSFInfo(bytes32 _sfIndex) public view returns (MemberSF) {
+    function returnMemberSFInfo(bytes32 _sfIndex) public view returns (string flightNO, string flightDate,
+        bytes32 votedSF, 
+        DelayStatus vote, 
+        bool isValued) {
         MemberSF memory sfsInfo = memberInfos[msg.sender].memberSFs[_sfIndex];
-        return sfsInfo ;
+        return (sfsInfo.flightNO, sfsInfo.flightDate, sfsInfo.votedSF, sfsInfo.vote, sfsInfo.isValued) ;
     }
     /** @dev 返回航班的所有加入会员 
       * @param _sfIndex 航班号+航班日期
       */
     function returnMembers(bytes32 _sfIndex) public view returns (address[]) {
         return scheduledFlights[_sfIndex].members;
+    }
+    /** @dev 返回会员的所有航班 
+      */   
+    function returnMemberSFs() public view returns(bytes32[]) {
+        return memberSFs[msg.sender];
+    }
+    /** @dev 返回航班相关信息 
+      * @param _sfIndex 航班号+航班日期
+      */
+    function returnSFInfo(bytes32 _sfIndex) public view returns (SFStatus status, uint count,
+        DelayStatus delayStatus,
+        bool isValued) {
+        return (scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued);
     }
 }
