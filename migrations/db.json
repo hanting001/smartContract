@@ -1,1 +1,18 @@
-{"hbStorage":{"scName":"HbStorage","address":"0x8f0483125fcb9aaaefa9209d8e9d7b9c8b9fb90f"},"flightDelay":{"scName":"FlightDelay","address":"0x9fbda871d559710256a2502a2517b794b482db40"},"knotToken":{"scName":"KnotToken","address":"0x345ca3e014aaf5dca488057592ee47305d9b3e10"}}
+{
+    "hbStorage": {
+        "scName": "HbStorage",
+        "address": "0x295Ef689Bafe19105A003914Bf0AFcE362c389aA"
+    },
+    "flightDelay": {
+        "scName": "FlightDelay",
+        "address": "0x1e47282969B4440363c20FDC83f604d11D2B470A"
+    },
+    "knotToken": {
+        "scName": "KnotToken",
+        "address": "0x233cF3B8f7861BeFe24618676Af81E035b795758"
+    },
+    "flightDelayService": {
+        "scName": "FlightDelayService",
+        "address": "0x7caD30D4E5d8FD7522A18C141F9724e8F4348828"
+    }
+}

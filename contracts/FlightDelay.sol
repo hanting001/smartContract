@@ -32,7 +32,7 @@ contract FlightDelay is Ownable, Stoppable {
         delayPayInfos[uint(HbStorage.DelayStatus.delay1)] = DelayPayInfo({times: 30, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay1), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay2)] = DelayPayInfo({times: 60, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay2), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay3)] = DelayPayInfo({times: 120, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay3), isValued: true});
-        delayPayInfos[uint(HbStorage.DelayStatus.delay4)] = DelayPayInfo({times: 999, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay4), isValued: true});
+        delayPayInfos[uint(HbStorage.DelayStatus.cancel)] = DelayPayInfo({times: 999, payCount: getDelayClaimRate(HbStorage.DelayStatus.cancel), isValued: true});
     }
     function setInterval(uint _interval) public onlyOwner {
         interval = _interval;
@@ -59,7 +59,7 @@ contract FlightDelay is Ownable, Stoppable {
         if ( status == HbStorage.DelayStatus.delay3) {
             return 30 * 10;
         }
-        if ( status == HbStorage.DelayStatus.delay4) {
+        if ( status == HbStorage.DelayStatus.cancel) {
             return 30 * 15;
         }
     }
@@ -120,26 +120,52 @@ contract FlightDelay is Ownable, Stoppable {
     function joinFlight(string flightNO, string flightDate) external stopInEmergency {
         joinFlightByVote(flightNO, flightDate, bytes32(""), HbStorage.DelayStatus.no);
     }
-
+    function joinCheck(string flightDate, bytes32 sfIndex, uint tokenCount) public view returns(uint) {
+        if (!Utility.checkDateFomat(flightDate)) {
+            return 1;
+        }
+        if(!Utility.checkDate(flightDate, interval)) {
+            return 2;
+        }
+        if(!(hbs.getSFCount(sfIndex) <= maxCount)){
+            return 3;
+        }
+        if(!hbs.isOpening(sfIndex)) {
+            return 4;
+        }
+        bool isMemberInSF = hbs.isMemberInSF(sfIndex, msg.sender);
+        if(isMemberInSF){
+            return 5;
+        }
+        if(token.balanceOf(msg.sender) < tokenCount){
+            return 6;
+        }
+        return 0;
+    }
     /** @dev 用户通过投票加入航班计划 
       * @param flightNO 航班号
       * @param flightDate 航班日期，格式:yyyy-mm-dd
       */  
     function joinFlightByVote(string flightNO, string flightDate, bytes32 votedSfIndex, HbStorage.DelayStatus vote) public stopInEmergency {
-        require(Utility.checkDateFomat(flightDate));
-        require(Utility.checkDate(flightDate, interval));
+        // require(Utility.checkDateFomat(flightDate));
+        // require(Utility.checkDate(flightDate, interval));
         bytes32 sfIndex = keccak256(Utility.strConcat(flightNO, flightDate));
-        require(hbs.getSFCount(sfIndex) <= maxCount);
+        // require(hbs.getSFCount(sfIndex) <= maxCount);
         
-        require(hbs.isOpening(sfIndex));
-        bool isMemberNotInSF = !hbs.isMemberInSF(sfIndex, msg.sender);
-        require(isMemberNotInSF);
+        // require(hbs.isOpening(sfIndex));
+        // bool isMemberNotInSF = !hbs.isMemberInSF(sfIndex, msg.sender);
+        // require(isMemberNotInSF);
 
         uint tokenCount = getPrice(flightNO) * 1 ether;
-        require(token.balanceOf(msg.sender) >= tokenCount);
+        require(joinCheck(flightDate, sfIndex, tokenCount) == 0);
+        // require(token.balanceOf(msg.sender) >= tokenCount);
+
         require(token.transferFrom(msg.sender, this, tokenCount));
 
         hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote);
+        if (votedSfIndex != bytes32("")) {
+            hbs.updateVote(votedSfIndex, vote);
+        }
         testOK = block.number;
 
         if (hbs.getSFCount(sfIndex) == maxCount) {

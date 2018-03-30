@@ -114,7 +114,7 @@ export class HomeComponent implements OnInit {
         });
         this.localService.use('zh-cn');
         this.minDate = new Date();
-        this.minDate.setDate(this.minDate.getDate() + 1);
+        this.minDate.setDate(this.minDate.getDate() + 2);
     }
     async sendTx() {
         const confirmApprove = async (confirmationNumber, receipt) => {
@@ -132,9 +132,9 @@ export class HomeComponent implements OnInit {
             const currentVote = await this.flightDelayService.getCurrentVote();
             const balance = await this.flightDelayService.getBalance();
             this.price = await this.flightDelayService.getPrice(model.flightNO);
-            console.log(currentVote);
-            console.log(balance);
-            console.log(this.price);
+            // console.log(currentVote);
+            // console.log(balance);
+            // console.log(this.price);
             if (balance.token && balance.token * 1 < this.price * 1) {
                 this.confirmMessage = `token余额不足${this.price}，是否前往兑换？`;
                 this.exchangeModalRef = this.openModal(this.exchangeTemplate);
@@ -151,6 +151,12 @@ export class HomeComponent implements OnInit {
         const model = this.form.value;
         console.log(model);
         const price = await this.flightDelayService.getPrice(model.flightNO);
+        const joinCheck = await this.flightDelayService.canJoin(model.flightNO, model.flightDate);
+        console.log(joinCheck);
+        if (joinCheck.checkResult != 0) {
+            this.loadingSer.hide();
+            return alert(joinCheck.message);
+        }
         // 授权合约可以扣代币
         const web3 = this.web3.instance();
         const priceInWei = web3.utils.toWei(String(price * 1.1));
@@ -173,7 +179,19 @@ export class HomeComponent implements OnInit {
             this.loadingSer.hide();
         });
     }
-
+    async startClaim(flightNO, flightDate) {
+        // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
+        const target = 2;
+        this.flightDelayService.startClaim(flightNO, flightDate, target, async(confirmNumber, receipt) => {
+            if (confirmNumber === 2) {
+                const testOK = await this.flightDelayService.testServiceOK();
+                console.log(testOK);
+                const currentVote = await this.flightDelayService.getCurrentVote();
+                console.log(currentVote);
+                alert('申请成功');
+            }
+        });
+    }
     async checkEnv() {
         await this.web3.check();
     }
