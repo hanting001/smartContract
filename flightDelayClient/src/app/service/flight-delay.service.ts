@@ -249,4 +249,26 @@ export class FlightDelayService {
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
         return storage.methods.isInSF(key).call();
     }
+
+    // 发起理赔
+    async startClaim(flightNO, flightDate, vote, onConfirmation) {
+        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        sc.methods.claim(key, vote).send(options)
+            .on('transactionHash', (transactionHash) => {
+                console.log(`start claim txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+            });
+    }
 }
