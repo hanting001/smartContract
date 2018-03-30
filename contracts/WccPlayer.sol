@@ -17,6 +17,7 @@ contract WccPlayer is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Playing) {
             return 2; //wrong status
         }
+        return 0;
     }
     function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable {
         require(joinCheck(p1, p2, gameType) == 0);
