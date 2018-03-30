@@ -156,7 +156,7 @@ export class HomeComponent implements OnInit {
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
         const joinCheck = await this.flightDelayService.checkIsInSF(model.flightNO, model.flightDate);
-        if (joinCheck.checkResult !== 0) {
+        if (joinCheck.checkResult != 0) {
             return alert(joinCheck.message);
         }
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
