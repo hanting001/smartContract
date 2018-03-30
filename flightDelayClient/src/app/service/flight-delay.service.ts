@@ -141,7 +141,7 @@ export class FlightDelayService {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const msgObj = {
             1: '您没有购买该航班计划',
-            2: '航班计划状态不正确',
+            2: '已有人对该航班发起了理赔申请，请关注投票结果',
             3: '该航班的投票已经结束'
         };
         const checkResult = await sc.methods.claimCheck(key).call();
