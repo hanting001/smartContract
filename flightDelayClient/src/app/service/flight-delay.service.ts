@@ -137,10 +137,12 @@ export class FlightDelayService {
         const web3 = this.web3Service.instance();
         flightDate = moment(flightDate).format('YYYY-MM-DD');
         const key = web3.utils.keccak256(flightNO + flightDate);
+        // const account = await this.web3Service.getMainAccount();
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const msgObj = {
             1: '您没有购买该航班计划',
-            2: '航班计划状态不正确'
+            2: '航班计划状态不正确',
+            3: '该航班的投票已经结束'
         };
         const checkResult = await sc.methods.claimCheck(key).call();
         return {

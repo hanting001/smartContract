@@ -37,7 +37,6 @@ contract HbStorage is Ownable {
         uint delay3Counts;
         uint cancelCounts;
         uint noCounts;
-        DelayStatus target;
         bool ended;
         bool isValued;
     }
@@ -208,7 +207,6 @@ contract HbStorage is Ownable {
         VoteInfo storage voteInfo = voteInfos[_sfIndex];
         if (!voteInfo.isValued) {
             voteInfo.isValued = true;
-            voteInfo.target = vote;
         }
         if (vote == DelayStatus.no) {
             voteInfo.noCounts += 1;

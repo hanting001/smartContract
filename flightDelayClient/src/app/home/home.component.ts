@@ -182,6 +182,7 @@ export class HomeComponent implements OnInit {
     }
     async startClaim(flightNO, flightDate) {
         const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
+        console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
             return alert(claimCheck.message);
         }

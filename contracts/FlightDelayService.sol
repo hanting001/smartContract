@@ -17,13 +17,17 @@ contract FlightDelayService is Stoppable{
     /** @dev start Claim check
       * 
       */  
-    function claimCheck(bytes32 index) public view returns (uint8) {
+    function claimCheck(bytes32 index) public view returns (uint) {
         if(!hbs.isMemberInSF(index, msg.sender)){
             return 1;
         }
         var (,,status,,,) = hbs.returnSFInfo(index);
         if(status != HbStorage.SFStatus.opening) {
             return 2;
+        }
+        var (,,,,,ended,) = hbs.voteInfos(index);
+        if (ended) {
+            return 3;
         }
         // 将来可能还需要增加日期间隔校验
         return 0;
@@ -34,7 +38,9 @@ contract FlightDelayService is Stoppable{
       */  
     function claim(bytes32 index, HbStorage.DelayStatus vote) external stopInEmergency{
         require(claimCheck(index) == 0);
-        
+        // require(hbs.isMemberInSF(index, msg.sender));
+        // var (,,status,,,) = hbs.returnSFInfo(index);
+        // require(status == HbStorage.SFStatus.opening);
         // 改变航班状态
         hbs.changeSFStatus(index, HbStorage.SFStatus.claiming);
         // 增加一条投票记录
