@@ -137,7 +137,7 @@ contract FlightDelay is Ownable, Stoppable {
         if(isMemberInSF){
             return 5;
         }
-        if(token.balanceOf(msg.sender) >= tokenCount){
+        if(token.balanceOf(msg.sender) < tokenCount){
             return 6;
         }
         return 0;

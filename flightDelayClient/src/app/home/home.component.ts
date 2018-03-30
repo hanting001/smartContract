@@ -114,7 +114,7 @@ export class HomeComponent implements OnInit {
         });
         this.localService.use('zh-cn');
         this.minDate = new Date();
-        this.minDate.setDate(this.minDate.getDate() + 1);
+        this.minDate.setDate(this.minDate.getDate() + 2);
     }
     async sendTx() {
         const confirmApprove = async (confirmationNumber, receipt) => {
@@ -151,14 +151,16 @@ export class HomeComponent implements OnInit {
         const model = this.form.value;
         console.log(model);
         const price = await this.flightDelayService.getPrice(model.flightNO);
+        const joinCheck = await this.flightDelayService.canJoin(model.flightNO, model.flightDate);
+        console.log(joinCheck);
+        if (joinCheck.checkResult != 0) {
+            this.loadingSer.hide();
+            return alert(joinCheck.message);
+        }
         // 授权合约可以扣代币
         const web3 = this.web3.instance();
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
-        const joinCheck = await this.flightDelayService.checkIsInSF(model.flightNO, model.flightDate);
-        if (joinCheck.checkResult != 0) {
-            return alert(joinCheck.message);
-        }
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 model.price = price;

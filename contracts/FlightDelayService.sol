@@ -32,7 +32,7 @@ contract FlightDelayService is Stoppable{
         // 增加一条投票记录
         hbs.updateVote(index, vote);
         bytes32 currentVote = hbs.currentVote();
-        var (,,,,,isCurrentVoteValued) = hbs.voteInfos(currentVote);
+        var (,,,,,,isCurrentVoteValued) = hbs.voteInfos(currentVote);
         if (!isCurrentVoteValued) {
             //当前还没有进行中的投票
             hbs.setCurrentVote(index);

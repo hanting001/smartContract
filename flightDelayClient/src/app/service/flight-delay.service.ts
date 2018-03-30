@@ -111,7 +111,8 @@ export class FlightDelayService {
     */
     async canJoin(flightNO, flightDate) {
         const web3 = this.web3Service.instance();
-        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        flightDate = moment(flightDate).format('YYYY-MM-DD');
+        const key = web3.utils.keccak256(flightNO + flightDate);
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
         const price = await sc.methods.getPrice(flightNO).call();
         const msgObj = {
@@ -252,7 +253,7 @@ export class FlightDelayService {
 
     // 发起理赔
     async startClaim(flightNO, flightDate, vote, onConfirmation) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const options = {
             from: await this.web3Service.getMainAccount()
         };

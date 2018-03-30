@@ -35,12 +35,14 @@ contract HbStorage is Ownable {
         uint delay3Counts;
         uint cancelCounts;
         uint noCounts;
+        DelayStatus target;
         bool ended;
         bool isValued;
     }
     struct MemberSF {
         string flightNO;
         string flightDate;
+        uint time;
         bytes32 votedSF;
         DelayStatus vote;
         bool isValued;
@@ -125,6 +127,7 @@ contract HbStorage is Ownable {
         memberInfos[_member].memberSFs[_sfIndex] = MemberSF({
             flightNO: _flightNO,
             flightDate: _flightDate,
+            time: block.timestamp,
             votedSF: _votedSFIndex,
             vote: _vote,
             isValued: true});
@@ -164,12 +167,14 @@ contract HbStorage is Ownable {
     /** @dev 返回用户的航班计划详细信息 
       * @param _sfIndex 航班号+航班日期
       */
-    function returnMemberSFInfo(bytes32 _sfIndex) public view returns (string flightNO, string flightDate,
+    function returnMemberSFInfo(bytes32 _sfIndex) public view returns (string flightNO,
+        string flightDate,
+        uint time,
         bytes32 votedSF, 
         DelayStatus vote, 
         bool isValued) {
         MemberSF memory sfsInfo = memberInfos[msg.sender].memberSFs[_sfIndex];
-        return (sfsInfo.flightNO, sfsInfo.flightDate, sfsInfo.votedSF, sfsInfo.vote, sfsInfo.isValued) ;
+        return (sfsInfo.flightNO, sfsInfo.flightDate, sfsInfo.time, sfsInfo.votedSF, sfsInfo.vote, sfsInfo.isValued) ;
     }
     /** @dev 返回航班的所有加入会员 
       * @param _sfIndex 航班号+航班日期
@@ -199,6 +204,7 @@ contract HbStorage is Ownable {
         VoteInfo storage voteInfo = voteInfos[_sfIndex];
         if (!voteInfo.isValued) {
             voteInfo.isValued = true;
+            voteInfo.target = vote;
         }
         if (vote == DelayStatus.no) {
             voteInfo.noCounts += 1;
