@@ -3,8 +3,8 @@
         <a class="navbar-brand js-scroll-trigger" href="#page-top">航班延误互助计划</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          菜单
-          <i class="fa fa-bars"></i>
+            菜单
+            <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ml-auto">
@@ -107,26 +107,16 @@
                         <label class="col col-form-label text-right " style="font-size:1.2rem">投票选项：</label>
                         <div class="col">
                             <select class="form-control">
-                                <option>
-                                    未延误
-                                </option>
-                                <option>
-                                    延误1小时
-                                </option>
-                                 <option>
-                                    延误2小时
-                                </option>
-                                 <option>
-                                    延误3小时
-                                </option>
-                                 <option>
-                                    航班已取消
+
+                                <option value="{{rate.key}}" *ngFor="let rate of delayRates">
+                                    {{rate.value}}
                                 </option>
                             </select>
                         </div>
 
                         <label class="col col-form-label text-right" style="font-size:1.2rem">投票目标：</label>
                         <div class="col">
+                            <input type="text" readonly class="form-control-plaintext text-warning" id="staticEmail" value="{{voteInfo.voteInfo.target | delayRate}}">
                         </div>
                     </div>
 
@@ -153,7 +143,9 @@
                     <div class="row">
                         <label class="col col-form-label text-right" style="font-size:1.2rem">延误2小时：</label>
                         <div class="col align-self-center">
-                            <progressbar max="200" [value]="166" type="danger" [striped]="true" [animate]="true"><i>166 / 200</i></progressbar>
+                            <progressbar max="200" [value]="166" type="danger" [striped]="true" [animate]="true">
+                                <i>166 / 200</i>
+                            </progressbar>
 
                         </div>
                         <label class="col col-form-label text-right" style="font-size:1.2rem">延误3小时：</label>
@@ -248,7 +240,9 @@
                     <td>{{order.flightDate | date:'yyyy-MM-dd' }}</td>
                     <td>{{order.price}}</td>
                     <td>{{order.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                    <td><button type="button" (click)="startClaim(order.flightNO, order.flightDate)" class="btn btn-primary btn-sm">发起理赔</button></td>
+                    <td>
+                        <button type="button" (click)="startClaim(order.flightNO, order.flightDate)" class="btn btn-primary btn-sm">发起理赔</button>
+                    </td>
                 </tr>
 
             </tbody>

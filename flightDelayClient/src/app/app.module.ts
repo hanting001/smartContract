@@ -15,7 +15,7 @@ import { AsyncLocalStorageModule } from 'angular-async-local-storage';
 
 import { Web3Service, FlightDelayService, LoadingService, LocalOrderService } from './service/index';
 
-
+import { DelayRatePipe } from './shared/pipes';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -34,7 +34,8 @@ import { FaqComponent } from './faq/faq.component';
         AdminComponent,
         OrderComponent,
         AboutUsComponent,
-        FaqComponent
+        FaqComponent,
+        DelayRatePipe
     ],
     imports: [
         BrowserModule,

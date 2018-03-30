@@ -14,19 +14,27 @@ contract FlightDelayService is Stoppable{
         token = KnotToken(tokenAddress);
     }
 
-    /** @dev get user`s sf
+    /** @dev start Claim check
       * 
       */  
-    // function getSFs() view returns (bytes32[]) {
-    //     return hbs.memberSFs(msg.sender);
-    // }
+    function claimCheck(bytes32 index) public view returns (uint8) {
+        if(!hbs.isMemberInSF(index, msg.sender)){
+            return 1;
+        }
+        var (,,status,,,) = hbs.returnSFInfo(index);
+        if(status != HbStorage.SFStatus.opening) {
+            return 2;
+        }
+        // 将来可能还需要增加日期间隔校验
+        return 0;
+    }
     /** @dev user start claim
       * @param index 航班号+航班日期的index
       * @param vote 延误类型
       */  
     function claim(bytes32 index, HbStorage.DelayStatus vote) external stopInEmergency{
-        require(hbs.isMemberInSF(index, msg.sender));
-        // 将来可能还需要增加日期间隔校验
+        require(claimCheck(index) == 0);
+        
         // 改变航班状态
         hbs.changeSFStatus(index, HbStorage.SFStatus.claiming);
         // 增加一条投票记录
@@ -34,7 +42,7 @@ contract FlightDelayService is Stoppable{
         bytes32 currentVote = hbs.currentVote();
         var (,,,,,,isCurrentVoteValued) = hbs.voteInfos(currentVote);
         if (!isCurrentVoteValued) {
-            //当前还没有进行中的投票
+            //当前还没有进行中的投票就设置一个
             hbs.setCurrentVote(index);
         }
         testOK = block.number;

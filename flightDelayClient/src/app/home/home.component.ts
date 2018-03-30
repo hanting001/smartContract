@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-
+import { DelayRates } from '../shared/configData';
 
 @Component({
     selector: 'app-home',
@@ -29,6 +29,7 @@ export class HomeComponent implements OnInit {
     myOrders: any;
     voteInfo: any;
     balance: any = {};
+    delayRates = DelayRates;
 
     @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -180,6 +181,10 @@ export class HomeComponent implements OnInit {
         });
     }
     async startClaim(flightNO, flightDate) {
+        const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
+        if (claimCheck.checkResult != 0) {
+            return alert(claimCheck.message);
+        }
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
         this.flightDelayService.startClaim(flightNO, flightDate, target, async(confirmNumber, receipt) => {

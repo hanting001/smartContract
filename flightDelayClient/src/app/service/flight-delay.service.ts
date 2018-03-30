@@ -133,6 +133,21 @@ export class FlightDelayService {
             message: msgObj[checkResult]
         };
     }
+    async canClaim(flightNO, flightDate) {
+        const web3 = this.web3Service.instance();
+        flightDate = moment(flightDate).format('YYYY-MM-DD');
+        const key = web3.utils.keccak256(flightNO + flightDate);
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const msgObj = {
+            1: '您没有购买该航班计划',
+            2: '航班计划状态不正确'
+        };
+        const checkResult = await sc.methods.claimCheck(key).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
     // 加入航延计划，不带投票信息
     async join(mySfInfo: any, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
