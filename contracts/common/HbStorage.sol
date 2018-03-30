@@ -8,7 +8,7 @@ contract HbStorage is Ownable {
     using strings for *; 
 
     enum SFStatus { opening, closed, claiming, ended }
-    enum DelayStatus { no, delay1, delay2, delay3, delay4 }
+    enum DelayStatus { no, delay1, delay2, delay3, cancel }
 
     event MemberAdded(bytes32 _sfIndex, address member);
 
@@ -33,6 +33,7 @@ contract HbStorage is Ownable {
         uint delay1Counts;
         uint delay2Counts;
         uint delay3Counts;
+        uint cancelCounts;
         uint noCounts;
         bool ended;
         bool isValued;

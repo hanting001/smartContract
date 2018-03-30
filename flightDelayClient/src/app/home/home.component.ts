@@ -132,13 +132,9 @@ export class HomeComponent implements OnInit {
             const currentVote = await this.flightDelayService.getCurrentVote();
             const balance = await this.flightDelayService.getBalance();
             this.price = await this.flightDelayService.getPrice(model.flightNO);
-            console.log(currentVote);
-            console.log(balance);
-            console.log(this.price);
-            const isInSF = await this.flightDelayService.checkIsInSF(model.flightNO, model.flightDate);
-            if (isInSF) {
-                return alert('你已加入该航班计划');
-            }
+            // console.log(currentVote);
+            // console.log(balance);
+            // console.log(this.price);
             if (balance.token && balance.token * 1 < this.price * 1) {
                 this.confirmMessage = `token余额不足${this.price}，是否前往兑换？`;
                 this.exchangeModalRef = this.openModal(this.exchangeTemplate);
@@ -159,6 +155,10 @@ export class HomeComponent implements OnInit {
         const web3 = this.web3.instance();
         const priceInWei = web3.utils.toWei(String(price * 1.1));
         await this.flightDelayService.approve(priceInWei);
+        const joinCheck = await this.flightDelayService.checkIsInSF(model.flightNO, model.flightDate);
+        if (joinCheck.checkResult !== 0) {
+            return alert(joinCheck.message);
+        }
         this.flightDelayService.join(model, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 model.price = price;

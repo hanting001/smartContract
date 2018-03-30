@@ -107,6 +107,27 @@ export class FlightDelayService {
         };
         return tokenSC.methods.approve(address, price).send(options);
     }
+    /* 购买前校验，返回0表示校验通过
+    */
+    async canJoin(flightNO, flightDate) {
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const price = await sc.methods.getPrice(flightNO).call();
+        const msgObj = {
+            1: '日期格式不正确',
+            2: '航班日期过早',
+            3: '该航班已到最大购买量',
+            4: '航班已不是开发购买状态',
+            5: '已经购买过该航班',
+            6: '账户代币余额不足'
+        };
+        const checkResult = await sc.methods.joinCheck(flightDate, key, web3.utils.toWei(String(price))).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
     // 加入航延计划，不带投票信息
     async join(mySfInfo: any, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
@@ -196,7 +217,7 @@ export class FlightDelayService {
     async getSfInfo() {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
         const account = await this.web3Service.getMainAccount();
-        const web3 = this.web3Service.instance();
+        // const web3 = this.web3Service.instance();
         // const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
         const sfs = await storage.methods.returnMemberSFs().call();
         // console.log(key);
