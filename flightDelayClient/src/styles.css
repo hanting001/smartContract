@@ -192,7 +192,7 @@ header.masthead {
     color: white;
     background-image: url("/assets/images/flight.jpg");
     background-repeat: no-repeat;
-    background-attachment: scroll;
+    background-attachment: fixed;
     background-position: center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
