@@ -19,7 +19,7 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
-    function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable {
+    function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable stopInEmergency {
         require(joinCheck(p1, p2, gameType) == 0);
     }
 }
