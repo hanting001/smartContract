@@ -14,7 +14,6 @@ contract WccStorage is Ownable {
         }
     }
 
-
     struct GameInfo {
         string p1;
         string p2;
@@ -52,8 +51,9 @@ contract WccStorage is Ownable {
         uint value;
         bool isValued;
     }
-
-    mapping(bytes32 => mapping(address => Score)) public joinedGames;
+    mapping(bytes32 => mapping(address => bool)) public joinedGames;
+    mapping(bytes32 => mapping(address => bytes32[])) public joinedGamesScoreIndexes;
+    mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     struct VoteInfo {
         string target;
@@ -64,4 +64,47 @@ contract WccStorage is Ownable {
         bool isValued;
     }
     mapping(bytes32 => VoteInfo) voteInfos;
+
+    function setGameScoreTotalIndex(bytes32 _gameIndex, bytes32 _scoreIndex) external onlyAdmin {
+        if (!gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
+            gameScoreIndexes[_gameIndex].push(_scoreIndex);
+        }
+    }
+    function setGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) external onlyAdmin {
+        if (gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
+            gameScoreTotalInfos[_gameIndex][_scoreIndex].total += _value;
+        } else {
+            gameScoreTotalInfos[_gameIndex][_scoreIndex] = ScoreTotal({
+                score: _score,
+                total: _value,
+                isValued: true
+            });
+        }
+    }
+    function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) external onlyAdmin {
+        if(!joinedGames[_gameIndex][_user]) {
+            userJoinedGameIndexes[_user].push(_gameIndex);
+        }
+    }
+    function setJoinedGame(address _user, bytes32 _gameIndex) external onlyAdmin {
+        if(!joinedGames[_gameIndex][_user]) {
+            joinedGames[_gameIndex][_user] = true;
+        }
+    }
+    function setJoinedGameScoreIndex(address _user, bytes32 _gameIndex, bytes32 _scoreIndex) external onlyAdmin {
+        if(!joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
+            joinedGamesScoreIndexes[_gameIndex][_user].push(_scoreIndex);
+        }
+    }
+    function setJoinedGameScoreInfo(address _user, bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) external onlyAdmin {
+        if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
+            joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value += _value;
+        } else {
+            joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex] = Score({
+                score: _score,
+                value: _value,
+                isValued: true
+            });
+        }
+    }
 }
