@@ -190,4 +190,33 @@ contract HbStorage is Ownable {
         bool isValued) {
         return (scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued);
     }
+    function changeSFStatus(bytes32 index, SFStatus status) external onlyAdmin{
+        if (scheduledFlights[index].status != status) {
+            scheduledFlights[index].status = status;
+        }
+    }
+    function updateVote(bytes32 _sfIndex, DelayStatus vote) external onlyAdmin{
+        VoteInfo storage voteInfo = voteInfos[_sfIndex];
+        if (!voteInfo.isValued) {
+            voteInfo.isValued = true;
+        }
+        if (vote == DelayStatus.no) {
+            voteInfo.noCounts += 1;
+        }
+        if (vote == DelayStatus.delay1) {
+            voteInfo.delay1Counts += 1;
+        }
+        if (vote == DelayStatus.delay2) {
+            voteInfo.delay2Counts += 1;
+        }
+        if (vote == DelayStatus.delay3) {
+            voteInfo.delay3Counts += 1;
+        }
+        if (vote == DelayStatus.cancel) {
+            voteInfo.cancelCounts += 1;
+        }
+    }
+    function setCurrentVote(bytes32 _sfIndex) external onlyAdmin {
+        currentVote = _sfIndex;
+    }
 }
