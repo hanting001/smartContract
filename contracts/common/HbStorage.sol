@@ -14,6 +14,8 @@ contract HbStorage is Ownable {
 
     struct SFInfo {
         address[] members;
+        string flightNO;
+        string flightDate;
         SFStatus status;
         uint count;
         DelayStatus delayStatus;
@@ -40,8 +42,9 @@ contract HbStorage is Ownable {
         bool isValued;
     }
     struct MemberSF {
-        string flightNO;
-        string flightDate;
+        // bytes32 flightIndex;
+        // string flightNO;
+        // string flightDate;
         uint time;
         bytes32 votedSF;
         DelayStatus vote;
@@ -123,10 +126,11 @@ contract HbStorage is Ownable {
         scheduledFlights[_sfIndex].members.push(_member);
         //用户数加1
         scheduledFlights[_sfIndex].count += 1;
+        scheduledFlights[_sfIndex].flightNO = _flightNO;
+        scheduledFlights[_sfIndex].flightDate = _flightDate;
         // 用户记录中加入航班
         memberInfos[_member].memberSFs[_sfIndex] = MemberSF({
-            flightNO: _flightNO,
-            flightDate: _flightDate,
+            // flightIndex: _sfIndex,
             time: block.timestamp,
             votedSF: _votedSFIndex,
             vote: _vote,
@@ -167,14 +171,13 @@ contract HbStorage is Ownable {
     /** @dev 返回用户的航班计划详细信息 
       * @param _sfIndex 航班号+航班日期
       */
-    function returnMemberSFInfo(bytes32 _sfIndex) public view returns (string flightNO,
-        string flightDate,
+    function returnMemberSFInfo(bytes32 _sfIndex) public view returns (
         uint time,
         bytes32 votedSF, 
         DelayStatus vote, 
         bool isValued) {
         MemberSF memory sfsInfo = memberInfos[msg.sender].memberSFs[_sfIndex];
-        return (sfsInfo.flightNO, sfsInfo.flightDate, sfsInfo.time, sfsInfo.votedSF, sfsInfo.vote, sfsInfo.isValued) ;
+        return (sfsInfo.time, sfsInfo.votedSF, sfsInfo.vote, sfsInfo.isValued) ;
     }
     /** @dev 返回航班的所有加入会员 
       * @param _sfIndex 航班号+航班日期
@@ -190,10 +193,11 @@ contract HbStorage is Ownable {
     /** @dev 返回航班相关信息 
       * @param _sfIndex 航班号+航班日期
       */
-    function returnSFInfo(bytes32 _sfIndex) public view returns (SFStatus status, uint count,
+    function returnSFInfo(bytes32 _sfIndex) public view returns (string flightNO,
+        string flightDate, SFStatus status, uint count,
         DelayStatus delayStatus,
         bool isValued) {
-        return (scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued);
+        return (scheduledFlights[_sfIndex].flightNO,  scheduledFlights[_sfIndex].flightDate, scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued);
     }
     function changeSFStatus(bytes32 index, SFStatus status) external onlyAdmin{
         if (scheduledFlights[index].status != status) {

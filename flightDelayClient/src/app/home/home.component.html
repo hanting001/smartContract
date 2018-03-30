@@ -96,17 +96,17 @@
                     <div class="form-group row">
                         <label for="staticEmail" class="col col-form-label text-right" style="font-size:1.2rem">航班号：</label>
                         <div class="col">
-                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="CU2344">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{voteInfo.sfInfo.flightNO}}">
                         </div>
                         <label class="col col-form-label text-right" style="font-size:1.2rem">出发日期：</label>
                         <div class="col">
-                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="2018-04-06">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{voteInfo.sfInfo.flightDate}}">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col col-form-label text-right " style="font-size:1.2rem">是否延误：</label>
+                        <label class="col col-form-label text-right " style="font-size:1.2rem">投票选项：</label>
                         <div class="col">
-                            <select class="form-control form-control-lg">
+                            <select class="form-control">
                                 <option>
                                     未延误
                                 </option>
@@ -125,7 +125,7 @@
                             </select>
                         </div>
 
-                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
+                        <label class="col col-form-label text-right" style="font-size:1.2rem">投票目标：</label>
                         <div class="col">
                         </div>
                     </div>
@@ -248,7 +248,7 @@
                     <td>{{order.flightDate | date:'yyyy-MM-dd' }}</td>
                     <td>{{order.price}}</td>
                     <td>{{order.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                    <td><button type="button" class="btn btn-primary btn-sm">发起理赔</button></td>
+                    <td><button type="button" (click)="startClaim(order.flightNO, order.flightDate)" class="btn btn-primary btn-sm">发起理赔</button></td>
                 </tr>
 
             </tbody>

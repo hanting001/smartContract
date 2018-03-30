@@ -31,7 +31,11 @@ export class FlightDelayService {
         const currentVote = await storage.methods.currentVote().call();
         const voteInfo = await storage.methods.voteInfos(currentVote).call();
         if (voteInfo.isValued) {
-            return voteInfo;
+            const sfInfo = await storage.methods.returnSFInfo(currentVote).call();
+            return {
+                voteInfo: voteInfo,
+                sfInfo: sfInfo
+            };
         }
         return null;
     }
@@ -177,6 +181,10 @@ export class FlightDelayService {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
         return sc.methods.testOK().call();
     }
+    async testServiceOK() {
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        return sc.methods.testOK().call();
+    }
     // 兑换token
     async exchange(value, onConfirmation) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
@@ -252,14 +260,14 @@ export class FlightDelayService {
     }
 
     // 发起理赔
-    async startClaim(flightNO, flightDate, vote, onConfirmation) {
+    async startClaim(flightNO, flightDate, target, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
-        sc.methods.claim(key, vote).send(options)
+        sc.methods.claim(key, target).send(options)
             .on('transactionHash', (transactionHash) => {
                 console.log(`start claim txHash: ${transactionHash}`);
             })
@@ -269,6 +277,9 @@ export class FlightDelayService {
                 }
             })
             .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
                 console.log(error);
             });
     }

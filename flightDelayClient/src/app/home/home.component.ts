@@ -179,7 +179,19 @@ export class HomeComponent implements OnInit {
             this.loadingSer.hide();
         });
     }
-
+    async startClaim(flightNO, flightDate) {
+        // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
+        const target = 2;
+        this.flightDelayService.startClaim(flightNO, flightDate, target, async(confirmNumber, receipt) => {
+            if (confirmNumber === 2) {
+                const testOK = await this.flightDelayService.testServiceOK();
+                console.log(testOK);
+                const currentVote = await this.flightDelayService.getCurrentVote();
+                console.log(currentVote);
+                alert('申请成功');
+            }
+        });
+    }
     async checkEnv() {
         await this.web3.check();
     }
