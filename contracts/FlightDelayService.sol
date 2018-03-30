@@ -5,6 +5,7 @@ import './common/HbStorage.sol';
 /** @title group smart contract. */
 contract FlightDelayService {
     HbStorage hbs;
+    uint public testOK;
     function FlightDelayService(address hbsAddress) {
         hbs = HbStorage(hbsAddress);
     }
@@ -32,5 +33,6 @@ contract FlightDelayService {
             //当前还没有进行中的投票
             hbs.setCurrentVote(index);
         }
+        testOK = block.number;
     }
 } 
