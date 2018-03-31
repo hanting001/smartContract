@@ -3,7 +3,7 @@ import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract WccStorage is Ownable {
     enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, Final }
     enum GameStatus { Playing, Voting, Paying, End}
-    mapping(address => bool) admins;
+    mapping(address => bool) public admins;
     modifier onlyAdmin() {
         require(admins[msg.sender]);
         _;
@@ -21,6 +21,7 @@ contract WccStorage is Ownable {
         GameType gameType;
         GameStatus status;
         bool isValued;
+        uint i;
     }
     mapping(bytes32 => GameInfo) public games;
     bytes32[] gameIndexes;
@@ -35,14 +36,29 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(bytes32 => ScoreTotal)) gameScoreTotalInfos;
     function setGame(string _p1, string _p2, GameType _gameType, uint _time) external onlyOwner {
         bytes32 index = keccak256(_p1, _p2, _gameType);
+        uint i = gameIndexes.push(index) - 1;
         games[index] = GameInfo({
             p1: _p1,
             p2: _p2,
             time: _time,
             gameType: _gameType,
             status: GameStatus.Playing,
-            isValued: true
+            isValued: true,
+            i: i
         });
+    }
+    function arrayRemove(bytes32[] storage array, uint index) internal {
+        if (index >= array.length) return;
+
+        for (uint i = index; i<array.length-1; i++){
+            array[i] = array[i+1];
+        }
+        array.length--;
+    }
+    function removeGame(bytes32 _gameIndex) external onlyOwner {
+        uint i = games[_gameIndex].i;
+        delete games[_gameIndex];
+        arrayRemove(gameIndexes, i);
     }
 
     mapping(address => bytes32[]) userJoinedGameIndexes;

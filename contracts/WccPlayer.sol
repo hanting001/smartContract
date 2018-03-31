@@ -4,13 +4,14 @@ import './WccStorage.sol';
 import './common/Stoppable.sol';
 contract WccPlayer is Ownable, Stoppable{
     WccStorage wccs;
+    uint public testOK;
     function WccPlayer(address wccsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
     }
 
     function joinCheck(string p1, string p2, WccStorage.GameType gameType, uint value) public view returns(uint) {
         bytes32 index = keccak256(p1, p2, gameType);
-        var (,,,status,gameValued) = wccs.games(index);
+        var (,,,,status,gameValued,) = wccs.games(index);
         if (!gameValued) {
             return 1; //game not exist
         }
@@ -32,5 +33,6 @@ contract WccPlayer is Ownable, Stoppable{
         wccs.setJoinedGame(msg.sender, gameIndex);
         wccs.setJoinedGameScoreIndex(msg.sender, gameIndex, scoreIndex);
         wccs.setJoinedGameScoreInfo(msg.sender, gameIndex, scoreIndex, score, msg.value);
+        testOK = block.number;
     }
 }
