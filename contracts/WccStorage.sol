@@ -107,4 +107,29 @@ contract WccStorage is Ownable {
             });
         }
     }
+
+    function getAllGameIndexes() public view returns(bytes32[]) {
+        return gameIndexes;
+    }
+    function getGameInfo(bytes32 _gameIndex) public view returns(string p1, string p2, uint time, GameType gameType, GameStatus status, bool isValued) {
+        return (games[_gameIndex].p1, games[_gameIndex].p2, games[_gameIndex].time, games[_gameIndex].gameType, games[_gameIndex].status, games[_gameIndex].isValued);
+    }
+    function getGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
+        return gameScoreIndexes[_gameIndex];
+    }
+    function getGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint total, bool isValued) {
+        return (gameScoreTotalInfos[_gameIndex][_scoreIndex].score, gameScoreTotalInfos[_gameIndex][_scoreIndex].total, gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued);
+    }
+    function getUserJoinedGameIndexes() public view returns(bytes32[]){
+        return userJoinedGameIndexes[msg.sender];
+    }
+    function isJoinedGame(bytes32 _gameIndex) public view returns(bool) {
+        return joinedGames[_gameIndex][msg.sender];
+    }
+    function getUserJoinedGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
+        return joinedGamesScoreIndexes[_gameIndex][msg.sender];
+    }
+    function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool isValued) {
+        return (joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].score, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].value, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].isValued);
+    }
 }
