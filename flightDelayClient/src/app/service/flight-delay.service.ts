@@ -223,7 +223,7 @@ export class FlightDelayService {
         return sc.methods.testOK().call();
     }
     // 兑换token
-    async exchange(value, onConfirmation) {
+    async exchange(value, onTransactionHash, onConfirmation) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -234,6 +234,9 @@ export class FlightDelayService {
         console.log(options);
         sc.methods.exchange().send(options)
             .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
                 console.log(`exchange txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
