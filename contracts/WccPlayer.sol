@@ -43,7 +43,7 @@ contract WccPlayer is Ownable, Stoppable{
         if (target == _scoreIndex) { // win
             var (,totalWinValue,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             var (,,,,,totalValue,,) = wccs.games(_gameIndex);
-            return (true, (totalValue / totalWinValue) * myValue);
+            return (true, (totalValue *  myValue / totalWinValue));
         } else {
             return (false, 0);
         }
@@ -51,7 +51,7 @@ contract WccPlayer is Ownable, Stoppable{
 
     function claimCheck(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(uint) {
         var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
-        var (win, winValue) = isWin(_gameIndex, _scoreIndex);
+        var (win,) = isWin(_gameIndex, _scoreIndex);
         if (!ended) {
             return 1; // vote not finish
         }
