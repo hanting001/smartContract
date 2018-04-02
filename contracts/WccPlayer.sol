@@ -23,11 +23,13 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
+    event UserJoin(string p1, string p2, WccStorage.GameType gameType, string score, address user);
     function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable stopInEmergency {
         require(joinCheck(p1, p2, gameType, msg.value) == 0);
         bytes32 scoreIndex = keccak256(score);
         
         wccs.userJoin(msg.sender, msg.value, p1, p2, gameType, score);
         testOK = scoreIndex;
+        UserJoin(p1, p2, gameType, score, msg.sender);
     }
 }

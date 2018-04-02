@@ -79,7 +79,13 @@ contract WccStorage is Ownable {
         bool ended;
         bool isValued;
     }
-    mapping(bytes32 => VoteInfo) voteInfos;
+    // struct UserVote {
+    //     bytes32 gameIndex;
+    //     uint vote;
+    //     bool isValued;
+    // }
+    mapping(bytes32 => VoteInfo) public voteInfos;
+    mapping(bytes32 => mapping(address => uint)) public userVotes;
 
     function userJoin(address user, uint value, string p1, string p2, WccStorage.GameType gameType, string score) external onlyAdmin{
         bytes32 gameIndex = keccak256(p1, p2, gameType);
@@ -135,7 +141,23 @@ contract WccStorage is Ownable {
             });
         }
     }
-
+    function setGameStatus(bytes32 _gameIndex, GameStatus _status) external onlyAdmin {
+        if (games[_gameIndex].isValued) {
+            games[_gameIndex].status = _status;
+        }
+    }
+    function setVote(bytes32 _gameIndex, string _result) external onlyAdmin {
+        if (!voteInfos[_gameIndex].isValued) {
+            voteInfos[_gameIndex] = VoteInfo({
+                target: _result,
+                yesCount: 0,
+                noCount: 0,
+                passed: false,
+                ended: false,
+                isValued: true
+            });
+        }
+    }
     function getAllGameIndexes() public view returns(bytes32[]) {
         return gameIndexes;
     }
