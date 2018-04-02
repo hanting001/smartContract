@@ -24,7 +24,7 @@ contract WccVoter is Ownable, Stoppable{
         judges[msg.sender] = true;
     }
     function startVoteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,gameValued,) = wccs.games(_gameIndex);
+        var (,,,,status,,gameValued,) = wccs.games(_gameIndex);
         if (!gameValued) {
             return 1; //game not exist
         }
@@ -46,7 +46,7 @@ contract WccVoter is Ownable, Stoppable{
 
 
     function voteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,gameValued,) = wccs.games(_gameIndex);
+        var (,,,,status,,gameValued,) = wccs.games(_gameIndex);
         if (!gameValued) {
             return 1; //game not exist
         }
@@ -83,7 +83,7 @@ contract WccVoter is Ownable, Stoppable{
         canEnd[_gameIndex] = true;
     }
     function endVoteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,gameValued,) = wccs.games(_gameIndex);
+        var (,,,,status,,gameValued,) = wccs.games(_gameIndex);
         if (!gameValued) {
             return 1; //game not exist
         }
