@@ -15,6 +15,9 @@
                     <a class="nav-link js-scroll-trigger" [ngx-scroll-to]="'myOrder'">我的订单</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" [ngx-scroll-to]="'myAction'">交易记录</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" [ngx-scroll-to]="'aboutus'">关于我们</a>
                 </li>
                 <li class="nav-item">
@@ -116,7 +119,7 @@
 
                         <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
                         <div class="col">
-                            
+
                         </div>
                     </div>
 
@@ -242,6 +245,29 @@
                     <td>{{order.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
                     <td>
                         <button type="button" (click)="startClaim(order.flightNO, order.flightDate)" class="btn btn-primary btn-sm">发起理赔</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myAction">
+    <h1>交易记录</h1>
+    <div class="row justify-content-md-center">
+        <p *ngIf="!myActions||myActions.length==0">没有操作记录</p>
+        <table *ngIf="myOrders&&myOrders.length!=0" class="table">
+
+            <tbody>
+                <tr *ngFor="let action of myActions;">
+                    <td>{{action.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <th scope="row">{{action|transaction}}</th>
+
+                    <td>
+                        <a target="_blank" href="{{action|transactionUrl}}" class="btn btn-primary btn-sm">查看详情</a>
                     </td>
                 </tr>
 
