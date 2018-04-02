@@ -20,11 +20,13 @@ contract WccStorage is Ownable {
         uint time;
         GameType gameType;
         GameStatus status;
+        uint totalValue;
         bool isValued;
         uint i;
     }
     mapping(bytes32 => GameInfo) public games;
     bytes32[] gameIndexes;
+
     struct ScoreTotal {
         string score;
         uint total;
@@ -33,7 +35,7 @@ contract WccStorage is Ownable {
     // gameIndex => scoreIndex[]
     mapping(bytes32 => bytes32[]) gameScoreIndexes;
     // gameIndex => scoreIndex => scoreTotalInfo
-    mapping(bytes32 => mapping(bytes32 => ScoreTotal)) gameScoreTotalInfos;
+    mapping(bytes32 => mapping(bytes32 => ScoreTotal)) public gameScoreTotalInfos;
     function setGame(string _p1, string _p2, GameType _gameType, uint _time) external onlyOwner {
         bytes32 index = keccak256(_p1, _p2, _gameType);
         uint i = gameIndexes.push(index) - 1;
@@ -43,6 +45,7 @@ contract WccStorage is Ownable {
             time: _time,
             gameType: _gameType,
             status: GameStatus.Playing,
+            totalValue: 0,
             isValued: true,
             i: i
         });
@@ -65,6 +68,7 @@ contract WccStorage is Ownable {
     struct Score {
         string score;
         uint value;
+        bool paid;
         bool isValued;
     }
     mapping(bytes32 => mapping(address => bool)) public joinedGames;
@@ -72,7 +76,7 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     struct VoteInfo {
-        string target;
+        bytes32 target;
         uint yesCount;
         uint noCount;
         bool passed;
@@ -90,7 +94,7 @@ contract WccStorage is Ownable {
     function userJoin(address user, uint value, string p1, string p2, WccStorage.GameType gameType, string score) external onlyAdmin{
         bytes32 gameIndex = keccak256(p1, p2, gameType);
         bytes32 scoreIndex = keccak256(score);
-        
+
         setGameScoreTotalIndex(gameIndex, scoreIndex);
         setGameScoreTotalInfo(gameIndex, scoreIndex, score, value);
         setUserJoinedGameIndexes(user, gameIndex);
@@ -114,6 +118,7 @@ contract WccStorage is Ownable {
                 isValued: true
             });
         }
+        games[_gameIndex].totalValue += _value;
     }
     function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) private {
         if(!joinedGames[_gameIndex][_user]) {
@@ -137,6 +142,7 @@ contract WccStorage is Ownable {
             joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex] = Score({
                 score: _score,
                 value: _value,
+                paid: false,
                 isValued: true
             });
         }
@@ -149,7 +155,7 @@ contract WccStorage is Ownable {
     function setVote(bytes32 _gameIndex, string _result) external onlyAdmin {
         if (!voteInfos[_gameIndex].isValued) {
             voteInfos[_gameIndex] = VoteInfo({
-                target: _result,
+                target: keccak256(_result),
                 yesCount: 0,
                 noCount: 0,
                 passed: false,
@@ -157,6 +163,10 @@ contract WccStorage is Ownable {
                 isValued: true
             });
         }
+    }
+    function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
+        voteInfos[_gameIndex].passed = _passed;
+        voteInfos[_gameIndex].ended = _ended;
     }
     function getAllGameIndexes() public view returns(bytes32[]) {
         return gameIndexes;
@@ -179,7 +189,22 @@ contract WccStorage is Ownable {
     function getUserJoinedGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
         return joinedGamesScoreIndexes[_gameIndex][msg.sender];
     }
+
     function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool isValued) {
         return (joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].score, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].value, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].isValued);
+    }
+
+    function setUserVote(bytes32 _gameIndex, bool yesOrNo, address user, uint votes) external onlyAdmin {
+        if (userVotes[_gameIndex][user] == 0) {
+            userVotes[_gameIndex][user] = votes;
+            if (yesOrNo) {
+                voteInfos[_gameIndex].yesCount += votes;
+            } else {
+                voteInfos[_gameIndex].noCount += votes;
+            }
+        }
+    }
+    function setUserScorePaid(bytes32 _gameIndex, bytes32 _scoreIndex, address user) external onlyAdmin {
+        joinedGamesScoreInfo[_gameIndex][user][_scoreIndex].paid = true;
     }
 }
