@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AsyncLocalStorageModule } from 'angular-async-local-storage';
 
-import { Web3Service, FlightDelayService, LoadingService, LocalOrderService } from './service/index';
+import { Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService } from './service/index';
 
 import { DelayRatePipe } from './shared/pipes';
 
@@ -53,7 +53,7 @@ import { FaqComponent } from './faq/faq.component';
         AsyncLocalStorageModule,
         ReactiveFormsModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService],
+    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

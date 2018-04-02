@@ -4,7 +4,7 @@ import './WccStorage.sol';
 import './common/Stoppable.sol';
 contract WccPlayer is Ownable, Stoppable{
     WccStorage wccs;
-    uint public testOK;
+    bytes32 public testOK;
     function WccPlayer(address wccsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
     }
@@ -25,14 +25,9 @@ contract WccPlayer is Ownable, Stoppable{
     }
     function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable stopInEmergency {
         require(joinCheck(p1, p2, gameType, msg.value) == 0);
-        bytes32 gameIndex = keccak256(p1, p2, gameType);
         bytes32 scoreIndex = keccak256(score);
         
-        wccs.setGameScoreTotalIndex(gameIndex, scoreIndex);
-        wccs.setGameScoreTotalInfo(gameIndex, scoreIndex, score, msg.value);
-        wccs.setJoinedGame(msg.sender, gameIndex);
-        wccs.setJoinedGameScoreIndex(msg.sender, gameIndex, scoreIndex);
-        wccs.setJoinedGameScoreInfo(msg.sender, gameIndex, scoreIndex, score, msg.value);
-        testOK = block.number;
+        wccs.userJoin(msg.sender, msg.value, p1, p2, gameType, score);
+        testOK = scoreIndex;
     }
 }

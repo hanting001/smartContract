@@ -81,12 +81,24 @@ contract WccStorage is Ownable {
     }
     mapping(bytes32 => VoteInfo) voteInfos;
 
-    function setGameScoreTotalIndex(bytes32 _gameIndex, bytes32 _scoreIndex) external onlyAdmin {
+    function userJoin(address user, uint value, string p1, string p2, WccStorage.GameType gameType, string score) external onlyAdmin{
+        bytes32 gameIndex = keccak256(p1, p2, gameType);
+        bytes32 scoreIndex = keccak256(score);
+        
+        setGameScoreTotalIndex(gameIndex, scoreIndex);
+        setGameScoreTotalInfo(gameIndex, scoreIndex, score, value);
+        setUserJoinedGameIndexes(user, gameIndex);
+        setJoinedGame(user, gameIndex);
+        setJoinedGameScoreIndex(user, gameIndex, scoreIndex);
+        setJoinedGameScoreInfo(user, gameIndex, scoreIndex, score, value);
+    }
+
+    function setGameScoreTotalIndex(bytes32 _gameIndex, bytes32 _scoreIndex) private {
         if (!gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
             gameScoreIndexes[_gameIndex].push(_scoreIndex);
         }
     }
-    function setGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) external onlyAdmin {
+    function setGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) private {
         if (gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
             gameScoreTotalInfos[_gameIndex][_scoreIndex].total += _value;
         } else {
@@ -97,22 +109,22 @@ contract WccStorage is Ownable {
             });
         }
     }
-    function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) external onlyAdmin {
+    function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) private {
         if(!joinedGames[_gameIndex][_user]) {
             userJoinedGameIndexes[_user].push(_gameIndex);
         }
     }
-    function setJoinedGame(address _user, bytes32 _gameIndex) external onlyAdmin {
+    function setJoinedGame(address _user, bytes32 _gameIndex) private {
         if(!joinedGames[_gameIndex][_user]) {
             joinedGames[_gameIndex][_user] = true;
         }
     }
-    function setJoinedGameScoreIndex(address _user, bytes32 _gameIndex, bytes32 _scoreIndex) external onlyAdmin {
+    function setJoinedGameScoreIndex(address _user, bytes32 _gameIndex, bytes32 _scoreIndex) private {
         if(!joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
             joinedGamesScoreIndexes[_gameIndex][_user].push(_scoreIndex);
         }
     }
-    function setJoinedGameScoreInfo(address _user, bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) external onlyAdmin {
+    function setJoinedGameScoreInfo(address _user, bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) internal {
         if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
             joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value += _value;
         } else {

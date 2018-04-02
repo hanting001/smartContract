@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Web3Service, FlightDelayService } from '../service/index';
+import { Web3Service, FlightDelayService , WCCService} from '../service/index';
 import { LoadingService } from '../service/loading.service';
 import { AsyncLocalStorage } from 'angular-async-local-storage';
 
@@ -18,7 +18,8 @@ export class AdminComponent implements OnInit {
         private web3Service: Web3Service,
         private flightDelayService: FlightDelayService,
         public loadingSer: LoadingService,
-        protected localStorage: AsyncLocalStorage
+        protected localStorage: AsyncLocalStorage,
+        private wcc: WCCService
     ) { }
 
     ngOnInit() {
@@ -31,6 +32,7 @@ export class AdminComponent implements OnInit {
         }).then(isAdmin => {
             this.isAdmin = isAdmin;
         });
+        this.wcc.getAllInfo().then(info => console.log(info));
     }
 
     async transfer() {
