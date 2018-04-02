@@ -15,13 +15,10 @@ contract WccPlayer is Ownable, Stoppable{
     /// @author Bob Clampett
     /// @notice user join check
     /// @dev keccak256(p1, p2, gameType) will be game index
-    /// @param p1 player1 name
-    /// @param p2 player2 name
-    /// @param gameType game stage
+    /// @param index game index
     /// @param value bet value
     /// @return 0 if check passed
-    function joinCheck(string p1, string p2, WccStorage.GameType gameType, uint value) public view returns(uint) {
-        bytes32 index = keccak256(p1, p2, gameType);
+    function joinCheck(bytes32 index, uint value) public view returns(uint) {
         var (,,,,status,,gameValued,) = wccs.games(index);
         if (!gameValued) {
             return 1; //game not exist
@@ -34,22 +31,19 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
-    event UserJoin(string p1, string p2, WccStorage.GameType gameType, string score, address user);
-    
+    event UserJoin(bytes32 gameIndex, string score, address user);
+
     /// @author Bob Clampett
     /// @notice user join game
     /// @dev keccak256(p1, p2, gameType) will be game index
-    /// @param p1 player1 name
-    /// @param p2 player2 name
-    /// @param gameType game stage
+    /// @param gameIndex game index
     /// @param score bet game score 
-    function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable stopInEmergency {
-        require(joinCheck(p1, p2, gameType, msg.value) == 0);
+    function join(bytes32 gameIndex, string score) external payable stopInEmergency {
+        require(joinCheck(gameIndex, msg.value) == 0);
         bytes32 scoreIndex = keccak256(score);
-        
-        wccs.userJoin(msg.sender, msg.value, p1, p2, gameType, score);
+        wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
         testOK = scoreIndex;
-        UserJoin(p1, p2, gameType, score, msg.sender);
+        UserJoin(gameIndex, score, msg.sender);
     }
 
     /// @author Bob Clampett

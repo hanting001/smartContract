@@ -94,9 +94,8 @@ contract WccStorage is Ownable {
     mapping(bytes32 => VoteInfo) public voteInfos;
     mapping(bytes32 => mapping(address => UserVote)) public userVotes;
 
-    function userJoin(address user, uint value, string p1, string p2, WccStorage.GameType gameType, string score) external onlyAdmin{
-        bytes32 gameIndex = keccak256(p1, p2, gameType);
-        bytes32 scoreIndex = keccak256(score);
+    function userJoin(address user, uint value, bytes32 gameIndex, string score, bytes32 scoreIndex) external onlyAdmin {
+        // bytes32 scoreIndex = keccak256(score);
 
         setGameScoreTotalIndex(gameIndex, scoreIndex);
         setGameScoreTotalInfo(gameIndex, scoreIndex, score, value);
