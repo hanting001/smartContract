@@ -1,8 +1,10 @@
 pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './WccStorage.sol';
 import './common/Stoppable.sol';
 contract WccPlayer is Ownable, Stoppable{
+    using SafeMath for uint256;
     WccStorage wccs;
     bytes32 public testOK;
     mapping(address => uint) withdraws;
@@ -10,7 +12,14 @@ contract WccPlayer is Ownable, Stoppable{
     function WccPlayer(address wccsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
     }
-
+    /// @author Bob Clampett
+    /// @notice user join check
+    /// @dev keccak256(p1, p2, gameType) will be game index
+    /// @param p1 player1 name
+    /// @param p2 player2 name
+    /// @param gameType game stage
+    /// @param value bet value
+    /// @return 0 if check passed
     function joinCheck(string p1, string p2, WccStorage.GameType gameType, uint value) public view returns(uint) {
         bytes32 index = keccak256(p1, p2, gameType);
         var (,,,,status,,gameValued,) = wccs.games(index);
@@ -26,6 +35,14 @@ contract WccPlayer is Ownable, Stoppable{
         return 0;
     }
     event UserJoin(string p1, string p2, WccStorage.GameType gameType, string score, address user);
+    
+    /// @author Bob Clampett
+    /// @notice user join game
+    /// @dev keccak256(p1, p2, gameType) will be game index
+    /// @param p1 player1 name
+    /// @param p2 player2 name
+    /// @param gameType game stage
+    /// @param score bet game score 
     function join(string p1, string p2, WccStorage.GameType gameType, string score) external payable stopInEmergency {
         require(joinCheck(p1, p2, gameType, msg.value) == 0);
         bytes32 scoreIndex = keccak256(score);
@@ -35,7 +52,11 @@ contract WccPlayer is Ownable, Stoppable{
         UserJoin(p1, p2, gameType, score, msg.sender);
     }
 
-
+    /// @author Bob Clampett
+    /// @notice check if user win the game
+    /// @param _gameIndex game index
+    /// @param _scoreIndex score index
+    /// @return true if check passed and win value 
     function isWin(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(bool win, uint value) {
         var (target,,,,,) = wccs.voteInfos(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
@@ -43,12 +64,16 @@ contract WccPlayer is Ownable, Stoppable{
         if (target == _scoreIndex) { // win
             var (,totalWinValue,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             var (,,,,,totalValue,,) = wccs.games(_gameIndex);
-            return (true, (totalValue *  myValue / totalWinValue));
+            return (true, totalValue.mul(myValue).div(totalWinValue));
         } else {
             return (false, 0);
         }
     }
-
+    /// @author Bob Clampett
+    /// @notice check if user can claim
+    /// @param _gameIndex game index
+    /// @param _scoreIndex score index
+    /// @return 0 if check passed 
     function claimCheck(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(uint) {
         var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
         var (win,) = isWin(_gameIndex, _scoreIndex);
@@ -68,15 +93,23 @@ contract WccPlayer is Ownable, Stoppable{
         return 0;
     }
     event UserClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
+
+    /// @author Bob Clampett
+    /// @notice user claim win value
+    /// @param _gameIndex game index
+    /// @param _scoreIndex score index
     function claim(bytes32 _gameIndex, bytes32 _scoreIndex) external stopInEmergency{
         require(claimCheck(_gameIndex, _scoreIndex) == 0);
         var (, winValue) = isWin(_gameIndex, _scoreIndex);
         wccs.setUserScorePaid(_gameIndex, _scoreIndex, msg.sender);
-        withdraws[msg.sender] += winValue;
+        withdraws[msg.sender] = withdraws[msg.sender].add(winValue);
         UserClaim(_gameIndex, _scoreIndex, msg.sender);
     }
     
-    
+    /// @author Bob Clampett
+    /// @notice check voter user can claim bonus
+    /// @param _gameIndex game index
+    /// @return 0 if check passed     
     function claimByVoterCheck(bytes32 _gameIndex) public view returns(uint) {
         var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
         var (vote,,paid,) = wccs.userVotes(_gameIndex, msg.sender);
@@ -95,23 +128,31 @@ contract WccPlayer is Ownable, Stoppable{
         return 0;
     }
     event VoterClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
+
+    /// @author Bob Clampett
+    /// @notice voter user claim bonus
+    /// @param _gameIndex game index    
     function claimByVoter(bytes32 _gameIndex) external stopInEmergency {
         require(claimByVoterCheck(_gameIndex) == 0);
         var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
         var (,yesCount,noCount, , ,) = wccs.voteInfos(_gameIndex);
         wccs.setUserVotePaid(_gameIndex, msg.sender);
         var (,,,,,totalValue,,) = wccs.games(_gameIndex);
-        withdraws[msg.sender] += (totalValue / 20) * value / (yesCount + noCount);
+        uint totalCount = yesCount.add(noCount);
+        // (totalValue / 20) * value / (yesCount + noCount)
+        withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(totalCount));
     }
 
 
 
     event UserWithdraw(address user, uint value);
+    /// @author Bob Clampett
+    /// @notice user withdraw eth    
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
         require(value > 0);
         withdraws[msg.sender] = 0;
-        msg.sender.transfer(value / 10 * 9);
-        UserWithdraw(msg.sender, value / 10 * 9);
+        msg.sender.transfer(value.div(10).mul(9));
+        UserWithdraw(msg.sender, value.div(10).mul(9));
     }
 }

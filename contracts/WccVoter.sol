@@ -1,9 +1,11 @@
 pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './WccStorage.sol';
 import './common/Stoppable.sol';
 import './common/KnotToken.sol';
 contract WccVoter is Ownable, Stoppable{
+    using SafeMath for uint256;
     WccStorage wccs;
     KnotToken token;
     uint public testOK;
@@ -23,6 +25,10 @@ contract WccVoter is Ownable, Stoppable{
         token = KnotToken(tokenAddress);
         judges[msg.sender] = true;
     }
+    /// @author Bob Clampett
+    /// @notice judge start vote check
+    /// @param _gameIndex game index
+    /// @return 0 if check passed
     function startVoteCheck(bytes32 _gameIndex) public view returns(uint) {
         var (,,,,status,,gameValued,) = wccs.games(_gameIndex);
         if (!gameValued) {
@@ -34,6 +40,11 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event StartVote(bytes32 _gameIndex, string _result);
+
+    /// @author Bob Clampett
+    /// @notice judge start vote
+    /// @param _gameIndex game index
+    /// @param _result vote target   
     function startVote(bytes32 _gameIndex, string _result) external stopInEmergency onlyJudge {
         require(startVoteCheck(_gameIndex) == 0);
         // change game status to Voting
@@ -44,7 +55,10 @@ contract WccVoter is Ownable, Stoppable{
         StartVote(_gameIndex, _result);
     }
 
-
+    /// @author Bob Clampett
+    /// @notice user vote check
+    /// @param _gameIndex  game index
+    /// @return 0 if check passed
     function voteCheck(bytes32 _gameIndex) public view returns(uint) {
         var (,,,,status,,gameValued,) = wccs.games(_gameIndex);
         if (!gameValued) {
@@ -70,6 +84,11 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
+
+    /// @author Bob Clampett
+    /// @notice user vote
+    /// @param _gameIndex game index
+    /// @param yesOrNo agree or deny    
     function vote(bytes32 _gameIndex, bool yesOrNo) external stopInEmergency {
         require(voteCheck(_gameIndex) == 0);
         // add vote info
@@ -103,8 +122,8 @@ contract WccVoter is Ownable, Stoppable{
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Paying);
         // update new Vote info
         var (,yesCount,noCount,,,) = wccs.voteInfos(_gameIndex);
-        // 这个结束条件还需要调整
-        if ((yesCount + noCount) - noCount > (yesCount + noCount) / 10) {
+        // 这个结束条件还需要调
+        if (yesCount.add(noCount).sub(noCount)  > yesCount.add(noCount).div(10)) {
             wccs.updateVote(_gameIndex, true, true);
         }
         testOK = block.number;

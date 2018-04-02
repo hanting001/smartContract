@@ -1,6 +1,8 @@
 pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 contract WccStorage is Ownable {
+    using SafeMath for uint256;
     enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
     enum GameStatus { Playing, Voting, Paying, End}
     mapping(address => bool) public admins;
@@ -111,7 +113,7 @@ contract WccStorage is Ownable {
     }
     function setGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) private {
         if (gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
-            gameScoreTotalInfos[_gameIndex][_scoreIndex].total += _value;
+            gameScoreTotalInfos[_gameIndex][_scoreIndex].total = gameScoreTotalInfos[_gameIndex][_scoreIndex].total.add(_value);
         } else {
             gameScoreTotalInfos[_gameIndex][_scoreIndex] = ScoreTotal({
                 score: _score,
@@ -119,7 +121,7 @@ contract WccStorage is Ownable {
                 isValued: true
             });
         }
-        games[_gameIndex].totalValue += _value;
+        games[_gameIndex].totalValue = games[_gameIndex].totalValue.add(_value);
     }
     function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) private {
         if(!joinedGames[_gameIndex][_user]) {
@@ -138,7 +140,7 @@ contract WccStorage is Ownable {
     }
     function setJoinedGameScoreInfo(address _user, bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) internal {
         if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
-            joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value += _value;
+            joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value = joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value.add(_value);
         } else {
             joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex] = Score({
                 score: _score,
@@ -204,9 +206,9 @@ contract WccStorage is Ownable {
                 isValued: true
             });
             if (yesOrNo) {
-                voteInfos[_gameIndex].yesCount += votes;
+                voteInfos[_gameIndex].yesCount = voteInfos[_gameIndex].yesCount.add(votes);
             } else {
-                voteInfos[_gameIndex].noCount += votes;
+                voteInfos[_gameIndex].noCount = voteInfos[_gameIndex].noCount.add(votes);
             }
         }
     }
