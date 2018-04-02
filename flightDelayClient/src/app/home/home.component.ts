@@ -41,15 +41,7 @@ export class HomeComponent implements OnInit {
         private router: Router, public loadingSer: LoadingService,
         protected localOrderSer: LocalOrderService, protected localActionSer: LocalActionService) {
 
-        this.web3.getCheckEnvSubject().subscribe((data: any) => {
-            if (data.checkEnv === true) {
-                this.getMyOrders();
-                this.getMyActions();
-                this.getCurrentVoteInfo();
-                this.getBalance();
-            }
-            this.envState = data;
-        });
+
         setInterval(() => {
             this.checkEnv();
         }, 20000);
@@ -219,7 +211,13 @@ export class HomeComponent implements OnInit {
         });
     }
     async checkEnv() {
-        await this.web3.check();
+        this.envState = await this.web3.check();
+        if (this.envState.checkEnv === true) {
+            this.getMyOrders();
+            this.getMyActions();
+            this.getCurrentVoteInfo();
+            this.getBalance();
+        }
     }
 
     openModal(template: TemplateRef<any>) {

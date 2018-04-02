@@ -17,6 +17,9 @@ export class TransactionPipe implements PipeTransform {
                 + value.sfInfo.flightNO + ',出发日期为'
                 + moment(value.sfInfo.flightDate).format('YYYY-MM-DD')
                 + '，祝您好运！';
+        } else if (value.type === 'exchange') {
+            return '您申请花费' + (value.eth ? value.eth : '') + 'ETH兑换'
+                + (value.tokenCount ? value.tokenCount : '') + '个token，祝您好运！';
         }
         return '';
     }
