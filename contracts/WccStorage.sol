@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract WccStorage is Ownable {
-    enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, Final }
+    enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
     enum GameStatus { Playing, Voting, Paying, End}
     mapping(address => bool) public admins;
     modifier onlyAdmin() {
@@ -83,13 +83,14 @@ contract WccStorage is Ownable {
         bool ended;
         bool isValued;
     }
-    // struct UserVote {
-    //     bytes32 gameIndex;
-    //     uint vote;
-    //     bool isValued;
-    // }
+    struct UserVote {
+        bool vote;
+        uint value;
+        bool paid;
+        bool isValued;
+    }
     mapping(bytes32 => VoteInfo) public voteInfos;
-    mapping(bytes32 => mapping(address => uint)) public userVotes;
+    mapping(bytes32 => mapping(address => UserVote)) public userVotes;
 
     function userJoin(address user, uint value, string p1, string p2, WccStorage.GameType gameType, string score) external onlyAdmin{
         bytes32 gameIndex = keccak256(p1, p2, gameType);
@@ -171,8 +172,8 @@ contract WccStorage is Ownable {
     function getAllGameIndexes() public view returns(bytes32[]) {
         return gameIndexes;
     }
-    function getGameInfo(bytes32 _gameIndex) public view returns(string p1, string p2, uint time, GameType gameType, GameStatus status, bool isValued) {
-        return (games[_gameIndex].p1, games[_gameIndex].p2, games[_gameIndex].time, games[_gameIndex].gameType, games[_gameIndex].status, games[_gameIndex].isValued);
+    function getGameInfo(bytes32 _gameIndex) public view returns(string p1, string p2, uint time, GameType gameType, GameStatus status, uint totalValue, bool isValued) {
+        return (games[_gameIndex].p1, games[_gameIndex].p2, games[_gameIndex].time, games[_gameIndex].gameType, games[_gameIndex].status, games[_gameIndex].totalValue, games[_gameIndex].isValued);
     }
     function getGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
         return gameScoreIndexes[_gameIndex];
@@ -195,8 +196,13 @@ contract WccStorage is Ownable {
     }
 
     function setUserVote(bytes32 _gameIndex, bool yesOrNo, address user, uint votes) external onlyAdmin {
-        if (userVotes[_gameIndex][user] == 0) {
-            userVotes[_gameIndex][user] = votes;
+        if (!userVotes[_gameIndex][user].isValued) {
+            userVotes[_gameIndex][user] = UserVote({
+                vote: yesOrNo,
+                value: votes,
+                paid: false,
+                isValued: true
+            });
             if (yesOrNo) {
                 voteInfos[_gameIndex].yesCount += votes;
             } else {
@@ -206,5 +212,8 @@ contract WccStorage is Ownable {
     }
     function setUserScorePaid(bytes32 _gameIndex, bytes32 _scoreIndex, address user) external onlyAdmin {
         joinedGamesScoreInfo[_gameIndex][user][_scoreIndex].paid = true;
+    }
+    function setUserVotePaid(bytes32 _gameIndex, address user) external onlyAdmin {
+        userVotes[_gameIndex][user].paid = true;
     }
 }

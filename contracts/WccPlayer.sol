@@ -68,13 +68,43 @@ contract WccPlayer is Ownable, Stoppable{
         return 0;
     }
     event UserClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
-    function claim(bytes32 _gameIndex, bytes32 _scoreIndex) external {
+    function claim(bytes32 _gameIndex, bytes32 _scoreIndex) external stopInEmergency{
         require(claimCheck(_gameIndex, _scoreIndex) == 0);
         var (, winValue) = isWin(_gameIndex, _scoreIndex);
         wccs.setUserScorePaid(_gameIndex, _scoreIndex, msg.sender);
         withdraws[msg.sender] += winValue;
         UserClaim(_gameIndex, _scoreIndex, msg.sender);
     }
+    
+    
+    function claimByVoterCheck(bytes32 _gameIndex) public view returns(uint) {
+        var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
+        var (vote,,paid,) = wccs.userVotes(_gameIndex, msg.sender);
+        if (!ended) {
+            return 1; // vote not finish
+        }
+        if (!passed) {
+            return 2; // vote not passed
+        }
+        if(!vote) {
+            return 3; // not win
+        }
+        if (paid) {
+            return 4; //paid
+        }
+        return 0;
+    }
+    event VoterClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
+    function claimByVoter(bytes32 _gameIndex) external stopInEmergency {
+        require(claimByVoterCheck(_gameIndex) == 0);
+        var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
+        var (,yesCount,noCount, , ,) = wccs.voteInfos(_gameIndex);
+        wccs.setUserVotePaid(_gameIndex, msg.sender);
+        var (,,,,,totalValue,,) = wccs.games(_gameIndex);
+        withdraws[msg.sender] += (totalValue / 20) * value / (yesCount + noCount);
+    }
+
+
 
     event UserWithdraw(address user, uint value);
     function withdraw() external stopInEmergency {
