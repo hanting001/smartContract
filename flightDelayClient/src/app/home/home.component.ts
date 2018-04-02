@@ -8,6 +8,7 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { DelayRates } from '../shared/configData';
+import { LocalActionService } from '../service/local-action.service';
 
 @Component({
     selector: 'app-home',
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
     envState: any = {};
     price;
     myOrders: any;
+    myActions: any;
     voteInfo: any;
     balance: any = {};
     delayRates = DelayRates;
@@ -36,11 +38,13 @@ export class HomeComponent implements OnInit {
     constructor(private fb: FormBuilder, private web3: Web3Service,
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
-        private router: Router, public loadingSer: LoadingService, protected localOrderSer: LocalOrderService) {
+        private router: Router, public loadingSer: LoadingService,
+        protected localOrderSer: LocalOrderService, protected localActionSer: LocalActionService) {
 
         this.web3.getCheckEnvSubject().subscribe((data: any) => {
-            if (data.checkEnv === true && this.envState.checkEnv !== true) {
+            if (data.checkEnv === true) {
                 this.getMyOrders();
+                this.getMyActions();
                 this.getCurrentVoteInfo();
                 this.getBalance();
             }
@@ -48,7 +52,7 @@ export class HomeComponent implements OnInit {
         });
         setInterval(() => {
             this.checkEnv();
-        }, 10000);
+        }, 20000);
         this.checkEnv();
 
         this.form = this.fb.group({
@@ -150,8 +154,10 @@ export class HomeComponent implements OnInit {
         this.loadingSer.show();
 
         const model = this.form.value;
+        const account = await this.web3.getMainAccount();
         console.log(model);
         const price = await this.flightDelayService.getPrice(model.flightNO);
+        model.price = price;
         const joinCheck = await this.flightDelayService.canJoin(model.flightNO, model.flightDate);
         console.log(joinCheck);
         if (joinCheck.checkResult != 0) {
@@ -161,24 +167,36 @@ export class HomeComponent implements OnInit {
         // 授权合约可以扣代币
         const web3 = this.web3.instance();
         const priceInWei = web3.utils.toWei(String(price * 1.1));
-        await this.flightDelayService.approve(priceInWei);
-        this.flightDelayService.join(model, async (confirmNumber, receipt) => {
+        this.flightDelayService.approve(priceInWei, async (transactionHash) => {
+            await this.localActionSer.addAction({
+                transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'approve', sfInfo: model
+            }, account);
+        }, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
-                model.price = price;
-                model.createdAt = new Date();
-                const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
-                console.log(result);
-                this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
-                console.log(this.myOrders);
-                this.loadingSer.hide();
-                this.confirmModalRef.hide();
-                const testOK = await this.flightDelayService.testOK();
-                console.log(testOK);
-                alert('加入成功');
+                this.flightDelayService.join(model, async (transactionHash) => {
+                    await this.localActionSer.addAction({
+                        transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'join', sfInfo: model
+                    }, account);
+                }, async (confirmNum, rec) => {
+                    if (confirmNum === 2) {
+
+                        model.createdAt = new Date();
+                        const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
+                        console.log(result);
+                        this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+                        console.log(this.myOrders);
+                        this.loadingSer.hide();
+                        this.confirmModalRef.hide();
+                        const testOK = await this.flightDelayService.testOK();
+                        console.log(testOK);
+                        alert('加入成功');
+                    }
+                }, (err) => {
+                    this.loadingSer.hide();
+                });
             }
-        }, (err) => {
-            this.loadingSer.hide();
         });
+
     }
     async startClaim(flightNO, flightDate) {
         const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
@@ -189,7 +207,7 @@ export class HomeComponent implements OnInit {
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
         this.loadingSer.show();
-        this.flightDelayService.startClaim(flightNO, flightDate, target, async(confirmNumber, receipt) => {
+        this.flightDelayService.startClaim(flightNO, flightDate, target, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 const testOK = await this.flightDelayService.testServiceOK();
                 console.log(testOK);
@@ -224,6 +242,11 @@ export class HomeComponent implements OnInit {
 
     async getMyOrders() {
         this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+    }
+
+    async getMyActions() {
+        this.myActions = await this.localActionSer.getMyActions(await this.web3.getMainAccount());
+        console.log(this.myActions);
     }
 
     async getCurrentVoteInfo() {

@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AsyncLocalStorageModule } from 'angular-async-local-storage';
 
-import { Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService } from './service/index';
+import { Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService } from './service/index';
 
 import { DelayRatePipe } from './shared/pipes';
 
@@ -25,6 +25,8 @@ import { LoadingModule } from 'ngx-loading';
 import { OrderComponent } from './order/order.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { FaqComponent } from './faq/faq.component';
+import { TransactionPipe } from './service/pipe/transaction.pipe';
+import { TransactionUrlPipe } from './service/pipe/transaction-url.pipe';
 
 @NgModule({
     declarations: [
@@ -35,7 +37,9 @@ import { FaqComponent } from './faq/faq.component';
         OrderComponent,
         AboutUsComponent,
         FaqComponent,
-        DelayRatePipe
+        DelayRatePipe,
+        TransactionPipe,
+        TransactionUrlPipe
     ],
     imports: [
         BrowserModule,
@@ -53,7 +57,7 @@ import { FaqComponent } from './faq/faq.component';
         AsyncLocalStorageModule,
         ReactiveFormsModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService],
+    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

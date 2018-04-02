@@ -1,3 +1,4 @@
+
 import { LocalOrderService } from './local-order.service';
 import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
@@ -102,14 +103,30 @@ export class FlightDelayService {
         };
     }
     // 授权航延合约可以扣钱
-    async approve(price) {
+    async approve(price, onTransactionHash, onConfirmation, onError?) {
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         const address = await this.web3Service.getAddress('flightDelay');
         console.log(address);
         const options = {
             from: await this.web3Service.getMainAccount()
         };
-        return tokenSC.methods.approve(address, price).send(options);
+        tokenSC.methods.approve(address, price).send(options).on('transactionHash', (transactionHash) => {
+            if (onTransactionHash) {
+                onTransactionHash(transactionHash);
+            }
+            console.log(`approve  txHash: ${transactionHash}`);
+        })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
     }
     /* 购买前校验，返回0表示校验通过
     */
@@ -151,7 +168,7 @@ export class FlightDelayService {
         };
     }
     // 加入航延计划，不带投票信息
-    async join(mySfInfo: any, onConfirmation, onError?) {
+    async join(mySfInfo: any, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         const address = await this.web3Service.getAddress('flightDelay');
@@ -177,6 +194,9 @@ export class FlightDelayService {
                 }
             })
             .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
                 console.log(`join txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
