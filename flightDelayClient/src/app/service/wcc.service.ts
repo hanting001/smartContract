@@ -30,6 +30,14 @@ export class WCCService {
         const userJoinedGameIndexes = await sc.methods.getUserJoinedGameIndexes().call();
         // 这里只测试一场
         const userJoinedGameIndex = userJoinedGameIndexes[0];
+        if (!userJoinedGameIndex) {
+            return {
+                gameIndexes: gameIndexes,
+                gameInfos: gameInfos,
+                scoreIndexes: scoreIndexes,
+                scoreInfos: scoreInfos
+            };
+        }
         // 判断是否下注
         const isJoinedGame = await sc.methods.isJoinedGame(userJoinedGameIndex).call();
         // 获取用户在某场次下的所有下注信息
@@ -45,6 +53,18 @@ export class WCCService {
         const account = await this.web3Service.getMainAccount();
         console.log(`account:${account}`);
         const voteInfo = await sc.methods.voteInfos(userJoinedGameIndex).call();
+        if (!voteInfo.isValued) {
+            return {
+                gameIndexes: gameIndexes,
+                gameInfos: gameInfos,
+                scoreIndexes: scoreIndexes,
+                scoreInfos: scoreInfos,
+                userJoinedGameIndexes: userJoinedGameIndexes,
+                isJoinedGame: isJoinedGame,
+                uerJoinedGameScoreIndexes: uerJoinedGameScoreIndexes,
+                uerJoinedGameScoreInfos: uerJoinedGameScoreInfos
+            };
+        }
         const userVote = await sc.methods.userVotes(userJoinedGameIndex, account).call();
 
         // 查看是否赢了
