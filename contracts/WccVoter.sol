@@ -11,6 +11,7 @@ contract WccVoter is Ownable, Stoppable{
     uint public testOK;
     mapping(bytes32 => bool) canEnd;
     mapping(address => bool) judges;
+    
     modifier onlyJudge() {
         require(judges[msg.sender]);
         _;
@@ -25,6 +26,7 @@ contract WccVoter is Ownable, Stoppable{
         token = KnotToken(tokenAddress);
         judges[msg.sender] = true;
     }
+
     /// @author Bob Clampett
     /// @notice judge start vote check
     /// @param _gameIndex game index
