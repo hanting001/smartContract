@@ -334,7 +334,7 @@ export class FlightDelayService {
     }
 
     // 发起理赔
-    async startClaim(flightNO, flightDate, target, onConfirmation, onError?) {
+    async startClaim(flightNO, flightDate, target, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const options = {
             from: await this.web3Service.getMainAccount()
@@ -343,6 +343,9 @@ export class FlightDelayService {
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
         sc.methods.claim(key, target).send(options)
             .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
                 console.log(`start claim txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {

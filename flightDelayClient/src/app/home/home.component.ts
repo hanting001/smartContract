@@ -194,6 +194,7 @@ export class HomeComponent implements OnInit {
     }
     async startClaim(flightNO, flightDate) {
         const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
+        const account = await this.web3.getMainAccount();
         console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
             return alert(claimCheck.message);
@@ -201,7 +202,12 @@ export class HomeComponent implements OnInit {
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
         this.loadingSer.show();
-        this.flightDelayService.startClaim(flightNO, flightDate, target, async (confirmNumber, receipt) => {
+        this.flightDelayService.startClaim(flightNO, flightDate, target, async (transactionHash) => {
+            await this.localActionSer.addAction({
+                transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
+                type: 'applyClaim', flightNO: flightNO, flightDate: flightDate
+            }, account);
+        }, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
                 const testOK = await this.flightDelayService.testServiceOK();
                 console.log(testOK);
