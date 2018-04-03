@@ -197,8 +197,8 @@ contract HbStorage is Ownable {
     function returnSFInfo(bytes32 _sfIndex) public view returns (string flightNO,
         string flightDate, SFStatus status, uint count,
         DelayStatus delayStatus,
-        bool isValued) {
-        return (scheduledFlights[_sfIndex].flightNO,  scheduledFlights[_sfIndex].flightDate, scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued);
+        bool isValued,uint price) {
+        return (scheduledFlights[_sfIndex].flightNO,  scheduledFlights[_sfIndex].flightDate, scheduledFlights[_sfIndex].status, scheduledFlights[_sfIndex].count, scheduledFlights[_sfIndex].delayStatus, scheduledFlights[_sfIndex].isValued, scheduledFlights[_sfIndex].price);
     }
     function changeSFStatus(bytes32 index, SFStatus status) external onlyAdmin{
         if (scheduledFlights[index].status != status) {
