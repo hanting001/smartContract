@@ -175,10 +175,10 @@ export class HomeComponent implements OnInit {
                     if (confirmNum === 2) {
 
                         model.createdAt = new Date();
-                        const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
-                        console.log(result);
-                        this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
-                        console.log(this.myOrders);
+                        // const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
+                        // console.log(result);
+                        // this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+                        // console.log(this.myOrders);
                         this.loadingSer.hide();
                         this.confirmModalRef.hide();
                         const testOK = await this.flightDelayService.testOK();
@@ -271,11 +271,11 @@ export class HomeComponent implements OnInit {
             + this.voteInfo.voteInfo.delay1Counts * 1 + this.voteInfo.voteInfo.delay2Counts * 1
             + this.voteInfo.voteInfo.delay3Counts * 1;
 
-        this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount) + '%';
-        this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount) + '%';
-        this.voteInfo.voteInfo.delay1Percent = (this.voteInfo.voteInfo.delay1Counts * 100 / totalCount) + '%';
-        this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount) + '%';
-        this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount) + '%';
+        this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount).toFixed(0) + '%';
+        this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount).toFixed(0) + '%';
+        this.voteInfo.voteInfo.delay1Percent = (this.voteInfo.voteInfo.delay1Counts * 100 / totalCount).toFixed(0) + '%';
+        this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount).toFixed(0) + '%';
+        this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount).toFixed(0) + '%';
         console.log(this.voteInfo);
     }
 

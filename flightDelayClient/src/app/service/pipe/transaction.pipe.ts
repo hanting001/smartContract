@@ -21,7 +21,7 @@ export class TransactionPipe implements PipeTransform {
             return '您申请花费' + (value.eth ? value.eth : '') + 'ETH兑换'
                 + (value.tokenCount ? value.tokenCount : '') + '个token，祝您好运！';
         } else if (value.type === 'applyClaim') {
-            return '您申请开始理赔投票，航班号为' + (value.flightNO) + ',出发日期为'
+            return '您申请开始了一个理赔投票，航班号为' + (value.flightNO) + ',出发日期为'
                 + moment(value.flightDate).format('YYYY-MM-DD') + '';
         }
         return '';
