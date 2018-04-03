@@ -249,6 +249,15 @@ export class HomeComponent implements OnInit {
 
     async getCurrentVoteInfo() {
         this.voteInfo = await this.flightDelayService.getCurrentVote();
+        const totalCount = this.voteInfo.voteInfo.noCounts * 1 + this.voteInfo.voteInfo.cancelCounts * 1
+            + this.voteInfo.voteInfo.delay1Counts * 1 + this.voteInfo.voteInfo.delay2Counts * 1
+            + this.voteInfo.voteInfo.delay3Counts * 1;
+
+        this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount) + '%';
+        this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount) + '%';
+        this.voteInfo.voteInfo.delay1Percent = (this.voteInfo.voteInfo.delay1Counts * 100 / totalCount) + '%';
+        this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount) + '%';
+        this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount) + '%';
         console.log(this.voteInfo);
     }
 

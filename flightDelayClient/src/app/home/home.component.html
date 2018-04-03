@@ -124,55 +124,21 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem;color:#FFFFFF;">当前投票结果：</label>
-                        <div class="col">
+                        <label class="col col-form-label text-left" style="font-size:1.2rem;color:#FFFFFF;">当前投票结果：</label>
 
-                        </div>
-                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
-                        <div class="col">
-                        </div>
                     </div>
 
-                    <div class="row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">无延误：</label>
-                        <div class="col align-self-center">
-                            <progressbar [value]="55"></progressbar>
-                        </div>
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误1小时：</label>
-                        <div class="col align-self-center">
-                            <progressbar [value]="22" type="warning" [striped]="true">22%</progressbar>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误2小时：</label>
-                        <div class="col align-self-center">
-                            <progressbar max="200" [value]="166" type="danger" [striped]="true" [animate]="true">
-                                <i>166 / 200</i>
-                            </progressbar>
-
-                        </div>
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">延误3小时：</label>
-                        <div class="col align-self-center">
-                            <progressbar [value]="50"></progressbar>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="col col-form-label text-right" style="font-size:1.2rem">航班已取消：</label>
-                        <div class="col align-self-center">
-                            <progressbar [value]="50"></progressbar>
-                        </div>
-                        <label class="col col-form-label text-right" style="font-size:1.2rem"></label>
-                        <div class="col">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col align-self-center">
-                            <a href="#">投票规则</a>
-                        </div>
-                        <div class="col">
-                            <a href="#">如何查询航班是否延误？</a>
-                        </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.noPercent}" aria-valuenow="15" aria-valuemin="0"
+                            aria-valuemax="100">{{voteInfo.voteInfo.noPercent}}}</div>
+                        <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.cancelPercent}" aria-valuenow="30"
+                            aria-valuemin="0" aria-valuemax="100">{{voteInfo.voteInfo.cancelPercent}}</div>
+                        <div class="progress-bar bg-warning" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.delay1Percent}" aria-valuenow="20"
+                            aria-valuemin="0" aria-valuemax="100">{{voteInfo.voteInfo.delay1Percent}}</div>
+                        <div class="progress-bar bg-primary" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.delay2Percent}" aria-valuenow="20"
+                            aria-valuemin="0" aria-valuemax="100">{{voteInfo.voteInfo.delay2Percent}}</div>
+                        <div class="progress-bar bg-danger" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.delay3Percent}" aria-valuenow="20"
+                            aria-valuemin="0" aria-valuemax="100">{{voteInfo.voteInfo.delay3Percent}}</div>
                     </div>
 
                 </div>
