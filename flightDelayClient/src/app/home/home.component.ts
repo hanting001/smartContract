@@ -45,11 +45,14 @@ export class HomeComponent implements OnInit {
         setInterval(() => {
             this.checkEnv();
         }, 20000);
+
         this.checkEnv();
+        
 
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
-            flightDate: ['', [Validators.required]]
+            flightDate: ['', [Validators.required]],
+            delayStatus: ['0', [Validators.required]]
         });
 
 
@@ -147,6 +150,7 @@ export class HomeComponent implements OnInit {
 
         const model = this.form.value;
         const account = await this.web3.getMainAccount();
+        const votedSfIndex = this.voteInfo ? this.voteInfo.currentVote : '';
         console.log(model);
         const price = await this.flightDelayService.getPrice(model.flightNO);
         model.price = price;
@@ -165,7 +169,7 @@ export class HomeComponent implements OnInit {
             }, account);
         }, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
-                this.flightDelayService.join(model, async (transactionHash) => {
+                this.flightDelayService.join(model, votedSfIndex, async (transactionHash) => {
                     await this.localActionSer.addAction({
                         transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'join', sfInfo: model
                     }, account);

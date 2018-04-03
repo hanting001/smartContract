@@ -35,7 +35,8 @@ export class FlightDelayService {
             const sfInfo = await storage.methods.returnSFInfo(currentVote).call();
             return {
                 voteInfo: voteInfo,
-                sfInfo: sfInfo
+                sfInfo: sfInfo,
+                currentVote: currentVote
             };
         }
         return null;
@@ -168,7 +169,7 @@ export class FlightDelayService {
         };
     }
     // 加入航延计划，不带投票信息
-    async join(mySfInfo: any, onTransactionHash, onConfirmation, onError?) {
+    async join(mySfInfo: any, votedSfIndex, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         const address = await this.web3Service.getAddress('flightDelay');
@@ -187,7 +188,84 @@ export class FlightDelayService {
         // console.log(checkData);
         const approve = await tokenSC.methods.allowance(options.from, address).call(options);
         console.log(approve);
-        sc.methods.joinFlight(flightNO, flightDate)
+        if (votedSfIndex) {
+            console.log('joinFlightByVote');
+            sc.methods.joinFlightByVote(flightNO, flightDate, votedSfIndex, mySfInfo.delayStatus)
+                .send(options, function (err, transactionHash) {
+                    if (err) {
+                        console.log(err);
+                    }
+                })
+                .on('transactionHash', (transactionHash) => {
+                    if (onTransactionHash) {
+                        onTransactionHash(transactionHash);
+                    }
+                    console.log(`join txHash: ${transactionHash}`);
+                })
+                .on('confirmation', (confNumber, receipt) => {
+                    if (onConfirmation) {
+
+
+                        onConfirmation(confNumber, receipt);
+                    }
+                })
+                .on('error', (error) => {
+                    if (onError) {
+                        onError(error);
+                    }
+                    console.log(error);
+                });
+        } else {
+            console.log('joinFlight');
+            sc.methods.joinFlight(flightNO, flightDate)
+                .send(options, function (err, transactionHash) {
+                    if (err) {
+                        console.log(err);
+                    }
+                })
+                .on('transactionHash', (transactionHash) => {
+                    if (onTransactionHash) {
+                        onTransactionHash(transactionHash);
+                    }
+                    console.log(`join txHash: ${transactionHash}`);
+                })
+                .on('confirmation', (confNumber, receipt) => {
+                    if (onConfirmation) {
+
+
+                        onConfirmation(confNumber, receipt);
+                    }
+                })
+                .on('error', (error) => {
+                    if (onError) {
+                        onError(error);
+                    }
+                    console.log(error);
+                });
+        }
+
+    }
+
+    async joinByVote(mySfInfo: any, votedSfIndex: any, delayStatus: any, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
+        const address = await this.web3Service.getAddress('flightDelay');
+        // console.log(address);
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        const flightNO = mySfInfo.flightNO;
+        const flightDate = moment(mySfInfo.flightDate).format('YYYY-MM-DD');
+        console.log({
+            flightNO: flightNO,
+            flightDate: flightDate
+        });
+        // const checkData = await sc.methods.checkData(flightNO, flightDate).call(options);
+        // console.log(checkData);
+        const approve = await tokenSC.methods.allowance(options.from, address).call(options);
+        console.log(approve);
+        sc.methods.joinFlightByVote(flightNO, flightDate, votedSfIndex, delayStatus)
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);

@@ -109,7 +109,7 @@
                     <div class="form-group row">
                         <label class="col col-form-label text-right " style="font-size:1.2rem">投票选项：</label>
                         <div class="col">
-                            <select class="form-control">
+                            <select class="form-control" formControlName="delayStatus">
 
                                 <option value="{{rate.key}}" *ngFor="let rate of delayRates">
                                     {{rate.value}}
@@ -129,8 +129,8 @@
                     </div>
 
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.noPercent}" aria-valuenow="15" aria-valuemin="0"
-                            aria-valuemax="100">{{voteInfo.voteInfo.noPercent}}}</div>
+                        <div class="progress-bar" class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.noPercent}" aria-valuenow="15" aria-valuemin="0"
+                            aria-valuemax="100">{{voteInfo.voteInfo.noPercent}}</div>
                         <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.cancelPercent}" aria-valuenow="30"
                             aria-valuemin="0" aria-valuemax="100">{{voteInfo.voteInfo.cancelPercent}}</div>
                         <div class="progress-bar bg-warning" role="progressbar" [ngStyle]="{'width': voteInfo.voteInfo.delay1Percent}" aria-valuenow="20"

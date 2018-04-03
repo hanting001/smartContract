@@ -15,7 +15,7 @@ export class Web3Service {
         // this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
         // 这里直接连接到本地的Ganache
         // this.web3.setProvider('http://localhost:7545');
-        this.check();
+        // this.check();
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
