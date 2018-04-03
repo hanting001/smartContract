@@ -41,6 +41,17 @@ export class WCCService {
                 getUserJoinedGameScoreInfo(userJoinedGameIndex, uerJoinedGameScoreIndex).call();
             uerJoinedGameScoreInfos.push(uerJoinedGameScoreInfo);
         }
+        // 获取投票信息
+        const account = await this.web3Service.getMainAccount();
+        console.log(`account:${account}`);
+        const voteInfo = await sc.methods.voteInfos(userJoinedGameIndex).call();
+        const userVote = await sc.methods.userVotes(userJoinedGameIndex, account).call();
+
+        // 查看是否赢了
+        const player = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+
+        const isWin = await player.methods.isWin(userJoinedGameIndex, uerJoinedGameScoreIndexes[0]).call();
+        const claimCheck = await player.methods.claimCheck(userJoinedGameIndex, uerJoinedGameScoreIndexes[0]).call();
         return {
             gameIndexes: gameIndexes,
             gameInfos: gameInfos,
@@ -49,7 +60,11 @@ export class WCCService {
             userJoinedGameIndexes: userJoinedGameIndexes,
             isJoinedGame: isJoinedGame,
             uerJoinedGameScoreIndexes: uerJoinedGameScoreIndexes,
-            uerJoinedGameScoreInfos: uerJoinedGameScoreInfos
+            uerJoinedGameScoreInfos: uerJoinedGameScoreInfos,
+            voteInfo: voteInfo,
+            userVote: userVote,
+            isWin: isWin,
+            claimCheck: claimCheck
         };
     }
 }

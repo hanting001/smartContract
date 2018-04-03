@@ -123,7 +123,7 @@ contract WccVoter is Ownable, Stoppable{
         // update new Vote info
         var (,yesCount,noCount,,,) = wccs.voteInfos(_gameIndex);
         // 这个结束条件还需要调
-        if (yesCount.add(noCount).sub(noCount)  > yesCount.add(noCount).div(10)) {
+        if (yesCount > yesCount.add(noCount).div(10)) {
             wccs.updateVote(_gameIndex, true, true);
         }
         testOK = block.number;
