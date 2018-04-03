@@ -6,7 +6,7 @@ import './common/Stoppable.sol';
 contract WccExchanger is Ownable, Stoppable{
     using SafeMath for uint256;
     KnotToken token;
-    uint rate = 1000;
+    uint public rate = 1000;
     mapping(address => uint) withdraws;
     function WccExchanger(address tokenAddress) public Stoppable(msg.sender){
         token = KnotToken(tokenAddress);
