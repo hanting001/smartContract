@@ -18,6 +18,7 @@ contract HbStorage is Ownable {
         string flightDate;
         SFStatus status;
         uint count;
+        uint price;
         DelayStatus delayStatus;
         bool isValued;
     }
@@ -117,7 +118,7 @@ contract HbStorage is Ownable {
     function getScheduledFlights() external view returns (bytes32[]) {
        return memberSFs[msg.sender];
     }
-    function addMemberToSF(bytes32 _sfIndex, string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, DelayStatus _vote) public onlyAdmin {
+    function addMemberToSF(bytes32 _sfIndex, string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, DelayStatus _vote,uint _price) public onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
             scheduledFlights[_sfIndex].isValued = true;
         }
@@ -127,6 +128,7 @@ contract HbStorage is Ownable {
         scheduledFlights[_sfIndex].count += 1;
         scheduledFlights[_sfIndex].flightNO = _flightNO;
         scheduledFlights[_sfIndex].flightDate = _flightDate;
+        scheduledFlights[_sfIndex].price = _price;
         // 用户记录中加入航班
         memberInfos[_member].memberSFs[_sfIndex] = MemberSF({
             // flightIndex: _sfIndex,
