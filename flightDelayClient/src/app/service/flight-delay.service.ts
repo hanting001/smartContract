@@ -246,51 +246,7 @@ export class FlightDelayService {
 
     }
 
-    async joinByVote(mySfInfo: any, votedSfIndex: any, delayStatus: any, onTransactionHash, onConfirmation, onError?) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
-        const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
-        const address = await this.web3Service.getAddress('flightDelay');
-        // console.log(address);
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
-        console.log(options);
-        const flightNO = mySfInfo.flightNO;
-        const flightDate = moment(mySfInfo.flightDate).format('YYYY-MM-DD');
-        console.log({
-            flightNO: flightNO,
-            flightDate: flightDate
-        });
-        // const checkData = await sc.methods.checkData(flightNO, flightDate).call(options);
-        // console.log(checkData);
-        const approve = await tokenSC.methods.allowance(options.from, address).call(options);
-        console.log(approve);
-        sc.methods.joinFlightByVote(flightNO, flightDate, votedSfIndex, delayStatus)
-            .send(options, function (err, transactionHash) {
-                if (err) {
-                    console.log(err);
-                }
-            })
-            .on('transactionHash', (transactionHash) => {
-                if (onTransactionHash) {
-                    onTransactionHash(transactionHash);
-                }
-                console.log(`join txHash: ${transactionHash}`);
-            })
-            .on('confirmation', (confNumber, receipt) => {
-                if (onConfirmation) {
 
-
-                    onConfirmation(confNumber, receipt);
-                }
-            })
-            .on('error', (error) => {
-                if (onError) {
-                    onError(error);
-                }
-                console.log(error);
-            });
-    }
     // test ok
     async testOK() {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');

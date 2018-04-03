@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
         }, 20000);
 
         this.checkEnv();
-        
+
 
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
@@ -109,9 +109,7 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         // 测试是否已加入航延计划
-        this.flightDelayService.getSfInfo().then(flights => {
-            console.log(flights);
-        });
+
         this.localService.use('zh-cn');
         this.minDate = new Date();
         this.minDate.setDate(this.minDate.getDate() + 2);
@@ -243,7 +241,17 @@ export class HomeComponent implements OnInit {
     }
 
     async getMyOrders() {
-        this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+        // this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
+        // if (this.myOrders) {
+        //     for (const order in this.myOrders) {
+
+        //     }
+        // }
+
+        this.flightDelayService.getSfInfo().then(flights => {
+            console.log(flights);
+            this.myOrders = flights;
+        });
     }
 
     async getMyActions() {
