@@ -50,7 +50,9 @@ contract WccExchanger is Ownable, Stoppable{
     function redeem(uint tokenValue) external { 
         require(redeemCheck(tokenValue) == 0);
         uint eth = tokenValue.div(rate);
-        withdraws[msg.sender] = withdraws[msg.sender].add(eth);
+        if(token.transferFrom(msg.sender, this, tokenValue)) {
+            withdraws[msg.sender] = withdraws[msg.sender].add(eth);
+        }
     }
     event UserWithdraw(address user, uint value);
     /// @author Bob Clampett
