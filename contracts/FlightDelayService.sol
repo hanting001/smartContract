@@ -1,4 +1,5 @@
 pragma solidity ^0.4.18;
+import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './common/Stoppable.sol';
 import './common/HbStorage.sol';
@@ -6,9 +7,19 @@ import './common/KnotToken.sol';
 import './FlightDelay.sol';
 
 /** @title group smart contract. */
-contract FlightDelayService is Stoppable, FlightDelay {
+contract FlightDelayService is Stoppable, Ownable {
     using SafeMath for uint256;
+    HbStorage hbs;
+    KnotToken token;
     mapping(bytes32 => mapping(address => bool)) paidInfos;
+    uint public exchanged;
+    mapping(address => uint) withdraws;
+    uint public rate = 4000;
+
+    uint public testOK;
+    function setRate(uint _rate) external onlyOwner {
+        rate = _rate;
+    }
     struct DelayPayInfo {
         uint times;
         uint payCount;
@@ -16,7 +27,9 @@ contract FlightDelayService is Stoppable, FlightDelay {
     }
     // uint public tokenCount = 0;
     mapping(uint => DelayPayInfo) public delayPayInfos;
-    function FlightDelayService(address hbsAddress, address tokenAddress) public Stoppable(msg.sender) FlightDelay(hbsAddress, tokenAddress) {
+    function FlightDelayService(address hbsAddress, address tokenAddress) public Stoppable(msg.sender) {
+        hbs = HbStorage(hbsAddress);
+        token = KnotToken(tokenAddress);
         delayPayInfos[uint(HbStorage.DelayStatus.no)] = DelayPayInfo({times: 0, payCount: getDelayClaimRate(HbStorage.DelayStatus.no), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay1)] = DelayPayInfo({times: 30, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay1), isValued: true});
         delayPayInfos[uint(HbStorage.DelayStatus.delay2)] = DelayPayInfo({times: 60, payCount: getDelayClaimRate(HbStorage.DelayStatus.delay2), isValued: true});
@@ -61,6 +74,7 @@ contract FlightDelayService is Stoppable, FlightDelay {
         // 将来可能还需要增加日期间隔校验
         return 0;
     }
+
     /** @dev user start claim vote
       * @param index 航班号+航班日期的index
       * @param vote 延误类型
@@ -124,6 +138,32 @@ contract FlightDelayService is Stoppable, FlightDelay {
         require(value > 0);
         if(token.transfer(msg.sender, value)) {
             withdraws[msg.sender] = 0;
+        }
+    }
+    /** @dev 用户兑换token 
+      */  
+    function exchange() public payable {
+        uint eth = msg.value; 
+        uint tokenCount = eth * rate;
+        require( tokenCount >= 1 ether);
+        require( tokenCount <= 1000 ether );
+        token.transfer(msg.sender, tokenCount);
+    }
+    function redeemCheck(uint tokenValue) public view returns(uint) {
+        if (tokenValue < 1 ether) {
+            return 2; // too small redeem
+        }
+        if (token.allowance(msg.sender, this) < tokenValue) {
+            return 1; // no token allowance
+        }
+        return 0;
+    }
+    function redeem(uint tokenValue) external { 
+        require(redeemCheck(tokenValue) == 0);
+        uint eth = tokenValue.div(rate);
+        if(token.transferFrom(msg.sender, this, tokenValue)) {
+            exchanged = exchanged.sub(tokenValue);
+            withdraws[msg.sender] = withdraws[msg.sender].add(eth);
         }
     }
 } 

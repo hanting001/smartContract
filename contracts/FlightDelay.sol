@@ -15,9 +15,7 @@ contract FlightDelay is Ownable, Stoppable {
     KnotToken token;
     uint public interval = 24;//只能买24小时以后的产品
     uint public maxCount = 150;//每个航班最大的组员数量
-    uint public rate = 4000;
-    uint public exchanged;
-    mapping(address => uint) withdraws;
+    
     event UserJoin(string flightNO, string flightDate, address user);
 
     uint public testOK;
@@ -32,9 +30,7 @@ contract FlightDelay is Ownable, Stoppable {
     function setMaxCount(uint count) external onlyOwner {
         maxCount = count;
     }
-    function setRate(uint _rate) external onlyOwner {
-        rate = _rate;
-    }
+
 
 
     /** @dev 用户获取航班价格
@@ -170,30 +166,5 @@ contract FlightDelay is Ownable, Stoppable {
     //     hbs.isOpening(sfIndex), isMemberInSF, token.balanceOf(msg.sender) >= tokenCount);
 
     // }
-    /** @dev 用户兑换token 
-      */  
-    function exchange() public payable {
-        uint eth = msg.value; 
-        uint tokenCount = eth * rate;
-        require( tokenCount >= 1 ether);
-        require( tokenCount <= 1000 ether );
-        token.transfer(msg.sender, tokenCount);
-    }
-    function redeemCheck(uint tokenValue) public view returns(uint) {
-        if (tokenValue < 1 ether) {
-            return 2; // too small redeem
-        }
-        if (token.allowance(msg.sender, this) < tokenValue) {
-            return 1; // no token allowance
-        }
-        return 0;
-    }
-    function redeem(uint tokenValue) external { 
-        require(redeemCheck(tokenValue) == 0);
-        uint eth = tokenValue.div(rate);
-        if(token.transferFrom(msg.sender, this, tokenValue)) {
-            exchanged = exchanged.sub(tokenValue);
-            withdraws[msg.sender] = withdraws[msg.sender].add(eth);
-        }
-    }
+
 }

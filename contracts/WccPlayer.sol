@@ -145,6 +145,7 @@ contract WccPlayer is Ownable, Stoppable{
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
         require(value > 0);
+        require(this.balance >= value.div(10).mul(9));
         withdraws[msg.sender] = 0;
         msg.sender.transfer(value.div(10).mul(9));
         UserWithdraw(msg.sender, value.div(10).mul(9));
