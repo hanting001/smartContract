@@ -10,7 +10,7 @@ export class FlightDelayService {
 
     // 获取航班相关信息
     async getSFInfo(flightNO, flightDate) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
         const price = await sc.methods.getPrice(flightNO).call();
@@ -65,17 +65,17 @@ export class FlightDelayService {
     }
     // 获取eth和token的汇率
     async getRate() {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         return sc.methods.rate().call();
     }
     // 获取航班价格
     async getPrice(flightNO) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         return sc.methods.getPrice(flightNO).call();
     }
     // 设置最大可购买数
     async setMaxCount(count, onConfirmation) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
@@ -94,7 +94,7 @@ export class FlightDelayService {
     }
     // 得到各时间段赔付信息
     async getDelayPayInfos() {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         return {
             0: await sc.methods.delayPayInfos(0).call(),
             1: await sc.methods.delayPayInfos(1).call(),
@@ -135,7 +135,7 @@ export class FlightDelayService {
         const web3 = this.web3Service.instance();
         flightDate = moment(flightDate).format('YYYY-MM-DD');
         const key = web3.utils.keccak256(flightNO + flightDate);
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const price = await sc.methods.getPrice(flightNO).call();
         const msgObj = {
             1: '日期格式不正确',
@@ -170,7 +170,7 @@ export class FlightDelayService {
     }
     // 加入航延计划，不带投票信息
     async join(mySfInfo: any, votedSfIndex, onTransactionHash, onConfirmation, onError?) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -249,7 +249,7 @@ export class FlightDelayService {
 
     // test ok
     async testOK() {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         return sc.methods.testOK().call();
     }
     async testServiceOK() {
@@ -258,7 +258,7 @@ export class FlightDelayService {
     }
     // 兑换token
     async exchange(value, onTransactionHash, onConfirmation) {
-        const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
         const options = {
