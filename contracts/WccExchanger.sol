@@ -18,7 +18,8 @@ contract WccExchanger is Ownable, Stoppable{
     function() public payable { 
         exchange();
     }
-
+    /// @author Bob Clampett
+    /// @notice user exchange check
     function exchangeCheck(uint value) public view returns(uint) {
         uint tokenCount = value.mul(rate);
         if(tokenCount < 1 ether) {

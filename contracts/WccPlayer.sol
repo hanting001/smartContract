@@ -19,7 +19,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param value bet value
     /// @return 0 if check passed
     function joinCheck(bytes32 index, uint value) public view returns(uint) {
-        var (,,,,status,,gameValued,) = wccs.games(index);
+        var (,,,,status,,,gameValued,) = wccs.games(index);
         if (!gameValued) {
             return 1; //game not exist
         }
@@ -55,8 +55,8 @@ contract WccPlayer is Ownable, Stoppable{
         var (target,,,,,) = wccs.voteInfos(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
         if (target == _scoreIndex) { // win
-            var (,totalWinValue,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
-            var (,,,,,totalValue,,) = wccs.games(_gameIndex);
+            var (,totalWinValue,,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
+            var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
             return (true, totalValue.mul(myValue).div(totalWinValue));
         } else {
             return (false, 0);
@@ -131,7 +131,7 @@ contract WccPlayer is Ownable, Stoppable{
         var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
         var (,yesCount,noCount, , ,) = wccs.voteInfos(_gameIndex);
         wccs.setUserVotePaid(_gameIndex, msg.sender);
-        var (,,,,,totalValue,,) = wccs.games(_gameIndex);
+        var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
         uint totalCount = yesCount.add(noCount);
         // (totalValue / 20) * value / (yesCount + noCount)
         withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(totalCount));

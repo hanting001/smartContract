@@ -23,6 +23,7 @@ contract WccStorage is Ownable {
         GameType gameType;
         GameStatus status;
         uint totalValue;
+        uint totalBets;
         bool isValued;
         uint i;
     }
@@ -31,7 +32,8 @@ contract WccStorage is Ownable {
 
     struct ScoreTotal {
         string score;
-        uint total;
+        uint totalValue;
+        uint totalBets;
         bool isValued;
     }
     // gameIndex => scoreIndex[]
@@ -48,6 +50,7 @@ contract WccStorage is Ownable {
             gameType: _gameType,
             status: GameStatus.Playing,
             totalValue: 0,
+            totalBets: 0,
             isValued: true,
             i: i
         });
@@ -112,15 +115,18 @@ contract WccStorage is Ownable {
     }
     function setGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) private {
         if (gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued) {
-            gameScoreTotalInfos[_gameIndex][_scoreIndex].total = gameScoreTotalInfos[_gameIndex][_scoreIndex].total.add(_value);
+            gameScoreTotalInfos[_gameIndex][_scoreIndex].totalValue = gameScoreTotalInfos[_gameIndex][_scoreIndex].totalValue.add(_value);
+            gameScoreTotalInfos[_gameIndex][_scoreIndex].totalBets ++;
         } else {
             gameScoreTotalInfos[_gameIndex][_scoreIndex] = ScoreTotal({
                 score: _score,
-                total: _value,
+                totalValue: _value,
+                totalBets: 1,
                 isValued: true
             });
         }
         games[_gameIndex].totalValue = games[_gameIndex].totalValue.add(_value);
+        games[_gameIndex].totalBets ++; 
     }
     function setUserJoinedGameIndexes(address _user, bytes32 _gameIndex) private {
         if(!joinedGames[_gameIndex][_user]) {
@@ -173,14 +179,16 @@ contract WccStorage is Ownable {
     function getAllGameIndexes() public view returns(bytes32[]) {
         return gameIndexes;
     }
-    function getGameInfo(bytes32 _gameIndex) public view returns(string p1, string p2, uint time, GameType gameType, GameStatus status, uint totalValue, bool isValued) {
-        return (games[_gameIndex].p1, games[_gameIndex].p2, games[_gameIndex].time, games[_gameIndex].gameType, games[_gameIndex].status, games[_gameIndex].totalValue, games[_gameIndex].isValued);
+    function getGameInfo(bytes32 _gameIndex) public view returns(string p1, string p2, uint time, GameType gameType, GameStatus status, uint totalValue, uint totalBets, bool isValued) {
+        GameInfo storage gameInfo = games[_gameIndex];
+        return (gameInfo.p1, gameInfo.p2, gameInfo.time, gameInfo.gameType, gameInfo.status, gameInfo.totalValue, gameInfo.totalBets, gameInfo.isValued);
     }
     function getGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
         return gameScoreIndexes[_gameIndex];
     }
-    function getGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint total, bool isValued) {
-        return (gameScoreTotalInfos[_gameIndex][_scoreIndex].score, gameScoreTotalInfos[_gameIndex][_scoreIndex].total, gameScoreTotalInfos[_gameIndex][_scoreIndex].isValued);
+    function getGameScoreTotalInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint totalValue, uint totalBets, bool isValued) {
+        ScoreTotal storage scoreTotal = gameScoreTotalInfos[_gameIndex][_scoreIndex];
+        return (scoreTotal.score, scoreTotal.totalValue, scoreTotal.totalBets, scoreTotal.isValued);
     }
     function getUserJoinedGameIndexes() public view returns(bytes32[]){
         return userJoinedGameIndexes[msg.sender];
@@ -193,7 +201,8 @@ contract WccStorage is Ownable {
     }
 
     function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool paid, bool isValued) {
-        return (joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].score, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].value, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].paid, joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex].isValued);
+        Score storage scoreInfo = joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex];
+        return (scoreInfo.score, scoreInfo.value, scoreInfo.paid, scoreInfo.isValued);
     }
 
     function setUserVote(bytes32 _gameIndex, bool yesOrNo, address user, uint votes) external onlyAdmin {
