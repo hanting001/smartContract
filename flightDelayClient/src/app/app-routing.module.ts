@@ -9,6 +9,7 @@ import { AdminComponent } from './admin/admin.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { OrderComponent } from './order/order.component';
 import { FaqComponent } from './faq/faq.component';
+import { ClaimDetailComponent } from './claim-detail/claim-detail.component';
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
     { path: 'myorder', component: OrderComponent },
     { path: 'aboutus', component: AboutUsComponent },
     { path: 'faq', component: FaqComponent },
+    { path: 'claim/:sfIndex', component: ClaimDetailComponent },
     { path: 'admin/:account', component: AdminComponent, resolve: { balance: BalanceWithAccountResolver } },
     // { path: 'airDelay', canActivate: [AuthGuard], component: AirDelayComponent },
     // { path: 'buyToken', canActivate: [AuthGuard], component: BuyTokenComponent },

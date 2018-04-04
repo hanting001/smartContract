@@ -31,6 +31,7 @@ import { FaqComponent } from './faq/faq.component';
 import { TransactionPipe } from './service/pipe/transaction.pipe';
 import { TransactionUrlPipe } from './service/pipe/transaction-url.pipe';
 import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
+import { ClaimDetailComponent } from './claim-detail/claim-detail.component';
 
 @NgModule({
     declarations: [
@@ -44,7 +45,8 @@ import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
         DelayRatePipe,
         TransactionPipe,
         TransactionUrlPipe,
-        ClaimStatusPipe
+        ClaimStatusPipe,
+        ClaimDetailComponent
     ],
     imports: [
         BrowserModule,

@@ -247,6 +247,10 @@ export class HomeComponent implements OnInit {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
     }
 
+    goClaim(sfIndex) {
+        window.open('/claim/' + sfIndex, '_blank');
+    }
+
     async getMyOrders() {
         // this.myOrders = await this.localOrderSer.getMyOrders(await this.web3.getMainAccount());
         // if (this.myOrders) {

@@ -215,8 +215,7 @@
                     <td>
                         <button *ngIf="order.sfInfo.status=='0'" type="button" (click)="startClaim(order.sfInfo.flightNO, order.sfInfo.flightDate)"
                             class="btn btn-primary btn-sm">申请理赔</button>
-                        <button *ngIf="order.sfInfo.status!='0'" type="button" (click)="checkClaim(order.sfInfo.flightNO, order.sfInfo.flightDate)"
-                            class="btn btn-primary btn-sm">理赔详情</button>
+                        <button *ngIf="order.sfInfo.status!='0'" type="button" (click)="goClaim(order.key)" class="btn btn-primary btn-sm">理赔详情</button>
                     </td>
                 </tr>
 
