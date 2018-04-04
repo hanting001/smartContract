@@ -1,12 +1,21 @@
 pragma solidity ^0.4.18;
 
 import '../../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import "../../installed_contracts/solidity-stringutils/strings.sol";
 import "./Utility.sol";
 
 contract HbStorage is Ownable {
     using strings for *; 
-
+    using SafeMath for uint256;
+    uint public voteEndInterval = 100; // 投票可以结束的最小间隔
+    uint public voteEndThreshold = 10; // 投票可以结束的最小投票数
+    function setVoteEndInterval(uint _interval) external onlyOwner {
+        voteEndInterval = _interval;
+    }
+    function setVoteThreshold(uint _threshold) external onlyOwner {
+        voteEndThreshold = _threshold;
+    }
     enum SFStatus { opening, closed, claiming, ended }
     enum DelayStatus { no, delay1, delay2, delay3, cancel }
 
@@ -38,7 +47,9 @@ contract HbStorage is Ownable {
         uint delay3Counts;
         uint cancelCounts;
         uint noCounts;
+        uint startNum;
         bool ended;
+        address ender;
         bool isValued;
     }
     struct MemberSF {
@@ -157,15 +168,15 @@ contract HbStorage is Ownable {
     function isInSF(bytes32 _sfIndex) public view returns (bool) {
         return isMemberInSF(_sfIndex, msg.sender);
     }
-    function canClaim(address member, bytes32 _sfIndex) public returns (bool) {
-        // if (flightNO.toSlice().compare(memberInfos[member].canClaim.toSlice()) == 0) {
-        //     return true;
-        // } else {
-        //     return false;
-        // }
-        // return memberInfos[member].canClaim[_sfIndex];
-        return false;
-    }
+    // function canClaim(address member, bytes32 _sfIndex) public returns (bool) {
+    //     // if (flightNO.toSlice().compare(memberInfos[member].canClaim.toSlice()) == 0) {
+    //     //     return true;
+    //     // } else {
+    //     //     return false;
+    //     // }
+    //     // return memberInfos[member].canClaim[_sfIndex];
+    //     return false;
+    // }
     // function setCanBuy(address member, bytes32 _sfIndex) public onlyAdmin{
     //     memberInfos[member].canClaim[_sfIndex] = true;
     // }
@@ -205,10 +216,36 @@ contract HbStorage is Ownable {
             scheduledFlights[index].status = status;
         }
     }
+    function endVote(bytes32 index, address user) external onlyAdmin {
+        scheduledFlights[index].status = SFStatus.ended;
+        voteInfos[index].ended = true;
+        voteInfos[index].ender = user;
+        delete currentVote;
+    }
+    function endVoteByAdmin(bytes32 index) external onlyOwner {
+        require(checkCanEndByAdmin(index));
+        scheduledFlights[index].status = SFStatus.ended;
+        voteInfos[index].ended = true;
+        voteInfos[index].ender = msg.sender;
+        delete currentVote;
+    }
+     /** @dev 判段管理员是否可以结束投票 
+      * @param _sfIndex 航班索引
+      */ 
+    function checkCanEndByAdmin(bytes32 _sfIndex) internal view returns(bool canEnd){
+        VoteInfo storage voteInfo = voteInfos[_sfIndex];
+        uint totalCounts = voteInfo.delay1Counts.add(voteInfo.delay2Counts).add(voteInfo.delay3Counts).add(voteInfo.cancelCounts).add(voteInfo.noCounts);
+        if (block.number.sub(voteInfo.startNum) > voteEndInterval && totalCounts <= voteEndThreshold) {
+            return true;
+        } else {
+            return false;
+        }
+    }  
     function updateVote(bytes32 _sfIndex, DelayStatus vote) external onlyAdmin{
         VoteInfo storage voteInfo = voteInfos[_sfIndex];
         if (!voteInfo.isValued) {
             voteInfo.isValued = true;
+            voteInfo.startNum = block.number;
         }
         if (vote == DelayStatus.no) {
             voteInfo.noCounts += 1;
