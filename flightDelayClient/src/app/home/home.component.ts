@@ -1,3 +1,4 @@
+import { AlertService } from '../service/alert.service';
 import { LocalOrderService } from '../service/local-order.service';
 import { LoadingService } from '../service/loading.service';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
@@ -39,7 +40,8 @@ export class HomeComponent implements OnInit {
         private flightDelayService: FlightDelayService, private localService: BsLocaleService,
         private modalService: BsModalService,
         private router: Router, public loadingSer: LoadingService,
-        protected localOrderSer: LocalOrderService, protected localActionSer: LocalActionService) {
+        protected localOrderSer: LocalOrderService, protected localActionSer: LocalActionService,
+        public alertSer: AlertService) {
 
 
         setInterval(() => {
@@ -124,7 +126,6 @@ export class HomeComponent implements OnInit {
         this.flightDelayService.setMaxCount(Math.random() * 100, confirmApprove);
     }
     async confirm() {
-
         if (this.form.valid) {
             const model = this.form.value;
             const currentVote = await this.flightDelayService.getCurrentVote();
@@ -156,7 +157,7 @@ export class HomeComponent implements OnInit {
         console.log(joinCheck);
         if (joinCheck.checkResult != 0) {
             this.loadingSer.hide();
-            return alert(joinCheck.message);
+            return this.alertSer.show(joinCheck.message);
         }
         // 授权合约可以扣代币
         const web3 = this.web3.instance();
@@ -183,7 +184,7 @@ export class HomeComponent implements OnInit {
                         this.confirmModalRef.hide();
                         const testOK = await this.flightDelayService.testOK();
                         console.log(testOK);
-                        alert('加入成功');
+                        this.alertSer.show('加入成功');
                     }
                 }, (err) => {
                     this.loadingSer.hide();
@@ -197,7 +198,7 @@ export class HomeComponent implements OnInit {
         const account = await this.web3.getMainAccount();
         console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
-            return alert(claimCheck.message);
+            return this.alertSer.show(claimCheck.message);
         }
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
@@ -214,7 +215,7 @@ export class HomeComponent implements OnInit {
                 this.voteInfo = await this.flightDelayService.getCurrentVote();
                 console.log(this.voteInfo);
                 this.loadingSer.hide();
-                alert('申请成功');
+                this.alertSer.show('申请成功');
             }
         });
     }

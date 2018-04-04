@@ -13,7 +13,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AsyncLocalStorageModule } from 'angular-async-local-storage';
 
-import { Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService } from './service/index';
+import {
+    Web3Service, FlightDelayService, LoadingService, LocalOrderService,
+    WCCService, LocalActionService, AlertService
+} from './service/index';
 
 import { DelayRatePipe } from './shared/pipes';
 
@@ -59,7 +62,7 @@ import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
         AsyncLocalStorageModule,
         ReactiveFormsModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService],
+    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

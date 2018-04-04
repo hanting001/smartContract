@@ -1,5 +1,8 @@
+import { AlertService } from './service/alert.service';
 import { LoadingService } from './service/loading.service';
-import { Component } from '@angular/core';
+import { Component, ViewChild, TemplateRef } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
     selector: 'app-root',
@@ -10,12 +13,31 @@ export class AppComponent {
     isSupportBrowser: Boolean = true;
     title = 'app';
     loading: Boolean = false;
+    tip: any = {};
+    alertModalRef: BsModalRef;
 
-    constructor(public loadingSer: LoadingService) {
+    @ViewChild('alertTemplate') alertTemplate: TemplateRef<any>;
+    constructor(public loadingSer: LoadingService, private modalService: BsModalService, public alertSer: AlertService) {
         this.isSupportBrowser = this.getIsSupportBrowser();
         this.loadingSer.getLoadingObservable().subscribe((load) => {
             this.loading = load;
         });
+        this.alertSer.getAlertObservable().subscribe((data) => {
+            this.tip = data;
+            if (this.tip.show) {
+                this.alertModalRef = this.openModal(this.alertTemplate);
+            } else {
+                this.alertModalRef.hide();
+            }
+        });
+    }
+
+    openModal(template: TemplateRef<any>) {
+        return this.modalService.show(template, { class: 'modal-md' });
+    }
+
+    closeAlert() {
+        this.alertModalRef.hide();
     }
 
     getIsSupportBrowser() {
