@@ -55,7 +55,17 @@ contract WccVoter is Ownable, Stoppable{
         testOK = block.number;
         StartVote(_gameIndex, _result);
     }
-
+    event ChangeVote(bytes32 _gameIndex, string _result);
+    /// @author Bob Clampett
+    /// @notice judge change vote target
+    /// @param _gameIndex game index
+    /// @param _result vote target 
+    function changeResult(bytes32 _gameIndex, string _result) external stopInEmergency onlyJudge {
+        require(startVoteCheck(_gameIndex) == 0);
+        wccs.setVote(_gameIndex, _result);
+        testOK = block.number;
+        ChangeVote(_gameIndex, _result);
+    }
     /// @author Bob Clampett
     /// @notice user vote check
     /// @param _gameIndex  game index
@@ -94,13 +104,17 @@ contract WccVoter is Ownable, Stoppable{
         require(voteCheck(_gameIndex) == 0);
         // add vote info
         wccs.setUserVote(_gameIndex, yesOrNo, msg.sender, token.balanceOf(msg.sender));
+        // check can end vote
+        if (endVoteCheck(_gameIndex) == 0 && yesOrNo) {
+            endVote(_gameIndex);
+        }
         testOK = block.number;
         UserVote(_gameIndex, yesOrNo, msg.sender);
     }
 
 
     function setCanEnd(bytes32 _gameIndex) external stopInEmergency onlyJudge {
-        // 需要增加能够设置可以结束的条件判断
+        // need to add more condition
         canEnd[_gameIndex] = true;
     }
     function endVoteCheck(bytes32 _gameIndex) public view returns(uint) {
@@ -114,19 +128,19 @@ contract WccVoter is Ownable, Stoppable{
         if (!canEnd[_gameIndex]) {
             return 3; // can not end
         }
+        var (,yesCount,noCount,,,) = wccs.voteInfos(_gameIndex);
+        // need change in future
+        if (yesCount < yesCount.add(noCount).div(10)) {
+            return 4; // not enough yes vote
+        }
         return 0;
     }
     event EndVote(bytes32 _gameIndex);
-    function endVote(bytes32 _gameIndex) external stopInEmergency {
+    function endVote(bytes32 _gameIndex) public stopInEmergency {
         require(endVoteCheck(_gameIndex) == 0);
-        // change game status to Voting
+        // change game status to Paying
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Paying);
-        // update new Vote info
-        var (,yesCount,noCount,,,) = wccs.voteInfos(_gameIndex);
-        // 这个结束条件还需要调
-        if (yesCount > yesCount.add(noCount).div(10)) {
-            wccs.updateVote(_gameIndex, true, true);
-        }
+        wccs.updateVote(_gameIndex, true, true);
         testOK = block.number;
         EndVote(_gameIndex);
     }

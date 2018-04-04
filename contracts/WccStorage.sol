@@ -170,6 +170,8 @@ contract WccStorage is Ownable {
                 ended: false,
                 isValued: true
             });
+        } else {
+            voteInfos[_gameIndex].target = keccak256(_result);
         }
     }
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
