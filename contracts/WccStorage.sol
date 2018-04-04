@@ -4,7 +4,7 @@ import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 contract WccStorage is Ownable {
     using SafeMath for uint256;
     enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
-    enum GameStatus { Playing, Voting, Paying, End}
+    enum GameStatus { Standby, Playing, Voting, Paying, End}
     mapping(address => bool) public admins;
     modifier onlyAdmin() {
         require(admins[msg.sender]);
@@ -15,7 +15,6 @@ contract WccStorage is Ownable {
             admins[admin] = true;
         }
     }
-
     struct GameInfo {
         string p1;
         string p2;
@@ -48,7 +47,7 @@ contract WccStorage is Ownable {
             p2: _p2,
             time: _time,
             gameType: _gameType,
-            status: GameStatus.Playing,
+            status: GameStatus.Standby,
             totalValue: 0,
             totalBets: 0,
             isValued: true,
@@ -64,6 +63,7 @@ contract WccStorage is Ownable {
         array.length--;
     }
     function removeGame(bytes32 _gameIndex) external onlyOwner {
+        require(games[_gameIndex].status == GameStatus.Standby);
         uint i = games[_gameIndex].i;
         delete games[_gameIndex];
         arrayRemove(gameIndexes, i);

@@ -85,8 +85,8 @@ contract WccVoter is Ownable, Stoppable{
         if (!voteValued) {
             return 4; //vote not exist
         }
-        var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
-        if (value > 0) {
+        var (,,,isValued) = wccs.userVotes(_gameIndex, msg.sender);
+        if (isValued) {
             return 5; //has voted
         }
         if (token.balanceOf(msg.sender) == 0) {

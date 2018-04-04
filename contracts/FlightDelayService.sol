@@ -21,7 +21,7 @@ contract FlightDelayService is Stoppable{
         if(!hbs.isMemberInSF(index, msg.sender)){
             return 1;
         }
-        var (,,status,,,) = hbs.returnSFInfo(index);
+        var (,,status,,,,) = hbs.returnSFInfo(index);
         if(status != HbStorage.SFStatus.opening) {
             return 2;
         }
@@ -32,7 +32,7 @@ contract FlightDelayService is Stoppable{
         // 将来可能还需要增加日期间隔校验
         return 0;
     }
-    /** @dev user start claim
+    /** @dev user start claim 
       * @param index 航班号+航班日期的index
       * @param vote 延误类型
       */  
