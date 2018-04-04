@@ -7,8 +7,9 @@ contract WccExchanger is Ownable, Stoppable{
     using SafeMath for uint256;
     KnotToken token;
     uint public rate = 1000;
+    uint public exchanged;
     mapping(address => uint) withdraws;
-    function WccExchanger(address tokenAddress) public Stoppable(msg.sender){
+    function WccExchanger(address tokenAddress, uint ) public Stoppable(msg.sender){
         token = KnotToken(tokenAddress);
     }
     function setRate(uint _rate) external onlyOwner {
@@ -36,7 +37,9 @@ contract WccExchanger is Ownable, Stoppable{
         uint eth = msg.value; 
         uint tokenCount = eth.mul(rate);
         require(exchangeCheck(eth) == 0);
-        token.transfer(msg.sender, tokenCount);
+        if(token.transfer(msg.sender, tokenCount)) {
+            exchanged = exchanged.add(tokenCount);
+        }
     }
 
     function redeemCheck(uint tokenValue) public view returns(uint) {
@@ -52,6 +55,7 @@ contract WccExchanger is Ownable, Stoppable{
         require(redeemCheck(tokenValue) == 0);
         uint eth = tokenValue.div(rate);
         if(token.transferFrom(msg.sender, this, tokenValue)) {
+            exchanged = exchanged.sub(tokenValue);
             withdraws[msg.sender] = withdraws[msg.sender].add(eth);
         }
     }
