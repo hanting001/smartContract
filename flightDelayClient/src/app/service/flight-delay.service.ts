@@ -325,6 +325,35 @@ export class FlightDelayService {
         return returnArray;
     }
 
+    async getSfInfoByIndex(sfIndex) {
+        const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
+        const account = await this.web3Service.getMainAccount();
+        // const web3 = this.web3Service.instance();
+        // const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        // const sfs = await storage.methods.returnMemberSFs().call();
+        // console.log(key);
+        // console.log(sf);
+        // const memberSFInfo = await storage.methods.returnMemberSFInfo(key).call();
+        // const sfInfo = await storage.methods.returnSFInfo(key).call();
+        // const isInSF = await storage.methods.isInSF(key).call();
+        const returnArray = [];
+        // for (let key of sfs) {
+        const memberSFInfo = await storage.methods.returnMemberSFInfo(sfIndex).call();
+        const sfInfo = await storage.methods.returnSFInfo(sfIndex).call();
+        const voteInfo = await storage.methods.voteInfos(sfIndex).call();
+        const isInSF = await storage.methods.isInSF(sfIndex).call();
+        const data = {
+            sfInfo: sfInfo,
+            memberSFInfo: memberSFInfo,
+            isInSF: isInSF,
+            key: sfIndex,
+            voteInfo: voteInfo
+        };
+        return data;
+        // }
+
+    }
+
     // 检查是否已经加入过了
     async checkIsInSF(flightNO, flightDate) {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
