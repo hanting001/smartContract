@@ -45,7 +45,6 @@ contract WccPlayer is Ownable, Stoppable{
         testOK = scoreIndex;
         UserJoin(gameIndex, score, msg.sender);
     }
-
     /// @author Bob Clampett
     /// @notice check if user win the game
     /// @param _gameIndex game index
@@ -68,7 +67,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _scoreIndex score index
     /// @return 0 if check passed 
     function claimCheck(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(uint) {
-        var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
+        var (,,, passed, ended,,) = wccs.voteInfos(_gameIndex);
         var (win,) = isWin(_gameIndex, _scoreIndex);
         if (!ended) {
             return 1; // vote not finish
@@ -105,7 +104,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _gameIndex game index
     /// @return 0 if check passed     
     function claimByVoterCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,, passed, ended,) = wccs.voteInfos(_gameIndex);
+        var (,,, passed, ended, changed,) = wccs.voteInfos(_gameIndex);
         var (vote,,paid,) = wccs.userVotes(_gameIndex, msg.sender);
         if (!ended) {
             return 1; // vote not finish
@@ -113,7 +112,7 @@ contract WccPlayer is Ownable, Stoppable{
         if (!passed) {
             return 2; // vote not passed
         }
-        if(!vote) {
+        if(!changed && !vote) {
             return 3; // not win
         }
         if (paid) {
@@ -129,7 +128,7 @@ contract WccPlayer is Ownable, Stoppable{
     function claimByVoter(bytes32 _gameIndex) external stopInEmergency {
         require(claimByVoterCheck(_gameIndex) == 0);
         var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
-        var (,yesCount,noCount, , ,) = wccs.voteInfos(_gameIndex);
+        var (,yesCount,noCount,,,,) = wccs.voteInfos(_gameIndex);
         wccs.setUserVotePaid(_gameIndex, msg.sender);
         var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
         uint totalCount = yesCount.add(noCount);

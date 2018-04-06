@@ -41,7 +41,6 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event StartVote(bytes32 _gameIndex, string _result);
-
     /// @author Bob Clampett
     /// @notice judge start vote
     /// @param _gameIndex game index
@@ -128,7 +127,7 @@ contract WccVoter is Ownable, Stoppable{
         if (!canEnd[_gameIndex]) {
             return 3; // can not end
         }
-        var (,yesCount,noCount,,,) = wccs.voteInfos(_gameIndex);
+        var (,yesCount,noCount,,,,) = wccs.voteInfos(_gameIndex);
         // need change in future
         if (yesCount < yesCount.add(noCount).div(10)) {
             return 4; // not enough yes vote

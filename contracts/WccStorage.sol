@@ -86,6 +86,7 @@ contract WccStorage is Ownable {
         uint noCount;
         bool passed;
         bool ended;
+        bool changed;
         bool isValued;
     }
     struct UserVote {
@@ -168,10 +169,16 @@ contract WccStorage is Ownable {
                 noCount: 0,
                 passed: false,
                 ended: false,
+                changed: false,
                 isValued: true
             });
         } else {
-            voteInfos[_gameIndex].target = keccak256(_result);
+            bytes32 resultIndex = keccak256(_result);
+            if (voteInfos[_gameIndex].target != resultIndex) {
+                voteInfos[_gameIndex].target = resultIndex;
+                voteInfos[_gameIndex].changed = true;
+            }
+            
         }
     }
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
