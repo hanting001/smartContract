@@ -87,4 +87,50 @@ export class WCCService {
             claimCheck: claimCheck
         };
     }
+
+    async addPlayer(model, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getFirstAccount()
+        };
+        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).toDate().getTime())
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`join txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+
+
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
+    async  getAllPlayers() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const gameIndexes = await sc.methods.getAllGameIndexes().call();
+
+        // 获取所有场次的详细信息
+        const gameInfos = [];
+        for (const index of gameIndexes) {
+            const gameInfo = await sc.methods.getGameInfo(index).call();
+            gameInfos.push(gameInfo);
+        }
+
+        return gameInfos;
+    }
 }

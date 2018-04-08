@@ -1,0 +1,97 @@
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
+    <h1>添加场次</h1>
+    <div class="row justify-content-md-center">
+        <form (ngSubmit)="addPlayer()" [formGroup]="form" class="col-sm-12">
+            <div class="card text-center bg-info" style="margin-top:15px;">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col">
+                            <input type="text" id="awayCourt" name="awayCourt" class="col form-control-lg" formControlName="awayCourt" placeholder="客场名">
+                        </div>
+                        <div class="col">
+                            <input type="text" id="homeCourt" name="homeCourt" class="col form-control-lg" formControlName="homeCourt" placeholder="主场名">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <select type="text" class="col form-control-lg" formControlName="gameType">
+                            <option value="0">小组赛</option>
+                            <option value="1">1/8决赛</option>
+                            <option value="2">1/4决赛</option>
+                            <option value="3">半决赛</option>
+                            <option value="4">3/4名比赛</option>
+                            <option value="5">决赛</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input placeholder="比赛开始时间" type="text" readonly class="col form-control-lg" value="{{form.controls.startTime.value| date:'yyyy-MM-dd HH:mm' }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col"></label>
+                        <dl-date-time-picker formControlName="startTime" class="col"></dl-date-time-picker>
+                    </div>
+                    <div *ngIf="form.controls.awayCourt.invalid && (form.controls.awayCourt.dirty || form.controls.awayCourt.touched)" class="form-group col alert alert-danger">
+                        <div *ngIf="form.controls.awayCourt.errors.required">
+                            客场名必须输入
+                        </div>
+
+
+                    </div>
+                    <div *ngIf="form.controls.homeCourt.invalid && (form.controls.homeCourt.dirty || form.controls.homeCourt.touched)" class="form-group col alert alert-danger">
+                        <div *ngIf="form.controls.homeCourt.errors.required">
+                            主场名必须输入
+                        </div>
+                    </div>
+
+                    <div *ngIf="form.controls.startTime.invalid && (form.controls.startTime.dirty || form.controls.startTime.touched)" class="form-group col alert alert-danger">
+                        <div *ngIf="form.controls.startTime.errors.required">
+                            比赛开始时间必须输入
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group" style="margin-top: 50px;">
+                <button type="submit" class="btn btn-primary btn-lg  ">添加</button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
+    <h1>所有比赛</h1>
+    <div class="row justify-content-md-center">
+        <p *ngIf="!gameInfos||gameInfos.length==0">没有比赛</p>
+        <table *ngIf="gameInfos&&gameInfos.length!=0" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">客场</th>
+                    <th scope="col">主场</th>
+                    <th scope="col">比赛时间</th>
+                    <th scope="col">类型</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let game of gameInfos;">
+                    <th scope="row">{{game.p1}}</th>
+                    <th scope="row">{{game.p2}}</th>
+                    <td>{{game.time | date:'yyyy-MM-dd HH:mm' }}</td>
+                    <td>{{game.gameType}}</td>
+                    <td>{{game.status }}</td>
+                    <td>
+                        <button type="button" (click)="delGame()" class="btn btn-primary btn-sm">删除</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
