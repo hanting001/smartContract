@@ -4,6 +4,7 @@ import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { WCCService } from '../../service/wcc.service';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-home',
@@ -13,6 +14,7 @@ import { WCCService } from '../../service/wcc.service';
 export class FifaHomeComponent implements OnInit {
     envState: any = {};
     gameInfos: any = [];
+    games: any = [];
     isSticky: Boolean = true;
 
     constructor(private fb: FormBuilder,
@@ -55,8 +57,43 @@ export class FifaHomeComponent implements OnInit {
     }
 
     async getAllGames() {
-        this.gameInfos = await this.wccSer.getAllPlayers();
-        console.log(this.gameInfos);
+        const sortNumber = function (a, b) {
+            return a.time - b.time;
+        };
+        let gameInfos = await this.wccSer.getAllPlayers();
+        gameInfos = gameInfos.sort(sortNumber);
+
+        console.log(gameInfos);
+
+        const games = [];
+        const gameLen = gameInfos.length;
+        for (let i = 0; i < gameLen; i++) {
+            const game: any = {};
+            console.log(gameInfos[i].time);
+            console.log(new Date(gameInfos[i].time * 1));
+            const date = moment(new Date(gameInfos[i].time * 1));
+            game.date = date.format('YYYY-MM-DD');
+            game.day = date.format('DD');
+            game.dayOfWeek = date.isoWeekday();
+            if (games.length > 0 && games[games.length - 1].date == game.date) {
+                games[games.length - 1].count++;
+                games[games.length - 1].courts.push(gameInfos[i]);
+            } else {
+                game.count = 1;
+                game.courts = [gameInfos[i]];
+                games.push(game);
+            }
+
+
+
+        }
+
+        this.games = games;
+        console.log(this.games);
+
+
+
+
     }
 
 }

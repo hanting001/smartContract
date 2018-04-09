@@ -37,6 +37,7 @@ import { FifaHomeComponent } from './fifa/home/home.component';
 import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
+import { WeekdayPipe } from './service/pipe/weekday.pipe';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { GameStatusPipe } from './service/pipe/game-status.pipe';
         FifaHomeComponent,
         FifaAdminComponent,
         GameTypePipe,
-        GameStatusPipe
+        GameStatusPipe,
+        WeekdayPipe
     ],
     imports: [
         BrowserModule,
