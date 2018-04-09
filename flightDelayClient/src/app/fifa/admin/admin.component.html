@@ -86,7 +86,7 @@
                     <td>{{game.gameType}}</td>
                     <td>{{game.status }}</td>
                     <td>
-                        <button type="button" (click)="delGame()" class="btn btn-primary btn-sm">删除</button>
+                        <button type="button" (click)="delGame(game.p1,game.p2,game.gameType)" class="btn btn-primary btn-sm">删除</button>
                     </td>
                 </tr>
 

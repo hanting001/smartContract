@@ -59,5 +59,19 @@ export class FifaAdminComponent implements OnInit {
         }
     }
 
+    delGame(p1, p2, gameType) {
+        const model = { arrayCourt: p1, homeCourt: p2, gameType: gameType };
+
+        console.log(model);
+        this.loadingSer.show();
+        this.wccSer.delPlayer(model, async (transactionHash) => { }, async (confirmNum, recipt) => {
+            if (confirmNum == 2) {
+                this.loadingSer.hide();
+                this.gameInfos = await this.wccSer.getAllPlayers();
+                this.alertSer.show('删除成功');
+            }
+        });
+    }
+
 
 }

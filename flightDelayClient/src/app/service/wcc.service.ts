@@ -133,4 +133,38 @@ export class WCCService {
 
         return gameInfos;
     }
+
+    async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(model.arrayCourt + model.homeCourt + model.gameType);
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getFirstAccount()
+        };
+        sc.methods.removeGame(key)
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`join txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+
+
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
 }
