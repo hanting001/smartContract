@@ -716,3 +716,34 @@ ul.social-buttons li a:focus,
 ul.social-buttons li a:hover {
     background-color: #fed136;
 }
+
+.sticky-container {
+    height: 40px;
+    background: black;
+    color: white;
+    text-align: center;
+}
+
+
+/* Styles go here */
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.header {
+    height: 60px;
+}
+
+.logo {
+    float: left;
+    margin: 10px 0 0 20px;
+}
+
+.logo-title {
+    float: left;
+    margin: 23px 0 0 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

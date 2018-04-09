@@ -35,6 +35,8 @@ import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
 import { ClaimDetailComponent } from './claim-detail/claim-detail.component';
 import { FifaHomeComponent } from './fifa/home/home.component';
 import { FifaAdminComponent } from './fifa/admin/admin.component';
+import { GameTypePipe } from './service/pipe/game-type.pipe';
+import { GameStatusPipe } from './service/pipe/game-status.pipe';
 
 
 @NgModule({
@@ -52,7 +54,9 @@ import { FifaAdminComponent } from './fifa/admin/admin.component';
         ClaimStatusPipe,
         ClaimDetailComponent,
         FifaHomeComponent,
-        FifaAdminComponent
+        FifaAdminComponent,
+        GameTypePipe,
+        GameStatusPipe
     ],
     imports: [
         BrowserModule,

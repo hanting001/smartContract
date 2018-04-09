@@ -15,12 +15,12 @@
                     <div class="form-group row">
                         <div class="col">
                             <select type="text" class="col form-control-lg" formControlName="gameType">
-                            <option value="0">小组赛</option>
-                            <option value="1">1/8决赛</option>
-                            <option value="2">1/4决赛</option>
-                            <option value="3">半决赛</option>
-                            <option value="4">3/4名比赛</option>
-                            <option value="5">决赛</option>
+                            <option value="0">First stage</option>
+                            <option value="1">Round of 16</option>
+                            <option value="2">Quarter-finals</option>
+                            <option value="3">Semi-finals</option>
+                            <option value="4">For_third</option>
+                            <option value="5">Final</option>
                             </select>
                         </div>
                         <div class="col">
@@ -63,6 +63,7 @@
 </div>
 
 
+
 <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
     <h1>所有比赛</h1>
     <div class="row justify-content-md-center">
@@ -83,8 +84,8 @@
                     <th scope="row">{{game.p1}}</th>
                     <th scope="row">{{game.p2}}</th>
                     <td>{{game.time | date:'yyyy-MM-dd HH:mm' }}</td>
-                    <td>{{game.gameType}}</td>
-                    <td>{{game.status }}</td>
+                    <td>{{game.gameType|gameType}}</td>
+                    <td>{{game.status|gameStatus }}</td>
                     <td>
                         <button type="button" (click)="delGame(game.p1,game.p2,game.gameType)" class="btn btn-primary btn-sm">删除</button>
                     </td>

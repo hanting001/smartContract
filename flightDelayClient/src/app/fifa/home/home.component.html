@@ -1,3 +1,121 @@
-<p>
-  home works!
-</p>
+<nav class="navbar fixed-top  navbar-expand-lg navbar-light bg-info">
+    <a class="navbar-brand" href="/fifa">WORLD CUP BETS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto justify-content-center">
+            <li class="nav-item active">
+                <a class="nav-link" href="/fifa">Home </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/fifa/order">My Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/trans">Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/aboutUs">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/faq">FAQ</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div *ngIf="!envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
+    <h1>您要购买航班延误互助计划</h1>
+    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
+    <button type="button" class="btn btn-primary" (click)="installWallet()">
+        安装MetaMask
+    </button>
+</div>
+
+<div *ngIf="envState.checkWeb3&&!envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
+    <h1>您的账号被锁住了</h1>
+    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
+
+</div>
+
+
+<div *ngIf="envState.checkEnv" [ngClass]="{'container-fluid':isSticky==true,'container':isSticky==false}" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+    <div>
+        <p class="lead">Matches</p>
+        <div class="row justify-content-md-center">
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="text-align: center">Content Test</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="text-align: center">Content Test</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="text-align: center">Content Test</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="text-align: center">Content Test</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style="text-align: center">Content Test</div>

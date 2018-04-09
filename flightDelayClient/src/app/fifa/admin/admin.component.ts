@@ -53,6 +53,7 @@ export class FifaAdminComponent implements OnInit {
                 if (confirmNum == 2) {
                     this.loadingSer.hide();
                     this.gameInfos = await this.wccSer.getAllPlayers();
+                    this.form.reset();
                     this.alertSer.show('添加成功');
                 }
             });
