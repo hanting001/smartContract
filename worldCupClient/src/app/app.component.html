@@ -1,0 +1,16 @@
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px',fullScreenBackdrop:true }">
+
+</ngx-loading>
+
+
+<!--The content below is only a placeholder and can be replaced.-->
+<main role="container-fluid">
+    <router-outlet></router-outlet>
+</main>
+
+<ng-template #alertTemplate>
+    <div class="modal-body text-center">
+        <p>{{tip.msg}}</p>
+        <button type="button" class="btn btn-primary" (click)="closeAlert()">确定</button>
+    </div>
+</ng-template>
