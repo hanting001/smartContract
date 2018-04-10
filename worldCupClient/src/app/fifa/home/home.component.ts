@@ -26,11 +26,13 @@ export class FifaHomeComponent implements OnInit {
         public alertSer: AlertService) { }
 
     ngOnInit() {
-        setInterval(() => {
-            this.checkEnv();
-        }, 20000);
-
-        this.checkEnv();
+        this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
+            console.log(tempEnvState);
+            if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
+                this.getAllGames();
+            }
+            this.envState = tempEnvState;
+        });
     }
 
 

@@ -30,6 +30,33 @@ export class AppComponent {
                 this.alertModalRef.hide();
             }
         });
+
+
+        // (() => {
+
+        //     if (!sessionStorage.length) {
+        //         // 这个调用能触发目标事件，从而达到共享数据的目的
+        //         localStorage.setItem('getSessionStorage', Date.now().toString());
+        //     };
+
+        //     // 该事件是核心
+        //     window.addEventListener('storage', function (event) {
+        //         if (event.key == 'getSessionStorage') {
+        //             console.log('已存在的标签页会收到这个事件');
+        //             // 已存在的标签页会收到这个事件
+        //             localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
+        //             localStorage.removeItem('sessionStorage');
+
+        //         } else if (event.key == 'sessionStorage' && !sessionStorage.length) {
+        //             // 新开启的标签页会收到这个事件
+        //             const data = JSON.parse(event.newValue);
+        //             console.log('新开启的标签页会收到这个事件');
+        //             for (const key in data) {
+        //                 sessionStorage.setItem(key, data[key]);
+        //             }
+        //         }
+        //     });
+        // })();
     }
 
     openModal(template: TemplateRef<any>) {

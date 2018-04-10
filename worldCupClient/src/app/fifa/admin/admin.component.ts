@@ -12,6 +12,7 @@ import { AlertService } from '../../service/alert.service';
 })
 export class FifaAdminComponent implements OnInit {
     form: FormGroup;
+    exchForm: FormGroup;
     envState: any = {};
     mytime: Date = new Date();
     gameInfos: any = [];
@@ -26,6 +27,11 @@ export class FifaAdminComponent implements OnInit {
             homeCourt: ['', [Validators.required]],
             startTime: ['', [Validators.required]],
             gameType: ['0', [Validators.required]]
+        });
+
+        this.exchForm = this.fb.group({
+            address: ['', [Validators.required]],
+            tokenCount: ['', [Validators.required]]
         });
 
         this.checkEnv();
@@ -57,6 +63,30 @@ export class FifaAdminComponent implements OnInit {
                     this.alertSer.show('添加成功');
                 }
             });
+        }
+    }
+
+    async exch() {
+        if (this.exchForm.valid) {
+            this.loadingSer.show();
+            const model: any = this.exchForm.value;
+            console.log(model);
+            const web3 = this.web3.instance();
+            const from = await this.web3.getFirstAccount();
+            // 第一个账户用于部署合约
+            console.log(from);
+            const tokenSC = await this.web3.getContract('knotToken', 'KnotToken');
+
+            tokenSC.methods.transfer(model.address, web3.utils.toWei(model.tokenCount + '')).send({ from: from })
+                .on('confirmation', async (confNumber, receipt) => {
+                    if (confNumber == 2) {
+                        const token = await tokenSC.methods.balanceOf(model.address).call();
+                        this.alertSer.show('处理成功，合约拥有KOT：' + web3.utils.fromWei(token));
+                        this.loadingSer.hide();
+                    }
+
+                });
+
         }
     }
 

@@ -63,6 +63,33 @@
 </div>
 
 
+<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
+    <h1>转移KOT</h1>
+    <form (ngSubmit)="exch()" [formGroup]="exchForm" class="col-sm-12">
+        <div class="form-group row">
+            <div class="col-8">
+                <input type="text" class="col form-control-lg" formControlName="address" placeholder="合约地址">
+            </div>
+            <div class="col-4 text-left">
+                <input type="number" class="col form-control-lg" formControlName="tokenCount" placeholder="KOT数量">
+            </div>
+
+
+
+        </div>
+        <div class="form-group row">
+
+            <div class="col text-center">
+                <button type="submit" class="btn btn-primary btn-lg  ">处理</button>
+            </div>
+
+
+
+        </div>
+    </form>
+</div>
+
+
 
 <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
     <h1>所有比赛</h1>

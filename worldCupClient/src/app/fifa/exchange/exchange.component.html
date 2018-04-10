@@ -1,60 +1,50 @@
 <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
     <h1>exchange</h1>
     <div class="row justify-content-md-center">
-        <form (ngSubmit)="addPlayer()" [formGroup]="form" class="col-sm-12">
+        <form (ngSubmit)="exchange()" [formGroup]="form" class="col-sm-12">
             <div class="card text-center bg-info" style="margin-top:15px;">
                 <div class="card-body">
                     <div class="form-group row">
-                        <div class="col">
-                            <input type="text" id="awayCourt" name="awayCourt" class="col form-control-lg" formControlName="awayCourt" placeholder="客场名">
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem">wallet address:</label>
+                        <div class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
                         </div>
-                        <div class="col">
-                            <input type="text" id="homeCourt" name="homeCourt" class="col form-control-lg" formControlName="homeCourt" placeholder="主场名">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem">ETH:</label>
+                        <div class="col-3">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.eth}}">
+                        </div>
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem">KOT:</label>
+                        <div class="col-3">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem">Exchange Rate:</label>
+                        <div class="col-3">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{rate}}">
+                        </div>
+                        <label class="col-3 col-form-label text-right" style="font-size:1.2rem"></label>
+                        <div class="col-3">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col">
-                            <select type="text" class="col form-control-lg" formControlName="gameType">
-                            <option value="0">First stage</option>
-                            <option value="1">Round of 16</option>
-                            <option value="2">Quarter-finals</option>
-                            <option value="3">Semi-finals</option>
-                            <option value="4">For_third</option>
-                            <option value="5">Final</option>
-                            </select>
+                            <input type="number" class="col form-control-lg" formControlName="ethValue" placeholder="Eth">
                         </div>
                         <div class="col">
-                            <input placeholder="比赛开始时间" type="text" readonly class="col form-control-lg" value="{{form.controls.startTime.value| date:'yyyy-MM-dd HH:mm' }}">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col"></label>
-                        <dl-date-time-picker formControlName="startTime" class="col"></dl-date-time-picker>
-                    </div>
-                    <div *ngIf="form.controls.awayCourt.invalid && (form.controls.awayCourt.dirty || form.controls.awayCourt.touched)" class="form-group col alert alert-danger">
-                        <div *ngIf="form.controls.awayCourt.errors.required">
-                            客场名必须输入
-                        </div>
-
-
-                    </div>
-                    <div *ngIf="form.controls.homeCourt.invalid && (form.controls.homeCourt.dirty || form.controls.homeCourt.touched)" class="form-group col alert alert-danger">
-                        <div *ngIf="form.controls.homeCourt.errors.required">
-                            主场名必须输入
+                            <input type="text" readonly class="col form-control-lg" value="{{form.controls.ethValue.value*rate}}" placeholder="">
                         </div>
                     </div>
 
-                    <div *ngIf="form.controls.startTime.invalid && (form.controls.startTime.dirty || form.controls.startTime.touched)" class="form-group col alert alert-danger">
-                        <div *ngIf="form.controls.startTime.errors.required">
-                            比赛开始时间必须输入
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
 
             <div class="form-group" style="margin-top: 50px;">
-                <button type="submit" class="btn btn-primary btn-lg  ">添加</button>
+                <button type="submit" class="btn btn-primary btn-lg  ">Exchange</button>
             </div>
         </form>
     </div>
