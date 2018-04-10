@@ -31,6 +31,7 @@ contract WccExchanger is Ownable, Stoppable{
         }
         return 0;
     }
+    event UserExchange(address user, uint ethValue, uint tokenValue);
     /// @author Bob Clampett
     /// @notice user exchange vote token by eth
     function exchange() public payable {
@@ -40,8 +41,10 @@ contract WccExchanger is Ownable, Stoppable{
         if(token.transfer(msg.sender, tokenCount)) {
             exchanged = exchanged.add(tokenCount);
         }
+        UserExchange(msg.sender, eth, tokenCount);
     }
-
+    /// @author Bob Clampett
+    /// @notice user redeem check
     function redeemCheck(uint tokenValue) public view returns(uint) {
         if (tokenValue < 1 ether) {
             return 2; // too small redeem
@@ -51,6 +54,9 @@ contract WccExchanger is Ownable, Stoppable{
         }
         return 0;
     }
+    event UserRedeem(address user, uint ethValue, uint tokenValue);
+    /// @author Bob Clampett
+    /// @notice user redeem vote token for eth
     function redeem(uint tokenValue) external { 
         require(redeemCheck(tokenValue) == 0);
         uint eth = tokenValue.div(rate);
@@ -58,6 +64,7 @@ contract WccExchanger is Ownable, Stoppable{
             exchanged = exchanged.sub(tokenValue);
             withdraws[msg.sender] = withdraws[msg.sender].add(eth);
         }
+        UserRedeem(msg.sender, eth, tokenValue);
     }
     event UserWithdraw(address user, uint value);
     /// @author Bob Clampett
