@@ -12,9 +12,12 @@ export class ExchangeComponent implements OnInit {
     balance: any = {};
     form: FormGroup;
     rate: any;
+    exchanged: any;
     tokenCount: any;
     account: any;
     envState: any = {};
+    totalSupply: any;
+    scTokenBalance: any;
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -33,9 +36,6 @@ export class ExchangeComponent implements OnInit {
         this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
-                this.wccSer.getRate().then(rate => {
-                    this.rate = rate;
-                });
                 await this.getBalance();
             }
             this.envState = tempEnvState;
@@ -47,17 +47,23 @@ export class ExchangeComponent implements OnInit {
         if (this.form.valid) {
             const model: any = this.form.value;
             console.log(model);
-
+            const web3 = this.web3.instance();
+            const valueInWei = web3.utils.toWei(String(model.ethValue));
+            const check = await this.wccSer.exchangeCheck(valueInWei);
+            console.log(check);
+            if (check.checkResult != 0) {
+                this.loadingSer.hide();
+                return this.alertSer.show(check.message);
+            }
             if (model.ethValue) {
                 this.loadingSer.show();
-                const web3 = this.web3.instance();
                 const confirmApprove = async (confirmationNumber, receipt) => {
                     if (confirmationNumber === 2) {
                         this.getBalance();
+                        this.form.reset();
                         this.loadingSer.hide();
                     }
                 };
-                const valueInWei = web3.utils.toWei(String(model.ethValue));
                 this.wccSer.exchange(valueInWei, async (transactionHash) => {
                     await this.localActionSer.addAction({
                         transactionHash: transactionHash, netType: this.envState.netType,
@@ -70,7 +76,13 @@ export class ExchangeComponent implements OnInit {
 
 
     async getBalance() {
+        const result = await this.wccSer.getExchangerInfo();
+        this.rate = result.rate;
+        this.exchanged = result.exchanged;
+        this.totalSupply = Number(result.tokenBalance) + Number(result.exchanged);
+        this.scTokenBalance = result.tokenBalance;
         this.balance = await this.flightDelayService.getBalance();
+
     }
 
 }

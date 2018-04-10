@@ -1,5 +1,5 @@
 <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
-    <h1>exchange</h1>
+    <h1>Total:<span class="badge badge-secondary">{{totalSupply}}</span> Remain:<span class="badge badge-secondary">{{scTokenBalance}}</span> Exchange Rate:<span class="badge badge-secondary">{{rate}}</span></h1>
     <div class="row justify-content-md-center">
         <form (ngSubmit)="exchange()" [formGroup]="form" class="col-sm-12">
             <div class="card text-center bg-info" style="margin-top:15px;">
@@ -20,15 +20,16 @@
                             <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label class="col-3 col-form-label text-right" style="font-size:1.2rem">Exchange Rate:</label>
                         <div class="col-3">
                             <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{rate}}">
                         </div>
                         <label class="col-3 col-form-label text-right" style="font-size:1.2rem"></label>
                         <div class="col-3">
+                            
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
                         <div class="col">
                             <input type="number" class="col form-control-lg" formControlName="ethValue" placeholder="Eth">

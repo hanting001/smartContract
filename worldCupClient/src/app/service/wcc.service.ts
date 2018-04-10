@@ -169,12 +169,36 @@ export class WCCService {
     }
 
 
-    async getRate() {
+    // async getRate() {
+    //     const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+    //     return sc.methods.rate().call();
+    // }
+    async exchangeCheck(value) {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
-        return sc.methods.rate().call();
+        const msgObj = {
+            1: 'too small exchange value',
+            2: 'the contract have no enough balance'
+        };
+        const checkResult = await sc.methods.exchangeCheck(value).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
     }
-
-
+    async getExchangerInfo() {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const exchanged = await sc.methods.exchanged().call();
+        const rate = await sc.methods.rate().call();
+        const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
+        const web3 = this.web3Service.instance();
+        const address = await this.web3Service.getAddress('wccExchanger');
+        const token = await tokenSC.methods.balanceOf(address).call();
+        return {
+            rate: rate,
+            exchanged: web3.utils.fromWei(exchanged),
+            tokenBalance: web3.utils.fromWei(token)
+        };
+    }
     async exchange(value, onTransactionHash, onConfirmation) {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
         // const address = await this.web3Service.getAddress('flightDelay');
