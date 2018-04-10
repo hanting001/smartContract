@@ -23,7 +23,7 @@ contract WccPlayer is Ownable, Stoppable{
         if (!gameValued) {
             return 1; //game not exist
         }
-        if (status != WccStorage.GameStatus.Playing) {
+        if (status != WccStorage.GameStatus.Standby) {
             return 2; //wrong status
         }
         if (value < 1 finney) {
