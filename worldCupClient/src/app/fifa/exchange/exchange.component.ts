@@ -28,7 +28,8 @@ export class ExchangeComponent implements OnInit {
         public localActionSer: LocalActionService,
         public alertSer: AlertService) {
         this.form = this.fb.group({
-            ethValue: ['', [Validators.required]]
+            ethValue: ['', [Validators.required]],
+            kotValue: ['', [Validators.required]]
         });
     }
 
@@ -40,6 +41,14 @@ export class ExchangeComponent implements OnInit {
             }
             this.envState = tempEnvState;
         });
+    }
+
+    ethChange() {
+        this.form.controls.kotValue.setValue(this.form.controls.ethValue.value * this.rate);
+    }
+
+    kotChange() {
+        this.form.controls.ethValue.setValue(this.form.controls.kotValue.value / this.rate);
     }
 
 
