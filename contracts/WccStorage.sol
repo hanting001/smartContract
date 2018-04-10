@@ -28,6 +28,7 @@ contract WccStorage is Ownable {
     }
     mapping(bytes32 => GameInfo) public games;
     bytes32[] gameIndexes;
+    uint public gamesUpdated;
 
     struct ScoreTotal {
         string score;
@@ -53,6 +54,32 @@ contract WccStorage is Ownable {
             isValued: true,
             i: i
         });
+    }
+    function gamesUpdate() external onlyOwner {
+        gamesUpdated = block.timestamp;
+    }
+    function setGame(bytes32 _index, string _p1, string _p2, GameType _gameType, uint _time) external onlyOwner {
+        uint i = gameIndexes.push(_index) - 1;
+        games[_index] = GameInfo({
+            p1: _p1,
+            p2: _p2,
+            time: _time,
+            gameType: _gameType,
+            status: GameStatus.Standby,
+            totalValue: 0,
+            totalBets: 0,
+            isValued: true,
+            i: i
+        });
+    }
+    function getGamesByType(GameType _gameType) external view {
+        uint length = gameIndexes.length;
+        bytes32[]  array;
+        for (uint i = 0; i < length; i ++) {
+            if (games[gameIndexes[i]].gameType == _gameType) {
+                array.push(gameIndexes[i]);
+            }
+        }
     }
     function arrayRemove(bytes32[] storage array, uint index) internal {
         if (index >= array.length) return;
