@@ -4,6 +4,7 @@ import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { WCCService } from '../../service/wcc.service';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 @Component({
@@ -20,6 +21,7 @@ export class FifaHomeComponent implements OnInit {
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
+        private router: Router,
         public loadingSer: LoadingService,
         public alertSer: AlertService) { }
 
@@ -90,10 +92,10 @@ export class FifaHomeComponent implements OnInit {
 
         this.games = games;
         console.log(this.games);
+    }
 
-
-
-
+    gotoCourt() {
+        this.router.navigate(['court']);
     }
 
 }
