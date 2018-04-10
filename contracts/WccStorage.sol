@@ -28,7 +28,7 @@ contract WccStorage is Ownable {
     }
     mapping(bytes32 => GameInfo) public games;
     bytes32[] gameIndexes;
-    uint gamesUpdated;
+    uint public gamesUpdated;
 
     struct ScoreTotal {
         string score;
