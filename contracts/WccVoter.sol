@@ -25,7 +25,13 @@ contract WccVoter is Ownable, Stoppable{
         token = KnotToken(tokenAddress);
         judges[msg.sender] = true;
     }
-
+    /// @author Bob Clampett
+    /// @notice set game status to Playing
+    /// @param _gameIndex game index  
+    function setGameStart(bytes32 _gameIndex) external stopInEmergency onlyJudge {
+        wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Playing);
+    }
+    
     /// @author Bob Clampett
     /// @notice judge start vote check
     /// @param _gameIndex game index
