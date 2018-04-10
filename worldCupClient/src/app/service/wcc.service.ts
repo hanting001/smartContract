@@ -184,6 +184,9 @@ export class WCCService {
             value: value
         };
         console.log(options);
+        // const isAdmin = await sc.methods.admins(model.address).call();
+        // const check = await sc.methods.exchangeCheck(value).call();
+        // console.log('check:' + check);
         sc.methods.exchange().send(options)
             .on('transactionHash', (transactionHash) => {
                 if (onTransactionHash) {

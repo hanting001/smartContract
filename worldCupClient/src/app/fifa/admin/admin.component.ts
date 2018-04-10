@@ -13,6 +13,7 @@ import { AlertService } from '../../service/alert.service';
 export class FifaAdminComponent implements OnInit {
     form: FormGroup;
     exchForm: FormGroup;
+    adminForm: FormGroup;
     envState: any = {};
     mytime: Date = new Date();
     gameInfos: any = [];
@@ -33,6 +34,11 @@ export class FifaAdminComponent implements OnInit {
             address: ['', [Validators.required]],
             tokenCount: ['', [Validators.required]]
         });
+
+        this.adminForm = this.fb.group({
+            address: ['', [Validators.required]],
+        });
+
 
         this.checkEnv();
     }
@@ -102,6 +108,30 @@ export class FifaAdminComponent implements OnInit {
                 this.alertSer.show('删除成功');
             }
         });
+    }
+
+    async setAdmin() {
+        if (this.adminForm.valid) {
+            const model = this.adminForm.value;
+            const web3 = this.web3.instance();
+            const from = await this.web3.getFirstAccount();
+            // 第一个账户用于部署合约
+            console.log('setAdmin');
+            const sc = await this.web3.getContract('wccStorage', 'WccStorage');
+            this.loadingSer.show();
+            sc.methods.setAdmin(model.address).send({ from: from })
+                .on('confirmation', async (confNumber, receipt) => {
+                    if (confNumber == 2) {
+                        const isAdmin = await sc.methods.admins(model.address).call();
+                        if (isAdmin) {
+                            this.alertSer.show(model.address + '已设置为admin');
+                        }
+                        this.loadingSer.hide();
+                    }
+
+                });
+        }
+
     }
 
 
