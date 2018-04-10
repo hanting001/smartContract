@@ -32,6 +32,7 @@ import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
 import { CourtComponent } from './fifa/court/court.component';
+import { OrderComponent } from './fifa/order/order.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { CourtComponent } from './fifa/court/court.component';
         GameTypePipe,
         GameStatusPipe,
         WeekdayPipe,
-        CourtComponent
+        CourtComponent,
+        OrderComponent
     ],
     imports: [
         BrowserModule,

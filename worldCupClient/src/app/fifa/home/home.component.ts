@@ -95,7 +95,7 @@ export class FifaHomeComponent implements OnInit {
     }
 
     gotoCourt() {
-        this.router.navigate(['court']);
+        this.router.navigate(['fifa/court']);
     }
 
 }
