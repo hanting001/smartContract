@@ -33,6 +33,7 @@ import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
+import { ExchangeComponent } from './fifa/exchange/exchange.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { OrderComponent } from './fifa/order/order.component';
         GameStatusPipe,
         WeekdayPipe,
         CourtComponent,
-        OrderComponent
+        OrderComponent,
+        ExchangeComponent
     ],
     imports: [
         BrowserModule,

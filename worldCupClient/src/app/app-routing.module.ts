@@ -7,6 +7,7 @@ import { FifaHomeComponent } from './fifa/home/home.component';
 import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
+import { ExchangeComponent } from './fifa/exchange/exchange.component';
 
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
@@ -17,6 +18,7 @@ const routes: Routes = [
     { path: 'fifa/court', component: CourtComponent },
     { path: 'fifa/order', component: OrderComponent },
     { path: 'fifa/admin', component: FifaAdminComponent },
+    { path: 'fifa/exchange', component: ExchangeComponent }
 
 ];
 
