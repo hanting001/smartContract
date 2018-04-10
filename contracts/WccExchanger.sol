@@ -9,7 +9,7 @@ contract WccExchanger is Ownable, Stoppable{
     uint public rate = 1000;
     uint public exchanged;
     mapping(address => uint) withdraws;
-    function WccExchanger(address tokenAddress, uint ) public Stoppable(msg.sender){
+    function WccExchanger(address tokenAddress) public Stoppable(msg.sender){
         token = KnotToken(tokenAddress);
     }
     function setRate(uint _rate) external onlyOwner {
