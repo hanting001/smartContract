@@ -110,8 +110,6 @@ contract WccVoter is Ownable, Stoppable{
         testOK = block.number;
         UserVote(_gameIndex, yesOrNo, msg.sender);
     }
-
-
     function setCanEnd(bytes32 _gameIndex) external stopInEmergency onlyJudge {
         // need to add more condition
         canEnd[_gameIndex] = true;
