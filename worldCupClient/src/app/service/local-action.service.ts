@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AsyncLocalStorage } from 'angular-async-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 
 @Injectable()
 export class LocalActionService {
@@ -7,7 +7,7 @@ export class LocalActionService {
     private myActions: [any];
     private MY_ACTION = 'my_action';
 
-    constructor(protected localStorage: AsyncLocalStorage) {
+    constructor(protected localStorage: LocalStorage) {
 
     }
 

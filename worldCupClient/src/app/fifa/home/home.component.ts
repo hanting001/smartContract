@@ -110,6 +110,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         let games = await this.localStorage.getItem<any[]>('games').toPromise();
         if (!isGameUpdated && games && games.length > 0) {
             this.games = games;
+            console.log(this.games);
             console.log('from local storage');
         } else {
             const sortNumber = function (a, b) {
