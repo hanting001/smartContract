@@ -20,13 +20,15 @@
                 <tr>
                     <td *ngFor="let game of games" class="text-center p-0">
                         <tr>
-                            <td style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                            <td class="text-center" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
                         </tr>
                         <tr>
-                            <td style="border: 0;">{{game.day}}</td>
+                            <td class="text-center" style="border: 0;">{{game.day}}</td>
                         </tr>
-                        <tr (mouseenter)="mouseEnter($event)"(mouseleave)="mouseLeave($event)" >
-                            <td style="border: 0;">{{game.count}}</td>
+                        <tr (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
+                            <td class="text-center" style="border: 0;">
+                                <span *ngFor="let in of counter(game.count)" class="pl-1">.</span>
+                            </td>
                         </tr>
                     </td>
                 </tr>
@@ -51,14 +53,16 @@
             <p>
                 {{game.date}}
             </p>
-            <table class="table">
+            <table class="table table-hover">
 
                 <tbody>
                     <tr *ngFor="let court of game.courts">
                         <td style="width:20%" class="text-center">{{court.p1}}</td>
                         <td style="width:40%" class="text-center">{{court.time+'000'|date:'HH:mm'}}</td>
                         <td style="width:20%" class="text-center">{{court.p2}}</td>
-                        <td style="width:20%" class="text-center"><button type="button" (click)='gotoCourt()' class="btn btn-primary btn-sm">详情</button></td>
+                        <td style="width:20%" class="text-center">
+                            <button type="button" (click)='gotoCourt()' class="btn btn-primary btn-sm">详情</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
