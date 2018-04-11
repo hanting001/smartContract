@@ -16,39 +16,31 @@
     <div *ngIf="envState.checkEnv" class="container">
         <p class="lead">Matches</p>
         <div class="justify-content-md-center">
-            <table class="table">
+            <table class="table m-0 bg-info">
                 <tr>
-                    <td *ngFor="let game of games" class="text-center p-0">
+
+                    <td  (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-230" [ngx-scroll-to]="game.date" *ngFor="let game of games" class="text-center p-0">
                         <tr>
-                            <td class="text-center" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                            <td class="text-center text-light pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
                         </tr>
                         <tr>
-                            <td class="text-center" style="border: 0;">{{game.day}}</td>
+                            <td class="text-center text-light pt-0 pb-0" style="border: 0;">{{game.day}}</td>
                         </tr>
-                        <tr (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
-                            <td class="text-center" style="border: 0;">
-                                <span *ngFor="let in of counter(game.count)" class="pl-1">.</span>
+                        <tr>
+                            <td class="text-sm-center pt-0 " style="border: 0;">
+                                <span *ngFor="let in of counter(game.count)"  style="font-size:1.5rem">.</span>
+                                <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
                             </td>
                         </tr>
                     </td>
                 </tr>
-                <!-- <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
-                        {{game.day}}
-                    </td>
-                </tr>
-                <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
-                        {{game.count}}
-                    </td>
-                </tr> -->
             </table>
         </div>
 
     </div>
 </div>
-<div *ngIf="envState.checkEnv" class="container-fluid" style="margin-top:60px;">
-    <div *ngFor="let game of games" class="container">
+<div *ngIf="envState.checkEnv" class="container-fluid" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
+    <div *ngFor="let game of games" class="container" id="{{game.date}}">
         <div class="row ">
             <p>
                 {{game.date}}

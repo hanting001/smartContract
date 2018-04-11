@@ -17,7 +17,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
-    isSticky: Boolean = false;
+    isSticky: Boolean = true;
     subscription;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -48,7 +48,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         if (number > 25) {
             this.isSticky = true;
         } else if (this.isSticky && number < 10) {
-            this.isSticky = false;
+            this.isSticky = true;
         }
     }
 
@@ -71,13 +71,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log($(event.target).index());
         const idx = $(event.target).index() * 1 + 1;
         // $("table tr td:nth-child(3)")
-        $(event.target).parents('td').css('backgroundColor', '#0069d9');
+        $(event.target).addClass('bg-primary');
     }
 
     mouseLeave(event) {
         console.log('mouseLeave');
         const idx = $(event.target).index() * 1 + 1;
-        $(event.target).parents('td').css('backgroundColor', '#ffffff');
+        $(event.target).removeClass('bg-primary');
         // $(event.target).parents('table').find('tr').find('td').eq(idx).css('backgroundColor', '#ffffff');
     }
     counter(i: number) {
