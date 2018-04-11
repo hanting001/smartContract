@@ -81,9 +81,9 @@
             <div class="card text-center bg-info" style="margin-top:15px;">
                 <table class="table">
                     <tr>
-                        <td style="border:0;width:40%" class="text-center">{{court.p1}}</td>
-                        <td style="border:0;width:20%;vertical-align: middle;" class="text-center" rowspan="2" style="font-size: 25px;">VS</td>
-                        <td style="border:0;width:40%" class="text-center">{{court.p2}}</td>
+                        <td style="border:0;width:40%" class="text-center"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                        <td style="border:0;width:20%;vertical-align: middle;font-size: 25px;" class="text-center" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-center"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                     <tr>
                         <td style="border:0">
@@ -134,7 +134,7 @@
 
             <div class="form-group" style="margin-top: 50px;">
                 <button type="submit" class="btn btn-primary btn-lg">Bet</button>
-                <button type="button" class="btn btn-primary btn-lg" (click)="hideCourt()">Cancel</button>
+                <button type="button" class="btn btn-default btn-lg" (click)="hideCourt()">Cancel</button>
             </div>
         </form>
     </div>
