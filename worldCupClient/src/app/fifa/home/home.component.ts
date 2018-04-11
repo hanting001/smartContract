@@ -86,6 +86,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
 
+    hideCourt() {
+        if (this.buyModalRef) {
+            this.buyModalRef.hide();
+        }
+    }
+
     async bet() {
         if (this.buyForm.valid) {
             this.loadingSer.show();
