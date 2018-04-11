@@ -20,12 +20,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
+    court: any = {};
     isSticky: Boolean = true;
     subscription;
     buyModalRef: BsModalRef;
+    buyForm: FormGroup;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
 
-    itle = 'app';
     labels: string[] = ['Column1', 'Column2', 'Column3'];
     data: number[] = [12, 142, 163];
 
@@ -36,7 +37,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         public loadingSer: LoadingService,
         public alertSer: AlertService,
         private modalService: BsModalService,
-        private localStorage: LocalStorage) { }
+        private localStorage: LocalStorage) {
+        this.buyForm = this.fb.group({
+            ethValue: ['', [Validators.required]],
+            kotValue: ['', [Validators.required]]
+        });
+    }
 
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
@@ -64,11 +70,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
 
-    show() {
+    show(court) {
+        console.log(court);
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
 
-    hide() {
+    buy() {
         if (this.buyModalRef) {
             this.buyModalRef.hide();
         }
