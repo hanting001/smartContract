@@ -65,8 +65,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
     async getAllGames() {
+        const isGameUpdated = await this.wccSer.isGameUpdated();
         let games = await this.localStorage.getItem<any[]>('games').toPromise();
-        if (games && games.length > 0) {
+        if (!isGameUpdated && games && games.length > 0) {
             this.games = games;
             console.log('from local storage');
         } else {

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import * as moment from 'moment';
 
 @Injectable()
 export class WCCService {
-    constructor(private web3Service: Web3Service) { }
+    constructor(private web3Service: Web3Service, private localStorage: LocalStorage) { }
     // 测试-获取所有信息
     async getAllInfo() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -133,7 +134,18 @@ export class WCCService {
 
         return gameInfos;
     }
-
+    async isGameUpdated() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const gameUpdateTime = await this.localStorage.getItem<any>('gameUpdateTime').toPromise();
+        const fromBlockChain = await sc.methods.gamesUpdated().call();
+        // console.log(`${gameUpdateTime} +++ ${fromBlockChain}`);
+        if (gameUpdateTime !== fromBlockChain) {
+            this.localStorage.setItem('gameUpdateTime', fromBlockChain).toPromise();
+            return true;
+        } else {
+            return false;
+        }
+    }
     async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(model.arrayCourt + model.homeCourt + model.gameType);
