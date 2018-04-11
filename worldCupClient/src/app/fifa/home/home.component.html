@@ -16,7 +16,7 @@
     <div *ngIf="envState.checkEnv" class="container">
         <p class="lead">Matches</p>
         <div class="justify-content-md-center">
-            <table class="table m-0 bg-info">
+            <table class="table m-0 bg-primary rounded">
                 <tr>
 
                     <td  (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-230" [ngx-scroll-to]="game.date" *ngFor="let game of games" class="text-center p-0">

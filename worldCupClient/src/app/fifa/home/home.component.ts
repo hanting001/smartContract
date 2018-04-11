@@ -71,13 +71,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log($(event.target).index());
         const idx = $(event.target).index() * 1 + 1;
         // $("table tr td:nth-child(3)")
-        $(event.target).addClass('bg-primary');
+        $(event.target).addClass('bg-dark');
     }
 
     mouseLeave(event) {
         console.log('mouseLeave');
         const idx = $(event.target).index() * 1 + 1;
-        $(event.target).removeClass('bg-primary');
+        $(event.target).removeClass('bg-dark');
         // $(event.target).parents('table').find('tr').find('td').eq(idx).css('backgroundColor', '#ffffff');
     }
     counter(i: number) {
