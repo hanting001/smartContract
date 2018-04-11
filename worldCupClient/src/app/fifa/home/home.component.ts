@@ -42,7 +42,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         private localStorage: LocalStorage) {
         this.buyForm = this.fb.group({
             homeScore: ['0', [Validators.required]],
-            awayScore: ['0', [Validators.required]]
+            awayScore: ['0', [Validators.required]],
+            eth: ['0', [Validators.required]]
         });
     }
 
@@ -85,13 +86,29 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
 
-    bet() {
+    hideCourt() {
+        if (this.buyModalRef) {
+            this.buyModalRef.hide();
+        }
+    }
+
+    async bet() {
         if (this.buyForm.valid) {
             this.loadingSer.show();
             const model: any = this.buyForm.value;
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
             const score = model.awayScore + ':' + model.homeScore;
-            this.wccSer.join(index, score, async (transactionHash) => {
+            const web3 = this.web3.instance();
+            const valueInWei = web3.utils.toWei(String(model.eth));
+
+            const check = await this.wccSer.joinCheck(index, valueInWei);
+            console.log(check);
+            if (check.checkResult != 0) {
+                this.loadingSer.hide();
+                return this.alertSer.show(check.message);
+            }
+
+            this.wccSer.join(index, score, valueInWei, async (transactionHash) => {
                 await this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'join'

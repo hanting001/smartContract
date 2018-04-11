@@ -122,13 +122,19 @@
                     </tr>
 
                 </table>
-
+                <div class="form-group row">
+                    <label class="col col-form-label text-right" style="font-size:1.2rem">How Much ETH To Bet:</label>
+                    <div class="col">
+                        <input type="number" class="form-control" formControlName="eth">
+                    </div>
+                </div>
 
             </div>
 
 
             <div class="form-group" style="margin-top: 50px;">
                 <button type="submit" class="btn btn-primary btn-lg">Bet</button>
+                <button type="button" class="btn btn-primary btn-lg" (click)="hideCourt()">Cancel</button>
             </div>
         </form>
     </div>

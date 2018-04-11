@@ -221,10 +221,25 @@ export class WCCService {
         };
     }
 
-    async join(gameIndex, score, onTransactionHash, onConfirmation, onError?) {
+    async joinCheck(gameIndex, value) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const msgObj = {
+            1: 'game not exist',
+            2: 'wrong status',
+            3: 'too small chip'
+        };
+        const checkResult = await sc.methods.joinCheck(gameIndex, value).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
+    async join(gameIndex, score, value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
-            from: await this.web3Service.getFirstAccount()
+            from: await this.web3Service.getFirstAccount(),
+            value: value
         };
         sc.methods.join(gameIndex, score)
             .send(options, function (err, transactionHash) {
