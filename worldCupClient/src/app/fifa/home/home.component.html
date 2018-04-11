@@ -18,17 +18,17 @@
         <div class="row justify-content-md-center">
             <table class="table">
                 <tr>
-                    <td *ngFor="let game of games" class="text-center">
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
                         {{game.dayOfWeek|weekday}}
                     </td>
                 </tr>
                 <tr>
-                    <td *ngFor="let game of games" class="text-center">
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
                         {{game.day}}
                     </td>
                 </tr>
                 <tr>
-                    <td *ngFor="let game of games" class="text-center">
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
                         {{game.count}}
                     </td>
                 </tr>
@@ -37,7 +37,7 @@
 
     </div>
 </div>
-<div *ngIf="envState.checkEnv" class="container-fluid">
+<div *ngIf="envState.checkEnv" class="container-fluid" style="margin-top:60px;">
     <div *ngFor="let game of games" class="container">
         <div class="row ">
             <p>
@@ -60,69 +60,3 @@
 
     </div>
 </div>
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="text-align: center">Content Test</div>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="text-align: center">Content Test</div>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="text-align: center">Content Test</div>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="text-align: center">Content Test</div>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="text-align: center">Content Test</div>
