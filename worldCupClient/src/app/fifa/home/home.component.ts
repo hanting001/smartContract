@@ -75,7 +75,7 @@ export class FifaHomeComponent implements OnInit {
             const game: any = {};
             console.log(gameInfos[i].time);
             console.log(new Date(gameInfos[i].time * 1));
-            const date = moment(new Date(gameInfos[i].time * 1));
+            const date = moment(new Date(gameInfos[i].time * 1000));
             game.date = date.format('YYYY-MM-DD');
             game.day = date.format('DD');
             game.dayOfWeek = date.isoWeekday();
