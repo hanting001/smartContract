@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
 import { Web3Service } from '../../service/index';
@@ -6,6 +6,9 @@ import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { WCCService } from '../../service/wcc.service';
 import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Chart } from 'chart.js';
 import * as moment from 'moment';
 
 @Component({
@@ -19,12 +22,20 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     games: any = [];
     isSticky: Boolean = true;
     subscription;
+    buyModalRef: BsModalRef;
+    @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
+
+    itle = 'app';
+    labels: string[] = ['Column1', 'Column2', 'Column3'];
+    data: number[] = [12, 142, 163];
+
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         private router: Router,
         public loadingSer: LoadingService,
         public alertSer: AlertService,
+        private modalService: BsModalService,
         private localStorage: LocalStorage) { }
 
     ngOnInit() {
@@ -42,13 +53,24 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
-        console.log('window scroll');
+        // console.log('window scroll');
         const number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        console.log(number);
+        // console.log(number);
         if (number > 25) {
             this.isSticky = true;
         } else if (this.isSticky && number < 10) {
             this.isSticky = true;
+        }
+    }
+
+
+    show() {
+        this.buyModalRef = this.openModal(this.buyTemplate);
+    }
+
+    hide() {
+        if (this.buyModalRef) {
+            this.buyModalRef.hide();
         }
     }
 
@@ -81,6 +103,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         let games = await this.localStorage.getItem<any[]>('games').toPromise();
         if (!isGameUpdated && games && games.length > 0) {
             this.games = games;
+            console.log(this.games);
             console.log('from local storage');
         } else {
             const sortNumber = function (a, b) {
@@ -123,6 +146,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log(betInfos);
         return console.log(currenGameInfo);
         this.router.navigate(['fifa/court']);
+    }
+
+    openModal(template: TemplateRef<any>) {
+        return this.modalService.show(template, { class: 'modal-lg' });
     }
 
 }

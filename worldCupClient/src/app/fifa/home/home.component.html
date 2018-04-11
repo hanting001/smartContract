@@ -19,7 +19,8 @@
             <table class="table m-0 bg-primary rounded">
                 <tr>
 
-                    <td  (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-230" [ngx-scroll-to]="game.date" *ngFor="let game of games" class="text-center p-0">
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-230" [ngx-scroll-to]="game.date"
+                        *ngFor="let game of games" class="text-center p-0">
                         <tr>
                             <td class="text-center text-light pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
                         </tr>
@@ -28,7 +29,7 @@
                         </tr>
                         <tr>
                             <td class="text-sm-center pt-0 " style="border: 0;">
-                                <span *ngFor="let in of counter(game.count)"  style="font-size:1.5rem">.</span>
+                                <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
                                 <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
                             </td>
                         </tr>
@@ -48,11 +49,12 @@
             <table class="table table-hover">
 
                 <tbody>
-                    <tr *ngFor="let court of game.courts" (click)="gotoCourt(court)">
-                        <td class="align-middle" style="width:30%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                        <td class="align-middle" style="width:20%"><h4>{{court.time+'000'|date:'HH:mm'}}</h4></td>
-                        <td class="align-middle" style="width:30%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                        <td class="align-middle" style="width:20%"><button type="button" (click)='gotoCourt(court)' class="btn btn-primary btn-sm">详情</button></td>
+                    <tr *ngFor="let court of game.courts" (click)='show()'>
+                        <td class="align-middle" style="width:40%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                        <td class="align-middle" style="width:20%">
+                            <h4>{{court.time+'000'|date:'HH:mm'}}</h4>
+                        </td>
+                        <td class="align-middle" style="width:40%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -61,3 +63,13 @@
 
     </div>
 </div>
+
+<ng-template #buyTemplate>
+    <div class="modal-body text-center">
+        <div align='center'>
+            <chartjs-component [chartTitle]="'Current Bets'" [chartType]="'line'" [chartData]='data' [chartLabels]='labels'>
+            </chartjs-component>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="hide()">确定</button>
+    </div>
+</ng-template>
