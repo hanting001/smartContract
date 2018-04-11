@@ -67,7 +67,17 @@
 
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
-        <p>购买展示</p>
+        <div align='center'>
+            <chartjs-component [chartTitle]="'Example Chart1'" [chartType]="'doughnut'" [chartData]='data' [chartLabels]='labels'>
+            </chartjs-component>
+        </div>
+
+        <hr>
+
+        <div align='center'>
+            <chartjs-component [chartTitle]="'Example Chart2'" [dataSetLabel]="'Bar Chart'" [chartType]="'bar'" [chartData]='data' [chartLabels]='labels'>
+            </chartjs-component>
+        </div>
         <button type="button" class="btn btn-primary" (click)="hide()">确定</button>
     </div>
 </ng-template>

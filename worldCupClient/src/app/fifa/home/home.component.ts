@@ -8,6 +8,7 @@ import { WCCService } from '../../service/wcc.service';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Chart } from 'chart.js';
 import * as moment from 'moment';
 
 @Component({
@@ -23,6 +24,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     subscription;
     buyModalRef: BsModalRef;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
+
+    itle = 'app';
+    labels: string[] = ['Column1', 'Column2', 'Column3'];
+    data: number[] = [12, 142, 163];
+
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
