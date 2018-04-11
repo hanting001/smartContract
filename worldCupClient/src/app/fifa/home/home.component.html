@@ -12,10 +12,10 @@
 
 </div>
 
-<div class="container-fluid" style="background-color: #FFFFFF;z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
-    <div *ngIf="envState.checkEnv" class="container">
-        <p class="lead">Matches</p>
-        <div class="justify-content-md-center">
+<div class="container-fluid" style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+    <div *ngIf="envState.checkEnv">
+        <p class="lead text-muted text-center mb-1">Matches</p>
+        <div class="">
             <table class="table m-0 bg-primary rounded">
                 <tr>
 
