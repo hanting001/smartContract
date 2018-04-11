@@ -65,18 +65,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
     mouseEnter(event) {
-        console.log(event.target);
-        console.log('mouseEnter');
-        // $(event.target).css('backgroundColor', '#ffffff');
-        console.log($(event.target).index());
-        const idx = $(event.target).index() * 1 + 1;
         // $("table tr td:nth-child(3)")
         $(event.target).addClass('bg-dark');
     }
 
     mouseLeave(event) {
-        console.log('mouseLeave');
-        const idx = $(event.target).index() * 1 + 1;
         $(event.target).removeClass('bg-dark');
         // $(event.target).parents('table').find('tr').find('td').eq(idx).css('backgroundColor', '#ffffff');
     }
@@ -120,7 +113,15 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
     }
 
-    gotoCourt() {
+    async gotoCourt(gameInfo) {
+        // get new game info
+        console.log(gameInfo);
+        const index = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
+        console.log(index);
+        const currenGameInfo = await this.wccSer.getGameInfo(index);
+        const betInfos = await this.wccSer.getGameBetInfos(index);
+        console.log(betInfos);
+        return console.log(currenGameInfo);
         this.router.navigate(['fifa/court']);
     }
 
