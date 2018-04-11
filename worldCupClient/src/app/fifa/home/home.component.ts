@@ -70,7 +70,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         $(event.target).parents('table').find('td').css('backgroundColor', '#ffffff');
         console.log($(event.target).index());
         const idx = $(event.target).index() * 1 + 1;
-        //$("table tr td:nth-child(3)")
+        // $("table tr td:nth-child(3)")
         $(event.target).parents('table').find('tr td:nth-child(' + idx + ')').css('backgroundColor', '#0069d9');
     }
 
@@ -100,7 +100,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const game: any = {};
                 console.log(gameInfos[i].time);
                 console.log(new Date(gameInfos[i].time * 1));
-                const date = moment(new Date(gameInfos[i].time * 1000));
+                const date = moment(gameInfos[i].time * 1000);
                 game.date = date.format('YYYY-MM-DD');
                 game.day = date.format('DD');
                 game.dayOfWeek = date.isoWeekday();
