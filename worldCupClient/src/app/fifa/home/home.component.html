@@ -52,7 +52,7 @@
     <div *ngFor="let game of games" class="container" id="{{game.date}}">
         <div class="row ">
             <p>
-                {{game.date}}
+                {{game.date|showDate}}
             </p>
             <table class="table">
 

@@ -34,6 +34,7 @@ import { WeekdayPipe } from './service/pipe/weekday.pipe';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
+import { ShowDatePipe } from './service/pipe/show-date.pipe';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { ExchangeComponent } from './fifa/exchange/exchange.component';
         WeekdayPipe,
         CourtComponent,
         OrderComponent,
-        ExchangeComponent
+        ExchangeComponent,
+        ShowDatePipe
     ],
     imports: [
         BrowserModule,
