@@ -35,6 +35,7 @@ import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { ShowDatePipe } from './service/pipe/show-date.pipe';
+import { NationFlagPipe } from './service/pipe/nation-flag.pipe';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { ShowDatePipe } from './service/pipe/show-date.pipe';
         CourtComponent,
         OrderComponent,
         ExchangeComponent,
-        ShowDatePipe
+        ShowDatePipe,
+        NationFlagPipe
     ],
     imports: [
         BrowserModule,
