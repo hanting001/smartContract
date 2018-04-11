@@ -92,7 +92,7 @@ export class Web3Service {
 
     async check() {
         console.log('开始环境检测');
-        console.log(typeof window.web3);
+        // console.log(typeof window.web3);
         // if (typeof window.web3 !== 'undefined') {
         //     this.web3 = new Web3(window.web3.currentProvider);
         // } else {
@@ -110,7 +110,7 @@ export class Web3Service {
                 }
 
                 const netType = await this.web3.eth.net.getNetworkType();
-                console.log(netType);
+                // console.log(netType);
                 state.netType = netType;
 
                 switch (netType) {

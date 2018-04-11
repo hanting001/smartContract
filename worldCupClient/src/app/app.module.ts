@@ -11,7 +11,7 @@ import { zhCnLocale } from 'ngx-bootstrap/locale';
 defineLocale('zh-cn', zhCnLocale);
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
-import { AsyncLocalStorageModule } from 'angular-async-local-storage';
+import { LocalStorageModule } from '@ngx-pwa/local-storage';
 import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
 
 import {
@@ -67,7 +67,7 @@ import { ExchangeComponent } from './fifa/exchange/exchange.component';
         TimepickerModule.forRoot(),
         FormsModule,
         LoadingModule,
-        AsyncLocalStorageModule,
+        LocalStorageModule,
         ReactiveFormsModule,
         DlDateTimePickerDateModule
     ],

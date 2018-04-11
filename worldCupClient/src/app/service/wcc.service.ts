@@ -123,7 +123,7 @@ export class WCCService {
     async  getAllPlayers() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameIndexes = await sc.methods.getAllGameIndexes().call();
-
+        console.log(gameIndexes);
         // 获取所有场次的详细信息
         const gameInfos = [];
         for (const index of gameIndexes) {

@@ -1,5 +1,6 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
@@ -12,21 +13,22 @@ import * as moment from 'moment';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
-export class FifaHomeComponent implements OnInit {
+export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
     isSticky: Boolean = false;
-
+    subscription;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         private router: Router,
         public loadingSer: LoadingService,
-        public alertSer: AlertService) { }
+        public alertSer: AlertService,
+        private localStorage: LocalStorage) { }
 
     ngOnInit() {
-        this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
                 this.getAllGames();
@@ -34,7 +36,9 @@ export class FifaHomeComponent implements OnInit {
             this.envState = tempEnvState;
         });
     }
-
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
@@ -61,39 +65,39 @@ export class FifaHomeComponent implements OnInit {
     }
 
     async getAllGames() {
-        const sortNumber = function (a, b) {
-            return a.time - b.time;
-        };
-        let gameInfos = await this.wccSer.getAllPlayers();
-        gameInfos = gameInfos.sort(sortNumber);
-
-        console.log(gameInfos);
-
-        const games = [];
-        const gameLen = gameInfos.length;
-        for (let i = 0; i < gameLen; i++) {
-            const game: any = {};
-            console.log(gameInfos[i].time);
-            console.log(new Date(gameInfos[i].time * 1));
-            const date = moment(new Date(gameInfos[i].time * 1));
-            game.date = date.format('YYYY-MM-DD');
-            game.day = date.format('DD');
-            game.dayOfWeek = date.isoWeekday();
-            if (games.length > 0 && games[games.length - 1].date == game.date) {
-                games[games.length - 1].count++;
-                games[games.length - 1].courts.push(gameInfos[i]);
-            } else {
-                game.count = 1;
-                game.courts = [gameInfos[i]];
-                games.push(game);
+        let games = await this.localStorage.getItem<any[]>('games').toPromise();
+        if (games && games.length > 0) {
+            this.games = games;
+            console.log('from local storage');
+        } else {
+            const sortNumber = function (a, b) {
+                return a.time - b.time;
+            };
+            let gameInfos = await this.wccSer.getAllPlayers();
+            gameInfos = gameInfos.sort(sortNumber);
+            console.log(gameInfos);
+            games = [];
+            const gameLen = gameInfos.length;
+            for (let i = 0; i < gameLen; i++) {
+                const game: any = {};
+                console.log(gameInfos[i].time);
+                console.log(new Date(gameInfos[i].time * 1));
+                const date = moment(new Date(gameInfos[i].time * 1));
+                game.date = date.format('YYYY-MM-DD');
+                game.day = date.format('DD');
+                game.dayOfWeek = date.isoWeekday();
+                if (games.length > 0 && games[games.length - 1].date == game.date) {
+                    games[games.length - 1].count++;
+                    games[games.length - 1].courts.push(gameInfos[i]);
+                } else {
+                    game.count = 1;
+                    game.courts = [gameInfos[i]];
+                    games.push(game);
+                }
             }
-
-
-
+            this.games = games;
+            this.localStorage.setItem('games', games).toPromise();
         }
-
-        this.games = games;
-        console.log(this.games);
     }
 
     gotoCourt() {
