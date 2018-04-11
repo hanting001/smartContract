@@ -16,33 +16,25 @@
     <div *ngIf="envState.checkEnv" class="container">
         <p class="lead">Matches</p>
         <div class="justify-content-md-center">
-            <table class="table">
+            <table class="table m-0 bg-primary rounded">
                 <tr>
 
-                    <td *ngFor="let game of games" class="text-center p-0">
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-230" [ngx-scroll-to]="game.date"
+                        *ngFor="let game of games" class="text-center p-0">
                         <tr>
-                            <td style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                            <td class="text-center text-light pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
                         </tr>
                         <tr>
-                            <td style="border: 0;">{{game.day}}</td>
+                            <td class="text-center text-light pt-0 pb-0" style="border: 0;">{{game.day}}</td>
                         </tr>
-                        <tr [ngx-scroll-to]="game.date" [ngx-scroll-to-offset]="-280" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
-                            <td style="border: 0;">{{game.count}}</td>
+                        <tr>
+                            <td class="text-sm-center pt-0 " style="border: 0;">
+                                <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
+                                <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
+                            </td>
                         </tr>
                     </td>
                 </tr>
-                <!-- <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
->>>>>>> d97ced5fa441e8a5de5c229217a2cc78a487eb82
-                        {{game.day}}
-                    </td>
-                </tr>
-                <tr>
-                    <td [ngx-scroll-to]="game.date" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games"
-                        class="text-center">
-                        {{game.count}}
-                    </td>
-                </tr> -->
             </table>
         </div>
 
@@ -54,13 +46,16 @@
             <p>
                 {{game.date|showDate}}
             </p>
-            <table class="table">
+            <table class="table table-hover">
 
                 <tbody>
+
                     <tr *ngFor="let court of game.courts" (click)='show()'>
-                        <td style="width:40%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                        <td style="width:20%">{{court.time+'000'|date:'HH:mm'}}</td>
-                        <td style="width:40%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                        <td class="align-middle" style="width:40%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                        <td class="align-middle" style="width:20%">
+                            <h4>{{court.time+'000'|date:'HH:mm'}}</h4>
+                        </td>
+                        <td class="align-middle" style="width:40%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                 </tbody>
             </table>

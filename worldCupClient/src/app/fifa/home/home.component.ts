@@ -87,16 +87,18 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log($(event.target).index());
         const idx = $(event.target).index() * 1 + 1;
         // $("table tr td:nth-child(3)")
-        $(event.target).parents('td').css('backgroundColor', '#0069d9');
+        $(event.target).addClass('bg-dark');
     }
 
     mouseLeave(event) {
         console.log('mouseLeave');
         const idx = $(event.target).index() * 1 + 1;
-        $(event.target).parents('td').css('backgroundColor', '#ffffff');
+        $(event.target).removeClass('bg-dark');
         // $(event.target).parents('table').find('tr').find('td').eq(idx).css('backgroundColor', '#ffffff');
     }
-
+    counter(i: number) {
+        return new Array(i);
+    }
     async getAllGames() {
         const isGameUpdated = await this.wccSer.isGameUpdated();
         let games = await this.localStorage.getItem<any[]>('games').toPromise();
