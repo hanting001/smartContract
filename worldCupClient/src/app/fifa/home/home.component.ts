@@ -1,3 +1,4 @@
+import { LocalActionService } from '../../service/local-action.service';
 import { Component, OnInit, HostListener, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
@@ -37,10 +38,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         public loadingSer: LoadingService,
         public alertSer: AlertService,
         private modalService: BsModalService,
+        public localActionSer: LocalActionService,
         private localStorage: LocalStorage) {
         this.buyForm = this.fb.group({
-            ethValue: ['', [Validators.required]],
-            kotValue: ['', [Validators.required]]
+            homeScore: ['0', [Validators.required]],
+            awayScore: ['0', [Validators.required]]
         });
     }
 
@@ -70,14 +72,41 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
 
-    show(court) {
+    async show(court) {
         console.log(court);
+        this.court = court;
+
+        const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        console.log(index);
+        const currenGameInfo = await this.wccSer.getGameInfo(index);
+        const betInfos = await this.wccSer.getGameBetInfos(index);
+        console.log(betInfos);
+
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
 
-    buy() {
-        if (this.buyModalRef) {
-            this.buyModalRef.hide();
+    bet() {
+        if (this.buyForm.valid) {
+            this.loadingSer.show();
+            const model: any = this.buyForm.value;
+            const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
+            const score = model.awayScore + ':' + model.homeScore;
+            this.wccSer.join(index, score, async (transactionHash) => {
+                await this.localActionSer.addAction({
+                    transactionHash: transactionHash, netType: this.envState.netType,
+                    model: model, createdAt: new Date(), type: 'join'
+                }, this.envState.account);
+            }, async (confirmNum, receipt) => {
+                if (confirmNum == 2) {
+                    if (this.buyModalRef) {
+                        this.buyModalRef.hide();
+                    }
+                    this.loadingSer.hide();
+                    this.alertSer.show('Bet success !');
+                }
+            });
+
+
         }
     }
 

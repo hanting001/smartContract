@@ -143,7 +143,7 @@ export class WCCService {
         console.log(allBets);
         // get bet infos
         const betInfos = [];
-        for (let i = 0; i < allBets.lenght; i ++) {
+        for (let i = 0; i < allBets.lenght; i++) {
             const bindex = allBets[i];
             const betInfo = await sc.methods.getGameScoreTotalInfo(index, bindex).call();
             betInfos.push(betInfo);
@@ -167,7 +167,7 @@ export class WCCService {
     }
     getGameIndex(p1, p2, gameType) {
         const web3 = this.web3Service.instance();
-        return web3.utils.soliditySha3({t: 'string', v: p1}, {t: 'string', v: p2}, {t: 'uint8', v: gameType});
+        return web3.utils.soliditySha3({ t: 'string', v: p1 }, { t: 'string', v: p2 }, { t: 'uint8', v: gameType });
     }
     async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
@@ -220,6 +220,39 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
+
+    async join(gameIndex, score, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const options = {
+            from: await this.web3Service.getFirstAccount()
+        };
+        sc.methods.join(gameIndex, score)
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`join txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+
+
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
     async getExchangerInfo() {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
         const exchanged = await sc.methods.exchanged().call();

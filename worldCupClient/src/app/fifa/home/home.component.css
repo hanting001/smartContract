@@ -5,3 +5,7 @@ match-dot {
     height: 5px;
     position: relative;
 }
+
+.table tbody tr td {
+    vertical-align: middle;
+}
