@@ -93,7 +93,7 @@ export class WCCService {
         const options = {
             from: await this.web3Service.getFirstAccount()
         };
-        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).toDate().getTime())
+        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).unix())
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
