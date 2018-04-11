@@ -13,7 +13,7 @@ import * as moment from 'moment';
     styleUrls: ['./home.component.css']
 })
 export class FifaHomeComponent implements OnInit {
-    envState: any = {};
+    envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
     isSticky: Boolean = false;
@@ -50,7 +50,7 @@ export class FifaHomeComponent implements OnInit {
 
 
     async checkEnv() {
-        const tempEnvState = await this.web3.check();
+        const tempEnvState: any = await this.web3.check();
         console.log(tempEnvState);
         if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
 
