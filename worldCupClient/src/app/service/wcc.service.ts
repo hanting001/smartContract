@@ -143,7 +143,7 @@ export class WCCService {
         console.log(allBets);
         // get bet infos
         const betInfos = [];
-        for (let i = 0; i < allBets.lenght; i++) {
+        for (let i = 0; i < allBets.length; i++) {
             const bindex = allBets[i];
             const betInfo = await sc.methods.getGameScoreTotalInfo(index, bindex).call();
             betInfos.push(betInfo);
