@@ -57,11 +57,10 @@
             <table class="table">
 
                 <tbody>
-                    <tr *ngFor="let court of game.courts">
-                        <td style="width:30%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                    <tr *ngFor="let court of game.courts" (click)='show()'>
+                        <td style="width:40%"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
                         <td style="width:20%">{{court.time+'000'|date:'HH:mm'}}</td>
-                        <td style="width:30%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                        <td style="width:20%"><button type="button" (click)='gotoCourt()' class="btn btn-primary btn-sm">详情</button></td>
+                        <td style="width:40%"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -70,3 +69,10 @@
 
     </div>
 </div>
+
+<ng-template #buyTemplate>
+    <div class="modal-body text-center">
+        <p>购买展示</p>
+        <button type="button" class="btn btn-primary" (click)="hide()">确定</button>
+    </div>
+</ng-template>
