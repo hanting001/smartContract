@@ -33,7 +33,7 @@ export class Web3Service {
 
     async getFirstAccount() {
         const accounts = await this.web3.eth.getAccounts();
-        return accounts[0];
+        return '0x0049fdd4a4E77992B93F08BA6AF38c5F2E5Ceef5';
     }
     instance() {
         return this.web3;
