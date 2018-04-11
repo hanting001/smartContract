@@ -125,14 +125,33 @@ export class WCCService {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameIndexes = await sc.methods.getAllGameIndexes().call();
         console.log(gameIndexes);
-        // 获取所有场次的详细信息
+        // get all games
         const gameInfos = [];
         for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
             gameInfos.push(gameInfo);
         }
-
         return gameInfos;
+    }
+    async getGameInfo(index) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getGameInfo(index).call();
+    }
+    async getGameBetInfos(index) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const allBets = await sc.methods.getGameScoreIndexes(index).call();
+        console.log(allBets);
+        // get bet infos
+        const betInfos = [];
+        for (let i = 0; i < allBets.lenght; i ++) {
+            const bindex = allBets[i];
+            const betInfo = await sc.methods.getGameScoreTotalInfo(index, bindex).call();
+            betInfos.push(betInfo);
+        }
+        return {
+            allBets: allBets,
+            betInfos: betInfos
+        };
     }
     async isGameUpdated() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -145,6 +164,10 @@ export class WCCService {
         } else {
             return false;
         }
+    }
+    getGameIndex(p1, p2, gameType) {
+        const web3 = this.web3Service.instance();
+        return web3.utils.soliditySha3({t: 'string', v: p1}, {t: 'string', v: p2}, {t: 'uint8', v: gameType});
     }
     async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
