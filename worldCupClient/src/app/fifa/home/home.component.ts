@@ -17,7 +17,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
-    isSticky: Boolean = false;
+    isSticky: Boolean = true;
     subscription;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -48,7 +48,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         if (number > 25) {
             this.isSticky = true;
         } else if (this.isSticky && number < 10) {
-            this.isSticky = false;
+            this.isSticky = true;
         }
     }
 
