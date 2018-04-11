@@ -15,17 +15,25 @@
 <div class="container-fluid" style="background-color: #FFFFFF;z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
     <div *ngIf="envState.checkEnv" class="container">
         <p class="lead">Matches</p>
-        <div class="row justify-content-md-center">
+        <div class="justify-content-md-center">
             <table class="table">
                 <tr>
-                    <td [ngx-scroll-to]="game.date" [ngx-scroll-to-offset]="-280" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games"
-                        class="text-center">
-                        {{game.dayOfWeek|weekday}}
+
+                    <td *ngFor="let game of games" class="text-center p-0">
+                        <tr>
+                            <td style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0;">{{game.day}}</td>
+                        </tr>
+                        <tr [ngx-scroll-to]="game.date" [ngx-scroll-to-offset]="-280" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
+                            <td style="border: 0;">{{game.count}}</td>
+                        </tr>
                     </td>
                 </tr>
-                <tr>
-                    <td [ngx-scroll-to]="game.date" (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games"
-                        class="text-center">
+                <!-- <tr>
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" *ngFor="let game of games" class="text-center">
+>>>>>>> d97ced5fa441e8a5de5c229217a2cc78a487eb82
                         {{game.day}}
                     </td>
                 </tr>
@@ -34,7 +42,7 @@
                         class="text-center">
                         {{game.count}}
                     </td>
-                </tr>
+                </tr> -->
             </table>
         </div>
 
@@ -55,7 +63,6 @@
                         <td style="width:20%" class="text-center">{{court.p2}}</td>
                         <td style="width:20%" class="text-center"><button type="button" (click)='gotoCourt()' class="btn btn-primary btn-sm">详情</button></td>
                     </tr>
-
                 </tbody>
             </table>
 
