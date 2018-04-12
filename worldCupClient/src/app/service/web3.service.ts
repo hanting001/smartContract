@@ -41,6 +41,11 @@ export class Web3Service {
     instance() {
         return this.web3;
     }
+    async currenPrice() {
+        const url = 'https://api.etherscan.io/api?module=stats&action=ethprice&apikey=YRSS6A5WG4DD7F7SXTTBEH1ISSPQAK2GBU';
+        const result = await this.http.get<any>(url).toPromise();
+        return result;
+    }
     async getABI(name, func) {
         const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json?' + new Date().getTime()).toPromise();
         const abi = raw.abi;

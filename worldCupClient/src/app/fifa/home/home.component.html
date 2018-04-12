@@ -126,15 +126,17 @@
 
                     </tr>
                 </table>
-                <div class="form-group row border-top m-0 p-2">
+                <div class="form-group row border-top m-0 p-2 ">
                     <div class="input-group col-6 pl-0" style="font-size:1.2rem">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
                         </div>
-                        <input type="number" class="form-control" formControlName="eth">
+                        <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                     </div>
+                    <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                        {{USDPrice|currency}}, ETH price get from etherscan.io.
+                    </small>
                 </div>
-
             </div>
 
 
