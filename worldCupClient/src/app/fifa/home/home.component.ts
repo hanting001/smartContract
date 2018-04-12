@@ -179,7 +179,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                         this.buyModalRef.hide();
                     }
                     this.loadingSer.hide();
-                    this.alertSer.show('Bet success !');
+                    this.alertSer.show('Success!');
                     this.buyForm.reset();
                     this.USDPrice = 0;
                 }
