@@ -30,6 +30,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
     chartData: number[] = [12, 142, 163];
+    odds: string[] = [];
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -99,14 +100,25 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         betInfos.betInfos = betInfos.betInfos.sort(sortScore);
         this.chartData = [];
         this.chartLabels = [];
-        for (let i = 0; i < betInfos.betInfos.length; i++) {
+        let totalBets = 0;
+        this.odds = [];
+        const betsLen = betInfos.betInfos.length;
+        for (let i = 0; i < betsLen; i++) {
+            const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
             this.chartLabels.push(betInfos.betInfos[i].score);
-            this.chartData.push(web3.utils.fromWei(betInfos.betInfos[i].totalValue));
+            this.chartData.push(tmpValue);
+            totalBets += tmpValue * 1;
+        }
+
+        for (let i = 0; i < betsLen; i++) {
+            const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
+            this.odds.push((totalBets / tmpValue).toFixed(2));
         }
 
 
 
         console.log(betInfos);
+        console.log(this.odds);
 
 
         this.buyModalRef = this.openModal(this.buyTemplate);
