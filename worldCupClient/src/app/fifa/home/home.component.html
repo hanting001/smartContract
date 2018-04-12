@@ -71,8 +71,9 @@
 
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
-        <div align="center">
-            <chartjs-component [chartTitle]="'Current Bets'" [chartType]="'line'" [chartData]='chartData' [chartLabels]='chartLabels'>
+        <div *ngIf="chartData&&chartData.length>0" align="center">
+            <chartjs-component [chartTitle]="'Current Bets'" [chartType]="'line'" [dataSetLabel]="'ETH of total bets'" [chartData]='chartData'
+                [chartLabels]='chartLabels'>
             </chartjs-component>
         </div>
 
