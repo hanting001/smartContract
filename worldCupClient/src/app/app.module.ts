@@ -4,6 +4,7 @@ import { NgModule, Injectable } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AlertModule, ButtonsModule, ProgressbarModule, TimepickerModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { defineLocale } from 'ngx-bootstrap/chronos';
@@ -71,6 +72,7 @@ import { ChartComponent } from './fifa/chart/chart.component';
         ButtonsModule.forRoot(),
         ProgressbarModule.forRoot(),
         TimepickerModule.forRoot(),
+        TooltipModule.forRoot(),
         FormsModule,
         LoadingModule,
         LocalStorageModule,
