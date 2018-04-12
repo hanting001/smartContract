@@ -241,6 +241,7 @@ export class WCCService {
             from: await this.web3Service.getMainAccount(),
             value: value
         };
+        console.log(options);
         sc.methods.join(gameIndex, score)
             .send(options, function (err, transactionHash) {
                 if (err) {
