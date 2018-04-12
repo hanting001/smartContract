@@ -24,21 +24,27 @@ export class Web3Service {
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
-            // return this.web3.eth.defaultAccount;
-            return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
+            return this.web3.eth.defaultAccount;
+            // return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
         }
         const accounts = await this.web3.eth.getAccounts();
         this.web3.eth.defaultAccount = accounts[accounts.length - 1];
-        // return this.web3.eth.defaultAccount;
-        return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
+        return this.web3.eth.defaultAccount;
+        // return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
     }
 
     async getFirstAccount() {
         const accounts = await this.web3.eth.getAccounts();
-        return '0x0049fdd4a4E77992B93F08BA6AF38c5F2E5Ceef5';
+        return accounts[0];
+        // return '0x0049fdd4a4E77992B93F08BA6AF38c5F2E5Ceef5';
     }
     instance() {
         return this.web3;
+    }
+    async currenPrice() {
+        const url = 'https://api.etherscan.io/api?module=stats&action=ethprice&apikey=YRSS6A5WG4DD7F7SXTTBEH1ISSPQAK2GBU';
+        const result = await this.http.get<any>(url).toPromise();
+        return result;
     }
     async getABI(name, func) {
         const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json?' + new Date().getTime()).toPromise();

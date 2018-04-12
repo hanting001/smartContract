@@ -1,5 +1,5 @@
 .chart {
-    width: 50%;
+    width: 80%;
     height: 50%;
 }
 
@@ -69,3 +69,10 @@
 .button-position {
     padding-right: 30px;
 }
+
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+

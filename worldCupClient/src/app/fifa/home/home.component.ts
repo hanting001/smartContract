@@ -26,11 +26,15 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
+    price;
+
+    USDPrice;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
     chartData: number[] = [12, 142, 163];
-    odds: string[] = [];
+    chartOtherInfo: any = {};
+    chartTitle: String = '';
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -44,7 +48,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.buyForm = this.fb.group({
             homeScore: ['0', [Validators.required]],
             awayScore: ['0', [Validators.required]],
-            eth: ['0', [Validators.required]]
+            eth: ['0.0', [Validators.required]]
         });
     }
 
@@ -79,6 +83,15 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.court = court;
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
+        this.web3.currenPrice().then(obj => {
+            console.log(obj.result);
+            this.price = obj.result.ethusd;
+            console.log(this.price);
+            const model: any = this.buyForm.value;
+            if (model.eth) {
+                this.getUSDValue({ target: { value: model.eth } });
+            }
+        });
 
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
@@ -102,29 +115,48 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.chartData = [];
         this.chartLabels = [];
         let totalBets = 0;
-        this.odds = [];
+        let totalCount = 0;
         const betsLen = betInfos.betInfos.length;
         for (let i = 0; i < betsLen; i++) {
             const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
             this.chartLabels.push(betInfos.betInfos[i].score);
             this.chartData.push(tmpValue);
             totalBets += tmpValue * 1;
-        }
+            totalCount += betInfos.betInfos[i].totalBets * 1;
+            if (!this.chartOtherInfo[betInfos.betInfos[i].score]) {
+                this.chartOtherInfo[betInfos.betInfos[i].score] = {};
+            }
 
+        }
+        //totalBets
         for (let i = 0; i < betsLen; i++) {
             const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-            this.odds.push((totalBets / tmpValue).toFixed(2));
+            this.chartOtherInfo[betInfos.betInfos[i].score]['odd'] = (totalBets / tmpValue).toFixed(2);
+            this.chartOtherInfo[betInfos.betInfos[i].score]['count'] = betInfos.betInfos[i].totalBets;
         }
 
-
-
+        this.chartOtherInfo['totalValue'] = totalBets.toFixed(5);
+        this.chartOtherInfo['totalCount'] = totalCount;
+        this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
         console.log(betInfos);
-        console.log(this.odds);
+        // console.log(this.odds);
+
+        this.chartTitle = 'Total ETH:' + this.chartOtherInfo['totalValue'] +
+            ',Total counts:' + this.chartOtherInfo['totalCount'] + ', avg:' + this.chartOtherInfo['averageBet'];
 
 
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
-
+    getUSDValue(event) {
+        // console.log(event.target.value);
+        // this.price = 417;
+        // console.log(this.price);
+        if (this.price > 0) {
+            this.USDPrice = event.target.value * this.price;
+        } else {
+            this.USDPrice = 0;
+        }
+    }
     hideCourt() {
         if (this.buyModalRef) {
             this.buyModalRef.hide();
@@ -158,8 +190,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                         this.buyModalRef.hide();
                     }
                     this.loadingSer.hide();
-                    this.alertSer.show('Bet success !');
+                    this.alertSer.show('Success!');
                     this.buyForm.reset();
+                    this.USDPrice = 0;
                 }
             });
 

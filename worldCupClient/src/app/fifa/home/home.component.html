@@ -71,9 +71,9 @@
 
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
-        <div *ngIf="chartData&&chartData.length>0" align="center">
-            <chartjs-component [chartTitle]="'Current Bets'" [chartType]="'line'" [dataSetLabel]="'ETH of total bets'" [chartData]='chartData'
-                [chartLabels]='chartLabels'>
+        <div id="chartDiv" *ngIf="chartData&&chartData.length>0" align="center">
+            <chartjs-component [chartTitle]="chartTitle" [chartType]="'line'" [dataSetLabel]="'ETH'" [chartData]='chartData' [chartLabels]='chartLabels'
+                [chartOtherInfo]='chartOtherInfo'>
             </chartjs-component>
         </div>
 
@@ -127,15 +127,17 @@
 
                     </tr>
                 </table>
-                <div class="form-group row border-top m-0 p-2">
+                <div class="form-group row border-top m-0 p-2 ">
                     <div class="input-group col-6 pl-0" style="font-size:1.2rem">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
                         </div>
-                        <input type="number" class="form-control" formControlName="eth">
+                        <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                     </div>
+                    <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                        {{USDPrice|currency}}, ETH price get from etherscan.io.
+                    </small>
                 </div>
-
             </div>
 
 

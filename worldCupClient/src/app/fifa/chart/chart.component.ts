@@ -21,6 +21,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
     dataSetLabel: string;
 
     @Input()
+    chartOtherInfo: any;
+
+    @Input()
     chartType: string;
 
     @Input()
@@ -36,6 +39,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
     onClick: EventEmitter<any> = new EventEmitter();
 
     chart: any;
+    labelColors: string[];
+
 
     constructor(
         private el: ElementRef
@@ -48,6 +53,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
     }
 
     customTooltips(tooltip) {
+        console.log(this.chartOtherInfo);
         console.log(tooltip);
         // Tooltip Element
         let tooltipEl = document.getElementById('chartjs-tooltip');
@@ -57,7 +63,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             tooltipEl.id = 'chartjs-tooltip';
             tooltipEl.innerHTML = '<table></table>';
             // this.chartRef.nativeElement.
-            document.body.appendChild(tooltipEl);
+            document.getElementsByTagName('canvas')[0].parentNode.appendChild(tooltipEl);
         }
 
         // Hide if no tooltip
@@ -84,13 +90,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
             const bodyLines = tooltip.body.map(getBody);
 
             let innerHtml = '<thead>';
-
+            console.log(tooltip.title);
             titleLines.forEach(function (title) {
                 innerHtml += '<tr><th>' + title + '</th></tr>';
             });
             innerHtml += '</thead><tbody>';
 
-            bodyLines.forEach(function (body, i) {
+            bodyLines.forEach((body, i) => {
                 const colors = tooltip.labelColors[i];
                 let style = 'background:' + colors.backgroundColor;
                 style += '; border-color:' + colors.borderColor;
@@ -98,6 +104,10 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 const span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
                 innerHtml += '<tr><td>' + span + body + '</td></tr>';
             });
+
+            const span2 = '<span class="chartjs-tooltip-key" style="border-width: 2px"></span>';
+            innerHtml += '<tr><td>' + span2 + 'Odds: ' + this.chartOtherInfo[tooltip.title].odd + '</td></tr>';
+            innerHtml += '<tr><td>' + span2 + 'Counts: ' + this.chartOtherInfo[tooltip.title].count + '</td></tr>';
             innerHtml += '</tbody>';
 
             const tableRoot = tooltipEl.querySelector('table');
@@ -111,8 +121,6 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
         // Display, position, and set styles for font
         tooltipEl.style.opacity = '1';
-        tooltipEl.style.zIndex = '2000';
-        tooltipEl.style.position = 'absolute';
         tooltipEl.style.left = positionX + tooltip.caretX + 'px';
         tooltipEl.style.top = positionY + tooltip.caretY + 'px';
         tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
@@ -125,6 +133,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
         this.validateChart();
 
         const charCtx = this.chartRef.nativeElement.getContext('2d');
+        const tmpColor = this.generateRandomColor();
         this.chart = new Chart(charCtx, {
             type: this.chartType,
             data: {
@@ -132,8 +141,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 datasets: [{
                     label: this.dataSetLabel === undefined ? '' : this.dataSetLabel,
                     data: this.chartData,
-                    backgroundColor: this.generateRandomColors(),
-                    fill: false
+                    borderColor: tmpColor,
+                    pointBackgroundColor: tmpColor,
+                    fill: false,
+                    pointBorderWidth: 10,
+                    pointRadius: 8,
+                    pointHitRadius: 8,
+                    pointHoverRadius: 9
                 }]
             },
             options: {
@@ -148,7 +162,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
                     enabled: false,
                     position: 'nearest',
                     mode: 'index',
-                    custom: this.customTooltips
+                    custom: (tooltip) => {
+                        this.customTooltips(tooltip);
+                    }
                 },
                 legend: {
                     display: true,
@@ -169,14 +185,14 @@ export class ChartComponent implements OnInit, AfterViewInit {
                     console.log(event);
                     this.onClick.emit(event.target);
                 },
-                fill: false
+
 
             }
         });
 
-        setTimeout(() => {
-            this.chart.update();
-        }, 1000);
+        // setTimeout(() => {
+        //     this.chart.update();
+        // }, 1000);
     }
 
 
@@ -207,7 +223,16 @@ export class ChartComponent implements OnInit, AfterViewInit {
             colors.push(color);
             color = null;
         }
+        this.labelColors = colors;
         return colors;
+    }
+    generateRandomColor() {
+        const randomColor1 = Math.floor((Math.random() * 255) + 1);
+        const randomColor2 = Math.floor((Math.random() * 255) + 1);
+        const randomColor3 = Math.floor((Math.random() * 255) + 1);
+        const randomColor4 = Math.random() * (1 - 0.1) + 0.1;
+        const color = `rgba(${randomColor1.toString()},${randomColor2.toString()},${randomColor3.toString()},${randomColor4.toString()})`;
+        return color;
     }
 
 }
