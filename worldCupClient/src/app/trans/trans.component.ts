@@ -7,12 +7,13 @@ import { WCCService } from '../service/wcc.service';
     styleUrls: ['./trans.component.css']
 })
 export class TransComponent implements OnInit {
-
+    betInfos: any[];
     constructor(private wccService: WCCService) { }
 
     ngOnInit() {
-        this.wccService.getUserBetsInfo().then(info => {
-
+        this.wccService.getUserBetsInfo().then(infos => {
+            console.log(infos);
+            this.betInfos = infos;
         });
     }
 

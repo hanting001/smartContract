@@ -327,7 +327,34 @@ export class WCCService {
 
     async getUserBetsInfo() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const gameIndexes = await sc.methods.getUserJoinedGameIndexes().call();
-        console.log(gameIndexes);
+        // console.log(gameIndexes);
+        const returnObj = [];
+        for (let i = 0; i < gameIndexes.length; i ++) {
+            const gameInfo = await sc.methods.getGameInfo(gameIndexes[i]).call();
+            const scoreIndexes = await sc.methods.getUserJoinedGameScoreIndexes(gameIndexes[i]).call();
+            const scoreInfos = [];
+            for (let j = 0; j < scoreIndexes.length; j ++) {
+                const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndexes[i], scoreIndexes[j]).call();
+                if (gameInfo.status === '3' ) {
+                    const isWin = await playerSC.methods.isWin(gameIndexes[i], scoreIndexes[j]).call();
+                    if (isWin.win) {
+                        scoreInfo.win = isWin.value;
+                    } else {
+                        scoreInfo.win = 'No';
+                    }
+                } else {
+                    scoreInfo.win = 'Underway';
+                }
+                scoreInfos.push(scoreInfo);
+            }
+            const obj = {
+                gameInfo: gameInfo,
+                scoreInfos: scoreInfos
+            };
+            returnObj.push(obj);
+        }
+        return returnObj;
     }
 }

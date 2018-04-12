@@ -1,5 +1,45 @@
-<div class="container">
-    <div class="jumbotron bg-light">
-        <p class="lead">My Bets</p>
+<div class="jumbotron jumbotron-fluid bg-light">
+    <div class="container">
+        <p class="lead m-0">My Bets</p>
+        <table class="table table-striped table-sm" *ngFor="let info of betInfos">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="2" class="">
+                        <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
+                        <p class="text-light d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
+                        <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
+                    </th>
+                    <th scope="col" class="align-middle text-right text-info">
+                        <small>status:</small> {{info.gameInfo.status | gameStatus}}
+                    </th>
+                </tr>
+            </thead>
+            <thead class="">
+                <tr class="text-center">
+                    <th>
+                        Score
+                    </th>
+                    <th>
+                        Value
+                    </th>
+                    <th>
+                        Win?
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let bet of info.scoreInfos" class="text-center">
+                    <td>
+                        {{bet.score}}
+                    </td>
+                    <td>
+                        {{bet.value | fromWei}}
+                    </td>
+                    <td>
+                        {{bet.win}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

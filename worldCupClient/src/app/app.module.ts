@@ -32,6 +32,7 @@ import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
+import { FromWeiPipe } from './service/pipe/fromWei.pipe';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
@@ -44,7 +45,7 @@ import { TransComponent } from './trans/trans.component';
 @NgModule({
     declarations: [
         AppComponent,
-
+        FromWeiPipe,
         DelayRatePipe,
         TransactionPipe,
         TransactionUrlPipe,
