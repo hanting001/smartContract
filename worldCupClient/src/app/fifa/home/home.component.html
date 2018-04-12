@@ -51,12 +51,11 @@
             <table class="table table-hover mb-4">
 
                 <tbody>
-                    <tr *ngFor="let court of game.courts" (click)='show(court)'>
+                    <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Click">
                         <td class="align-middle" style="width:40%">
                             <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
                         </td>
                         <td class="align-middle" style="width:30%">
-
                             <h4>{{court.time+'000'|date:'HH:mm'}}</h4>
                         </td>
                         <td class="align-middle" style="width:30%">
@@ -78,16 +77,18 @@
         </div>
 
         <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
-            <div class="card text-center bg-info" style="margin-top:15px;">
+            <div class="card  bg-info" style="margin-top:15px;">
                 <table class="table">
                     <tr>
-                        <td style="border:0;width:40%" class="text-center"><img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                        <td style="border:0;width:20%;vertical-align: middle;font-size: 25px;" class="text-center" rowspan="2">VS</td>
-                        <td style="border:0;width:40%" class="text-center"><img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                     <tr>
                         <td style="border:0">
-                            <select class=" form-control" formControlName="awayScore">
+                            <select class=" form-control" formControlName="awayScore" aria-describedby="scoreHelpBlock">
                                 <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -101,10 +102,13 @@
                                 <option value="10">10</option>
                                 <option value=">10">>10</option>
                             </select>
+                            <!-- <small id="scoreHelpBlock" class="form-text text-muted">
+                                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters,
+                                or emoji.
+                            </small> -->
                         </td>
-
                         <td style="border:0">
-                            <select class=" form-control" formControlName="homeScore">
+                            <select class="form-control" formControlName="homeScore">
                                 <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -119,12 +123,14 @@
                                 <option value=">10">>10</option>
                             </select>
                         </td>
-                    </tr>
 
+                    </tr>
                 </table>
-                <div class="form-group row">
-                    <label class="col col-form-label text-right" style="font-size:1.2rem">How Much ETH To Bet:</label>
-                    <div class="col">
+                <div class="form-group row border-top m-0 p-2">
+                    <div class="input-group col-6 pl-0" style="font-size:1.2rem">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
+                        </div>
                         <input type="number" class="form-control" formControlName="eth">
                     </div>
                 </div>

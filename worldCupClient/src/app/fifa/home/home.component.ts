@@ -74,13 +74,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
 
     async show(court) {
-        console.log(court);
         this.court = court;
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
+
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
         const currenGameInfo = await this.wccSer.getGameInfo(index);
+        console.log(currenGameInfo);
         const betInfos = await this.wccSer.getGameBetInfos(index);
 
         const sortScore = function (a, b) {
@@ -105,7 +106,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
 
 
-        console.log(betInfos.betInfos.sort(sortScore));
+        console.log(betInfos);
+
 
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
@@ -144,6 +146,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     }
                     this.loadingSer.hide();
                     this.alertSer.show('Bet success !');
+                    this.buyForm.reset();
                 }
             });
 

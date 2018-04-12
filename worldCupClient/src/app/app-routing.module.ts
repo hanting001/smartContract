@@ -8,7 +8,7 @@ import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
-
+import { TransComponent } from './trans/trans.component';
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
@@ -18,8 +18,8 @@ const routes: Routes = [
     { path: 'fifa/court', component: CourtComponent },
     { path: 'fifa/order', component: OrderComponent },
     { path: 'fifa/admin', component: FifaAdminComponent },
-    { path: 'fifa/exchange', component: ExchangeComponent }
-
+    { path: 'fifa/exchange', component: ExchangeComponent },
+    { path: 'trans', component: TransComponent },
 ];
 
 @NgModule({

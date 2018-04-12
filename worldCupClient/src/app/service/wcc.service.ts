@@ -324,4 +324,10 @@ export class WCCService {
         //     console.log(error);
         //   });
     }
+
+    async getUserBetsInfo() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const gameIndexes = await sc.methods.getUserJoinedGameIndexes().call();
+        console.log(gameIndexes);
+    }
 }
