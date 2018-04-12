@@ -59,8 +59,11 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 datasets: [{
                     label: this.dataSetLabel === undefined ? '' : this.dataSetLabel,
                     data: this.chartData,
-                    backgroundColor: this.generateRandomColors()
-                    ,
+                    backgroundColor: this.generateRandomColors(),
+                    pointBorderWidth: 10,
+                    pointRadius: 8,
+                    pointHitRadius: 8,
+                    pointHoverRadius: 9
                 }]
             },
             options: {
@@ -89,8 +92,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 },
 
                 onClick: (event) => {
-                    console.log(event)
-                    this.onClick.emit(event.target)
+                    console.log(event);
+                    this.onClick.emit(event.target);
                 }
 
             }
