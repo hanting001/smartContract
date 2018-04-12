@@ -13,13 +13,14 @@ import { TransComponent } from './trans/trans.component';
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'fifa', pathMatch: 'full' },
-    { path: 'fifa', component: FifaHomeComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: FifaHomeComponent },
     { path: 'fifa/court', component: CourtComponent },
     { path: 'fifa/order', component: OrderComponent },
     { path: 'fifa/admin', component: FifaAdminComponent },
-    { path: 'fifa/exchange', component: ExchangeComponent },
+    { path: 'exchange', component: ExchangeComponent },
     { path: 'trans', component: TransComponent },
+    { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
 
 @NgModule({

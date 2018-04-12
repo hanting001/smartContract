@@ -1,8 +1,26 @@
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
-    <h1>Total:<span class="badge badge-secondary">{{totalSupply}}</span> Remain:<span class="badge badge-secondary">{{scTokenBalance}}</span>        Exchange Rate:<span class="badge badge-secondary">{{rate}}</span></h1>
+<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
+    <h1>您要购买航班延误互助计划</h1>
+    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
+    <button type="button" class="btn btn-primary" (click)="installWallet()">
+        安装MetaMask
+    </button>
+</div>
+
+<div [hidden]="envState.checkWeb3&&envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
+    <h1>您的账号被锁住了</h1>
+    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
+
+</div>
+
+<div [hidden]="!envState.checkEnv" class="jumbotron text-center " id="changePage">
+    <h1>Total:
+        <span class="badge badge-secondary">{{totalSupply}}</span> Remain:
+        <span class="badge badge-secondary">{{scTokenBalance}}</span> Exchange Rate:
+        <span class="badge badge-secondary">{{rate}}</span>
+    </h1>
     <div class="row justify-content-md-center">
         <form (ngSubmit)="exchange()" [formGroup]="form" class="col-sm-12">
-            <div class="card text-center bg-info" style="margin-top:15px;">
+            <div class="card text-center bg-light" style="margin-top:15px;">
                 <div class="card-body">
                     <div class="form-group row">
                         <label class="col-3 col-form-label text-right" style="font-size:1.2rem">Wallet Address:</label>

@@ -49,6 +49,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {

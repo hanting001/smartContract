@@ -9,13 +9,13 @@ import { Router } from '@angular/router';
     styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit {
+    envState: any = { checkWeb3: true, checkAccount: true };
     balance: any = {};
     form: FormGroup;
     rate: any;
     exchanged: any;
     tokenCount: any;
     account: any;
-    envState: any = {};
     totalSupply: any;
     scTokenBalance: any;
 
@@ -34,6 +34,7 @@ export class ExchangeComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.web3.check();
         this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
