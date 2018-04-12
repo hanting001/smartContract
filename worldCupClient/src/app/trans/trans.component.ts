@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WCCService } from '../service/wcc.service';
 import { Web3Service } from '../service/index';
 
@@ -7,7 +7,7 @@ import { Web3Service } from '../service/index';
     templateUrl: './trans.component.html',
     styleUrls: ['./trans.component.css']
 })
-export class TransComponent implements OnInit {
+export class TransComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     betInfos: any[];
     subscription;
@@ -26,5 +26,7 @@ export class TransComponent implements OnInit {
             this.envState = tempEnvState;
         });
     }
-
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
 }

@@ -12,15 +12,18 @@
 
 </div>
 
-<div [hidden]="!envState.checkEnv" class="jumbotron text-center " id="changePage">
-    <h1>Total:
-        <span class="badge badge-secondary">{{totalSupply}}</span> Remain:
-        <span class="badge badge-secondary">{{scTokenBalance}}</span> Exchange Rate:
-        <span class="badge badge-secondary">{{rate}}</span>
-    </h1>
-    <div class="row justify-content-md-center">
-        <form (ngSubmit)="exchange()" [formGroup]="form" class="col-sm-12">
-            <div class="card text-center bg-light" style="margin-top:15px;">
+<div [hidden]="!envState.checkEnv" class="jumbotron text-center bg-white " id="changePage">
+
+    <div class="container">
+        <form (ngSubmit)="exchange()" [formGroup]="form" class="col-sm-12 ">
+            <div class="card text-center  bg-light" style="margin-top:15px;">
+                <div class="card-header">
+                    <h1>Total:
+                        <span class="badge badge-secondary">{{totalSupply}}</span> Remain:
+                        <span class="badge badge-secondary">{{scTokenBalance}}</span> Exchange Rate:
+                        <span class="badge badge-secondary">{{rate}}</span>
+                    </h1>
+                </div>
                 <div class="card-body">
                     <div class="form-group row">
                         <label class="col-3 col-form-label text-right" style="font-size:1.2rem">Wallet Address:</label>

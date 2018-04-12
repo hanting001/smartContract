@@ -20,7 +20,7 @@ export class Web3Service {
             this.check();
         }, 20000);
 
-        this.check();
+        // this.check();
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {

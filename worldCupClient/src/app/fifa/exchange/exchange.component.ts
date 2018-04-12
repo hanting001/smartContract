@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service, FlightDelayService, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
     templateUrl: './exchange.component.html',
     styleUrls: ['./exchange.component.css']
 })
-export class ExchangeComponent implements OnInit {
+export class ExchangeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     balance: any = {};
     form: FormGroup;
@@ -18,7 +18,7 @@ export class ExchangeComponent implements OnInit {
     account: any;
     totalSupply: any;
     scTokenBalance: any;
-
+    subscription;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public flightDelayService: FlightDelayService,
@@ -35,7 +35,7 @@ export class ExchangeComponent implements OnInit {
 
     ngOnInit() {
         this.web3.check();
-        this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
+        this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
                 await this.getBalance();
@@ -43,7 +43,9 @@ export class ExchangeComponent implements OnInit {
             this.envState = tempEnvState;
         });
     }
-
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
     ethChange() {
         this.form.controls.kotValue.setValue(this.form.controls.ethValue.value * this.rate);
     }
