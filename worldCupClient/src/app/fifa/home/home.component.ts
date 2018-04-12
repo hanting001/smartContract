@@ -244,6 +244,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const game: any = {};
                 console.log(gameInfos[i].time);
                 console.log(new Date(gameInfos[i].time * 1));
+                game.local = true;
                 const date = moment(gameInfos[i].time * 1000);
                 game.date = date.format('YYYY-MM-DD');
                 game.day = date.format('DD');
@@ -261,7 +262,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.localStorage.setItem('games', games).toPromise();
         }
     }
-
     async gotoCourt(gameInfo) {
         // get new game info
         console.log(gameInfo);
