@@ -16,15 +16,15 @@
     <div class="container">
         <div class="card bg-light p-3">
             <p class="lead m-0">My Bets</p>
-            <table class="table table-striped table-sm" *ngFor="let info of betInfos">
+            <table class="table table-striped table-sm mb-4" *ngFor="let info of betInfos">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col" colspan="2" class="">
+                        <th scope="col" colspan="2" class="pl-3">
                             <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
                             <p class="text-light d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
                             <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
                         </th>
-                        <th scope="col" class="align-middle text-right text-info">
+                        <th scope="col" class="align-middle text-right text-info pr-3">
                             <small>status:</small> {{info.gameInfo.status | gameStatus}}
                         </th>
                     </tr>
