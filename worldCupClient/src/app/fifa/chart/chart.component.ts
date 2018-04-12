@@ -184,7 +184,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 onClick: (event) => {
                     console.log(event);
                     this.onClick.emit(event.target);
-                },
+                }, scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0
+                        }
+                    }]
+                }
 
 
             }
