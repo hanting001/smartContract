@@ -28,8 +28,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     buyForm: FormGroup;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
 
-    labels: string[] = ['Column1', 'Column2', 'Column3'];
-    data: number[] = [12, 142, 163];
+    chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
+    chartData: number[] = [12, 142, 163];
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -76,12 +76,36 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         console.log(court);
         this.court = court;
-
+        const web3 = this.web3.instance();
+        // const valueInWei = web3.utils.toWei(String(model.ethValue));
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
         const currenGameInfo = await this.wccSer.getGameInfo(index);
         const betInfos = await this.wccSer.getGameBetInfos(index);
-        console.log(betInfos);
+
+        const sortScore = function (a, b) {
+
+            const scoreA = a.score.replace(/>10/g, '11');
+            const scoreB = b.score.replace(/>10/g, '11');
+            const tmpAryA = scoreA.split(':');
+            const tmpAryB = scoreB.split(':');
+            if (tmpAryA[0] == tmpAryB[0]) {
+                return tmpAryA[1] - tmpAryB[1];
+            } else {
+                return tmpAryA[0] - tmpAryB[0];
+            }
+        };
+        betInfos.betInfos = betInfos.betInfos.sort(sortScore);
+        this.chartData = [];
+        this.chartLabels = [];
+        for (let i = 0; i < betInfos.betInfos.length; i++) {
+            this.chartLabels.push(betInfos.betInfos[i].score);
+            this.chartData.push(web3.utils.fromWei(betInfos.betInfos[i].totalValue));
+        }
+
+
+
+        console.log(betInfos.betInfos.sort(sortScore));
 
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
@@ -196,6 +220,22 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log(index);
         const currenGameInfo = await this.wccSer.getGameInfo(index);
         const betInfos = await this.wccSer.getGameBetInfos(index);
+
+        const sortScore = function (a, b) {
+            const scoreA = a.score.replace(/>10/g, '11');
+            const scoreB = b.score.replace(/>10/g, '11');
+            const tmpAryA = scoreA.split(':');
+            const tmpAryB = scoreA.split(':');
+
+            if (tmpAryA[0] == tmpAryB[0]) {
+                return tmpAryA[1] - tmpAryB[1];
+            } else {
+                return tmpAryA[0] - tmpAryB[0];
+            }
+        };
+        console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
+        betInfos.betInfos = betInfos.betInfos.sort(sortScore);
+
         console.log(betInfos);
         return console.log(currenGameInfo);
         // this.router.navigate(['fifa/court']);

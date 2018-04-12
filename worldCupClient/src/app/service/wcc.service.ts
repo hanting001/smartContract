@@ -238,7 +238,7 @@ export class WCCService {
     async join(gameIndex, score, value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
-            from: await this.web3Service.getFirstAccount(),
+            from: await this.web3Service.getMainAccount(),
             value: value
         };
         sc.methods.join(gameIndex, score)
