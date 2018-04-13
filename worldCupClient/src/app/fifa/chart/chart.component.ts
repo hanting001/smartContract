@@ -53,8 +53,6 @@ export class ChartComponent implements OnInit, AfterViewInit {
     }
 
     customTooltips(tooltip) {
-        console.log(this.chartOtherInfo);
-        console.log(tooltip);
         // Tooltip Element
         let tooltipEl = document.getElementById('chartjs-tooltip');
 
@@ -116,8 +114,6 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
         const positionY = document.getElementsByTagName('canvas')[0].offsetTop;
         const positionX = document.getElementsByTagName('canvas')[0].offsetLeft;
-        console.log(positionX);
-        console.log(positionY);
 
         // Display, position, and set styles for font
         tooltipEl.style.opacity = '1';
