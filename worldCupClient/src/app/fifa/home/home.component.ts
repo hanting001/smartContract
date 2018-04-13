@@ -96,6 +96,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     async show(court) {
         this.court = court;
+        this.loadingSer.show();
         // court.status = '2';
         if (court.status == '0' || court.status == '1') {
             console.log(court);
@@ -161,6 +162,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
             };
             this.buyModalRef = this.openModal(this.buyTemplate);
+            this.loadingSer.hide();
         } else if (court.status == '2') {
             this.claimModalRef = this.openModal(this.claimTemplate);
         }
@@ -215,7 +217,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }, async (err) => {
                 console.log(err);
                 this.loadingSer.hide();
-                this.alertSer.show(err);
+                this.alertSer.show('User denied transaction signature');
             });
 
 
