@@ -46,7 +46,8 @@
     <div *ngFor="let game of games" class="container" id="{{game.date}}">
         <div class="row ">
             <h3 class="mb-1">
-                {{game.date|showDate}}&nbsp;&nbsp;<span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
+                {{game.date|showDate}}&nbsp;&nbsp;
+                <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
                 <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">chane to your time</a>
                 <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == true" class="text-secondary" style="font-size: 0.5rem">chane to local time</a>
             </h3>
@@ -57,8 +58,8 @@
                         <td class="align-middle" style="width:40%">
                             <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
                         </td>
-                        <td  class="align-middle" style="width:30%">
-                            <h4 [hidden]="!game.local">{{court.time+'000'|date:'HH:mm':'+0300'}}</h4>
+                        <td class="align-middle" style="width:30%">
+                            <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
                             <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
                         </td>
                         <td class="align-middle" style="width:30%">
@@ -74,80 +75,106 @@
 
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
-        <div id="chartDiv" *ngIf="chartData&&chartData.length>0" align="center">
-            <chartjs-component [chartTitle]="chartTitle" [chartType]="'line'" [dataSetLabel]="'ETH'" [chartData]='chartData' [chartLabels]='chartLabels'
+        <div class="container text-center" id="chartDiv" *ngIf="chartData&&chartData.valueData.length>0" align="center">
+            <div class="row text-center">
+                <div class="col">
+                    <small class="text-secondary">Total Value</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Total Bets</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Average Value</small>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col">
+                    <h5> {{chartTitle.totalValue}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{chartTitle.totalBets}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{chartTitle.avg}}</h5>
+                </div>
+            </div>
+        </div>
+        <div id="chartDiv" *ngIf="chartData&&chartData.valueData.length>0" align="center">
+            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
                 [chartOtherInfo]='chartOtherInfo'>
             </chartjs-component>
         </div>
 
-        <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
-            <div class="card  bg-info" style="margin-top:15px;">
-                <table class="table">
-                    <tr>
-                        <td style="border:0;width:40%" class="text-left align-middle">
-                            <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
-                        <td style="border:0;width:40%" class="text-left align-middle">
-                            <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:0">
-                            <select class=" form-control" formControlName="awayScore" aria-describedby="scoreHelpBlock">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value=">10">>10</option>
-                            </select>
-                            <!-- <small id="scoreHelpBlock" class="form-text text-muted">
+        <div class="row">
+            <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
+                <div class="card  bg-info" style="margin-top:15px;">
+                    <table class="table">
+                        <tr>
+                            <td style="border:0;width:40%" class="text-left align-middle">
+                                <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                            <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                            <td style="border:0;width:40%" class="text-left align-middle">
+                                <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:0">
+                                <select class=" form-control" formControlName="awayScore" aria-describedby="scoreHelpBlock">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value=">10">>10</option>
+                                </select>
+                                <!-- <small id="scoreHelpBlock" class="form-text text-muted">
                                 Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters,
                                 or emoji.
                             </small> -->
-                        </td>
-                        <td style="border:0">
-                            <select class="form-control" formControlName="homeScore">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value=">10">>10</option>
-                            </select>
-                        </td>
+                            </td>
+                            <td style="border:0">
+                                <select class="form-control" formControlName="homeScore">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value=">10">>10</option>
+                                </select>
+                            </td>
 
-                    </tr>
-                </table>
-                <div class="form-group row border-top m-0 p-2 ">
-                    <div class="input-group col-6 pl-0" style="font-size:1.2rem">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
+                        </tr>
+                    </table>
+                    <div class="form-group row border-bottom m-0 p-2 ">
+                        <div class="input-group col-6 pl-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
+                            </div>
+                            <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                         </div>
-                        <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
+                        <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                            {{USDPrice|currency}}, ETH price get from etherscan.io.
+                        </small>
                     </div>
-                    <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
-                        {{USDPrice|currency}}, ETH price get from etherscan.io.
-                    </small>
+                    <div class="row p-2">
+                        <div class="col text-center align-middle">
+                            <button type="submit" class="btn btn-outline-light">Submit Bet</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-
-            <div class="form-group" style="margin-top: 50px;">
-                <button type="submit" class="btn btn-primary btn-lg">Bet</button>
-                <button type="button" class="btn btn-default btn-lg" (click)="hideCourt()">Cancel</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </ng-template>

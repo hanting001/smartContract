@@ -32,9 +32,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
-    chartData: number[] = [12, 142, 163];
-    chartOtherInfo: any = {};
-    chartTitle: String = '';
+    chartData;
+    dataSetLable = {
+        valueData: 'ETH Value',
+        oddsData: 'Odds'
+    };
+    chartTitle: any = {};
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -100,7 +103,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         const betInfos = await this.wccSer.getGameBetInfos(index);
 
         const sortScore = function (a, b) {
-
             const scoreA = a.score.replace(/>10/g, '11');
             const scoreB = b.score.replace(/>10/g, '11');
             const tmpAryA = scoreA.split(':');
@@ -112,39 +114,37 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }
         };
         betInfos.betInfos = betInfos.betInfos.sort(sortScore);
-        this.chartData = [];
         this.chartLabels = [];
-        let totalBets = 0;
-        let totalCount = 0;
+        const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+        const  totalBets = currenGameInfo.totalBets;
+        const valueData = [];
+        const oddsData = [];
+        const betsData = [];
         const betsLen = betInfos.betInfos.length;
         for (let i = 0; i < betsLen; i++) {
             const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-            this.chartLabels.push(betInfos.betInfos[i].score);
-            this.chartData.push(tmpValue);
-            totalBets += tmpValue * 1;
-            totalCount += betInfos.betInfos[i].totalBets * 1;
-            if (!this.chartOtherInfo[betInfos.betInfos[i].score]) {
-                this.chartOtherInfo[betInfos.betInfos[i].score] = {};
-            }
+            this.chartLabels.push(`${betInfos.betInfos[i].score}-(${betInfos.betInfos[i].totalBets})`);
+            valueData.push(tmpValue);
+            oddsData.push((totalValue / tmpValue).toFixed(2));
 
         }
-        //totalBets
-        for (let i = 0; i < betsLen; i++) {
-            const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-            this.chartOtherInfo[betInfos.betInfos[i].score]['odd'] = (totalBets / tmpValue).toFixed(2);
-            this.chartOtherInfo[betInfos.betInfos[i].score]['count'] = betInfos.betInfos[i].totalBets;
-        }
-
-        this.chartOtherInfo['totalValue'] = totalBets.toFixed(5);
-        this.chartOtherInfo['totalCount'] = totalCount;
-        this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
+        this.chartData = {
+            valueData: valueData,
+            oddsData: oddsData,
+            betsData: betsData
+        };
+        console.log(this.chartData);
+        // this.chartOtherInfo['totalValue'] = Number(totalValue).toFixed(5);
+        // this.chartOtherInfo['totalCount'] = totalCount;
+        // this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
         console.log(betInfos);
         // console.log(this.odds);
 
-        this.chartTitle = 'Total ETH:' + this.chartOtherInfo['totalValue'] +
-            ',Total counts:' + this.chartOtherInfo['totalCount'] + ', avg:' + this.chartOtherInfo['averageBet'];
-
-
+        this.chartTitle = {
+            totalValue: Number(totalValue).toFixed(6),
+            totalBets: totalBets,
+            avg: (totalValue / totalBets).toFixed(6)
+        };
         this.buyModalRef = this.openModal(this.buyTemplate);
     }
     getUSDValue(event) {
@@ -244,7 +244,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const game: any = {};
                 console.log(gameInfos[i].time);
                 console.log(new Date(gameInfos[i].time * 1));
-                game.local = true;
+                game.local = false;
                 const date = moment(gameInfos[i].time * 1000);
                 game.date = date.format('YYYY-MM-DD');
                 game.day = date.format('DD');
