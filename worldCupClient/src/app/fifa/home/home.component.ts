@@ -194,6 +194,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.reset();
                     this.USDPrice = 0;
                 }
+            }, async (err) => {
+                console.log(err);
+                this.loadingSer.hide();
+                this.alertSer.show(err);
             });
 
 

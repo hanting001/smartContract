@@ -236,7 +236,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
         const randomColor1 = Math.floor((Math.random() * 255) + 1);
         const randomColor2 = Math.floor((Math.random() * 255) + 1);
         const randomColor3 = Math.floor((Math.random() * 255) + 1);
-        const randomColor4 = Math.random() * (1 - 0.1) + 0.1;
+
+        const randomColor4 = Math.random() * (1 - 0.4) + 0.3;
         const color = `rgba(${randomColor1.toString()},${randomColor2.toString()},${randomColor3.toString()},${randomColor4.toString()})`;
         return color;
     }
