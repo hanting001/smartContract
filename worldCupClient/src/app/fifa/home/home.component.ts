@@ -72,7 +72,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
-                this.getAllGames();
+                this.loadingSer.show();
+                this.getAllGames().then(() => this.loadingSer.hide());
             }
             this.envState = tempEnvState;
         });
@@ -116,6 +117,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             console.log(index);
             const currenGameInfo = await this.wccSer.getGameInfo(index);
             console.log(currenGameInfo);
+            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+            const totalBets = currenGameInfo.totalBets;
+            this.chartTitle = {
+                totalValue: Number(totalValue).toFixed(6),
+                totalBets: totalBets,
+                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+            };
+
             const betInfos = await this.wccSer.getGameBetInfos(index);
 
             const sortScore = function (a, b) {
@@ -131,8 +140,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             };
             betInfos.betInfos = betInfos.betInfos.sort(sortScore);
             this.chartLabels = [];
-            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-            const totalBets = currenGameInfo.totalBets;
+
             const valueData = [];
             const oddsData = [];
             const betsData = [];
@@ -149,6 +157,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 oddsData: oddsData,
                 betsData: betsData
             };
+            this.buyModalRef = this.openModal(this.buyTemplate);
+            this.loadingSer.hide();
             console.log(this.chartData);
             // this.chartOtherInfo['totalValue'] = Number(totalValue).toFixed(5);
             // this.chartOtherInfo['totalCount'] = totalCount;
@@ -156,13 +166,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             console.log(betInfos);
             // console.log(this.odds);
 
-            this.chartTitle = {
-                totalValue: Number(totalValue).toFixed(6),
-                totalBets: totalBets,
-                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
-            };
-            this.buyModalRef = this.openModal(this.buyTemplate);
-            this.loadingSer.hide();
+
         } else if (court.status == '2') {
             this.claimModalRef = this.openModal(this.claimTemplate);
         }
