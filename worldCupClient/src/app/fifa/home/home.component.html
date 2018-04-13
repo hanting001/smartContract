@@ -43,12 +43,10 @@
 </div>
 <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
     <div *ngFor="let game of games" class="container mb-5" id="{{game.date}}">
-        <div class="row ">
+        <div class="row align-items-center">
             <h3 class="col mb-1">
                 {{game.date|showDate}}&nbsp;&nbsp;
             </h3>
-        </div>
-        <div class="row ">
             <div class="col text-right">
                 <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
                 <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>

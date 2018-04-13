@@ -28,8 +28,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         public localActionSer: LocalActionService,
         public alertSer: AlertService) {
         this.form = this.fb.group({
-            ethValue: ['', [Validators.required]],
-            kotValue: ['', [Validators.required]]
+            ethValue: ['0', [Validators.required]],
+            kotValue: ['0', [Validators.required, Validators.min(1)]]
         });
     }
 
@@ -47,11 +47,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
     ethChange() {
-        this.form.controls.kotValue.setValue(this.form.controls.ethValue.value * this.rate);
+        const value = this.web3.instance().utils.toWei(String(this.form.controls.ethValue.value)) * this.rate;
+        this.form.controls.kotValue.setValue(this.web3.instance().utils.fromWei(String(value)));
     }
 
     kotChange() {
-        this.form.controls.ethValue.setValue(this.form.controls.kotValue.value / this.rate);
+        const value = this.web3.instance().utils.toWei(String(this.form.controls.kotValue.value)) / this.rate;
+        this.form.controls.ethValue.setValue(this.web3.instance().utils.fromWei(String(value)));
     }
 
 
