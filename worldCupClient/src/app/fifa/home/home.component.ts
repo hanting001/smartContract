@@ -160,6 +160,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 avg: (totalValue / totalBets).toFixed(6)
             };
             this.buyModalRef = this.openModal(this.buyTemplate);
+        } else if (court.status == '2') {
+            this.claimModalRef = this.openModal(this.claimTemplate);
         }
     }
     getUSDValue(event) {
