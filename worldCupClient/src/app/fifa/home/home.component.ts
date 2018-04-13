@@ -29,7 +29,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     claimModalRef: BsModalRef;
     claimForm: FormGroup;
-
+    loading = false;
+    loadingProgress: Number = 0;
     price;
 
     USDPrice;
@@ -72,8 +73,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
-                this.loadingSer.show();
-                this.getAllGames().then(() => this.loadingSer.hide());
+                this.getAllGames();
             }
             this.envState = tempEnvState;
         });
@@ -254,7 +254,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     async getAllGames() {
         const isGameUpdated = await this.wccSer.isGameUpdated();
-        let games = await this.localStorage.getItem<any[]>('games').toPromise();
+        const games = await this.localStorage.getItem<any[]>('games').toPromise();
         if (!isGameUpdated && games && games.length > 0) {
             this.games = games;
             console.log(this.games);
@@ -263,32 +263,70 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const sortNumber = function (a, b) {
                 return a.time - b.time;
             };
-            let gameInfos = await this.wccSer.getAllPlayers();
-            gameInfos = gameInfos.sort(sortNumber);
-            console.log(gameInfos);
-            games = [];
-            const gameLen = gameInfos.length;
-            for (let i = 0; i < gameLen; i++) {
-                const game: any = {};
-                console.log(gameInfos[i].time);
-                console.log(new Date(gameInfos[i].time * 1));
-                game.local = false;
-                const date = moment(gameInfos[i].time * 1000);
-                game.date = date.format('YYYY-MM-DD');
-                game.day = date.format('DD');
-                game.dayOfWeek = date.isoWeekday();
-                if (games.length > 0 && games[games.length - 1].date == game.date) {
-                    games[games.length - 1].count++;
-                    games[games.length - 1].courts.push(gameInfos[i]);
-                } else {
-                    game.count = 1;
-                    game.courts = [gameInfos[i]];
-                    games.push(game);
-                }
+            this.loadingSer.show();
+            const indexes = await this.wccSer.getAllGameIndexes();
+            const temps = [];
+            this.loadingSer.hide();
+            this.loading = true;
+            for (let i = 0; i < indexes.length; i++) {
+                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
+                temps.push(gameInfo);
+                this.setGameData(temps, sortNumber);
+                this.loadingProgress = Number((temps.length / indexes.length).toFixed(2)) * 100;
             }
-            this.games = games;
-            this.localStorage.setItem('games', games).toPromise();
+            this.loading = false;
+            // let gameInfos = await this.wccSer.getAllPlayers();
+            // gameInfos = gameInfos.sort(sortNumber);
+            // console.log(gameInfos);
+            // games = [];
+            // const gameLen = gameInfos.length;
+            // for (let i = 0; i < gameLen; i++) {
+            //     const game: any = {};
+            //     console.log(gameInfos[i].time);
+            //     console.log(new Date(gameInfos[i].time * 1));
+            //     game.local = false;
+            //     const date = moment(gameInfos[i].time * 1000);
+            //     game.date = date.format('YYYY-MM-DD');
+            //     game.day = date.format('DD');
+            //     game.dayOfWeek = date.isoWeekday();
+            //     if (games.length > 0 && games[games.length - 1].date == game.date) {
+            //         games[games.length - 1].count++;
+            //         games[games.length - 1].courts.push(gameInfos[i]);
+            //     } else {
+            //         game.count = 1;
+            //         game.courts = [gameInfos[i]];
+            //         games.push(game);
+            //     }
+            // }
+            // this.games = games;
+            this.localStorage.setItem('games', this.games).toPromise();
         }
+    }
+    setGameData(games, sortNumber) {
+        let gameInfos = games;
+        gameInfos = gameInfos.sort(sortNumber);
+        console.log(gameInfos);
+        games = [];
+        const gameLen = gameInfos.length;
+        for (let i = 0; i < gameLen; i++) {
+            const game: any = {};
+            console.log(gameInfos[i].time);
+            console.log(new Date(gameInfos[i].time * 1));
+            game.local = false;
+            const date = moment(gameInfos[i].time * 1000);
+            game.date = date.format('YYYY-MM-DD');
+            game.day = date.format('DD');
+            game.dayOfWeek = date.isoWeekday();
+            if (games.length > 0 && games[games.length - 1].date == game.date) {
+                games[games.length - 1].count++;
+                games[games.length - 1].courts.push(gameInfos[i]);
+            } else {
+                game.count = 1;
+                game.courts = [gameInfos[i]];
+                games.push(game);
+            }
+        }
+        this.games = games;
     }
     async gotoCourt(gameInfo) {
         // get new game info

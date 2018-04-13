@@ -14,7 +14,12 @@
 
 <div class="container-fluid" style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
     <div *ngIf="envState.checkEnv">
-        <p class="lead text-muted text-center mb-1">Matches</p>
+        <p [hidden]="loading" class="lead text-muted text-center mb-1">Matches</p>
+        <p [hidden]="!loading" class="lead text-muted text-center mb-1">Loading...</p>
+        <div [hidden]="!loading" class="progress" style="height: 1px;">
+            <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+            <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+        </div>
         <div class="">
             <table class="table m-0 bg-white table-sm rounded">
                 <tr>

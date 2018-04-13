@@ -133,6 +133,10 @@ export class WCCService {
         }
         return gameInfos;
     }
+    async getAllGameIndexes() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getAllGameIndexes().call();
+    }
     async getGameInfo(index) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         return sc.methods.getGameInfo(index).call();
