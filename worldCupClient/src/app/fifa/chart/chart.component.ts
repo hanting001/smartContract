@@ -134,8 +134,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
         console.log('0130128301283');
         const charCtx = this.chartRef.nativeElement.getContext('2d');
         // const tmpColor = this.generateRandomColor();
-        console.log(this.chartData);
-        console.log(this.dataSetLabel);
+        const scoreColor = 'rgb(51, 51, 255)';
+        const oddsColor = 'rgb(255, 0, 0)';
+        const betsCountColor = 'rgb(102, 102, 102)';
         this.chart = new Chart(charCtx, {
             type: this.chartType,
             data: {
@@ -143,8 +144,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 datasets: [{
                     label: this.dataSetLabel.valueData,
                     data: this.chartData.valueData,
-                    borderColor: 'rgb(51, 51, 255)',
-                    pointBackgroundColor: 'rgb(51, 51, 255)',
+                    borderColor: scoreColor,
+                    backgroundColor: scoreColor,
+                    pointBackgroundColor: scoreColor,
                     fill: false,
                     yAxisID: 'y-axis-1',
                     borderWidth: 1
@@ -152,8 +154,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 {
                     label: this.dataSetLabel.oddsData,
                     data: this.chartData.oddsData,
-                    borderColor: 'rgb(204,153,0)',
-                    pointBackgroundColor: 'rgb(204,153,0)',
+                    borderColor: oddsColor,
+                    backgroundColor: oddsColor,
+                    pointBackgroundColor: oddsColor,
                     fill: false,
                     yAxisID: 'y-axis-2',
                     borderWidth: 1
@@ -161,11 +164,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 {
                     label: this.dataSetLabel.betsData,
                     data: this.chartData.betsData,
-                    borderColor: 'rgb(255,153,0)',
-                    pointBackgroundColor: 'rgb(255,153,0)',
+                    borderColor: betsCountColor,
+                    backgroundColor: betsCountColor,
+                    pointBackgroundColor: betsCountColor,
                     fill: false,
                     yAxisID: 'y-axis-3',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    borderDash: [5, 5]
                 }
                 ]
             },
@@ -214,10 +219,10 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         scaleLabel: {
                             display: true,
                             labelString: 'ETH Value',
-                            fontColor: 'rgb(51, 51, 255)'
+                            fontColor: scoreColor
                         },
                         ticks: {
-                            fontColor: 'rgb(51, 51, 255)'
+                            fontColor: scoreColor
                         }
                     }, {
                         type: 'linear',
@@ -227,10 +232,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         scaleLabel: {
                             display: true,
                             labelString: 'Odds',
-                            fontColor: 'rgb(204,153,0)'
+                            fontColor: oddsColor
                         },
                         ticks: {
-                            fontColor: 'rgb(204,153,0)'
+                            fontColor: oddsColor
+                        },
+                        gridLines: {
+                            display: false
                         }
                     },
                     {
@@ -241,10 +249,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         scaleLabel: {
                             display: true,
                             labelString: 'Bet Count',
-                            fontColor: 'rgb(255,153,0)'
+                            fontColor: betsCountColor
                         },
                         ticks: {
-                            fontColor: 'rgb(255,153,0)'
+                            fontColor: betsCountColor
+                        },
+                        gridLines: {
+                            display: false
                         }
                     }]
                 }
