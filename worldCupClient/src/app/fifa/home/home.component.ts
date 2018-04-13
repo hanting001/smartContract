@@ -40,7 +40,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     chartData;
     dataSetLable = {
         valueData: 'ETH Value',
-        oddsData: 'Odds'
+        oddsData: 'Odds',
+        betsData: 'Bet Count'
     };
     chartTitle: any = {};
 
@@ -137,10 +138,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const betsLen = betInfos.betInfos.length;
             for (let i = 0; i < betsLen; i++) {
                 const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-                this.chartLabels.push(`${betInfos.betInfos[i].score}-(${betInfos.betInfos[i].totalBets})`);
+                this.chartLabels.push(betInfos.betInfos[i].score);
                 valueData.push(tmpValue);
                 oddsData.push((totalValue / tmpValue).toFixed(2));
-
+                betsData.push(betInfos.betInfos[i].totalBets);
             }
             this.chartData = {
                 valueData: valueData,

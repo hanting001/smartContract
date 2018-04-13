@@ -146,7 +146,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
                     borderColor: 'rgb(51, 51, 255)',
                     pointBackgroundColor: 'rgb(51, 51, 255)',
                     fill: false,
-                    yAxisID: 'y-axis-1'
+                    yAxisID: 'y-axis-1',
+                    borderWidth: 1
                 },
                 {
                     label: this.dataSetLabel.oddsData,
@@ -154,7 +155,17 @@ export class ChartComponent implements OnInit, AfterViewInit {
                     borderColor: 'rgb(204,153,0)',
                     pointBackgroundColor: 'rgb(204,153,0)',
                     fill: false,
-                    yAxisID: 'y-axis-2'
+                    yAxisID: 'y-axis-2',
+                    borderWidth: 1
+                },
+                {
+                    label: this.dataSetLabel.betsData,
+                    data: this.chartData.betsData,
+                    borderColor: 'rgb(255,153,0)',
+                    pointBackgroundColor: 'rgb(255,153,0)',
+                    fill: false,
+                    yAxisID: 'y-axis-3',
+                    borderWidth: 1
                 }
                 ]
             },
@@ -192,7 +203,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Score-(Bet Count)'
+                            labelString: 'Score'
                         }
                     }],
                     yAxes: [{
@@ -202,9 +213,12 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         id: 'y-axis-1',
                         scaleLabel: {
                             display: true,
-                            labelString: 'ETH Value'
+                            labelString: 'ETH Value',
+                            fontColor: 'rgb(51, 51, 255)'
                         },
-                        color: 'rgb(51, 51, 255)'
+                        ticks: {
+                            fontColor: 'rgb(51, 51, 255)'
+                        }
                     }, {
                         type: 'linear',
                         display: true,
@@ -212,9 +226,26 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         id: 'y-axis-2',
                         scaleLabel: {
                             display: true,
-                            labelString: 'Odds'
+                            labelString: 'Odds',
+                            fontColor: 'rgb(204,153,0)'
                         },
-                        color: 'rgb(204,153,0)'
+                        ticks: {
+                            fontColor: 'rgb(204,153,0)'
+                        }
+                    },
+                    {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-3',
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Bet Count',
+                            fontColor: 'rgb(255,153,0)'
+                        },
+                        ticks: {
+                            fontColor: 'rgb(255,153,0)'
+                        }
                     }]
                 }
 
