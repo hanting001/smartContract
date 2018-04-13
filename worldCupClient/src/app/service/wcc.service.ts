@@ -332,13 +332,13 @@ export class WCCService {
         const gameIndexes = await sc.methods.getUserJoinedGameIndexes().call();
         // console.log(gameIndexes);
         const returnObj = [];
-        for (let i = 0; i < gameIndexes.length; i ++) {
+        for (let i = 0; i < gameIndexes.length; i++) {
             const gameInfo = await sc.methods.getGameInfo(gameIndexes[i]).call();
             const scoreIndexes = await sc.methods.getUserJoinedGameScoreIndexes(gameIndexes[i]).call();
             const scoreInfos = [];
-            for (let j = 0; j < scoreIndexes.length; j ++) {
+            for (let j = 0; j < scoreIndexes.length; j++) {
                 const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndexes[i], scoreIndexes[j]).call();
-                if (gameInfo.status === '3' ) {
+                if (gameInfo.status === '3') {
                     const isWin = await playerSC.methods.isWin(gameIndexes[i], scoreIndexes[j]).call();
                     if (isWin.win) {
                         scoreInfo.win = isWin.value;

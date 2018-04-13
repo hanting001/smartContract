@@ -26,10 +26,15 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
+
+    claimModalRef: BsModalRef;
+    claimForm: FormGroup;
+
     price;
 
     USDPrice;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
+    @ViewChild('claimTemplate') claimTemplate: TemplateRef<any>;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
     chartData;
@@ -49,6 +54,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         public localActionSer: LocalActionService,
         private localStorage: LocalStorage) {
         this.buyForm = this.fb.group({
+            homeScore: ['0', [Validators.required]],
+            awayScore: ['0', [Validators.required]],
+            eth: ['0.0', [Validators.required]]
+        });
+
+        this.claimForm = this.fb.group({
             homeScore: ['0', [Validators.required]],
             awayScore: ['0', [Validators.required]],
             eth: ['0.0', [Validators.required]]
@@ -84,68 +95,72 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     async show(court) {
         this.court = court;
-        const web3 = this.web3.instance();
-        // const valueInWei = web3.utils.toWei(String(model.ethValue));
-        this.web3.currenPrice().then(obj => {
-            console.log(obj.result);
-            this.price = obj.result.ethusd;
-            console.log(this.price);
-            const model: any = this.buyForm.value;
-            if (model.eth) {
-                this.getUSDValue({ target: { value: model.eth } });
+        // court.status = '2';
+        if (court.status == '0' || court.status == '1') {
+            console.log(court);
+            const web3 = this.web3.instance();
+            // const valueInWei = web3.utils.toWei(String(model.ethValue));
+            this.web3.currenPrice().then(obj => {
+                console.log(obj.result);
+                this.price = obj.result.ethusd;
+                console.log(this.price);
+                const model: any = this.buyForm.value;
+                if (model.eth) {
+                    this.getUSDValue({ target: { value: model.eth } });
+                }
+            });
+
+            const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+            console.log(index);
+            const currenGameInfo = await this.wccSer.getGameInfo(index);
+            console.log(currenGameInfo);
+            const betInfos = await this.wccSer.getGameBetInfos(index);
+
+            const sortScore = function (a, b) {
+                const scoreA = a.score.replace(/>10/g, '11');
+                const scoreB = b.score.replace(/>10/g, '11');
+                const tmpAryA = scoreA.split(':');
+                const tmpAryB = scoreB.split(':');
+                if (tmpAryA[0] == tmpAryB[0]) {
+                    return tmpAryA[1] - tmpAryB[1];
+                } else {
+                    return tmpAryA[0] - tmpAryB[0];
+                }
+            };
+            betInfos.betInfos = betInfos.betInfos.sort(sortScore);
+            this.chartLabels = [];
+            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+            const totalBets = currenGameInfo.totalBets;
+            const valueData = [];
+            const oddsData = [];
+            const betsData = [];
+            const betsLen = betInfos.betInfos.length;
+            for (let i = 0; i < betsLen; i++) {
+                const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
+                this.chartLabels.push(`${betInfos.betInfos[i].score}-(${betInfos.betInfos[i].totalBets})`);
+                valueData.push(tmpValue);
+                oddsData.push((totalValue / tmpValue).toFixed(2));
+
             }
-        });
+            this.chartData = {
+                valueData: valueData,
+                oddsData: oddsData,
+                betsData: betsData
+            };
+            console.log(this.chartData);
+            // this.chartOtherInfo['totalValue'] = Number(totalValue).toFixed(5);
+            // this.chartOtherInfo['totalCount'] = totalCount;
+            // this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
+            console.log(betInfos);
+            // console.log(this.odds);
 
-        const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
-        console.log(index);
-        const currenGameInfo = await this.wccSer.getGameInfo(index);
-        console.log(currenGameInfo);
-        const betInfos = await this.wccSer.getGameBetInfos(index);
-
-        const sortScore = function (a, b) {
-            const scoreA = a.score.replace(/>10/g, '11');
-            const scoreB = b.score.replace(/>10/g, '11');
-            const tmpAryA = scoreA.split(':');
-            const tmpAryB = scoreB.split(':');
-            if (tmpAryA[0] == tmpAryB[0]) {
-                return tmpAryA[1] - tmpAryB[1];
-            } else {
-                return tmpAryA[0] - tmpAryB[0];
-            }
-        };
-        betInfos.betInfos = betInfos.betInfos.sort(sortScore);
-        this.chartLabels = [];
-        const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-        const  totalBets = currenGameInfo.totalBets;
-        const valueData = [];
-        const oddsData = [];
-        const betsData = [];
-        const betsLen = betInfos.betInfos.length;
-        for (let i = 0; i < betsLen; i++) {
-            const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-            this.chartLabels.push(`${betInfos.betInfos[i].score}-(${betInfos.betInfos[i].totalBets})`);
-            valueData.push(tmpValue);
-            oddsData.push((totalValue / tmpValue).toFixed(2));
-
+            this.chartTitle = {
+                totalValue: Number(totalValue).toFixed(6),
+                totalBets: totalBets,
+                avg: (totalValue / totalBets).toFixed(6)
+            };
+            this.buyModalRef = this.openModal(this.buyTemplate);
         }
-        this.chartData = {
-            valueData: valueData,
-            oddsData: oddsData,
-            betsData: betsData
-        };
-        console.log(this.chartData);
-        // this.chartOtherInfo['totalValue'] = Number(totalValue).toFixed(5);
-        // this.chartOtherInfo['totalCount'] = totalCount;
-        // this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
-        console.log(betInfos);
-        // console.log(this.odds);
-
-        this.chartTitle = {
-            totalValue: Number(totalValue).toFixed(6),
-            totalBets: totalBets,
-            avg: (totalValue / totalBets).toFixed(6)
-        };
-        this.buyModalRef = this.openModal(this.buyTemplate);
     }
     getUSDValue(event) {
         // console.log(event.target.value);
@@ -194,6 +209,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.reset();
                     this.USDPrice = 0;
                 }
+            }, async (err) => {
+                console.log(err);
+                this.loadingSer.hide();
+                this.alertSer.show(err);
             });
 
 

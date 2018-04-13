@@ -24,8 +24,8 @@ export class Web3Service {
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
-            return this.web3.eth.defaultAccount;
-            // return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
+            // return this.web3.eth.defaultAccount;
+            return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
         }
         const accounts = await this.web3.eth.getAccounts();
         this.web3.eth.defaultAccount = accounts[accounts.length - 1];
