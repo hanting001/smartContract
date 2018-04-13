@@ -203,7 +203,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         scaleLabel: {
                             display: true,
                             labelString: 'ETH Value'
-                        }
+                        },
+                        color: 'rgb(51, 51, 255)'
                     }, {
                         type: 'linear',
                         display: true,
@@ -212,7 +213,8 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         scaleLabel: {
                             display: true,
                             labelString: 'Odds'
-                        }
+                        },
+                        color: 'rgb(204,153,0)'
                     }]
                 }
 

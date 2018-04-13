@@ -18,7 +18,6 @@
         <div class="">
             <table class="table m-0 bg-white table-sm rounded">
                 <tr>
-
                     <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="game.date"
                         *ngFor="let game of games" class="text-center p-0">
                         <table class="table-sm ">
@@ -42,7 +41,7 @@
 
     </div>
 </div>
-<div *ngIf="envState.checkEnv" class="container-fluid" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
+<div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
     <div *ngFor="let game of games" class="container" id="{{game.date}}">
         <div class="row ">
             <h3 class="mb-1">
