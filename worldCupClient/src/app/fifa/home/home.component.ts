@@ -157,7 +157,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartTitle = {
                 totalValue: Number(totalValue).toFixed(6),
                 totalBets: totalBets,
-                avg: (totalValue / totalBets).toFixed(6)
+                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
             };
             this.buyModalRef = this.openModal(this.buyTemplate);
         }
