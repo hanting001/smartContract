@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
-
+import { WCCService, Web3Service } from '../../service/index';
 @Component({
     selector: 'chartjs-component',
     templateUrl: './chart.component.html',
@@ -40,100 +40,73 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
     chart: any;
     labelColors: string[];
-
-
+    loadingProgress: Number = 0;
     constructor(
-        private el: ElementRef
+        private el: ElementRef,
+        private wccService: WCCService,
+        private web3Service: Web3Service
     ) { }
 
-    ngOnInit() { }
+    ngOnInit() {
+    }
 
     ngAfterViewInit() {
         this.generateChart();
     }
-
-    // customTooltips(tooltip) {
-    //     console.log(this.chartOtherInfo);
-    //     console.log(tooltip);
-    //     // Tooltip Element
-    //     let tooltipEl = document.getElementById('chartjs-tooltip');
-
-    //     if (!tooltipEl) {
-    //         tooltipEl = document.createElement('div');
-    //         tooltipEl.id = 'chartjs-tooltip';
-    //         tooltipEl.innerHTML = '<table></table>';
-    //         // this.chartRef.nativeElement.
-    //         document.getElementsByTagName('canvas')[0].parentNode.appendChild(tooltipEl);
-    //     }
-
-    //     // Hide if no tooltip
-    //     if (tooltip.opacity === 0) {
-    //         tooltipEl.style.opacity = '0';
-    //         return;
-    //     }
-
-    //     // Set caret Position
-    //     tooltipEl.classList.remove('above', 'below', 'no-transform');
-    //     if (tooltip.yAlign) {
-    //         tooltipEl.classList.add(tooltip.yAlign);
-    //     } else {
-    //         tooltipEl.classList.add('no-transform');
-    //     }
-
-    //     function getBody(bodyItem) {
-    //         return bodyItem.lines;
-    //     }
-
-    //     // Set Text
-    //     if (tooltip.body) {
-    //         const titleLines = tooltip.title || [];
-    //         const bodyLines = tooltip.body.map(getBody);
-
-    //         let innerHtml = '<thead>';
-    //         console.log(tooltip.title);
-    //         titleLines.forEach(function (title) {
-    //             innerHtml += '<tr><th>' + title + '</th></tr>';
-    //         });
-    //         innerHtml += '</thead><tbody>';
-
-    //         bodyLines.forEach((body, i) => {
-    //             const colors = tooltip.labelColors[i];
-    //             let style = 'background:' + colors.backgroundColor;
-    //             style += '; border-color:' + colors.borderColor;
-    //             style += '; border-width: 2px';
-    //             const span = '<span class="chartjs-tooltip-key" style="' + style + '"></span>';
-    //             innerHtml += '<tr><td>' + span + body + '</td></tr>';
-    //         });
-
-    //         const span2 = '<span class="chartjs-tooltip-key" style="border-width: 2px"></span>';
-    //         innerHtml += '<tr><td>' + span2 + 'Odds: ' + this.chartOtherInfo[tooltip.title].odd + '</td></tr>';
-    //         innerHtml += '<tr><td>' + span2 + 'Bet Count: ' + this.chartOtherInfo[tooltip.title].count + '</td></tr>';
-    //         innerHtml += '</tbody>';
-
-    //         const tableRoot = tooltipEl.querySelector('table');
-    //         tableRoot.innerHTML = innerHtml;
-    //     }
-
-    //     const positionY = document.getElementsByTagName('canvas')[0].offsetTop;
-    //     const positionX = document.getElementsByTagName('canvas')[0].offsetLeft;
-    //     console.log(positionX);
-    //     console.log(positionY);
-
-    //     // Display, position, and set styles for font
-    //     tooltipEl.style.opacity = '1';
-    //     tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-    //     tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-    //     tooltipEl.style.fontFamily = tooltip._bodyFontFamily;
-    //     tooltipEl.style.fontSize = tooltip.bodyFontSize + 'px';
-    //     tooltipEl.style.fontStyle = tooltip._bodyFontStyle;
-    //     tooltipEl.style.padding = tooltip.yPadding + 'px ' + tooltip.xPadding + 'px';
-    // }
-
-    generateChart() {
-        this.validateChart();
-        console.log('0130128301283');
+    async generateChart() {
+        const gameInfo = this.chartData.currentGameInfo;
+        const gameIndex = this.chartData.currentGameIndex;
+        // this.validateChart(gameInfo);
+        // if (gameInfo.status == 0) {
+            // get bets info
+            await this.getBetsInfo(gameInfo, gameIndex);
+            this.betChart();
+        // }
+    }
+    async getBetsInfo(gameInfo, gameIndex) {
+        const scoreIndexes = await this.wccService.getGameScoreIndexes(gameIndex);
+        const indexLength = scoreIndexes.length;
+        let betInfos = [];
+        for (let i = 0; i < indexLength; i++) {
+            const betInfo = await this.wccService.getGameBetInfo(gameIndex, scoreIndexes[i]);
+            betInfos.push(betInfo);
+            this.loadingProgress = Number((betInfos.length / indexLength).toFixed(2)) * 100;
+        }
+        const sortScore = function (a, b) {
+            const scoreA = a.score.replace(/>10/g, '11');
+            const scoreB = b.score.replace(/>10/g, '11');
+            const tmpAryA = scoreA.split(':');
+            const tmpAryB = scoreB.split(':');
+            if (tmpAryA[0] == tmpAryB[0]) {
+                return tmpAryA[1] - tmpAryB[1];
+            } else {
+                return tmpAryA[0] - tmpAryB[0];
+            }
+        };
+        betInfos = betInfos.sort(sortScore);
+        const web3 = this.web3Service.instance();
+        this.chartLabels = [];
+        const totalValue = web3.utils.fromWei(gameInfo.totalValue);
+        const valueData = [];
+        const oddsData = [];
+        const betsData = [];
+        const betsLen = betInfos.length;
+        for (let i = 0; i < betsLen; i++) {
+            const tmpValue = web3.utils.fromWei(betInfos[i].totalValue);
+            this.chartLabels.push(betInfos[i].score);
+            valueData.push(tmpValue);
+            oddsData.push((totalValue / tmpValue).toFixed(2));
+            betsData.push(betInfos[i].totalBets);
+        }
+        this.chartData = {
+            valueData: valueData,
+            oddsData: oddsData,
+            betsData: betsData
+        };
+        this.loadingProgress = 0;
+    }
+    betChart() {
         const charCtx = this.chartRef.nativeElement.getContext('2d');
-        // const tmpColor = this.generateRandomColor();
         const scoreColor = 'rgb(51, 51, 255)';
         const oddsColor = 'rgb(255, 0, 0)';
         const betsCountColor = 'rgb(102, 102, 102)';
@@ -264,50 +237,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
             }
         });
 
-        // setTimeout(() => {
-        //     this.chart.update();
-        // }, 1000);
     }
 
-
-    validateChart() {
-        console.log('validateChart');
-        if (!this.chartTitle) {
-            console.warn('Your chart does not have a title, use chartTitle input to insert one');
-        }
-
-
-        if (this.chartData.valueData.length <= 0) {
-            throw Error('Your chart does not have the chatDate property, please insert the chartData to load the chart');
-        }
-
-        if (this.chartLabels.length <= 0) {
-            throw Error('Your chart does not have the chartLabels property, please insert the chartLabels to load the chart');
-        }
-    }
-
-    generateRandomColors() {
-        const colors: string[] = [];
-        for (let index = 0; index < this.chartData.length; index++) {
-            const randomColor1 = Math.floor((Math.random() * 255) + 1);
-            const randomColor2 = Math.floor((Math.random() * 255) + 1);
-            const randomColor3 = Math.floor((Math.random() * 255) + 1);
-            const randomColor4 = Math.random() * (1 - 0.1) + 0.1;
-            let color = `rgba(${randomColor1.toString()},${randomColor2.toString()},${randomColor3.toString()},${randomColor4.toString()})`;
-            colors.push(color);
-            color = null;
-        }
-        this.labelColors = colors;
-        return colors;
-    }
-    generateRandomColor() {
-        const randomColor1 = Math.floor((Math.random() * 255) + 1);
-        const randomColor2 = Math.floor((Math.random() * 255) + 1);
-        const randomColor3 = Math.floor((Math.random() * 255) + 1);
-
-        const randomColor4 = Math.random() * (1 - 0.4) + 0.3;
-        const color = `rgba(${randomColor1.toString()},${randomColor2.toString()},${randomColor3.toString()},${randomColor4.toString()})`;
-        return color;
-    }
+    // validateChart(gameInfo) {
+    // }
 
 }

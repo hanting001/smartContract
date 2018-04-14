@@ -141,6 +141,14 @@ export class WCCService {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         return sc.methods.getGameInfo(index).call();
     }
+    async getGameScoreIndexes(gameIndex) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getGameScoreIndexes(gameIndex).call();
+    }
+    async getGameBetInfo(gameIndex, scoreIndex) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getGameScoreTotalInfo(gameIndex, scoreIndex).call();
+    }
     async getGameBetInfos(index) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const allBets = await sc.methods.getGameScoreIndexes(index).call();

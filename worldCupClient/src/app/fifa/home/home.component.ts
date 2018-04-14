@@ -98,25 +98,23 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         this.court = court;
         this.loadingSer.show();
-        // court.status = '2';
         if (court.status == '0' || court.status == '1') {
-            console.log(court);
+            // console.log(court);
             const web3 = this.web3.instance();
             // const valueInWei = web3.utils.toWei(String(model.ethValue));
             this.web3.currenPrice().then(obj => {
-                console.log(obj.result);
+                // console.log(obj.result);
                 this.price = obj.result.ethusd;
-                console.log(this.price);
+                // console.log(this.price);
                 const model: any = this.buyForm.value;
                 if (model.eth) {
                     this.getUSDValue({ target: { value: model.eth } });
                 }
             });
-
             const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
-            console.log(index);
+            // console.log(index);
             const currenGameInfo = await this.wccSer.getGameInfo(index);
-            console.log(currenGameInfo);
+            // console.log(currenGameInfo);
             const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
             const totalBets = currenGameInfo.totalBets;
             this.chartTitle = {
@@ -124,49 +122,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 totalBets: totalBets,
                 avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
             };
-
-            const betInfos = await this.wccSer.getGameBetInfos(index);
-
-            const sortScore = function (a, b) {
-                const scoreA = a.score.replace(/>10/g, '11');
-                const scoreB = b.score.replace(/>10/g, '11');
-                const tmpAryA = scoreA.split(':');
-                const tmpAryB = scoreB.split(':');
-                if (tmpAryA[0] == tmpAryB[0]) {
-                    return tmpAryA[1] - tmpAryB[1];
-                } else {
-                    return tmpAryA[0] - tmpAryB[0];
-                }
-            };
-            betInfos.betInfos = betInfos.betInfos.sort(sortScore);
-            this.chartLabels = [];
-
-            const valueData = [];
-            const oddsData = [];
-            const betsData = [];
-            const betsLen = betInfos.betInfos.length;
-            for (let i = 0; i < betsLen; i++) {
-                const tmpValue = web3.utils.fromWei(betInfos.betInfos[i].totalValue);
-                this.chartLabels.push(betInfos.betInfos[i].score);
-                valueData.push(tmpValue);
-                oddsData.push((totalValue / tmpValue).toFixed(2));
-                betsData.push(betInfos.betInfos[i].totalBets);
-            }
             this.chartData = {
-                valueData: valueData,
-                oddsData: oddsData,
-                betsData: betsData
+                currentGameInfo: currenGameInfo,
+                currentGameIndex: index
             };
             this.buyModalRef = this.openModal(this.buyTemplate);
             this.loadingSer.hide();
-            console.log(this.chartData);
-            // this.chartOtherInfo['totalValue'] = Number(totalValue).toFixed(5);
-            // this.chartOtherInfo['totalCount'] = totalCount;
-            // this.chartOtherInfo['averageBet'] = (totalBets / totalCount).toFixed(5);
-            console.log(betInfos);
-            // console.log(this.odds);
-
-
         } else if (court.status == '2') {
             this.claimModalRef = this.openModal(this.claimTemplate);
         }
@@ -275,30 +236,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 this.loadingProgress = Number((temps.length / indexes.length).toFixed(2)) * 100;
             }
             this.loading = false;
-            // let gameInfos = await this.wccSer.getAllPlayers();
-            // gameInfos = gameInfos.sort(sortNumber);
-            // console.log(gameInfos);
-            // games = [];
-            // const gameLen = gameInfos.length;
-            // for (let i = 0; i < gameLen; i++) {
-            //     const game: any = {};
-            //     console.log(gameInfos[i].time);
-            //     console.log(new Date(gameInfos[i].time * 1));
-            //     game.local = false;
-            //     const date = moment(gameInfos[i].time * 1000);
-            //     game.date = date.format('YYYY-MM-DD');
-            //     game.day = date.format('DD');
-            //     game.dayOfWeek = date.isoWeekday();
-            //     if (games.length > 0 && games[games.length - 1].date == game.date) {
-            //         games[games.length - 1].count++;
-            //         games[games.length - 1].courts.push(gameInfos[i]);
-            //     } else {
-            //         game.count = 1;
-            //         game.courts = [gameInfos[i]];
-            //         games.push(game);
-            //     }
-            // }
-            // this.games = games;
             this.localStorage.setItem('games', this.games).toPromise();
         }
     }

@@ -106,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <div id="chartDiv" *ngIf="chartData&&chartData.valueData.length>0" align="center">
+        <div id="chartDiv"  align="center">
             <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
                 [chartOtherInfo]='chartOtherInfo'>
             </chartjs-component>
@@ -190,8 +190,7 @@
 <ng-template #claimTemplate>
     <div class="modal-body text-center">
         <div id="chartDiv" *ngIf="chartData&&chartData.length>0" align="center">
-            <chartjs-component [chartTitle]="chartTitle" [chartType]="'line'" [dataSetLabel]="'ETH'" [chartData]='chartData' [chartLabels]='chartLabels'
-                [chartOtherInfo]='chartOtherInfo'>
+            <chartjs-component [chartTitle]="chartTitle"  [chartType]="'line'" [dataSetLabel]="'ETH'" [chartData]='chartData' [chartLabels]='chartLabels'>
             </chartjs-component>
         </div>
 
