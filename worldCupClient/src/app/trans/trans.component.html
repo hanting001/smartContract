@@ -14,6 +14,10 @@
 
 <div [hidden]="!envState.checkWeb3" class="jumbotron jumbotron-fluid bg-white">
     <div class="container">
+        <div class="progress" style="height: 1px;">
+            <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+            <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+        </div>
         <div class="card  p-3">
             <p class="lead m-0">My Bets</p>
             <table class="table table-striped table-sm mb-4" *ngFor="let info of betInfos">
@@ -47,8 +51,8 @@
                         <td>
                             {{bet.score}}
                         </td>
-                        <td>
-                            {{bet.value | fromWei}}
+                        <td class="align-middle">
+                            {{bet.value | fromWei}} <small>ETH</small>
                         </td>
                         <td>
                             {{bet.win}}

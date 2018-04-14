@@ -90,13 +90,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
 
     async getBalance() {
+        this.loadingSer.show();
         const result = await this.wccSer.getExchangerInfo();
         this.rate = result.rate;
         this.exchanged = result.exchanged;
         this.totalSupply = Number(result.tokenBalance) + Number(result.exchanged);
         this.scTokenBalance = result.tokenBalance;
         this.balance = await this.flightDelayService.getBalance();
-
+        this.loadingSer.hide();
     }
 
 }
