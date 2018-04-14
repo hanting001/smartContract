@@ -13,7 +13,7 @@ export class LoadingService {
     }
 
     hide() {
-        this.loadingObservable.next({ loading: true });
+        this.loadingObservable.next({ loading: false });
     }
 
     getLoadingObservable(): Subject<any> {
