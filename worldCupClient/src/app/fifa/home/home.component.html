@@ -106,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <div id="chartDiv"  align="center">
+        <div id="chartDiv" align="center">
             <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
                 [chartOtherInfo]='chartOtherInfo'>
             </chartjs-component>
@@ -187,14 +187,9 @@
 </ng-template>
 
 
-<ng-template #claimTemplate>
+<ng-template #voteTemplate>
     <div class="modal-body text-center">
-        <div id="chartDiv" *ngIf="chartData&&chartData.length>0" align="center">
-            <chartjs-component [chartTitle]="chartTitle"  [chartType]="'line'" [dataSetLabel]="'ETH'" [chartData]='chartData' [chartLabels]='chartLabels'>
-            </chartjs-component>
-        </div>
-
-        <form (ngSubmit)="bet()" [formGroup]="claimForm" class="col-sm-12">
+        <form (ngSubmit)="vote()" [formGroup]="voteForm" class="col-sm-12">
             <div class="card  bg-info" style="margin-top:15px;">
                 <table class="table">
                     <tr>
@@ -206,61 +201,34 @@
                     </tr>
                     <tr>
                         <td style="border:0">
-                            <select class=" form-control" formControlName="awayScore" aria-describedby="scoreHelpBlock">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value=">10">>10</option>
-                            </select>
+                            1
                             <!-- <small id="scoreHelpBlock" class="form-text text-muted">
                                 Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters,
                                 or emoji.
                             </small> -->
                         </td>
                         <td style="border:0">
-                            <select class="form-control" formControlName="homeScore">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value=">10">>10</option>
-                            </select>
+                            1
                         </td>
 
                     </tr>
                 </table>
-                <div class="form-group row border-top m-0 p-2 ">
-                    <div class="input-group col-6 pl-0" style="font-size:1.2rem">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">ETH To Bet</span>
-                        </div>
-                        <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
+                <div class="form-group row">
+                    <div class="col btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-warning" (click)="voteOptionChange('1')">
+                             <input type="radio" name="voteOption" [value]='1'  formControlName="voteOption"   > Yes
+                        </label>
+                        <label class="btn btn-warning" (click)="voteOptionChange('0')">
+                             <input type="radio" name="voteOption" [value]="0" formControlName="voteOption"  > No
+                        </label>
                     </div>
-                    <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
-                        {{USDPrice|currency}}, ETH price get from etherscan.io.
-                    </small>
                 </div>
+
             </div>
 
 
             <div class="form-group" style="margin-top: 50px;">
-                <button type="submit" class="btn btn-primary btn-lg">Bet</button>
-                <button type="button" class="btn btn-default btn-lg" (click)="hideCourt()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-lg">Vote</button>
             </div>
         </form>
     </div>

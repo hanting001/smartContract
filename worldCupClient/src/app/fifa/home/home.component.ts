@@ -28,14 +28,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     buyForm: FormGroup;
 
     claimModalRef: BsModalRef;
-    claimForm: FormGroup;
+    voteForm: FormGroup;
     loading = false;
     loadingProgress: Number = 0;
     price;
     balance = {};
     USDPrice;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
-    @ViewChild('claimTemplate') claimTemplate: TemplateRef<any>;
+    @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
     chartData;
@@ -61,10 +61,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             eth: ['0.0', [Validators.required]]
         });
 
-        this.claimForm = this.fb.group({
-            homeScore: ['0', [Validators.required]],
-            awayScore: ['0', [Validators.required]],
-            eth: ['0.0', [Validators.required]]
+        this.voteForm = this.fb.group({
+            voteOption: ['', [Validators.required]]
         });
     }
 
@@ -97,9 +95,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     async show(court) {
         this.court = court;
+        console.log(court);
         this.loadingSer.show();
+        const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        console.log(index);
         if (court.status == '0' || court.status == '1') {
-            // console.log(court);
+
             const web3 = this.web3.instance();
             // const valueInWei = web3.utils.toWei(String(model.ethValue));
             this.web3.currenPrice().then(obj => {
@@ -115,8 +116,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 console.log(balance);
                 this.balance = balance;
             });
-            const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
-            // console.log(index);
+
+
             const currenGameInfo = await this.wccSer.getGameInfo(index);
             // console.log(currenGameInfo);
             const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
@@ -133,7 +134,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.buyModalRef = this.openModal(this.buyTemplate);
             this.loadingSer.hide();
         } else if (court.status == '2') {
-            this.claimModalRef = this.openModal(this.claimTemplate);
+            this.claimModalRef = this.openModal(this.voteTemplate);
+            this.loadingSer.hide();
         }
     }
     getUSDValue(event) {
@@ -193,6 +195,49 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
     }
 
+    voteOptionChange(value) {
+        console.log(value);
+        this.voteForm.controls['voteOption'].setValue(value);
+    }
+
+
+    async vote() {
+        const model: any = this.voteForm.value;
+        console.log(model);
+        if (this.voteForm.valid) {
+            this.loadingSer.show();
+            const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
+
+            const check = await this.wccSer.voteCheck(index);
+            console.log(check);
+            if (check.checkResult != 0) {
+                this.loadingSer.hide();
+                return this.alertSer.show(check.message);
+            }
+
+            this.wccSer.vote(index, model.voteOption, async (transactionHash) => {
+                await this.localActionSer.addAction({
+                    transactionHash: transactionHash, netType: this.envState.netType,
+                    model: model, createdAt: new Date(), type: 'vote'
+                }, this.envState.account);
+            }, async (confirmNum, receipt) => {
+                if (confirmNum == 1) {
+                    if (this.buyModalRef) {
+                        this.buyModalRef.hide();
+                    }
+                    this.loadingSer.hide();
+                    this.alertSer.show(' Vote success!');
+                    this.voteForm.reset();
+                }
+            }, async (err) => {
+                console.log(err);
+                this.loadingSer.hide();
+                this.alertSer.show('User denied transaction signature');
+            });
+
+
+        }
+    }
 
     async checkEnv() {
         const tempEnvState: any = await this.web3.check();

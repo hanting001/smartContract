@@ -226,7 +226,10 @@ export class WCCService {
             1: 'too small exchange value',
             2: 'the contract have no enough balance'
         };
-        const checkResult = await sc.methods.exchangeCheck(value).call();
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const checkResult = await sc.methods.exchangeCheck(value).call(options);
         return {
             checkResult: checkResult,
             message: msgObj[checkResult]
@@ -240,7 +243,30 @@ export class WCCService {
             2: 'wrong status',
             3: 'too small chip'
         };
-        const checkResult = await sc.methods.joinCheck(gameIndex, value).call();
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const checkResult = await sc.methods.joinCheck(gameIndex, value).call(options);
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
+    async voteCheck(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const msgObj = {
+            1: 'game not exist',
+            2: 'wrong status',
+            3: 'vote ended',
+            4: 'vote not exist',
+            5: 'has voted',
+            6: 'no vote token'
+        };
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const checkResult = await sc.methods.voteCheck(gameIndex).call(options);
         return {
             checkResult: checkResult,
             message: msgObj[checkResult]
@@ -265,6 +291,40 @@ export class WCCService {
                     onTransactionHash(transactionHash);
                 }
                 console.log(`join txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+
+
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
+
+    async vote(gameIndex, yesOrNo, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.vote(gameIndex, yesOrNo)
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`vote txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
