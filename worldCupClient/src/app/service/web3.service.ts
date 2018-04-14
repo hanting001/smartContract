@@ -182,4 +182,23 @@ export class Web3Service {
         dataObject.gas = await this.web3.eth.estimateGas(dataObject);
         return dataObject;
     }
+    async getBalance() {
+        const tokenSC = await this.getContract('knotToken', 'KnotToken');
+        const account = await this.getMainAccount();
+        const eth = await this.web3.eth.getBalance(account);
+        const token = await tokenSC.methods.balanceOf(account).call();
+        return {
+            eth: this.web3.utils.fromWei(eth),
+            token: this.web3.utils.fromWei(token)
+        };
+    }
+    async getBalanceByAccount(account) {
+        const tokenSC = await this.getContract('knotToken', 'KnotToken');
+        const eth = await this.web3.eth.getBalance(account);
+        const token = await tokenSC.methods.balanceOf(account).call();
+        return {
+            eth: this.web3.utils.fromWei(eth),
+            token: this.web3.utils.fromWei(token)
+        };
+    }
 }

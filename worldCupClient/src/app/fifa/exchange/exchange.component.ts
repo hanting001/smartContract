@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Web3Service, FlightDelayService, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
+import { Web3Service, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,7 +21,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     subscription;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
-        public flightDelayService: FlightDelayService,
         public wccSer: WCCService,
         private router: Router,
         public loadingSer: LoadingService,
@@ -96,7 +95,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.exchanged = result.exchanged;
         this.totalSupply = Number(result.tokenBalance) + Number(result.exchanged);
         this.scTokenBalance = result.tokenBalance;
-        this.balance = await this.flightDelayService.getBalance();
+        this.balance = await this.web3.getBalance();
         this.loadingSer.hide();
     }
 

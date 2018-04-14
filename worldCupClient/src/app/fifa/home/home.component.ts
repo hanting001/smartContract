@@ -32,7 +32,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     loading = false;
     loadingProgress: Number = 0;
     price;
-
+    balance = {};
     USDPrice;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('claimTemplate') claimTemplate: TemplateRef<any>;
@@ -111,6 +111,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.getUSDValue({ target: { value: model.eth } });
                 }
             });
+            this.web3.getBalance().then(balance => {
+                console.log(balance);
+                this.balance = balance;
+            });
             const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
             // console.log(index);
             const currenGameInfo = await this.wccSer.getGameInfo(index);
@@ -170,7 +174,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     model: model, createdAt: new Date(), type: 'join'
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
-                if (confirmNum == 2) {
+                if (confirmNum == 1) {
                     if (this.buyModalRef) {
                         this.buyModalRef.hide();
                     }

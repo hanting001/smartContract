@@ -16,7 +16,7 @@ import { LocalStorageModule } from '@ngx-pwa/local-storage';
 import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
 
 import {
-    Web3Service, FlightDelayService, LoadingService, LocalOrderService,
+    Web3Service, LoadingService, LocalOrderService,
     WCCService, LocalActionService, AlertService
 } from './service/index';
 
@@ -82,7 +82,7 @@ import { TransComponent } from './trans/trans.component';
         ReactiveFormsModule,
         DlDateTimePickerDateModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService],
+    providers: [Web3Service, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
