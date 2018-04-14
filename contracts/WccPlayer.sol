@@ -53,7 +53,7 @@ contract WccPlayer is Ownable, Stoppable{
     function isWin(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(bool win, uint value) {
         var (target,,,,,) = wccs.voteInfos(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
-        if (target == _scoreIndex) { // win
+        if (keccak256(target) == _scoreIndex) { // win
             var (,totalWinValue,,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
             return (true, totalValue.mul(myValue).div(totalWinValue));

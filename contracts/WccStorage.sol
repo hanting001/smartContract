@@ -108,7 +108,7 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     struct VoteInfo {
-        bytes32 target;
+        string target;
         uint yesCount;
         uint noCount;
         bool passed;
@@ -191,7 +191,7 @@ contract WccStorage is Ownable {
     function setVote(bytes32 _gameIndex, string _result) external onlyAdmin {
         if (!voteInfos[_gameIndex].isValued) {
             voteInfos[_gameIndex] = VoteInfo({
-                target: keccak256(_result),
+                target: _result,
                 yesCount: 0,
                 noCount: 0,
                 passed: false,
@@ -201,8 +201,8 @@ contract WccStorage is Ownable {
             });
         } else {
             bytes32 resultIndex = keccak256(_result);
-            if (voteInfos[_gameIndex].target != resultIndex) {
-                voteInfos[_gameIndex].target = resultIndex;
+            if (keccak256(voteInfos[_gameIndex].target) != resultIndex) {
+                voteInfos[_gameIndex].target = _result;
                 voteInfos[_gameIndex].changed = true;
             }
             

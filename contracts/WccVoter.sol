@@ -100,7 +100,6 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
-
     /// @author Bob Clampett
     /// @notice user vote
     /// @param _gameIndex game index
