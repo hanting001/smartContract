@@ -23,7 +23,7 @@ import {
 import { DelayRatePipe } from './shared/pipes';
 
 import { AppComponent } from './app.component';
-import { LoadingModule } from 'ngx-loading';
+import { LoadingModule } from './ngx-loading';
 import { TransactionPipe } from './service/pipe/transaction.pipe';
 import { TransactionUrlPipe } from './service/pipe/transaction-url.pipe';
 import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';

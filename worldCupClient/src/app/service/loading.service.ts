@@ -3,20 +3,20 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class LoadingService {
-    private loadingObservable: Subject<Boolean> = new Subject<Boolean>();
+    private loadingObservable: Subject<any> = new Subject<any>();
     constructor() {
 
     }
 
-    show() {
-        this.loadingObservable.next(true);
+    show(text?) {
+        this.loadingObservable.next({ loading: true, loadingText: text });
     }
 
     hide() {
-        this.loadingObservable.next(false);
+        this.loadingObservable.next({ loading: true });
     }
 
-    getLoadingObservable(): Subject<Boolean> {
+    getLoadingObservable(): Subject<any> {
         return this.loadingObservable;
     }
 

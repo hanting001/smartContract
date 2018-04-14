@@ -75,6 +75,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }
             this.envState = tempEnvState;
         });
+
+
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -96,7 +98,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         this.court = court;
         console.log(court);
-        this.loadingSer.show();
+        // this.loadingSer.show('正在加载');
+        // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
         if (court.status == '0' || court.status == '1') {

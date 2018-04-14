@@ -4,3 +4,60 @@ sticky-wrapper {
     margin: 0 auto -60px;
     padding: 0 0 60px;
 }
+
+.backdrop {
+    z-index: 1999;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.loading {
+    position: fixed;
+    width: 30%;
+    top: 45%;
+    left: 35%;
+    opacity: 1;
+    -moz-opacity: 1;
+    filter: alpha(opacity=100);
+    z-index: 2001;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 15px 15px;
+    background: rgba(0, 0, 0, 0.6);
+    /* bring your own prefixes */
+}
+
+.bounce>div {
+    width: 18px;
+    height: 18px;
+    background-color: #ffffff;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.bounce .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.bounce .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0)
+    }
+    40% {
+        -webkit-transform: scale(1.0)
+    }
+}
