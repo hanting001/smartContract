@@ -337,7 +337,30 @@ export class WCCService {
         //     console.log(error);
         //   });
     }
-
+    async getUserJoinedGameIndexes() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getUserJoinedGameIndexes().call();
+    }
+    async getUserJoinedGameScoreIndexes(gameIndex) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call();
+    }
+    async getUserJoinedGameScoreInfo(gameIndex, gameInfo, scoreIndex) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndex, scoreIndex).call();
+        if (gameInfo.status === '3') {
+            const isWin = await playerSC.methods.isWin(gameIndex, scoreIndex).call();
+            if (isWin.win) {
+                scoreInfo.win = isWin.value;
+            } else {
+                scoreInfo.win = 'No';
+            }
+        } else {
+            scoreInfo.win = 'Underway';
+        }
+        return scoreInfo;
+    }
     async getUserBetsInfo() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
