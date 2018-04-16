@@ -243,19 +243,24 @@
                     </table>
                 </div>
                 <div class="card-footer text-light">
-                    <div class="form-group">
-                        <label for="myVote">Agree with the score?</label>
-                        <div class="btn-group" id="myVote" btnRadioGroup formControlName="voteOption">
-                            <label class="btn btn-success" btnRadio="1">Yes</label>
-                            <label class="btn btn-secondary" btnRadio="0">No</label>
+                    <div class="row align-items-center">
+                        <div class="col align-middle">
+                            <div class="form-group">
+                                <label for="myVote">Agree with the score?</label>
+                                <div class="btn-group" id="myVote" btnRadioGroup formControlName="voteOption">
+                                    <label class="btn btn-success m-0" btnRadio="1">Yes</label>
+                                    <label class="btn btn-secondary m-0" btnRadio="0">No</label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-outline-light btn-lg">Submit Vote</button>
+                        <div class="col text-left align-middle">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-outline-light">Submit Vote</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </form>
     </div>
 </ng-template>
