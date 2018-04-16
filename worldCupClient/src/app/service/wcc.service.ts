@@ -183,7 +183,9 @@ export class WCCService {
     }
     async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
-        const key = web3.utils.keccak256(model.arrayCourt + model.homeCourt + model.gameType);
+        console.log(model.p1 + model.p2 + model.gameType);
+        const key = web3.utils.keccak256(model.p1 + model.p2 + model.gameType);
+        console.log(key);
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
