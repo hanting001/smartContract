@@ -18,12 +18,11 @@ export class Web3Service {
         console.log('============================');
         setInterval(() => {
             this.check();
-        }, 20000);
+        }, 10000);
 
         // this.check();
     }
     async getMainAccount() {
-        // return '0x0029661cF02973952495908BEf59bB3C92847d1f';
         if (this.web3.eth.defaultAccount) {
             return this.web3.eth.defaultAccount;
         }

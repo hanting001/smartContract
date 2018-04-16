@@ -36,7 +36,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
             console.log(tempEnvState);
-            if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
+            if (tempEnvState.checkEnv === true &&
+                (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
+            ) {
                 await this.getBalance();
             }
             this.envState = tempEnvState;

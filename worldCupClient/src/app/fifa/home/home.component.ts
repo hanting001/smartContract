@@ -18,7 +18,7 @@ import * as moment from 'moment';
     styleUrls: ['./home.component.css']
 })
 export class FifaHomeComponent implements OnInit, OnDestroy {
-    envState: any = { checkWeb3: true, checkAccount: true };
+    envState: any = { checkWeb3: true, checkAccount: true, changed: false };
     gameInfos: any = [];
     games: any = [];
     court: any = {};
@@ -71,10 +71,17 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
-            if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
+            if (tempEnvState.checkEnv === true &&
+                (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
+            ) {
+                this.envState = tempEnvState;
+                this.envState.changed = true;
                 this.getAllGames();
+            } else {
+                this.envState = tempEnvState;
+                this.envState.changed = false;
             }
-            this.envState = tempEnvState;
+
         });
 
 
@@ -271,7 +278,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async getAllGames() {
         const isGameUpdated = await this.wccSer.isGameUpdated();
         const games = await this.localStorage.getItem<any[]>('games').toPromise();
-        if (!isGameUpdated && games && games.length > 0) {
+        if (!isGameUpdated && games && games.length > 0 && !this.envState.changed) {
             this.games = games;
             console.log(this.games);
             console.log('from local storage');

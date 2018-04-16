@@ -23,7 +23,9 @@ export class TransComponent implements OnInit, OnDestroy {
         this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
-            if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
+            if (tempEnvState.checkEnv === true &&
+                (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
+            ) {
                 // this.wccService.getUserBetsInfo().then(infos => {
                 //     console.log(infos);
                 //     this.betInfos = infos;
@@ -48,7 +50,9 @@ export class TransComponent implements OnInit, OnDestroy {
         if (this.voteInfos && this.voteInfos.length > 0) {
             return;
         }
+        this.loading.show();
         const gameIndexes = await this.wccService.getUserVotedGameIndexes();
+        this.loading.hide();
         for (let i = 0; i < gameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
             const voteInfos = [];
@@ -65,7 +69,9 @@ export class TransComponent implements OnInit, OnDestroy {
         if (this.betInfos && this.betInfos.length > 0) {
             return;
         }
+        this.loading.show();
         const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
+        this.loading.hide();
         for (let i = 0; i < joinedGameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
             const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
