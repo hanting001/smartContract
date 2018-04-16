@@ -18,7 +18,7 @@ export class Web3Service {
         console.log('============================');
         setInterval(() => {
             this.check();
-        }, 20000);
+        }, 10000);
 
         // this.check();
     }
@@ -107,8 +107,8 @@ export class Web3Service {
         // const ret = this.web3.setProvider(Web3.givenProvider);
         try {
             const state = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
-            const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
-            // const ret = this.web3.setProvider('http://localhost:7545');
+            // const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
+            const ret = this.web3.setProvider('http://localhost:7545');
             if (!ret) {
                 state.checkWeb3 = false;
             } else {
