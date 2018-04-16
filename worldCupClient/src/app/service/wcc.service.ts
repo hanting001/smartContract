@@ -90,11 +90,13 @@ export class WCCService {
     }
 
     async addPlayer(model, onTransactionHash, onConfirmation, onError?) {
+        console.log(model);
+        console.log(moment(new Date(model.startTime)).unix());
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
         };
-        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).unix())
+        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(new Date(model.startTime)).unix())
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
@@ -129,6 +131,7 @@ export class WCCService {
         const gameInfos = [];
         for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
+            gameInfo.index = index;
             gameInfos.push(gameInfo);
         }
         return gameInfos;
@@ -181,16 +184,16 @@ export class WCCService {
         const web3 = this.web3Service.instance();
         return web3.utils.soliditySha3({ t: 'string', v: p1 }, { t: 'string', v: p2 }, { t: 'uint8', v: gameType });
     }
-    async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
+    async delPlayer(index, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
-        console.log(model.p1 + model.p2 + model.gameType);
-        const key = web3.utils.keccak256(model.p1 + model.p2 + model.gameType);
-        console.log(key);
+        // console.log(model.p1 + model.p2 + model.gameType);
+        // const key = web3.utils.keccak256(model.p1 + model.p2 + model.gameType);
+        // console.log(key);
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
         };
-        sc.methods.removeGame(key)
+        sc.methods.removeGame(index)
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);

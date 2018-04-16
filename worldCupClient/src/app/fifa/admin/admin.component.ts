@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-admin',
@@ -18,10 +19,14 @@ export class FifaAdminComponent implements OnInit {
     mytime: Date = new Date();
     gameInfos: any = [];
 
+    addingGame: any = [];
+    addingText: String = '';
+
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         public loadingSer: LoadingService,
+        private http: HttpClient,
         public alertSer: AlertService) {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
@@ -73,6 +78,53 @@ export class FifaAdminComponent implements OnInit {
         }
     }
 
+    async addAllPlayers() {
+        const myHeaders = new Headers();
+        myHeaders.set('Content-Type', 'text/html');
+        this.loadingSer.show();
+        this.http.get('assets/games.txt?' + new Date().getTime(), { responseType: 'text' }).toPromise().then((data) => {
+            console.log(data);
+
+            const gamesArray = data.split('\n');
+            console.log(gamesArray);
+            const gamesLen = gamesArray.length;
+            let i = 0;
+            const addingTimeout = setInterval(() => {
+                console.log('添加第' + i + '场比赛');
+                const tmpAry = gamesArray[i].split(',');
+
+                // if (i == 3) {
+                //     clearInterval(addingTimeout);
+                //     return;
+                // }
+
+                if (tmpAry && tmpAry.length == 3) {
+                    this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
+                    this.addingGame = tmpAry;
+                    this.wccSer.addPlayer({
+                        awayCourt: tmpAry[0],
+                        startTime: new Date(tmpAry[1].trim() + ':00'),
+                        homeCourt: tmpAry[2],
+                        gameType: '0'
+                    }, async (transactionHash) => { }, async (confirmNum, recipt) => {
+                        if (confirmNum == 2) {
+                            this.gameInfos = await this.wccSer.getAllPlayers();
+                            this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
+                        }
+                    });
+
+                } else {
+                    this.addingText = '完成添加所有比赛';
+                    clearTimeout(addingTimeout);
+                    this.loadingSer.hide();
+
+                }
+                i++;
+            }, 5000);
+        });
+
+    }
+
     async exch() {
         if (this.exchForm.valid) {
             this.loadingSer.show();
@@ -97,12 +149,12 @@ export class FifaAdminComponent implements OnInit {
         }
     }
 
-    delGame(game) {
-        const model = game;
+    delGame(index) {
+        // const model = game;
 
-        console.log(model);
+        // console.log(model);
         this.loadingSer.show();
-        this.wccSer.delPlayer(model, async (transactionHash) => { }, async (confirmNum, recipt) => {
+        this.wccSer.delPlayer(index, async (transactionHash) => { }, async (confirmNum, recipt) => {
             if (confirmNum == 2) {
                 this.loadingSer.hide();
                 this.gameInfos = await this.wccSer.getAllPlayers();
