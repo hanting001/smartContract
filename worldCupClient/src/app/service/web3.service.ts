@@ -23,12 +23,11 @@ export class Web3Service {
         // this.check();
     }
     async getMainAccount() {
-        // return '0x0029661cF02973952495908BEf59bB3C92847d1f';
         if (this.web3.eth.defaultAccount) {
             return this.web3.eth.defaultAccount;
         }
         const accounts = await this.web3.eth.getAccounts();
-        this.web3.eth.defaultAccount = accounts[accounts.length - 1];
+        this.web3.eth.defaultAccount = accounts[0];
         return this.web3.eth.defaultAccount;
         // return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
     }
@@ -108,8 +107,8 @@ export class Web3Service {
         // const ret = this.web3.setProvider(Web3.givenProvider);
         try {
             const state = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
-            // const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
-            const ret = this.web3.setProvider('http://localhost:7545');
+            const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
+            // const ret = this.web3.setProvider('http://localhost:7545');
             if (!ret) {
                 state.checkWeb3 = false;
             } else {
