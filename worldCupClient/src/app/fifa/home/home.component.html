@@ -61,7 +61,7 @@
         <div class="row ">
             <table class="table table-hover mb-4">
                 <tbody>
-                    <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Click">
+                    <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="{{court.status | gameStatus}}">
                         <td class="align-middle" style="width:40%">
                             <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
                         </td>
@@ -176,7 +176,9 @@
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">
-                            <button type="submit" class="btn btn-outline-light">Submit Bet</button>
+                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" class="btn btn-outline-light">Submit Bet</button>
+                            <button [hidden]="chartData.currentGameInfo.status != 1" type="submit" disabled class="btn btn-outline-secondary disabled"
+                                readonly>Game is playing</button>
                         </div>
                     </div>
                 </div>
@@ -189,47 +191,41 @@
 
 <ng-template #voteTemplate>
     <div class="modal-body text-center">
-        <form (ngSubmit)="vote()" [formGroup]="voteForm" class="col-sm-12">
+        <form (ngSubmit)="vote()" [formGroup]="voteForm">
             <div class="card  bg-info" style="margin-top:15px;">
-                <table class="table">
-                    <tr>
-                        <td style="border:0;width:40%" class="text-left align-middle">
-                            <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
-                        <td style="border:0;width:40%" class="text-left align-middle">
-                            <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                    </tr>
-                    <tr>
-                        <td style="border:0">
-                            1
-                            <!-- <small id="scoreHelpBlock" class="form-text text-muted">
-                                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters,
-                                or emoji.
-                            </small> -->
-                        </td>
-                        <td style="border:0">
-                            1
-                        </td>
-
-                    </tr>
-                </table>
-                <div class="form-group row">
-                    <div class="col btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-warning" (click)="voteOptionChange('1')">
-                             <input type="radio" name="voteOption" [value]='1'  formControlName="voteOption"   > Yes
-                        </label>
-                        <label class="btn btn-warning" (click)="voteOptionChange('0')">
-                             <input type="radio" name="voteOption" [value]="0" formControlName="voteOption"  > No
-                        </label>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <td style="border:0;width:40%" class="text-center align-middle">
+                                <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                            <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                            <td style="border:0;width:40%" class="text-center align-middle">
+                                <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:0">
+                                <h1>1</h1>
+                            </td>
+                            <td style="border:0">
+                                <h1>1</h1>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-footer text-light">
+                    <div class="form-group">
+                        <label for="myVote">Agree with the score?</label>
+                        <div class="btn-group" id="myVote" btnRadioGroup formControlName="voteOption">
+                            <label class="btn btn-success" btnRadio="1">Yes</label>
+                            <label class="btn btn-secondary" btnRadio="0">No</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-light btn-lg">Submit Vote</button>
                     </div>
                 </div>
-
             </div>
 
-
-            <div class="form-group" style="margin-top: 50px;">
-                <button type="submit" class="btn btn-primary btn-lg">Vote</button>
-            </div>
         </form>
     </div>
 </ng-template>

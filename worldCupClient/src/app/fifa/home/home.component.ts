@@ -27,13 +27,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
 
-    claimModalRef: BsModalRef;
+    voteModalRef: BsModalRef;
     voteForm: FormGroup;
     loading = false;
     loadingProgress: Number = 0;
     price;
     balance = {};
     USDPrice;
+    myVote = 1;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -62,7 +63,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         });
 
         this.voteForm = this.fb.group({
-            voteOption: ['', [Validators.required]]
+            voteOption: ['1', [Validators.required]]
         });
     }
 
@@ -137,7 +138,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.buyModalRef = this.openModal(this.buyTemplate);
             this.loadingSer.hide();
         } else if (court.status == '2') {
-            this.claimModalRef = this.openModal(this.voteTemplate);
+            this.voteModalRef = this.openModal(this.voteTemplate);
             this.loadingSer.hide();
         }
     }
