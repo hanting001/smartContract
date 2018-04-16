@@ -189,6 +189,35 @@
 
 <ng-template #voteTemplate>
     <div class="modal-body text-center">
+        <div class="container text-center" id="chartDiv" align="center">
+            <div class="row text-center">
+                <div class="col">
+                    <small class="text-secondary">Total Value</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Total Bets</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Average Value</small>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col">
+                    <h5> {{chartTitle.totalValue}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{chartTitle.totalBets}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{chartTitle.avg}}</h5>
+                </div>
+            </div>
+        </div>
+        <div id="chartDiv" align="center">
+            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
+                [chartOtherInfo]='chartOtherInfo'>
+            </chartjs-component>
+        </div>
         <form (ngSubmit)="vote()" [formGroup]="voteForm" class="col-sm-12">
             <div class="card  bg-info" style="margin-top:15px;">
                 <table class="table">
