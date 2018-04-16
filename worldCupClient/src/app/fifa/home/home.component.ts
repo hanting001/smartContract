@@ -103,44 +103,43 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
+        const web3 = this.web3.instance();
+        // const valueInWei = web3.utils.toWei(String(model.ethValue));
+        this.web3.currenPrice().then(obj => {
+            // console.log(obj.result);
+            this.price = obj.result.ethusd;
+            // console.log(this.price);
+            const model: any = this.buyForm.value;
+            if (model.eth) {
+                this.getUSDValue({ target: { value: model.eth } });
+            }
+        });
+        this.web3.getBalance().then(balance => {
+            console.log(balance);
+            this.balance = balance;
+        });
+
+
+        const currenGameInfo = await this.wccSer.getGameInfo(index);
+        // console.log(currenGameInfo);
+        const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+        const totalBets = currenGameInfo.totalBets;
+        this.chartTitle = {
+            totalValue: Number(totalValue).toFixed(6),
+            totalBets: totalBets,
+            avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+        };
+        this.chartData = {
+            currentGameInfo: currenGameInfo,
+            currentGameIndex: index
+        };
         if (court.status == '0' || court.status == '1') {
-
-            const web3 = this.web3.instance();
-            // const valueInWei = web3.utils.toWei(String(model.ethValue));
-            this.web3.currenPrice().then(obj => {
-                // console.log(obj.result);
-                this.price = obj.result.ethusd;
-                // console.log(this.price);
-                const model: any = this.buyForm.value;
-                if (model.eth) {
-                    this.getUSDValue({ target: { value: model.eth } });
-                }
-            });
-            this.web3.getBalance().then(balance => {
-                console.log(balance);
-                this.balance = balance;
-            });
-
-
-            const currenGameInfo = await this.wccSer.getGameInfo(index);
-            // console.log(currenGameInfo);
-            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-            const totalBets = currenGameInfo.totalBets;
-            this.chartTitle = {
-                totalValue: Number(totalValue).toFixed(6),
-                totalBets: totalBets,
-                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
-            };
-            this.chartData = {
-                currentGameInfo: currenGameInfo,
-                currentGameIndex: index
-            };
             this.buyModalRef = this.openModal(this.buyTemplate);
-            this.loadingSer.hide();
         } else if (court.status == '2') {
             this.voteModalRef = this.openModal(this.voteTemplate);
-            this.loadingSer.hide();
         }
+
+        this.loadingSer.hide();
     }
     getUSDValue(event) {
         // console.log(event.target.value);
