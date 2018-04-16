@@ -26,7 +26,7 @@ export class FifaAdminComponent implements OnInit {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
             homeCourt: ['', [Validators.required]],
-            startTime: ['', [Validators.required]],
+            startTime: [new Date('2018-06-14'), [Validators.required]],
             gameType: ['0', [Validators.required]]
         });
 
@@ -66,6 +66,7 @@ export class FifaAdminComponent implements OnInit {
                     this.loadingSer.hide();
                     this.gameInfos = await this.wccSer.getAllPlayers();
                     this.form.reset();
+                    this.form.controls['gameType'].setValue('0');
                     this.alertSer.show('添加成功');
                 }
             });
@@ -96,8 +97,10 @@ export class FifaAdminComponent implements OnInit {
         }
     }
 
-    delGame(p1, p2, gameType) {
-        const model = { arrayCourt: p1, homeCourt: p2, gameType: gameType };
+    delGame(game) {
+        console.log(game);
+        return;
+        const model = game;
 
         console.log(model);
         this.loadingSer.show();
