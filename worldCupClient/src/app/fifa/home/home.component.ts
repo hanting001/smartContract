@@ -133,9 +133,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             currentGameInfo: currenGameInfo,
             currentGameIndex: index
         };
-        if (court.status == '0' || court.status == '1') {
+        if (currenGameInfo.status == '0' || currenGameInfo.status == '1') {
             this.buyModalRef = this.openModal(this.buyTemplate);
-        } else if (court.status == '2') {
+        } else if (currenGameInfo.status == '2') {
             this.voteModalRef = this.openModal(this.voteTemplate);
         }
 
