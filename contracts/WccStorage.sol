@@ -123,6 +123,7 @@ contract WccStorage is Ownable {
         bool isValued;
     }
     mapping(bytes32 => VoteInfo) public voteInfos;
+    mapping(address => bytes32[]) userVotedGameIndexes;
     mapping(bytes32 => mapping(address => UserVote)) public userVotes;
 
     function userJoin(address user, uint value, bytes32 gameIndex, string score, bytes32 scoreIndex) external onlyAdmin {
@@ -200,12 +201,10 @@ contract WccStorage is Ownable {
                 isValued: true
             });
         } else {
-            bytes32 resultIndex = keccak256(_result);
-            if (keccak256(voteInfos[_gameIndex].target) != resultIndex) {
+            if (keccak256(voteInfos[_gameIndex].target) != keccak256(_result)) {
                 voteInfos[_gameIndex].target = _result;
                 voteInfos[_gameIndex].changed = true;
             }
-            
         }
     }
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
@@ -254,12 +253,16 @@ contract WccStorage is Ownable {
             } else {
                 voteInfos[_gameIndex].noCount = voteInfos[_gameIndex].noCount.add(votes);
             }
-        }
+            userVotedGameIndexes[user].push(_gameIndex);
+        }    
     }
     function setUserScorePaid(bytes32 _gameIndex, bytes32 _scoreIndex, address user) external onlyAdmin {
         joinedGamesScoreInfo[_gameIndex][user][_scoreIndex].paid = true;
     }
     function setUserVotePaid(bytes32 _gameIndex, address user) external onlyAdmin {
         userVotes[_gameIndex][user].paid = true;
+    }
+    function getUserVotedGameIndex() external view returns(bytes32[]){
+        return userVotedGameIndexes[msg.sender];
     }
 }

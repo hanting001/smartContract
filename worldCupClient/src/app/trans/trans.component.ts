@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WCCService } from '../service/wcc.service';
+import { TabDirective } from 'ngx-bootstrap/tabs';
 import { Web3Service, LoadingService } from '../service/index';
 
 @Component({
@@ -10,6 +11,7 @@ import { Web3Service, LoadingService } from '../service/index';
 export class TransComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     betInfos: any[];
+    voteInfos: any[];
     subscription;
     loadingProgress = 0;
     constructor(
@@ -34,12 +36,19 @@ export class TransComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-    async getBetInfos() {
+    onSelect(data: TabDirective): void {
+        if (data.heading === 'My Bets') {
+            this.getBetInfos();
+        } else if (data.heading === 'My Votes') {
+
+        }
+    }
+    async getBoteInfos() {
         this.loading.show();
-        this.betInfos = [];
+        this.voteInfos = [];
         const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
         this.loading.hide();
-        for (let i = 0; i < joinedGameIndexes.length; i ++) {
+        for (let i = 0; i < joinedGameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
             const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
             const scoreInfos = [];
@@ -48,8 +57,30 @@ export class TransComponent implements OnInit, OnDestroy {
                 scoreInfos: scoreInfos
             };
             this.betInfos.push(obj);
-            for (let j = 0; j < scoreIndexes.length; j ++) {
-                const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(joinedGameIndexes[i], gameInfo, scoreIndexes[j]); 
+            for (let j = 0; j < scoreIndexes.length; j++) {
+                const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(joinedGameIndexes[i], gameInfo, scoreIndexes[j]);
+                scoreInfos.push(scoreInfo);
+            }
+            this.loadingProgress = Number((this.betInfos.length / joinedGameIndexes).toFixed(2)) * 100;
+        }
+        this.loadingProgress = 0;
+    }
+    async getBetInfos() {
+        this.loading.show();
+        this.betInfos = [];
+        const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
+        this.loading.hide();
+        for (let i = 0; i < joinedGameIndexes.length; i++) {
+            const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
+            const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
+            const scoreInfos = [];
+            const obj = {
+                gameInfo: gameInfo,
+                scoreInfos: scoreInfos
+            };
+            this.betInfos.push(obj);
+            for (let j = 0; j < scoreIndexes.length; j++) {
+                const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(joinedGameIndexes[i], gameInfo, scoreIndexes[j]);
                 scoreInfos.push(scoreInfo);
             }
             this.loadingProgress = Number((this.betInfos.length / joinedGameIndexes).toFixed(2)) * 100;
