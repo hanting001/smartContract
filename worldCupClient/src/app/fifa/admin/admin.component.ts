@@ -115,7 +115,7 @@ export class FifaAdminComponent implements OnInit {
 
                 } else {
                     this.addingText = '完成添加所有比赛';
-                    clearTimeout(addingTimeout);
+                    clearInterval(addingTimeout);
                     this.loadingSer.hide();
 
                 }
