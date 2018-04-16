@@ -2,11 +2,13 @@ pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './WccStorage.sol';
+import './WccVoteStorage.sol';
 import './common/Stoppable.sol';
 import './common/KnotToken.sol';
 contract WccVoter is Ownable, Stoppable{
     using SafeMath for uint256;
     WccStorage wccs;
+    WccVoteStorage vs;
     KnotToken token;
     uint public testOK;
     mapping(bytes32 => bool) canEnd;
@@ -20,8 +22,9 @@ contract WccVoter is Ownable, Stoppable{
             judges[judge] = true;
         }
     }
-    function WccVoter(address wccsAddress, address tokenAddress) public Stoppable(msg.sender){
+    function WccVoter(address wccsAddress, address vsAddress, address tokenAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
+        vs = WccVoteStorage(vsAddress);
         token = KnotToken(tokenAddress);
         judges[msg.sender] = true;
     }
@@ -56,7 +59,7 @@ contract WccVoter is Ownable, Stoppable{
         // change game status to Voting
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Voting);
         // create new Vote info
-        wccs.setVote(_gameIndex, _result);
+        vs.setVote(_gameIndex, _result);
         testOK = block.number;
         StartVote(_gameIndex, _result);
     }
@@ -67,7 +70,7 @@ contract WccVoter is Ownable, Stoppable{
     /// @param _result vote target 
     function changeResult(bytes32 _gameIndex, string _result) external stopInEmergency onlyJudge {
         require(startVoteCheck(_gameIndex) == 0);
-        wccs.setVote(_gameIndex, _result);
+        vs.setVote(_gameIndex, _result);
         testOK = block.number;
         ChangeVote(_gameIndex, _result);
     }
@@ -83,14 +86,14 @@ contract WccVoter is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Voting) {
             return 2; //wrong status
         }
-        var (,,,,ended,voteValued) = wccs.voteInfos(_gameIndex);
+        var (,,,,ended,voteValued) = vs.voteInfos(_gameIndex);
         if (ended) {
             return 3; //vote ended
         }
         if (!voteValued) {
             return 4; //vote not exist
         }
-        var (,,,isValued) = wccs.userVotes(_gameIndex, msg.sender);
+        var (,,,isValued) = vs.userVotes(_gameIndex, msg.sender);
         if (isValued) {
             return 5; //has voted
         }
@@ -100,6 +103,7 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
+
     /// @author Bob Clampett
     /// @notice user vote
     /// @param _gameIndex game index
@@ -107,7 +111,7 @@ contract WccVoter is Ownable, Stoppable{
     function vote(bytes32 _gameIndex, bool yesOrNo) external stopInEmergency {
         require(voteCheck(_gameIndex) == 0);
         // add vote info
-        wccs.setUserVote(_gameIndex, yesOrNo, msg.sender, token.balanceOf(msg.sender));
+        vs.setUserVote(_gameIndex, yesOrNo, msg.sender, token.balanceOf(msg.sender));
         // check can end vote
         if (endVoteCheck(_gameIndex) == 0 && yesOrNo) {
             endVote(_gameIndex);
@@ -130,7 +134,7 @@ contract WccVoter is Ownable, Stoppable{
         if (!canEnd[_gameIndex]) {
             return 3; // can not end
         }
-        var (,yesCount,noCount,,,,) = wccs.voteInfos(_gameIndex);
+        var (,yesCount,noCount,,,,) = vs.voteInfos(_gameIndex);
         // need change in future
         if (yesCount < yesCount.add(noCount).div(10)) {
             return 4; // not enough yes vote
@@ -142,7 +146,7 @@ contract WccVoter is Ownable, Stoppable{
         require(endVoteCheck(_gameIndex) == 0);
         // change game status to Paying
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Paying);
-        wccs.updateVote(_gameIndex, true, true);
+        vs.updateVote(_gameIndex, true, true);
         testOK = block.number;
         EndVote(_gameIndex);
     }

@@ -2,15 +2,18 @@ pragma solidity ^0.4.18;
 import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './WccStorage.sol';
+import './WccVoteStorage.sol';
 import './common/Stoppable.sol';
 contract WccPlayer is Ownable, Stoppable{
     using SafeMath for uint256;
     WccStorage wccs;
+    WccVoteStorage vs;
     bytes32 public testOK;
     mapping(address => uint) withdraws;
     
-    function WccPlayer(address wccsAddress) public Stoppable(msg.sender){
+    function WccPlayer(address wccsAddress, address vsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
+        vs = WccVoteStorage(vsAddress);
     }
     /// @author Bob Clampett
     /// @notice user join check
@@ -51,9 +54,9 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _scoreIndex score index
     /// @return true if check passed and win value 
     function isWin(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(bool win, uint value) {
-        var (target,,,,,) = wccs.voteInfos(_gameIndex);
+        bytes32 target = vs.getVoteTarget(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
-        if (keccak256(target) == _scoreIndex) { // win
+        if (target == _scoreIndex) { // win
             var (,totalWinValue,,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
             return (true, totalValue.mul(myValue).div(totalWinValue));
@@ -67,7 +70,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _scoreIndex score index
     /// @return 0 if check passed 
     function claimCheck(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(uint) {
-        var (,,, passed, ended,,) = wccs.voteInfos(_gameIndex);
+        var (,,, passed, ended,,) = vs.voteInfos(_gameIndex);
         var (win,) = isWin(_gameIndex, _scoreIndex);
         if (!ended) {
             return 1; // vote not finish
@@ -104,8 +107,8 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _gameIndex game index
     /// @return 0 if check passed     
     function claimByVoterCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,, passed, ended, changed,) = wccs.voteInfos(_gameIndex);
-        var (vote,,paid,) = wccs.userVotes(_gameIndex, msg.sender);
+        var (,,, passed, ended, changed,) = vs.voteInfos(_gameIndex);
+        var (vote,,paid,) = vs.userVotes(_gameIndex, msg.sender);
         if (!ended) {
             return 1; // vote not finish
         }
@@ -127,16 +130,14 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _gameIndex game index    
     function claimByVoter(bytes32 _gameIndex) external stopInEmergency {
         require(claimByVoterCheck(_gameIndex) == 0);
-        var (,value,,) = wccs.userVotes(_gameIndex, msg.sender);
-        var (,yesCount,noCount,,,,) = wccs.voteInfos(_gameIndex);
-        wccs.setUserVotePaid(_gameIndex, msg.sender);
+        var (,value,,) = vs.userVotes(_gameIndex, msg.sender);
+        var (,yesCount,,,,,) = vs.voteInfos(_gameIndex);
+        vs.setUserVotePaid(_gameIndex, msg.sender);
         var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
-        uint totalCount = yesCount.add(noCount);
+        // uint totalCount = yesCount.add(noCount);
         // (totalValue / 20) * value / (yesCount + noCount)
-        withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(totalCount));
+        withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(yesCount));
     }
-
-
     function() public payable { }
     event UserWithdraw(address user, uint value);
     /// @author Bob Clampett

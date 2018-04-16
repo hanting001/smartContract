@@ -107,24 +107,7 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(address => bytes32[])) public joinedGamesScoreIndexes;
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
-    struct VoteInfo {
-        string target;
-        uint yesCount;
-        uint noCount;
-        bool passed;
-        bool ended;
-        bool changed;
-        bool isValued;
-    }
-    struct UserVote {
-        bool vote;
-        uint value;
-        bool paid;
-        bool isValued;
-    }
-    mapping(bytes32 => VoteInfo) public voteInfos;
-    mapping(address => bytes32[]) userVotedGameIndexes;
-    mapping(bytes32 => mapping(address => UserVote)) public userVotes;
+    
 
     function userJoin(address user, uint value, bytes32 gameIndex, string score, bytes32 scoreIndex) external onlyAdmin {
         // bytes32 scoreIndex = keccak256(score);
@@ -189,28 +172,6 @@ contract WccStorage is Ownable {
             games[_gameIndex].status = _status;
         }
     }
-    function setVote(bytes32 _gameIndex, string _result) external onlyAdmin {
-        if (!voteInfos[_gameIndex].isValued) {
-            voteInfos[_gameIndex] = VoteInfo({
-                target: _result,
-                yesCount: 0,
-                noCount: 0,
-                passed: false,
-                ended: false,
-                changed: false,
-                isValued: true
-            });
-        } else {
-            if (keccak256(voteInfos[_gameIndex].target) != keccak256(_result)) {
-                voteInfos[_gameIndex].target = _result;
-                voteInfos[_gameIndex].changed = true;
-            }
-        }
-    }
-    function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
-        voteInfos[_gameIndex].passed = _passed;
-        voteInfos[_gameIndex].ended = _ended;
-    }
     function getAllGameIndexes() public view returns(bytes32[]) {
         return gameIndexes;
     }
@@ -234,35 +195,11 @@ contract WccStorage is Ownable {
     function getUserJoinedGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
         return joinedGamesScoreIndexes[_gameIndex][msg.sender];
     }
-
     function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool paid, bool isValued) {
         Score storage scoreInfo = joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex];
         return (scoreInfo.score, scoreInfo.value, scoreInfo.paid, scoreInfo.isValued);
     }
-
-    function setUserVote(bytes32 _gameIndex, bool yesOrNo, address user, uint votes) external onlyAdmin {
-        if (!userVotes[_gameIndex][user].isValued) {
-            userVotes[_gameIndex][user] = UserVote({
-                vote: yesOrNo,
-                value: votes,
-                paid: false,
-                isValued: true
-            });
-            if (yesOrNo) {
-                voteInfos[_gameIndex].yesCount = voteInfos[_gameIndex].yesCount.add(votes);
-            } else {
-                voteInfos[_gameIndex].noCount = voteInfos[_gameIndex].noCount.add(votes);
-            }
-            userVotedGameIndexes[user].push(_gameIndex);
-        }    
-    }
     function setUserScorePaid(bytes32 _gameIndex, bytes32 _scoreIndex, address user) external onlyAdmin {
         joinedGamesScoreInfo[_gameIndex][user][_scoreIndex].paid = true;
-    }
-    function setUserVotePaid(bytes32 _gameIndex, address user) external onlyAdmin {
-        userVotes[_gameIndex][user].paid = true;
-    }
-    function getUserVotedGameIndex() external view returns(bytes32[]){
-        return userVotedGameIndexes[msg.sender];
     }
 }

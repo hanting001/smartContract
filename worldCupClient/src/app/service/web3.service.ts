@@ -28,14 +28,13 @@ export class Web3Service {
             return this.web3.eth.defaultAccount;
         }
         const accounts = await this.web3.eth.getAccounts();
-        this.web3.eth.defaultAccount = accounts[accounts.length - 1];
+        this.web3.eth.defaultAccount = accounts[0];
         return this.web3.eth.defaultAccount;
         // return '0x0009EE1c3242062b080e18fc2fd3F99DC7b4E43b';
     }
 
     async getFirstAccount() {
-        const accounts = await this.web3.eth.getAccounts();
-        return accounts[0];
+        return this.getMainAccount();
         // return '0x0049fdd4a4E77992B93F08BA6AF38c5F2E5Ceef5';
     }
     instance() {

@@ -20,55 +20,111 @@
         </div>
         <!-- <div class="row">
             <div class="col"> -->
-                <tabset>
-                    <tab heading="My Bets" id="tab1" (select)="onSelect($event)">
-                        <div class="card  p-3 mt-3">
-                            <table class="table table-striped table-sm mb-4" *ngFor="let info of betInfos">
-                                <thead class="border-bottom-0">
-                                    <tr>
-                                        <th scope="col" colspan="2" class="pl-3">
-                                            <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
-                                            <p class="d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
-                                            <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
-                                        </th>
-                                        <th scope="col" class="align-middle text-right text-success pr-3">
-                                            <small>status:</small> {{info.gameInfo.status | gameStatus}}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <thead class="">
-                                    <tr class="text-center">
-                                        <th>
-                                            Score
-                                        </th>
-                                        <th>
-                                            Value
-                                        </th>
-                                        <th>
-                                            Win?
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let bet of info.scoreInfos" class="text-center">
-                                        <td>
-                                            {{bet.score}}
-                                        </td>
-                                        <td class="align-middle">
-                                            {{bet.value | fromWei}}
-                                            <small>ETH</small>
-                                        </td>
-                                        <td>
-                                            {{bet.win}}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </tab>
-                    <tab heading="My Votes" (select)="onSelect($event)">My Votes</tab>
-                </tabset>
-            <!-- </div>
+        <tabset>
+            <tab id="Bets" heading="My Bets" id="tab1" (select)="onSelect($event)">
+                <div class="row align-items-center">
+                    <div class="col text-right">
+                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <a href="javascript:void(0)" (click)="refresh(1)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
+                    </div>
+                </div>
+                <div class="card  p-3 mt-3">
+                    <table class="table table-striped table-sm mb-4" *ngFor="let info of betInfos">
+                        <thead class="border-bottom-0">
+                            <tr>
+                                <th scope="col" colspan="2" class="pl-3">
+                                    <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
+                                    <p class="d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
+                                    <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
+                                </th>
+                                <th scope="col" class="align-middle text-right text-success pr-3">
+                                    <small>status:</small> {{info.gameInfo.status | gameStatus}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <thead class="">
+                            <tr class="text-center">
+                                <th>
+                                    Score
+                                </th>
+                                <th>
+                                    Value
+                                </th>
+                                <th>
+                                    Win?
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let bet of info.scoreInfos" class="text-center">
+                                <td>
+                                    {{bet.score}}
+                                </td>
+                                <td class="align-middle">
+                                    {{bet.value | fromWei}}
+                                    <small>ETH</small>
+                                </td>
+                                <td>
+                                    {{bet.win}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+            <tab id="Votes" heading="My Votes" (select)="onSelect($event)">
+                <div class="row align-items-center">
+                    <div class="col text-right">
+                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <a href="javascript:void(0)" (click)="refresh(1)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
+                    </div>
+                </div>
+                <div class="card  p-3 mt-3">
+                    <table class="table table-striped table-sm mb-4" *ngFor="let info of voteInfos">
+                        <thead class="border-bottom-0">
+                            <tr>
+                                <th scope="col" colspan="2" class="pl-3">
+                                    <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
+                                    <p class="d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
+                                    <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
+                                </th>
+                                <th scope="col" class="align-middle text-right text-success pr-3">
+                                    <small>status:</small> {{info.gameInfo.status | gameStatus}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <thead class="">
+                            <tr class="text-center">
+                                <th>
+                                    Vote
+                                </th>
+                                <th>
+                                    Weight
+                                </th>
+                                <th>
+                                    Win?
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center">
+                                <td>
+                                    {{info.voteInfo.vote}}
+                                </td>
+                                <td class="align-middle">
+                                    {{info.voteInfo.value | fromWei}}
+                                    <small>ETH</small>
+                                </td>
+                                <td>
+                                    {{info.voteInfo.win}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </tab>
+        </tabset>
+        <!-- </div>
         </div> -->
     </div>
 </div>
