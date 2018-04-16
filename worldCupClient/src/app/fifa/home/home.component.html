@@ -85,6 +85,11 @@
         <div class="container text-center" id="chartDiv" align="center">
             <div class="row text-center">
                 <div class="col">
+                    <h4 class="text-secondary">Bet Info</h4>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col">
                     <small class="text-secondary">Total Value</small>
                 </div>
                 <div class="col">
@@ -125,7 +130,7 @@
                         </tr>
                         <tr>
                             <td style="border:0">
-                                <select class=" form-control" formControlName="awayScore" aria-describedby="scoreHelpBlock">
+                                <select class=" form-control" formControlName="homeScore" aria-describedby="scoreHelpBlock">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -139,13 +144,9 @@
                                     <option value="10">10</option>
                                     <option value=">10">>10</option>
                                 </select>
-                                <!-- <small id="scoreHelpBlock" class="form-text text-muted">
-                                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters,
-                                or emoji.
-                            </small> -->
                             </td>
                             <td style="border:0">
-                                <select class="form-control" formControlName="homeScore">
+                                <select class="form-control" formControlName="awayScore">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -192,6 +193,11 @@
 <ng-template #voteTemplate>
     <div class="modal-body text-center">
         <div class="container text-center" id="chartDiv" align="center">
+            <div class="row text-center">
+                <div class="col">
+                    <h4 class="text-secondary">Vote Info</h4>
+                </div>
+            </div>
             <div class="row text-center">
                 <div class="col">
                     <small class="text-secondary">Total Value</small>

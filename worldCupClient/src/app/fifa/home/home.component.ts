@@ -159,10 +159,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     async bet() {
         if (this.buyForm.valid) {
-            this.loadingSer.show();
+            this.loadingSer.show('Sending Transaction');
             const model: any = this.buyForm.value;
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
-            const score = model.awayScore + ':' + model.homeScore;
+            const score = model.homeScore + ':' + model.awayScore;
             const web3 = this.web3.instance();
             const valueInWei = web3.utils.toWei(String(model.eth));
 
@@ -185,7 +185,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     }
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
-                    this.buyForm.reset();
+                    this.buyForm.value.homeScore = 0;
+                    this.buyForm.value.awayScore = 0;
+                    this.buyForm.value.eth = '0.0';
                     this.USDPrice = 0;
                 }
             }, async (err) => {
@@ -208,7 +210,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         const model: any = this.voteForm.value;
         console.log(model);
         if (this.voteForm.valid) {
-            this.loadingSer.show();
+            this.loadingSer.show('Sending Transaction');
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
@@ -231,6 +233,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.loadingSer.hide();
                     this.alertSer.show(' Vote success!');
                     this.voteForm.reset();
+                    this.myVote = 1;
                 }
             }, async (err) => {
                 console.log(err);
