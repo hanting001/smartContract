@@ -98,8 +98,6 @@ export class FifaAdminComponent implements OnInit {
     }
 
     delGame(game) {
-        console.log(game);
-        return;
         const model = game;
 
         console.log(model);
