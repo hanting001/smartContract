@@ -27,7 +27,7 @@ contract WccStorage is Ownable {
         uint i;
     }
     mapping(bytes32 => GameInfo) public games;
-    bytes32[] gameIndexes;
+    bytes32[] public gameIndexes;
     uint public gamesUpdated;
 
     struct ScoreTotal {
@@ -42,6 +42,7 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(bytes32 => ScoreTotal)) public gameScoreTotalInfos;
     function setGame(string _p1, string _p2, GameType _gameType, uint _time) external onlyOwner {
         bytes32 index = keccak256(_p1, _p2, _gameType);
+        require(!games[index].isValued);
         uint i = gameIndexes.push(index) - 1;
         games[index] = GameInfo({
             p1: _p1,
@@ -59,6 +60,7 @@ contract WccStorage is Ownable {
         gamesUpdated = block.timestamp;
     }
     function setGame(bytes32 _index, string _p1, string _p2, GameType _gameType, uint _time) external onlyOwner {
+        require(!games[_index].isValued);
         uint i = gameIndexes.push(_index) - 1;
         games[_index] = GameInfo({
             p1: _p1,
@@ -90,6 +92,7 @@ contract WccStorage is Ownable {
         array.length--;
     }
     function removeGame(bytes32 _gameIndex) external onlyOwner {
+        require(games[_gameIndex].isValued);
         require(games[_gameIndex].status == GameStatus.Standby);
         uint i = games[_gameIndex].i;
         delete games[_gameIndex];

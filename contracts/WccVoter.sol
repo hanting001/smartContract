@@ -28,6 +28,15 @@ contract WccVoter is Ownable, Stoppable{
         token = KnotToken(tokenAddress);
         judges[msg.sender] = true;
     }
+    function setWccs(address csAddress) external onlyOwner {
+        wccs = WccStorage(csAddress);
+    }
+    function setVs(address vsAddress) external onlyOwner {
+        vs = WccVoteStorage(vsAddress);
+    }
+    function setToken(address tokenAddress) external onlyOwner {
+        token = KnotToken(tokenAddress);
+    }
     /// @author Bob Clampett
     /// @notice set game status to Playing
     /// @param _gameIndex game index  

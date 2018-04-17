@@ -10,9 +10,18 @@ contract WccPlayer is Ownable, Stoppable{
     WccVoteStorage vs;
     bytes32 public testOK;
     mapping(address => uint) withdraws;
-    
+    uint public limit = 10 finney;
     function WccPlayer(address wccsAddress, address vsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
+        vs = WccVoteStorage(vsAddress);
+    }
+    function setLimit(uint _limit) external onlyOwner {
+        limit = _limit;
+    }
+    function setWccs(address csAddress) external onlyOwner {
+        wccs = WccStorage(csAddress);
+    }
+    function setVs(address vsAddress) external onlyOwner {
         vs = WccVoteStorage(vsAddress);
     }
     /// @author Bob Clampett
@@ -29,7 +38,7 @@ contract WccPlayer is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Standby) {
             return 2; //wrong status
         }
-        if (value < 1 finney) {
+        if (value < limit) {
             return 3; // too small chip
         }
         return 0;

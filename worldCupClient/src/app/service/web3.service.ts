@@ -19,8 +19,16 @@ export class Web3Service {
         setInterval(() => {
             this.check();
         }, 10000);
-
+        setInterval(() => {
+            this.checkAccount();
+        }, 3000);
         // this.check();
+    }
+    async checkAccount() {
+        const accounts = await this.web3.eth.getAccounts();
+        if (this.web3.eth.defaultAccount != accounts[0]) {
+            this.web3.eth.defaultAccount = accounts[0];
+        }
     }
     async getMainAccount() {
         if (this.web3.eth.defaultAccount) {
