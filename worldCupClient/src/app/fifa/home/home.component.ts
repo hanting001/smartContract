@@ -18,7 +18,7 @@ import * as moment from 'moment';
     styleUrls: ['./home.component.css']
 })
 export class FifaHomeComponent implements OnInit, OnDestroy {
-    envState: any = { checkWeb3: true, checkAccount: true, changed: false };
+    envState: any = {checkWeb3: true, checkAccount: true};
     gameInfos: any = [];
     games: any = [];
     court: any = {};
@@ -46,6 +46,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         betsData: 'Bet Count'
     };
     chartTitle: any = {};
+    betCanWin = 0;
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -71,17 +72,17 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
-            if (tempEnvState.checkEnv === true &&
-                (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
-            ) {
+            if (tempEnvState.checkEnv) {
+                if (this.envState.checkEnv && tempEnvState.checkEnv !== this.envState.checkEnv
+                    || this.envState.account && tempEnvState.account != this.envState.account) {
+                    this.envState.changed = true;
+                    this.getAllGames();
+                } else {
+                    this.envState.changed = false;
+                }
                 this.envState = tempEnvState;
-                this.envState.changed = true;
-                this.getAllGames();
-            } else {
-                this.envState = tempEnvState;
-                this.envState.changed = false;
             }
-
+            this.getAllGames();
         });
 
 
@@ -129,20 +130,34 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         const currenGameInfo = await this.wccSer.getGameInfo(index);
         // console.log(currenGameInfo);
-        const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-        const totalBets = currenGameInfo.totalBets;
-        this.chartTitle = {
-            totalValue: Number(totalValue).toFixed(6),
-            totalBets: totalBets,
-            avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
-        };
-        this.chartData = {
-            currentGameInfo: currenGameInfo,
-            currentGameIndex: index
-        };
+
         if (currenGameInfo.status == '0' || currenGameInfo.status == '1') {
+            const limit = await this.wccSer.getBetLimit();
+            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+            const totalBets = currenGameInfo.totalBets;
+            this.chartTitle = {
+                totalValue: Number(totalValue).toFixed(6),
+                totalBets: totalBets,
+                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+            };
+            this.chartData = {
+                currentGameInfo: currenGameInfo,
+                currentGameIndex: index,
+                limit: limit
+            };
             this.buyModalRef = this.openModal(this.buyTemplate);
         } else if (currenGameInfo.status == '2') {
+            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
+            const totalBets = currenGameInfo.totalBets;
+            this.chartTitle = {
+                totalValue: Number(totalValue).toFixed(6),
+                totalBets: totalBets,
+                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+            };
+            this.chartData = {
+                currentGameInfo: currenGameInfo,
+                currentGameIndex: index
+            };
             this.voteModalRef = this.openModal(this.voteTemplate);
         }
 
@@ -163,7 +178,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.buyModalRef.hide();
         }
     }
+    calculat() {
+        if (this.buyForm.valid) {
 
+        }
+    }
     async bet() {
         if (this.buyForm.valid) {
             this.loadingSer.show('Sending Transaction');
@@ -298,6 +317,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 this.loadingProgress = Number((temps.length / indexes.length).toFixed(2)) * 100;
             }
             this.loading = false;
+            this.loadingProgress = 0;
             this.localStorage.setItem('games', this.games).toPromise();
         }
     }
