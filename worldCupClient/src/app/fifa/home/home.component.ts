@@ -18,7 +18,7 @@ import * as moment from 'moment';
     styleUrls: ['./home.component.css']
 })
 export class FifaHomeComponent implements OnInit, OnDestroy {
-    envState: any = {checkWeb3: true, checkAccount: true};
+    envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
     court: any = {};
@@ -69,12 +69,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
-                if (this.envState.checkEnv && tempEnvState.checkEnv !== this.envState.checkEnv
-                    || this.envState.account && tempEnvState.account != this.envState.account) {
+                if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
                     this.getAllGames();
                 } else {
@@ -82,10 +80,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 }
                 this.envState = tempEnvState;
             }
-            this.getAllGames();
         });
-
-
+        this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
