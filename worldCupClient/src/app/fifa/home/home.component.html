@@ -16,7 +16,7 @@
     <div *ngIf="envState.checkEnv">
         <p [hidden]="loading" class="lead text-muted text-center mb-1">Matches</p>
         <p [hidden]="!loading" class="lead text-muted text-center mb-1">Loading...</p>
-        <div [hidden]="!loading" class="progress" style="height: 1px;">
+        <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
             <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
             <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
         </div>
@@ -130,7 +130,7 @@
                         </tr>
                         <tr>
                             <td style="border:0">
-                                <select class=" form-control" formControlName="homeScore" aria-describedby="scoreHelpBlock">
+                                <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -146,7 +146,7 @@
                                 </select>
                             </td>
                             <td style="border:0">
-                                <select class="form-control" formControlName="awayScore">
+                                <select class="form-control" (change)="calculat()" formControlName="awayScore">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -174,6 +174,13 @@
                         <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                             {{USDPrice|currency}}, ETH price get from etherscan.io.
                         </small>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                                Currently, if you win this bet, you can take back {{betCanWin}}
+                            </small>
+                        </div>
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">

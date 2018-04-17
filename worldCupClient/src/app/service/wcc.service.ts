@@ -90,13 +90,11 @@ export class WCCService {
     }
 
     async addPlayer(model, onTransactionHash, onConfirmation, onError?) {
-        console.log(model);
-        console.log(moment(new Date(model.startTime)).unix());
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
         };
-        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(new Date(model.startTime)).unix())
+        sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).unix())
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
@@ -131,7 +129,6 @@ export class WCCService {
         const gameInfos = [];
         for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
-            gameInfo.index = index;
             gameInfos.push(gameInfo);
         }
         return gameInfos;
@@ -175,7 +172,7 @@ export class WCCService {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameUpdateTime = await this.localStorage.getItem<any>('gameUpdateTime').toPromise();
         const fromBlockChain = await sc.methods.gamesUpdated().call();
-        // console.log(`${gameUpdateTime} +++ ${fromBlockChain}`);
+        console.log(`${gameUpdateTime} +++ ${fromBlockChain}`);
         if (gameUpdateTime !== fromBlockChain) {
             this.localStorage.setItem('gameUpdateTime', fromBlockChain).toPromise();
             return true;
@@ -187,16 +184,14 @@ export class WCCService {
         const web3 = this.web3Service.instance();
         return web3.utils.soliditySha3({ t: 'string', v: p1 }, { t: 'string', v: p2 }, { t: 'uint8', v: gameType });
     }
-    async delPlayer(index, onTransactionHash, onConfirmation, onError?) {
+    async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
-        // console.log(model.p1 + model.p2 + model.gameType);
-        // const key = web3.utils.keccak256(model.p1 + model.p2 + model.gameType);
-        // console.log(key);
+        const key = web3.utils.keccak256(model.arrayCourt + model.homeCourt + model.gameType);
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
         };
-        sc.methods.removeGame(index)
+        sc.methods.removeGame(key)
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
@@ -243,7 +238,12 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-
+    async getBetLimit() {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const limit = await sc.methods.limit().call();
+        const web3 = this.web3Service.instance();
+        return web3.utils.fromWei(limit);
+    }
     async joinCheck(gameIndex, value) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const msgObj = {
