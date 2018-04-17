@@ -76,7 +76,7 @@
                 <div class="row align-items-center">
                     <div class="col text-right">
                         <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
-                        <a href="javascript:void(0)" (click)="refresh(1)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
+                        <a href="javascript:void(0)" (click)="refresh(2)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
                 <div class="card  p-3 mt-3">
@@ -113,7 +113,6 @@
                                 </td>
                                 <td class="align-middle">
                                     {{info.voteInfo.value | fromWei}}
-                                    <small>ETH</small>
                                 </td>
                                 <td>
                                     {{info.voteInfo.win}}

@@ -315,7 +315,10 @@ export class WCCService {
             });
     }
 
-
+    async getVoteInfo(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
+        return sc.methods.voteInfos(gameIndex).call();
+    }
     async vote(gameIndex, yesOrNo, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
         const options = {

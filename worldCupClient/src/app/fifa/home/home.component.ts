@@ -103,25 +103,24 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         console.log(index);
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
-        this.web3.currenPrice().then(obj => {
-            // console.log(obj.result);
-            this.price = obj.result.ethusd;
-            // console.log(this.price);
-            const model: any = this.buyForm.value;
-            if (model.eth) {
-                this.getUSDValue({ target: { value: model.eth } });
-            }
-        });
-        this.web3.getBalance().then(balance => {
-            console.log(balance);
-            this.balance = balance;
-        });
-
-
-        const currenGameInfo = await this.wccSer.getGameInfo(index);
+        const currentGameInfo = await this.wccSer.getGameInfo(index);
         // console.log(currenGameInfo);
 
-        if (currenGameInfo.status == '0' || currenGameInfo.status == '1') {
+        if (currentGameInfo.status == '0' || currentGameInfo.status == '1') {
+            this.chartData = {};
+            this.web3.currenPrice().then(obj => {
+                // console.log(obj.result);
+                this.price = obj.result.ethusd;
+                // console.log(this.price);
+                const model: any = this.buyForm.value;
+                if (model.eth) {
+                    this.getUSDValue({ target: { value: model.eth } });
+                }
+            });
+            this.web3.getBalance().then(balance => {
+                console.log(balance);
+                this.balance = balance;
+            });
             const limit = await this.wccSer.getBetLimit();
             this.buyForm = this.fb.group({
                 homeScore: ['0', [Validators.required]],
@@ -129,31 +128,34 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 eth: ['0.01', [Validators.required, Validators.min(limit)]]
             });
             // this.buyForm.controls('eth').setValidators([Validators.required, Validators.min(limit)]);
-            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-            const totalBets = currenGameInfo.totalBets;
+            const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
+            const totalBets = currentGameInfo.totalBets;
             this.chartTitle = {
                 totalValue: Number(totalValue).toFixed(6),
                 totalBets: totalBets,
                 avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
             };
-            this.chartData = {
-                currentGameInfo: currenGameInfo,
-                currentGameIndex: index,
-                limit: limit
-            };
+            this.chartData.currentGameInfo = currentGameInfo;
+            this.chartData.currentGameIndex = index;
+            this.chartData.limit = limit;
             this.buyModalRef = this.openModal(this.buyTemplate);
-        } else if (currenGameInfo.status == '2') {
-            const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
-            const totalBets = currenGameInfo.totalBets;
+        } else if (currentGameInfo.status == '2') {
+            this.chartData = {};
+            const voteInfo = await this.wccSer.getVoteInfo(index);
+            console.log(voteInfo);
+            this.chartData.target = voteInfo.target.split(':');
+            console.log(this.chartData.target);
+            const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
+            const totalBets = currentGameInfo.totalBets;
             this.chartTitle = {
-                totalValue: Number(totalValue).toFixed(6),
-                totalBets: totalBets,
-                avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+                totalCount: Number(web3.utils.fromWei(voteInfo.yesCount)) + Number(web3.utils.fromWei(voteInfo.noCount)),
+                yesCount: web3.utils.fromWei(voteInfo.yesCount),
+                noCount: web3.utils.fromWei(voteInfo.noCount)
             };
-            this.chartData = {
-                currentGameInfo: currenGameInfo,
-                currentGameIndex: index
-            };
+            this.chartData.currentGameInfo = currentGameInfo;
+            this.chartData.currentGameIndex = index;
+            this.chartData.data = [Number(web3.utils.fromWei(voteInfo.yesCount)), Number(web3.utils.fromWei(voteInfo.noCount))];
+            this.chartData.labels = ['yesCount', 'noCount'];
             this.voteModalRef = this.openModal(this.voteTemplate);
         }
 

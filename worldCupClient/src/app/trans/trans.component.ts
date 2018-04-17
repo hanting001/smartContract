@@ -10,8 +10,8 @@ import { Web3Service, LoadingService } from '../service/index';
 })
 export class TransComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
-    betInfos: any[];
-    voteInfos: any[];
+    betInfos: any[] = [];
+    voteInfos: any[] = [];
     subscription;
     loadingProgress = 0;
     constructor(
@@ -30,7 +30,7 @@ export class TransComponent implements OnInit, OnDestroy {
                 //     console.log(infos);
                 //     this.betInfos = infos;
                 // });
-                this.getBetInfos();
+                this.refresh(1);
             }
             this.envState = tempEnvState;
         });
@@ -72,7 +72,6 @@ export class TransComponent implements OnInit, OnDestroy {
         this.loading.show();
         const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
         this.loading.hide();
-        this.betInfos = [];
         for (let i = 0; i < joinedGameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
             const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
@@ -92,8 +91,10 @@ export class TransComponent implements OnInit, OnDestroy {
     }
     refresh(type) {
         if (type === 1) {
+            this.betInfos = [];
             this.getBetInfos();
         } else if (type === 2) {
+            this.voteInfos = [];
             this.getVoteInfos();
         }
     }

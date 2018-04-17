@@ -56,6 +56,9 @@ contract WccVoteStorage is Ownable {
     function getVoteTarget(bytes32 _gameIndex) external view returns(bytes32) {
         return keccak256(voteInfos[_gameIndex].target);
     }
+    // function getVoteTargetValue(bytes32 _gameIndex) external view returns(string) {
+    //     return voteInfos[_gameIndex].target;
+    // }
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
         voteInfos[_gameIndex].passed = _passed;
         voteInfos[_gameIndex].ended = _ended;

@@ -180,7 +180,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <small [hidden]="!buyForm.valid" id="usdHelpBlock" class="form-text text-light align-middle m-2">
+                            <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
                                 Currently, if you win this bet, you can win <span class="text-warning">{{betCanWin}}</span>  eth.
                             </small>
                         </div>
@@ -210,24 +210,24 @@
             </div>
             <div class="row text-center">
                 <div class="col">
-                    <small class="text-secondary">Total Value</small>
+                    <small class="text-secondary">Total Votes</small>
                 </div>
                 <div class="col">
-                    <small class="text-secondary">Total Bets</small>
+                    <small class="text-secondary">Yes Count</small>
                 </div>
                 <div class="col">
-                    <small class="text-secondary">Average Value</small>
+                    <small class="text-secondary">No Count</small>
                 </div>
             </div>
             <div class="row text-center">
                 <div class="col">
-                    <h5> {{chartTitle.totalValue}}</h5>
+                    <h5> {{chartTitle.totalCount}}</h5>
                 </div>
                 <div class="col">
-                    <h5>{{chartTitle.totalBets}}</h5>
+                    <h5>{{chartTitle.yesCount}}</h5>
                 </div>
                 <div class="col">
-                    <h5>{{chartTitle.avg}}</h5>
+                    <h5>{{chartTitle.noCount}}</h5>
                 </div>
             </div>
         </div>
@@ -248,12 +248,12 @@
                             <td style="border:0;width:40%" class="text-center align-middle">
                                 <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                         </tr>
-                        <tr>
+                        <tr >
                             <td style="border:0">
-                                <h1>1</h1>
+                                <h1>{{chartData.target[0]}}</h1>
                             </td>
                             <td style="border:0">
-                                <h1>1</h1>
+                                <h1>{{chartData.target[1]}}</h1>
                             </td>
                         </tr>
                     </table>

@@ -60,11 +60,30 @@ export class ChartComponent implements OnInit, AfterViewInit {
         const gameInfo = this.chartData.currentGameInfo;
         const gameIndex = this.chartData.currentGameIndex;
         // this.validateChart(gameInfo);
-        // if (gameInfo.status == 0) {
+        if (gameInfo.status == 0 || gameInfo.status == 1) {
             // get bets info
             await this.getBetsInfo(gameInfo, gameIndex);
             this.betChart();
-        // }
+        } else if (gameInfo.status == 2) {
+            this.pieChart();
+        }
+    }
+    pieChart() {
+        const charCtx = this.chartRef.nativeElement.getContext('2d');
+        console.log(this.chartData);
+        this.chart = new Chart(charCtx, {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: this.chartData.data,
+                    backgroundColor: ['#006600', '#CC0000']
+                }],
+                labels: this.chartData.labels
+            },
+            options: {
+                responsive: true
+            }
+        });
     }
     async getBetsInfo(gameInfo, gameIndex) {
         const scoreIndexes = await this.wccService.getGameScoreIndexes(gameIndex);

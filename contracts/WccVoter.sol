@@ -22,6 +22,9 @@ contract WccVoter is Ownable, Stoppable{
             judges[judge] = true;
         }
     }
+    function isJudge(address user) public view returns(bool) {
+        return judges[user];
+    }
     function WccVoter(address wccsAddress, address vsAddress, address tokenAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
         vs = WccVoteStorage(vsAddress);
