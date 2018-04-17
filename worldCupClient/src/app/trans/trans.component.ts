@@ -61,6 +61,8 @@ export class TransComponent implements OnInit, OnDestroy {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
             const voteInfos = [];
             const voteInfo = await this.wccService.getUserVoteInfo(gameIndexes[i], gameInfo);
+            const gameVoteInfo = await this.wccSer.getVoteInfo(gameIndexes[i]);
+            voteInfo.weight =  (Number(voteInfo.value) / (Number(gameVoteInfo.yesCount) + Number(gameVoteInfo.noCount)) * 100).toFixed(2);
             console.log(voteInfo);
             this.voteInfos.push({
                 gameInfo: gameInfo,
