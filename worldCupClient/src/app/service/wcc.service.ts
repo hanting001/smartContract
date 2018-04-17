@@ -184,9 +184,15 @@ export class WCCService {
         const web3 = this.web3Service.instance();
         return web3.utils.soliditySha3({ t: 'string', v: p1 }, { t: 'string', v: p2 }, { t: 'uint8', v: gameType });
     }
+
+    getScoreIndex(score) {
+        const web3 = this.web3Service.instance();
+        return web3.utils.keccak256(score);
+    }
+
     async delPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const web3 = this.web3Service.instance();
-        const key = web3.utils.keccak256(model.arrayCourt + model.homeCourt + model.gameType);
+        const key = this.getGameIndex(model.arrayCourt, model.homeCourt, model.gameType);
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
             from: await this.web3Service.getFirstAccount()
@@ -281,6 +287,24 @@ export class WCCService {
         };
     }
 
+    async claimCheck(gameIndex, scoreIndex) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const msgObj = {
+            1: 'vote not finish',
+            2: 'vote not passed',
+            3: 'not win',
+            4: 'paid'
+        };
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const checkResult = await sc.methods.claimCheck(gameIndex, scoreIndex).call(options);
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
     async join(gameIndex, score, value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
@@ -315,10 +339,46 @@ export class WCCService {
             });
     }
 
+
     async getVoteInfo(gameIndex) {
         const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
         return sc.methods.voteInfos(gameIndex).call();
     }
+
+
+    async claim(gameIndex, scoreIndex, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.claim(gameIndex, scoreIndex)
+            .send(options, function (err, transactionHash) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`claim txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+
+
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
     async vote(gameIndex, yesOrNo, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
         const options = {

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WCCService } from '../service/wcc.service';
 import { TabDirective } from 'ngx-bootstrap/tabs';
-import { Web3Service, LoadingService } from '../service/index';
+import { Web3Service, LoadingService, AlertService, LocalActionService } from '../service/index';
 
 @Component({
     selector: 'app-trans',
@@ -17,6 +17,10 @@ export class TransComponent implements OnInit, OnDestroy {
     constructor(
         private wccService: WCCService,
         private web3: Web3Service,
+        public localActionSer: LocalActionService,
+        public wccSer: WCCService,
+        public loadingSer: LoadingService,
+        public alertSer: AlertService,
         private loading: LoadingService) { }
 
     ngOnInit() {
@@ -86,9 +90,44 @@ export class TransComponent implements OnInit, OnDestroy {
                 scoreInfos.push(scoreInfo);
             }
             this.loadingProgress = Number((this.betInfos.length / joinedGameIndexes.length).toFixed(2)) * 100;
+            console.log(this.betInfos);
         }
         this.loadingProgress = 0;
     }
+
+    async winBet(gameInfo, bet) {
+        // this.loadingSer.show('Sending Transaction');
+        console.log(gameInfo);
+        console.log(bet);
+        const gameIndex = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
+        const scoreIndex = this.wccSer.getScoreIndex(bet.score);
+
+        const check = await this.wccSer.claimCheck(gameIndex, scoreIndex);
+        console.log(check);
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
+
+        this.wccSer.claim(gameIndex, scoreIndex, async (transactionHash) => {
+            await this.localActionSer.addAction({
+                transactionHash: transactionHash, netType: this.envState.netType,
+                model: { gameInfo: gameInfo, bet: bet }, createdAt: new Date(), type: 'claim'
+            }, this.envState.account);
+        }, async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                this.loadingSer.hide();
+                this.alertSer.show('claim success!');
+            }
+        }, async (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show('User denied transaction signature');
+        });
+
+
+    }
+
     refresh(type) {
         if (type === 1) {
             this.betInfos = [];
