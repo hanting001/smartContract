@@ -259,7 +259,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
-            console.log(model.voteOption);
             if (check.checkResult != 0) {
                 this.loadingSer.hide();
                 return this.alertSer.show(check.message);
@@ -272,13 +271,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
                 if (confirmNum == 1) {
-                    if (this.buyModalRef) {
-                        this.buyModalRef.hide();
+                    if (this.voteModalRef) {
+                        this.voteModalRef.hide();
                     }
                     this.loadingSer.hide();
                     this.alertSer.show(' Vote success!');
                     this.voteForm.reset();
-                    model.voteOption = 1;
+                    this.voteForm.controls['voteOption'].setValue(1);
                 }
             }, async (err) => {
                 console.log(err);
@@ -397,5 +396,5 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     openModal(template: TemplateRef<any>) {
         return this.modalService.show(template, { class: 'modal-lg' });
     }
-
+    get voteOption() { return this.voteForm.get('voteOption'); }
 }
