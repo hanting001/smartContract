@@ -60,7 +60,8 @@ export class TransComponent implements OnInit, OnDestroy {
         for (let i = 0; i < gameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
             const voteInfos = [];
-            const voteInfo = await this.wccService.getUserVoteInfo(gameIndexes[i]);
+            const voteInfo = await this.wccService.getUserVoteInfo(gameIndexes[i], gameInfo);
+            console.log(voteInfo);
             this.voteInfos.push({
                 gameInfo: gameInfo,
                 voteInfo: voteInfo

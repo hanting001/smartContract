@@ -484,15 +484,13 @@ export class WCCService {
     }
     async getUserJoinedGameScoreInfo(gameIndex, gameInfo, scoreIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
+        const web3 = this.web3Service.instance();
         const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
-        const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndex, scoreIndex).call(options);
+        const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndex, scoreIndex).call();
         if (gameInfo.status === '3') {
-            const isWin = await playerSC.methods.isWin(gameIndex, scoreIndex).call(options);
+            const isWin = await playerSC.methods.isWin(gameIndex, scoreIndex).call();
             if (isWin.win) {
-                scoreInfo.win = isWin.value;
+                scoreInfo.win = web3.utils.fromWei(isWin.value);
             } else {
                 scoreInfo.win = 'No';
             }
@@ -500,6 +498,10 @@ export class WCCService {
             scoreInfo.win = 'Underway';
         }
         return scoreInfo;
+    }
+    async isVoterWin(gameIndex) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        return sc.methods.isVoterWin(gameIndex).call();
     }
     // async getUserBetsInfo() {
     //     const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -541,9 +543,22 @@ export class WCCService {
         const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
         return sc.methods.voteInfos(gameIndex).call();
     }
-    async getUserVoteInfo(gameIndex) {
+    async getUserVoteInfo(gameIndex, gameInfo) {
+        const web3 = this.web3Service.instance();
         const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
+        const player = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const accout = await await this.web3Service.getMainAccount();
-        return sc.methods.userVotes(gameIndex, accout).call();
+        const voteInfo = await sc.methods.userVotes(gameIndex, accout).call();
+        if (gameInfo.status == '3') {
+            const isWin = await player.methods.isVoterWin(gameIndex).call();
+            if (isWin.win) {
+                voteInfo.win = web3.utils.fromWei(isWin.value);
+            } else {
+                voteInfo.win = 'No';
+            }
+        } else {
+            voteInfo.win = 'Underway';
+        }
+        return voteInfo;
     }
 }
