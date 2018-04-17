@@ -11,9 +11,8 @@ export class Web3Service {
     contracts: any = {};
     constructor(private http: HttpClient) {
         // this.web3 = new Web3();
-        // Web3.givenProvider一般为浏览器内的metaMask
+        // Web3.givenProvider
         // this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
-        // 这里直接连接到本地的Ganache
         // this.web3.setProvider('http://localhost:7545');
         console.log('============================');
         setInterval(() => {
@@ -105,7 +104,7 @@ export class Web3Service {
     }
 
     async check() {
-        console.log('开始环境检测');
+        // console.log('start env check');
         // console.log(typeof window.web3);
         // if (typeof window.web3 !== 'undefined') {
         //     this.web3 = new Web3(window.web3.currentProvider);
@@ -131,30 +130,30 @@ export class Web3Service {
                 switch (netType) {
                     case 'main':
                         console.log('This is mainnet');
-                        state.netName = '主网络';
+                        state.netName = 'mainnet';
                         break;
                     case 'morden':
                         console.log('This is the deprecated Morden test network.');
-                        state.netName = 'Morden测试网络';
+                        state.netName = 'Morden testnet';
                         break;
                     case 'ropsten':
-                        state.netName = 'ropsten测试网路';
+                        state.netName = 'ropsten testnet';
                         console.log('This is the ropsten test network.');
                         break;
                     case 'rinkeby':
                         console.log('This is the Rinkeby test network.');
-                        state.netName = 'Rinkeby测试网路';
+                        state.netName = 'Rinkeby testnet';
                         break;
                     case 'kovan':
-                        state.netName = 'Kovan测试网路';
+                        state.netName = 'Kovan testnet';
                         // console.log('This is the Kovan test network.');
                         break;
                     case 'private':
-                        state.netName = '未知网络';
+                        state.netName = 'unknow net';
                         console.log('This is the private test network.');
                         break;
                     default:
-                        state.netName = '未知网络';
+                        state.netName = 'unknow net';
                         state.checkEnv = false;
                         state.checkAccount = false;
                         state.checkWeb3 = false;
