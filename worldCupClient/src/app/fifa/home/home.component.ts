@@ -259,13 +259,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
-            console.log(check);
+            console.log(model.voteOption);
             if (check.checkResult != 0) {
                 this.loadingSer.hide();
                 return this.alertSer.show(check.message);
             }
 
-            this.wccSer.vote(index, model.voteOption, async (transactionHash) => {
+            this.wccSer.vote(index, (model.voteOption == 1 ? true : false), async (transactionHash) => {
                 await this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'vote'
@@ -278,7 +278,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.loadingSer.hide();
                     this.alertSer.show(' Vote success!');
                     this.voteForm.reset();
-                    this.myVote = 1;
+                    model.voteOption = 1;
                 }
             }, async (err) => {
                 console.log(err);

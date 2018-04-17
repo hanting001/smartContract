@@ -131,8 +131,26 @@ contract WccVoter is Ownable, Stoppable{
         testOK = block.number;
         UserVote(_gameIndex, yesOrNo, msg.sender);
     }
+    function canEndCheck(bytes32 _gameIndex) public view returns(uint) {
+        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
+        if (!gameValued) {
+            return 1; //game not exist
+        }
+        if (status != WccStorage.GameStatus.Voting) {
+            return 2; //wrong status
+        }
+        var (,,,,ended,voteValued) = vs.voteInfos(_gameIndex);
+        if (ended) {
+            return 3; //vote ended
+        }
+        if (!voteValued) {
+            return 4; //vote not exist
+        }
+        return 0;
+    }
     function setCanEnd(bytes32 _gameIndex) external stopInEmergency onlyJudge {
         // need to add more condition
+        require(canEndCheck(_gameIndex) == 0);
         canEnd[_gameIndex] = true;
     }
     function endVoteCheck(bytes32 _gameIndex) public view returns(uint) {
