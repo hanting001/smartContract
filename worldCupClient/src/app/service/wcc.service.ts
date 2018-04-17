@@ -141,8 +141,11 @@ export class WCCService {
         return sc.methods.getAllGameIndexes().call();
     }
     async getGameInfo(index) {
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getGameInfo(index).call();
+        return sc.methods.getGameInfo(index).call(options);
     }
     async getGameScoreIndexes(gameIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -403,19 +406,28 @@ export class WCCService {
         //   });
     }
     async getUserJoinedGameIndexes() {
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getUserJoinedGameIndexes().call();
+        return sc.methods.getUserJoinedGameIndexes().call(options);
     }
     async getUserJoinedGameScoreIndexes(gameIndex) {
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call();
+        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call(options);
     }
     async getUserJoinedGameScoreInfo(gameIndex, gameInfo, scoreIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
         const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
-        const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndex, scoreIndex).call();
+        const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndex, scoreIndex).call(options);
         if (gameInfo.status === '3') {
-            const isWin = await playerSC.methods.isWin(gameIndex, scoreIndex).call();
+            const isWin = await playerSC.methods.isWin(gameIndex, scoreIndex).call(options);
             if (isWin.win) {
                 scoreInfo.win = isWin.value;
             } else {
