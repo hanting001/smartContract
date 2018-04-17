@@ -33,7 +33,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     loadingProgress: Number = 0;
     price;
     balance = {};
-    USDPrice;
+    USDPrice = 0;
     myVote = 1;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
@@ -46,7 +46,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         betsData: 'Bet Count'
     };
     chartTitle: any = {};
-    betCanWin = 0;
+    betCanWin = '';
 
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -57,12 +57,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         private modalService: BsModalService,
         public localActionSer: LocalActionService,
         private localStorage: LocalStorage) {
-        this.buyForm = this.fb.group({
-            homeScore: ['0', [Validators.required]],
-            awayScore: ['0', [Validators.required]],
-            eth: ['0.0', [Validators.required]]
-        });
-
         this.voteForm = this.fb.group({
             voteOption: ['1', [Validators.required]]
         });
@@ -70,7 +64,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
-            console.log(tempEnvState);
+            // console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
                 if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
@@ -102,8 +96,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     async show(court) {
         this.court = court;
-        console.log(court);
-        // this.loadingSer.show('正在加载');
+        // console.log(court);
+        this.loadingSer.show('正在加载');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
@@ -129,6 +123,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         if (currenGameInfo.status == '0' || currenGameInfo.status == '1') {
             const limit = await this.wccSer.getBetLimit();
+            this.buyForm = this.fb.group({
+                homeScore: ['0', [Validators.required]],
+                awayScore: ['0', [Validators.required]],
+                eth: ['0.01', [Validators.required, Validators.min(limit)]]
+            });
+            // this.buyForm.controls('eth').setValidators([Validators.required, Validators.min(limit)]);
             const totalValue = web3.utils.fromWei(currenGameInfo.totalValue);
             const totalBets = currenGameInfo.totalBets;
             this.chartTitle = {
@@ -159,14 +159,17 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         this.loadingSer.hide();
     }
+    getChartsData(betInfos) {
+        this.chartData.betInfos = betInfos;
+    }
     getUSDValue(event) {
-        // console.log(event.target.value);
-        // this.price = 417;
-        // console.log(this.price);
-        if (this.price > 0) {
-            this.USDPrice = event.target.value * this.price;
-        } else {
-            this.USDPrice = 0;
+        if (this.buyForm.valid) {
+            if (this.price > 0) {
+                this.USDPrice = event.target.value * this.price;
+            } else {
+                this.USDPrice = 0;
+            }
+            this.calculat();
         }
     }
     hideCourt() {
@@ -176,7 +179,25 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     calculat() {
         if (this.buyForm.valid) {
-
+            const web3 = this.web3.instance();
+            console.log(this.chartData);
+            const model: any = this.buyForm.value;
+            const score = model.homeScore + ':' + model.awayScore;
+            const totalValue = Number(web3.utils.fromWei(this.chartData.currentGameInfo.totalValue));
+            const betValue = Number(model.eth);
+            let flag = false;
+            for (let i = 0; i < this.chartData.betInfos.length; i++) {
+                const bet = this.chartData.betInfos[i];
+                const betTotalValue = Number(web3.utils.fromWei(bet.totalValue));
+                if (bet.score == score) {
+                    this.betCanWin = `${((betValue / (betTotalValue + betValue)) * (totalValue + betValue)).toFixed(6)}`;
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                this.betCanWin = `${(totalValue + betValue).toFixed(6)}`;
+            }
         }
     }
     async bet() {

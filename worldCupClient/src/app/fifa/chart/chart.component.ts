@@ -33,10 +33,13 @@ export class ChartComponent implements OnInit, AfterViewInit {
     chartData;
 
     @Output()
-    onHover: EventEmitter<any> = new EventEmitter();
+    hover: EventEmitter<any> = new EventEmitter();
 
     @Output()
-    onClick: EventEmitter<any> = new EventEmitter();
+    click: EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    getData: EventEmitter<any> = new EventEmitter();
 
     chart: any;
     labelColors: string[];
@@ -72,6 +75,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             betInfos.push(betInfo);
             this.loadingProgress = Number((betInfos.length / indexLength).toFixed(2)) * 100;
         }
+        this.getData.emit(betInfos);
         const sortScore = function (a, b) {
             const scoreA = a.score.replace(/>10/g, '11');
             const scoreB = b.score.replace(/>10/g, '11');
@@ -170,11 +174,11 @@ export class ChartComponent implements OnInit, AfterViewInit {
                 },
 
                 onHover: (event) => {
-                    this.onHover.emit(event);
+                    this.hover.emit(event);
                 },
                 onClick: (event) => {
                     console.log(event);
-                    this.onClick.emit(event.target);
+                    this.click.emit(event.target);
                 },
                 scales: {
                     xAxes: [{

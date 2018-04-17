@@ -112,8 +112,8 @@
             </div>
         </div>
         <div id="chartDiv" align="center">
-            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
-                [chartOtherInfo]='chartOtherInfo'>
+            <chartjs-component [chartType]="'line'" (getData)="getChartsData($event)" [dataSetLabel]="dataSetLable" [chartData]='chartData'
+                [chartLabels]='chartLabels' [chartOtherInfo]='chartOtherInfo'>
             </chartjs-component>
         </div>
 
@@ -174,11 +174,14 @@
                         <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                             {{USDPrice|currency}}, ETH price get from etherscan.io.
                         </small>
+                        <small [hidden]="USDPrice > 0" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
+                            Min bet value is {{this.chartData.limit}} eth.
+                        </small>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
-                                Currently, if you win this bet, you can take back {{betCanWin}}
+                            <small [hidden]="!buyForm.valid" id="usdHelpBlock" class="form-text text-light align-middle m-2">
+                                Currently, if you win this bet, you can win <span class="text-warning">{{betCanWin}}</span>  eth.
                             </small>
                         </div>
                     </div>

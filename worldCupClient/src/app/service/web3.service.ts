@@ -147,7 +147,7 @@ export class Web3Service {
                         break;
                     case 'kovan':
                         state.netName = 'Kovan测试网路';
-                        console.log('This is the Kovan test network.');
+                        // console.log('This is the Kovan test network.');
                         break;
                     case 'private':
                         state.netName = '未知网络';
