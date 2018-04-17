@@ -178,7 +178,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
     }
     calculat() {
-        if (this.buyForm.valid) {
+        if (this.buyForm.valid && this.chartData.betInfos) {
             const web3 = this.web3.instance();
             console.log(this.chartData);
             const model: any = this.buyForm.value;
