@@ -71,7 +71,7 @@
                                     {{bet.win}}
                                 </td>
                                 <td>
-                                    <button *ngIf="bet.win&&bet.win!='No'&&bet.win!='Underway'" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-primary btn-sm">Win Bet</button>
+                                    <button *ngIf="bet.win > 0" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-primary btn-sm">Win Bet</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -127,12 +127,16 @@
                                     {{info.voteInfo.win}}
                                 </td>
                                 <td>
-                                    <!-- <button *ngIf="bet.win&&bet.win!='No'&&bet.win!='Underway'" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-primary btn-sm">Win Bet</button> -->
+                                    <button *ngIf="info.voteInfo.win > 0 && !info.voteInfo.paid" type="button" (click)="claimVote(info)" class="btn btn-outline-info btn-sm">Claim Bonus</button>
+                                    <button *ngIf="info.voteInfo.paid" type="button" disabled class="btn btn-outline-secondary btn-sm">Already Claimed</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </tab>
+            <tab id="Balance" heading="My Withdraw Balance" (select)="onSelect($event)">
+              
             </tab>
         </tabset>
         <!-- </div>

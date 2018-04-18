@@ -9,7 +9,7 @@ contract WccPlayer is Ownable, Stoppable{
     WccStorage wccs;
     WccVoteStorage vs;
     bytes32 public testOK;
-    mapping(address => uint) withdraws;
+    mapping(address => uint) public withdraws;
     uint public limit = 10 finney;
     function WccPlayer(address wccsAddress, address vsAddress) public Stoppable(msg.sender){
         wccs = WccStorage(wccsAddress);
@@ -40,6 +40,9 @@ contract WccPlayer is Ownable, Stoppable{
         }
         if (value < limit) {
             return 3; // too small chip
+        }
+        if (msg.sender == owner) {
+            return 4; // owner can not join
         }
         return 0;
     }

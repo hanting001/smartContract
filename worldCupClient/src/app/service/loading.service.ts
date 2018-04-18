@@ -9,6 +9,9 @@ export class LoadingService {
     }
 
     show(text?) {
+        if (!text) {
+            text = 'Sending Transaction';
+        }
         this.loadingObservable.next({ loading: true, loadingText: text });
     }
 

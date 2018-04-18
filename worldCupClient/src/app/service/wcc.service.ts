@@ -255,7 +255,8 @@ export class WCCService {
         const msgObj = {
             1: 'game not exist',
             2: 'wrong status',
-            3: 'too small chip'
+            3: 'too small chip',
+            4: 'contract owner can not bet'
         };
         const options = {
             from: await this.web3Service.getMainAccount()
@@ -275,7 +276,8 @@ export class WCCService {
             3: 'vote ended',
             4: 'vote not exist',
             5: 'has voted',
-            6: 'no vote token'
+            6: 'no vote token',
+            7: 'contract owner can not vote'
         };
         const options = {
             from: await this.web3Service.getMainAccount()
@@ -295,10 +297,7 @@ export class WCCService {
             3: 'not win',
             4: 'paid'
         };
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
-        const checkResult = await sc.methods.claimCheck(gameIndex, scoreIndex).call(options);
+        const checkResult = await sc.methods.claimCheck(gameIndex, scoreIndex).call();
         return {
             checkResult: checkResult,
             message: msgObj[checkResult]
@@ -503,38 +502,39 @@ export class WCCService {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         return sc.methods.isVoterWin(gameIndex).call();
     }
-    // async getUserBetsInfo() {
-    //     const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-    //     const playerSC = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
-    //     const gameIndexes = await sc.methods.getUserJoinedGameIndexes().call();
-    //     // console.log(gameIndexes);
-    //     const returnObj = [];
-    //     for (let i = 0; i < gameIndexes.length; i++) {
-    //         const gameInfo = await sc.methods.getGameInfo(gameIndexes[i]).call();
-    //         const scoreIndexes = await sc.methods.getUserJoinedGameScoreIndexes(gameIndexes[i]).call();
-    //         const scoreInfos = [];
-    //         for (let j = 0; j < scoreIndexes.length; j++) {
-    //             const scoreInfo = await sc.methods.getUserJoinedGameScoreInfo(gameIndexes[i], scoreIndexes[j]).call();
-    //             if (gameInfo.status === '3') {
-    //                 const isWin = await playerSC.methods.isWin(gameIndexes[i], scoreIndexes[j]).call();
-    //                 if (isWin.win) {
-    //                     scoreInfo.win = isWin.value;
-    //                 } else {
-    //                     scoreInfo.win = 'No';
-    //                 }
-    //             } else {
-    //                 scoreInfo.win = 'Underway';
-    //             }
-    //             scoreInfos.push(scoreInfo);
-    //         }
-    //         const obj = {
-    //             gameInfo: gameInfo,
-    //             scoreInfos: scoreInfos
-    //         };
-    //         returnObj.push(obj);
-    //     }
-    //     return returnObj;
-    // }
+    async claimByVoterCheck(gameIndex) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const msgObj = {
+            1: 'vote not finish',
+            2: 'vote not passed',
+            3: 'not win',
+            4: 'already paid'
+        };
+        const checkResult = await sc.methods.claimByVoterCheck(gameIndex).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async claimByVoter(gameIndex, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.claimByVoter(gameIndex).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
     async getUserVotedGameIndexes() {
         const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
         return sc.methods.getUserVotedGameIndex().call();
@@ -560,5 +560,8 @@ export class WCCService {
             voteInfo.win = 'Underway';
         }
         return voteInfo;
+    }
+    async getUserWithdraw() {
+        const player = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
     }
 }

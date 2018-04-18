@@ -26,14 +26,9 @@ export class TransComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
-            console.log(tempEnvState);
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                // this.wccService.getUserBetsInfo().then(infos => {
-                //     console.log(infos);
-                //     this.betInfos = infos;
-                // });
                 this.refresh(1);
             }
             this.envState = tempEnvState;
@@ -66,11 +61,31 @@ export class TransComponent implements OnInit, OnDestroy {
             console.log(voteInfo);
             this.voteInfos.push({
                 gameInfo: gameInfo,
-                voteInfo: voteInfo
+                voteInfo: voteInfo,
+                gameIndex: gameIndexes[i]
             });
             this.loadingProgress = Number((this.voteInfos.length / gameIndexes.length).toFixed(2)) * 100;
         }
         this.loadingProgress = 0;
+    }
+    async claimVote(info) {
+        console.log(info.gameIndex);
+        this.loadingSer.show();
+        const check = await this.wccSer.claimByVoterCheck(info.gameIndex);
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
+        this.wccSer.claimByVoter(info.gameIndex, async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                info.voteInfo.paid = true;
+                this.loadingSer.hide();
+                this.alertSer.show('Success!');
+            }
+        }, async (err) => {
+            this.loadingSer.hide();
+            this.alertSer.show('Transaction error or user denied');
+        });
     }
     async getBetInfos() {
         if (this.betInfos && this.betInfos.length > 0) {

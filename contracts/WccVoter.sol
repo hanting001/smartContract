@@ -112,6 +112,9 @@ contract WccVoter is Ownable, Stoppable{
         if (token.balanceOf(msg.sender) == 0) {
             return 6; //no vote token
         }
+        if (msg.sender == owner) {
+            return 7; //owner can not vote
+        }
         return 0;
     }
     event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
