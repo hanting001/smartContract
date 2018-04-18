@@ -159,30 +159,33 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         }
     }
 
-    delGame(index) {
-        // const model = game;
+    // delGame(index) {
+    //     // const model = game;
 
-        // console.log(model);
-        this.loadingSer.show();
-        this.wccSer.delPlayer(index, async (transactionHash) => { }, async (confirmNum, recipt) => {
-            if (confirmNum == 2) {
-                this.loadingSer.hide();
-                this.gameInfos = await this.wccSer.getAllPlayers();
-                this.alertSer.show('删除成功');
-            }
-        });
+    //     // console.log(model);
+    //     this.loadingSer.show();
+    //     this.wccSer.delPlayer(index, async (transactionHash) => { }, async (confirmNum, recipt) => {
+    //         if (confirmNum == 2) {
+    //             this.loadingSer.hide();
+    //             this.gameInfos = await this.wccSer.getAllPlayers();
+    //             this.alertSer.show('删除成功');
+    //         }
+    //     });
+    // }
+    showIndex(game) {
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        this.alertSer.show(gameIndex);
     }
-
     async setAdmin() {
         if (this.adminForm.valid) {
             const model = this.adminForm.value;
             const web3 = this.web3.instance();
-            const from = await this.web3.getFirstAccount();
+            const from = await this.web3.getMainAccount();
             // 第一个账户用于部署合约
             console.log('setAdmin');
             const sc = await this.web3.getContract('wccStorage', 'WccStorage');
-            this.loadingSer.show();
-            sc.methods.setAdmin(model.address).send({ from: from })
+            this.loadingSer.show('set storage`s admin');
+            await sc.methods.setAdmin(model.address).send({ from: from })
                 .on('confirmation', async (confNumber, receipt) => {
                     if (confNumber == 2) {
                         const isAdmin = await sc.methods.admins(model.address).call();
@@ -193,9 +196,69 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     }
 
                 });
+            const vs = await this.web3.getContract('wccVoteStorage', 'WccVoteStorage');
+            this.loadingSer.show('set vote storage`s admin');
+            await vs.methods.setAdmin(model.address).send({ from: from })
+                .on('confirmation', async (confNumber, receipt) => {
+                    if (confNumber == 2) {
+                        const isAdmin = await sc.methods.admins(model.address).call();
+                        if (isAdmin) {
+                            this.alertSer.show(model.address + '已设置为admin');
+                        }
+                        this.loadingSer.hide();
+                    }
+                });
         }
 
     }
 
-
+    async startPlay(game) {
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        this.loadingSer.show();
+        this.wccSer.startPlayByJudge(gameIndex, async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                game.status = '1';
+                this.loadingSer.hide();
+                this.alertSer.show('Success!');
+            }
+        }, async (err) => {
+            this.loadingSer.hide();
+            this.alertSer.show('Transaction error or user denied');
+        });
+    }
+    async startVote(game) {
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        const check = await this.wccSer.startVoteCheck(gameIndex);
+        this.loadingSer.show();
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
+        this.wccSer.startVote(gameIndex, async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                game.status = '2';
+                this.alertSer.show('Success!');
+            }
+        }, async (err) => {
+            this.loadingSer.hide();
+            this.alertSer.show('Transaction error or user denied');
+        });
+    }
+    async setVoteCanEnd(game) {
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        this.loadingSer.show();
+        const check = await this.wccSer.setVoteCanEndCheck(gameIndex);
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
+        this.wccSer.setVoteCanEnd(gameIndex, async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                this.alertSer.show('Success!');
+            }
+        }, async (err) => {
+            this.loadingSer.hide();
+            this.alertSer.show('Transaction error or user denied');
+        });
+    }
 }

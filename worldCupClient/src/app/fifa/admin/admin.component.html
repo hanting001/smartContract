@@ -1,169 +1,180 @@
 <div *ngIf="isOwner">
     <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
-        <h1>添加场次</h1>
-        <div class="row justify-content-md-center">
-            <form (ngSubmit)="addPlayer()" [formGroup]="form" class="col-sm-12">
-                <div class="card text-center bg-info" style="margin-top:15px;">
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col">
-                                <input type="text" id="awayCourt" name="awayCourt" class="col form-control-lg" formControlName="awayCourt" placeholder="客场名">
+        <ul class="list-inline" style="position: fixed; top: 200;z-index: 100;">
+            <li class="list-inline-item" [ngx-scroll-to]="'addGame'">Add Game</li>
+            <li class="list-inline-item" [ngx-scroll-to]="'batch'">Batch Add All Games</li>
+            <li class="list-inline-item" [ngx-scroll-to]="'transfer'">Transfer KOT</li>
+            <li class="list-inline-item" [ngx-scroll-to]="'setAdmin'">Set SC Admin</li>
+            <li class="list-inline-item" [ngx-scroll-to]="'showGames'">Show Games</li>
+        </ul>
+        <div id="addGame">
+            <h1 class="mt-4">Add Game</h1>
+            <div class="row justify-content-md-center">
+                <form (ngSubmit)="addPlayer()" [formGroup]="form" class="col-sm-12">
+                    <div class="card text-center bg-info" style="margin-top:15px;">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col">
+                                    <input type="text" id="awayCourt" name="awayCourt" class="col form-control-lg" formControlName="awayCourt" placeholder="P1">
+                                </div>
+                                <div class="col">
+                                    <input type="text" id="homeCourt" name="homeCourt" class="col form-control-lg" formControlName="homeCourt" placeholder="P2">
+                                </div>
                             </div>
-                            <div class="col">
-                                <input type="text" id="homeCourt" name="homeCourt" class="col form-control-lg" formControlName="homeCourt" placeholder="主场名">
+                            <div class="form-group row">
+                                <div class="col">
+                                    <select type="text" class="col form-control-lg" formControlName="gameType">
+                                        <option value="0">First stage</option>
+                                        <option value="1">Round of 16</option>
+                                        <option value="2">Quarter-finals</option>
+                                        <option value="3">Semi-finals</option>
+                                        <option value="4">For_third</option>
+                                        <option value="5">Final</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <input placeholder="比赛开始时间" type="text" readonly class="col form-control-lg" value="{{form.controls.startTime.value| date:'yyyy-MM-dd HH:mm' }}">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col">
-                                <select type="text" class="col form-control-lg" formControlName="gameType">
-                                    <option value="0">First stage</option>
-                                    <option value="1">Round of 16</option>
-                                    <option value="2">Quarter-finals</option>
-                                    <option value="3">Semi-finals</option>
-                                    <option value="4">For_third</option>
-                                    <option value="5">Final</option>
-                                </select>
+                            <div class="form-group row">
+                                <label class="col"></label>
+                                <dl-date-time-picker formControlName="startTime" class="col"></dl-date-time-picker>
                             </div>
-                            <div class="col">
-                                <input placeholder="比赛开始时间" type="text" readonly class="col form-control-lg" value="{{form.controls.startTime.value| date:'yyyy-MM-dd HH:mm' }}">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col"></label>
-                            <dl-date-time-picker formControlName="startTime" class="col"></dl-date-time-picker>
-                        </div>
-                        <div *ngIf="form.controls.awayCourt.invalid && (form.controls.awayCourt.dirty || form.controls.awayCourt.touched)" class="form-group col alert alert-danger">
-                            <div *ngIf="form.controls.awayCourt.errors.required">
-                                客场名必须输入
-                            </div>
+                            <div *ngIf="form.controls.awayCourt.invalid && (form.controls.awayCourt.dirty || form.controls.awayCourt.touched)" class="form-group col alert alert-danger">
+                                <div *ngIf="form.controls.awayCourt.errors.required">
+                                    P1 required
+                                </div>
 
 
-                        </div>
-                        <div *ngIf="form.controls.homeCourt.invalid && (form.controls.homeCourt.dirty || form.controls.homeCourt.touched)" class="form-group col alert alert-danger">
-                            <div *ngIf="form.controls.homeCourt.errors.required">
-                                主场名必须输入
                             </div>
-                        </div>
+                            <div *ngIf="form.controls.homeCourt.invalid && (form.controls.homeCourt.dirty || form.controls.homeCourt.touched)" class="form-group col alert alert-danger">
+                                <div *ngIf="form.controls.homeCourt.errors.required">
+                                    p2 required
+                                </div>
+                            </div>
 
-                        <div *ngIf="form.controls.startTime.invalid && (form.controls.startTime.dirty || form.controls.startTime.touched)" class="form-group col alert alert-danger">
-                            <div *ngIf="form.controls.startTime.errors.required">
-                                比赛开始时间必须输入
+                            <div *ngIf="form.controls.startTime.invalid && (form.controls.startTime.dirty || form.controls.startTime.touched)" class="form-group col alert alert-danger">
+                                <div *ngIf="form.controls.startTime.errors.required">
+                                    time required
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="form-group" style="margin-top: 50px;">
+                        <button type="submit" class="btn btn-primary btn-lg  ">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="batch">
+        <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
+            <div class="form-group row">
+                <div class="col text-center">
+                    <p>{{addingText}}</p>
                 </div>
+            </div>
+            <div class="form-group row">
+                <div class="col text-center">
+                    <button type="button" (click)="addAllPlayers();" class="btn btn-primary btn-lg  ">Batch Add All Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="transfer">
+        <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
+            <h1>Transfer KOT</h1>
+            <form (ngSubmit)="exch()" [formGroup]="exchForm" class="col-sm-12">
+                <div class="form-group row">
+                    <div class="col-8">
+                        <input type="text" class="col form-control-lg" formControlName="address" placeholder="Contract Address">
+                    </div>
+                    <div class="col-4 text-left">
+                        <input type="number" class="col form-control-lg" formControlName="tokenCount" placeholder="KOT Value">
+                    </div>
 
 
-                <div class="form-group" style="margin-top: 50px;">
-                    <button type="submit" class="btn btn-primary btn-lg  ">添加</button>
+
+                </div>
+                <div class="form-group row">
+
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-primary btn-lg  ">Do</button>
+                    </div>
+
+
+
                 </div>
             </form>
         </div>
-
-
     </div>
 
+    <div id="setAdmin">
+        <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
+            <h1>Set Admin</h1>
+            <form (ngSubmit)="setAdmin()" [formGroup]="adminForm" class="col-sm-12">
+                <div class="form-group row">
 
-    <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
-        <div class="form-group row">
-            <div class="col text-center">
-                <p>{{addingText}}</p>
-            </div>
+                    <div class="col-8">
+                        <input type="text" class="col form-control-lg" formControlName="address" placeholder="address">
+                    </div>
+                    <div class="col-4 text-left">
+                    </div>
+
+
+
+                </div>
+                <div class="form-group row">
+
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-primary btn-lg  ">Set</button>
+                    </div>
+
+
+
+                </div>
+            </form>
         </div>
-        <div class="form-group row">
-            <div class="col text-center">
-                <button type="button" (click)="addAllPlayers();" class="btn btn-primary btn-lg  ">添加所有比赛</button>
-            </div>
-
-
-        </div>
-    </div>
-
-
-    <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
-        <h1>转移KOT</h1>
-        <form (ngSubmit)="exch()" [formGroup]="exchForm" class="col-sm-12">
-            <div class="form-group row">
-                <div class="col-8">
-                    <input type="text" class="col form-control-lg" formControlName="address" placeholder="合约地址">
-                </div>
-                <div class="col-4 text-left">
-                    <input type="number" class="col form-control-lg" formControlName="tokenCount" placeholder="KOT数量">
-                </div>
-
-
-
-            </div>
-            <div class="form-group row">
-
-                <div class="col text-center">
-                    <button type="submit" class="btn btn-primary btn-lg  ">处理</button>
-                </div>
-
-
-
-            </div>
-        </form>
-    </div>
-
-
-    <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center col-sm-12 ">
-        <h1>SetAdmin</h1>
-        <form (ngSubmit)="setAdmin()" [formGroup]="adminForm" class="col-sm-12">
-            <div class="form-group row">
-
-                <div class="col-8">
-                    <input type="text" class="col form-control-lg" formControlName="address" placeholder="地址">
-                </div>
-                <div class="col-4 text-left">
-                </div>
-
-
-
-            </div>
-            <div class="form-group row">
-
-                <div class="col text-center">
-                    <button type="submit" class="btn btn-primary btn-lg  ">设置</button>
-                </div>
-
-
-
-            </div>
-        </form>
-    </div>
+    </div>>
 
 
 
     <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
-        <h1>所有比赛</h1>
+        <h1 id="showGames">All Games</h1>
         <div class="row justify-content-md-center">
-            <p *ngIf="!gameInfos||gameInfos.length==0">没有比赛</p>
+            <p *ngIf="!gameInfos||gameInfos.length==0">No game</p>
             <table *ngIf="gameInfos&&gameInfos.length!=0" class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th scope="col">客场</th>
-                        <th scope="col">主场</th>
-                        <th scope="col">比赛时间</th>
-                        <th scope="col">类型</th>
-                        <th scope="col">状态</th>
-                        <th scope="col">操作</th>
+                        <th class="text-left" scope="col">P1</th>
+                        <th class="text-left" scope="col">P2</th>
+                        <th class="text-left" scope="col">Time</th>
+                        <th class="text-left" scope="col">Type</th>
+                        <th class="text-left" scope="col">status</th>
+                        <th class="text-left" scope="col">opration</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let game of gameInfos;">
                         <td class="text-left" scope="row">
-                            <img [src]="game.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{game.p1}}</td>
+                            <img [src]="game.p1|nationFlag" [alt]="game.p1" style="border:1px solid #c7c6c6">
+                        </td>
                         <td class="text-left" scope="row">
-                            <img [src]="game.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{game.p2}}</td>
+                            <img [src]="game.p2|nationFlag" [alt]="game.p2" style="border:1px solid #c7c6c6">
+                        </td>
                         <td class="text-left">{{game.time+'000' | date:'yyyy-MM-dd HH:mm' }}</td>
                         <td class="text-left">{{game.gameType|gameType}}</td>
                         <td class="text-left">{{game.status|gameStatus }}</td>
                         <td class="text-left">
-                            <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button>
+                            <button type="button" (click)="showIndex(game)" class="btn btn-primary btn-sm">Get Index</button>
+                            <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
                             <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
                             <button *ngIf="game.status == 1" type="button" (click)="startVote(game)" class="btn btn-primary btn-sm">Start Vote</button>
-                            <button *ngIf="game.status == 2" type="button" (click)="setCanEnd(game)" class="btn btn-primary btn-sm">Set Vote can end</button>
+                            <button *ngIf="game.status == 2" type="button" (click)="setVoteCanEnd(game)" class="btn btn-primary btn-sm">Set Vote can end</button>
                         </td>
                     </tr>
 

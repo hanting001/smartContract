@@ -575,4 +575,86 @@ export class WCCService {
             return false;
         }
     }
+
+    async startPlayByJudge(gameIndex, onConfirmation, onError) {
+        const voter = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        voter.methods.setGameStart(gameIndex).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+
+    async startVoteCheck(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const msgObj = {
+            1: 'game not exist',
+            2: 'status error'
+        };
+        const checkResult = await sc.methods.startVoteCheck(gameIndex).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async startVote(gameIndex, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.startVote(gameIndex).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+    async setVoteCanEndCheck(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const msgObj = {
+            1: 'game not exist',
+            2: 'status error',
+            3: 'vote ended',
+            4: 'vote not exist'
+        };
+        const checkResult = await sc.methods.canEndCheck(gameIndex).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async setVoteCanEnd(gameIndex, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.setCanEnd(gameIndex).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
 }
