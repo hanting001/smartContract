@@ -7,6 +7,7 @@ import { AlertService } from '../../service/alert.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import * as moment from 'moment';
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
@@ -220,20 +221,22 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         }
 
     }
-
     async startPlay(game) {
-        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
-        this.loadingSer.show();
-        this.wccSer.startPlayByJudge(gameIndex, async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
-                game.status = '1';
+        const time = moment().format('YYYY-MM-DD HH:mm:ss');
+        if (confirm(`Curren time is ${time}, sure?`)) {
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            this.loadingSer.show();
+            this.wccSer.startPlayByJudge(gameIndex, async (confirmNum, receipt) => {
+                if (confirmNum == 1) {
+                    game.status = '1';
+                    this.loadingSer.hide();
+                    this.alertSer.show('Success!');
+                }
+            }, async (err) => {
                 this.loadingSer.hide();
-                this.alertSer.show('Success!');
-            }
-        }, async (err) => {
-            this.loadingSer.hide();
-            this.alertSer.show('Transaction error or user denied');
-        });
+                this.alertSer.show('Transaction error or user denied');
+            });
+        }
     }
     async startVote(game) {
         if (this.startVoteForm.valid) {

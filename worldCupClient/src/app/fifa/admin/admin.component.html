@@ -173,12 +173,10 @@
                             <button type="button" (click)="showIndex(game)" class="btn btn-primary btn-sm">Get Index</button>
                             <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
                             <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
-                            <button *ngIf="game.status == 1" type="button" (click)="startVote(game)" class="btn btn-primary btn-sm">Start Vote</button>
+                            <button *ngIf="game.status == 1" type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">Start Vote</button>
                             <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 2)" class="btn btn-primary btn-sm">Set Vote can end</button>
-                            <button type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">Start Vote</button>
                         </td>
                     </tr>
-
                 </tbody>
             </table>
 
