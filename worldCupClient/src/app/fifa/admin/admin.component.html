@@ -174,7 +174,8 @@
                             <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
                             <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
                             <button *ngIf="game.status == 1" type="button" (click)="startVote(game)" class="btn btn-primary btn-sm">Start Vote</button>
-                            <button *ngIf="game.status == 2" type="button" (click)="setVoteCanEnd(game)" class="btn btn-primary btn-sm">Set Vote can end</button>
+                            <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 2)" class="btn btn-primary btn-sm">Set Vote can end</button>
+                            <button type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">Start Vote</button>
                         </td>
                     </tr>
 
@@ -185,3 +186,116 @@
     </div>
 </div>
 <div *ngIf="!isOwner" class="jumbotron bg-info text-center " id="changePage"> You not a owner!</div>
+
+<ng-template #startVoteTemplate>
+    <div class="modal-body text-center">
+        <div class="row">
+            <form (ngSubmit)="startVote(selectedGame)" [formGroup]="startVoteForm" class="col-sm-12">
+                <div class="card  bg-info" style="margin-top:15px;">
+                    <table class="table">
+                        <tr>
+                            <td style="border:0;width:40%" class="text-left align-middle">
+                                <img [src]="selectedGame.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.p1}}</td>
+                            <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                            <td style="border:0;width:40%" class="text-left align-middle">
+                                <img [src]="selectedGame.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.p2}}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:0">
+                                <select class=" form-control" formControlName="homeScore" aria-describedby="scoreHelpBlock">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value=">10">>10</option>
+                                </select>
+                            </td>
+                            <td style="border:0">
+                                <select class="form-control" formControlName="awayScore">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value=">10">>10</option>
+                                </select>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <div class="row p-2">
+                        <div class="col text-center align-middle">
+                            <button type="submit" class="btn btn-outline-light">Submit Vote Target</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #setVoteCanEndTemplate>
+    <div class="modal-body text-center">
+        <div class="container text-center" id="chartDiv" align="center">
+
+            <div class="row text-center">
+                <div class="col">
+                    <h4 class="text-secondary">Vote Info</h4>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col">
+                    <small class="text-secondary">Total Votes</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Yes Count</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">No Count</small>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col">
+                    <h5> {{selectedVote.totalCount}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{selectedVote.yesCount}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{selectedVote.noCount}}</h5>
+                </div>
+            </div>
+            <div class="card  bg-info" style="margin-top:15px;">
+                <table class="table">
+                    <tr>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="selectedGame.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.p1}}</td>
+                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="selectedGame.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.p2}}</td>
+                    </tr>
+                </table>
+                <div class="row p-2">
+                    <div class="col text-center align-middle">
+                        <button (click)="setVoteCanEnd(selectedGame)" class="btn btn-outline-light">Set Vote Can End</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

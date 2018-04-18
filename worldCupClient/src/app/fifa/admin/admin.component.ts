@@ -1,11 +1,12 @@
 import { WCCService } from '../../service/wcc.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { HttpClient } from '@angular/common/http';
-
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
@@ -22,12 +23,20 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     addingGame: any = [];
     addingText: String = '';
     isOwner: Boolean = false;
+    selectedGame;
+    selectedVote;
+    modalRef: BsModalRef;
+    startVoteForm: FormGroup;
+    @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
+    @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         public loadingSer: LoadingService,
         private http: HttpClient,
-        public alertSer: AlertService) {
+        private modalService: BsModalService,
+        public alertSer: AlertService,
+    ) {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
             homeCourt: ['', [Validators.required]],
@@ -227,38 +236,72 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         });
     }
     async startVote(game) {
-        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
-        const check = await this.wccSer.startVoteCheck(gameIndex);
-        this.loadingSer.show();
-        if (check.checkResult != 0) {
-            this.loadingSer.hide();
-            return this.alertSer.show(check.message);
-        }
-        this.wccSer.startVote(gameIndex, async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
-                game.status = '2';
-                this.alertSer.show('Success!');
+        if (this.startVoteForm.valid) {
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            const score = this.startVoteForm.value.homeScore + ':' + this.startVoteForm.value.awayScore;
+            if (confirm(`Vote target is ${score}, submit?`)) {
+                const check = await this.wccSer.startVoteCheck(gameIndex);
+                this.loadingSer.show();
+                if (check.checkResult != 0) {
+                    this.loadingSer.hide();
+                    return this.alertSer.show(check.message);
+                }
+                this.wccSer.startVote(gameIndex, async (confirmNum, receipt) => {
+                    if (confirmNum == 1) {
+                        game.status = '2';
+                        this.alertSer.show('Success!');
+                    }
+                }, async (err) => {
+                    this.loadingSer.hide();
+                    this.alertSer.show('Transaction error or user denied');
+                });
             }
-        }, async (err) => {
-            this.loadingSer.hide();
-            this.alertSer.show('Transaction error or user denied');
-        });
+        } else {
+            alert('startVoteForm invalid');
+        }
+    }
+    async showModal(game, type) {
+        this.selectedGame = game;
+        if (type == 1) {
+            // show start vote modal
+            this.startVoteForm = this.fb.group({
+                homeScore: ['0', [Validators.required]],
+                awayScore: ['0', [Validators.required]]
+            });
+            this.modalRef = this.openModal(this.startVoteTemplate);
+        } else if (type == 2) {
+            const web3 = this.web3.instance();
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            const voteInfo = await this.wccSer.getVoteInfo(gameIndex);
+            const BN = web3.utils.BN;
+            this.selectedVote = {
+                yesCount: web3.utils.fromWei(voteInfo.yesCount),
+                noCount: web3.utils.fromWei(voteInfo.noCount),
+                totalCount: web3.utils.fromWei(new BN(voteInfo.yesCount).add(new BN(voteInfo.noCount)))
+            };
+            this.modalRef = this.openModal(this.setVoteCanEndTemplate);
+        }
+    }
+    openModal(template: TemplateRef<any>) {
+        return this.modalService.show(template, { class: 'modal-lg' });
     }
     async setVoteCanEnd(game) {
-        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
-        this.loadingSer.show();
-        const check = await this.wccSer.setVoteCanEndCheck(gameIndex);
-        if (check.checkResult != 0) {
-            this.loadingSer.hide();
-            return this.alertSer.show(check.message);
-        }
-        this.wccSer.setVoteCanEnd(gameIndex, async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
-                this.alertSer.show('Success!');
+        if (confirm('set this vote can end?')) {
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            this.loadingSer.show();
+            const check = await this.wccSer.setVoteCanEndCheck(gameIndex);
+            if (check.checkResult != 0) {
+                this.loadingSer.hide();
+                return this.alertSer.show(check.message);
             }
-        }, async (err) => {
-            this.loadingSer.hide();
-            this.alertSer.show('Transaction error or user denied');
-        });
+            this.wccSer.setVoteCanEnd(gameIndex, async (confirmNum, receipt) => {
+                if (confirmNum == 1) {
+                    this.alertSer.show('Success!');
+                }
+            }, async (err) => {
+                this.loadingSer.hide();
+                this.alertSer.show('Transaction error or user denied');
+            });
+        }
     }
 }
