@@ -21,6 +21,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     games: any = [];
+    secondStageStartDate: string;
     court: any = {};
     isSticky: Boolean = true;
     subscription;
@@ -350,11 +351,17 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const game: any = {};
             console.log(gameInfos[i].time);
             console.log(new Date(gameInfos[i].time * 1));
+
             game.local = false;
             const date = moment(gameInfos[i].time * 1000);
             game.date = date.format('YYYY-MM-DD');
             game.day = date.format('DD');
             game.dayOfWeek = date.isoWeekday();
+
+            if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
+                this.secondStageStartDate = game.date;
+            }
+
             if (games.length > 0 && games[games.length - 1].date == game.date) {
                 games[games.length - 1].count++;
                 games[games.length - 1].courts.push(gameInfos[i]);

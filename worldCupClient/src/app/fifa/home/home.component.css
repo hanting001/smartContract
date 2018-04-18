@@ -33,4 +33,5 @@ match-dot {
     box-sizing: none;
     border-radius: 0;
     background-color: #ffffff;
+    border-bottom: 3px solid #cccccc;
 }

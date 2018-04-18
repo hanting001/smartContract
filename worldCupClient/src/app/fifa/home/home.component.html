@@ -49,7 +49,7 @@
                 First Stage
             </li>
             <li class="nav-item default" (click)="firstStageFlag=!firstStageFlag" [ngClass]="{'active':firstStageFlag!=1,'default':firstStageFlag==1}"
-                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="games[games.length-1].date">
+                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="secondStageStartDate||games[games.length-1].date">
                 Second Stage
             </li>
         </ul>
