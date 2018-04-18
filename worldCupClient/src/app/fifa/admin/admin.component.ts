@@ -1,5 +1,5 @@
 import { WCCService } from '../../service/wcc.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service } from '../../service/index';
 import { LoadingService } from '../../service/loading.service';
@@ -11,17 +11,17 @@ import { HttpClient } from '@angular/common/http';
     templateUrl: './admin.component.html',
     styleUrls: ['./admin.component.css']
 })
-export class FifaAdminComponent implements OnInit {
+export class FifaAdminComponent implements OnInit, OnDestroy {
     form: FormGroup;
     exchForm: FormGroup;
     adminForm: FormGroup;
     envState: any = {};
     mytime: Date = new Date();
     gameInfos: any = [];
-
+    subscription;
     addingGame: any = [];
     addingText: String = '';
-
+    isOwner: Boolean = false;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
@@ -43,20 +43,30 @@ export class FifaAdminComponent implements OnInit {
         this.adminForm = this.fb.group({
             address: ['', [Validators.required]],
         });
-
-
-        this.checkEnv();
     }
 
     ngOnInit() {
-
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
+            // console.log(tempEnvState);
+            if (tempEnvState.checkEnv) {
+                if (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account) {
+                    this.envState.changed = true;
+                    this.checkEnv();
+                } else {
+                    this.envState.changed = false;
+                }
+                this.envState = tempEnvState;
+            }
+        });
+        this.web3.check();
     }
-
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
     async checkEnv() {
-        this.envState = await this.web3.check();
-        if (this.envState.checkEnv === true) {
+        this.isOwner = await this.wccSer.isOwner();
+        if (this.isOwner) {
             this.gameInfos = await this.wccSer.getAllPlayers();
-            console.log(this.gameInfos);
         }
     }
 

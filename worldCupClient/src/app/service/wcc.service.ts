@@ -124,7 +124,6 @@ export class WCCService {
     async  getAllPlayers() {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameIndexes = await sc.methods.getAllGameIndexes().call();
-        console.log(gameIndexes);
         // get all games
         const gameInfos = [];
         for (const index of gameIndexes) {
@@ -565,5 +564,15 @@ export class WCCService {
         const player = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const account = await this.web3Service.getMainAccount();
         return player.methods.withdraws(account).call();
+    }
+    async isOwner() {
+        const sc = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
+        const owner = await sc.methods.owner().call();
+        const account = await this.web3Service.getMainAccount();
+        if (owner === account) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
