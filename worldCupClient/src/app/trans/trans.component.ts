@@ -14,11 +14,12 @@ export class TransComponent implements OnInit, OnDestroy {
     voteInfos: any[] = [];
     subscription;
     loadingProgress = 0;
+    myBalance: any = {};
+    selectTab = 1;
     constructor(
         private wccService: WCCService,
         private web3: Web3Service,
         public localActionSer: LocalActionService,
-        public wccSer: WCCService,
         public loadingSer: LoadingService,
         public alertSer: AlertService,
         private loading: LoadingService) { }
@@ -29,7 +30,7 @@ export class TransComponent implements OnInit, OnDestroy {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                this.refresh(1);
+                this.refresh(this.selectTab);
             }
             this.envState = tempEnvState;
         });
@@ -40,10 +41,24 @@ export class TransComponent implements OnInit, OnDestroy {
     onSelect(data: TabDirective): void {
         console.log(data);
         if (data.id === 'Bets') {
+            this.selectTab = 1;
             this.getBetInfos();
         } else if (data.id === 'Votes') {
+            this.selectTab = 2;
             this.getVoteInfos();
+        } else if (data.id === 'Balance') {
+            this.selectTab = 3;
+            this.getBalanceAndWithdraw();
         }
+    }
+    async getBalanceAndWithdraw() {
+        const balance = await this.web3.getBalance();
+        const withdraw = await this.wccService.getUserWithdraw();
+        this.myBalance = {
+            eth: balance.eth,
+            token: balance.token,
+            withdraw: withdraw
+        };
     }
     async getVoteInfos() {
         if (this.voteInfos && this.voteInfos.length > 0) {
@@ -56,8 +71,8 @@ export class TransComponent implements OnInit, OnDestroy {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
             const voteInfos = [];
             const voteInfo = await this.wccService.getUserVoteInfo(gameIndexes[i], gameInfo);
-            const gameVoteInfo = await this.wccSer.getVoteInfo(gameIndexes[i]);
-            voteInfo.weight =  (Number(voteInfo.value) / (Number(gameVoteInfo.yesCount) + Number(gameVoteInfo.noCount)) * 100).toFixed(2);
+            const gameVoteInfo = await this.wccService.getVoteInfo(gameIndexes[i]);
+            voteInfo.weight = (Number(voteInfo.value) / (Number(gameVoteInfo.yesCount) + Number(gameVoteInfo.noCount)) * 100).toFixed(2);
             console.log(voteInfo);
             this.voteInfos.push({
                 gameInfo: gameInfo,
@@ -71,12 +86,12 @@ export class TransComponent implements OnInit, OnDestroy {
     async claimVote(info) {
         console.log(info.gameIndex);
         this.loadingSer.show();
-        const check = await this.wccSer.claimByVoterCheck(info.gameIndex);
+        const check = await this.wccService.claimByVoterCheck(info.gameIndex);
         if (check.checkResult != 0) {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
-        this.wccSer.claimByVoter(info.gameIndex, async (confirmNum, receipt) => {
+        this.wccService.claimByVoter(info.gameIndex, async (confirmNum, receipt) => {
             if (confirmNum == 1) {
                 info.voteInfo.paid = true;
                 this.loadingSer.hide();
@@ -117,17 +132,17 @@ export class TransComponent implements OnInit, OnDestroy {
         // this.loadingSer.show('Sending Transaction');
         console.log(gameInfo);
         console.log(bet);
-        const gameIndex = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
-        const scoreIndex = this.wccSer.getScoreIndex(bet.score);
+        const gameIndex = this.wccService.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
+        const scoreIndex = this.wccService.getScoreIndex(bet.score);
 
-        const check = await this.wccSer.claimCheck(gameIndex, scoreIndex);
+        const check = await this.wccService.claimCheck(gameIndex, scoreIndex);
         console.log(check);
         if (check.checkResult != 0) {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
 
-        this.wccSer.claim(gameIndex, scoreIndex, async (transactionHash) => {
+        this.wccService.claim(gameIndex, scoreIndex, async (transactionHash) => {
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType,
                 model: { gameInfo: gameInfo, bet: bet }, createdAt: new Date(), type: 'claim'
@@ -153,6 +168,8 @@ export class TransComponent implements OnInit, OnDestroy {
         } else if (type === 2) {
             this.voteInfos = [];
             this.getVoteInfos();
+        } else if (type === 3) {
+            this.getBalanceAndWithdraw();
         }
     }
 }

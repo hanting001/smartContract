@@ -1,24 +1,29 @@
-import { AlertService } from './service/alert.service';
-import { LoadingService } from './service/loading.service';
-import { Component, ViewChild, TemplateRef } from '@angular/core';
+
+import { Component, ViewChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-
+import { Web3Service, LoadingService, AlertService } from './service/index';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+    envState: any = { checkWeb3: true, checkAccount: true };
     isSupportBrowser: Boolean = true;
     title = 'app';
     loading: Boolean = false;
     loadingText?: string;
     tip: any = {};
     alertModalRef: BsModalRef;
-
+    subscription;
+    account = '';
     @ViewChild('alertTemplate') alertTemplate: TemplateRef<any>;
-    constructor(public loadingSer: LoadingService, private modalService: BsModalService, public alertSer: AlertService) {
+    constructor(public loadingSer: LoadingService,
+        private modalService: BsModalService,
+        public alertSer: AlertService,
+        private web3: Web3Service
+    ) {
         this.isSupportBrowser = this.getIsSupportBrowser();
         this.loadingSer.getLoadingObservable().subscribe((data: any) => {
             this.loading = data.loading;
@@ -60,7 +65,22 @@ export class AppComponent {
         //     });
         // })();
     }
-
+    ngOnInit() {
+        this.web3.check();
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
+            if (tempEnvState.checkEnv === true &&
+                (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
+            ) {
+                this.web3.getMainAccount().then(account => {
+                    this.account = account;
+                });
+            }
+            this.envState = tempEnvState;
+        });
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
     openModal(template: TemplateRef<any>) {
         return this.modalService.show(template, { class: 'modal-md' });
     }

@@ -135,8 +135,39 @@
                     </table>
                 </div>
             </tab>
-            <tab id="Balance" heading="My Withdraw Balance" (select)="onSelect($event)">
-              
+            <tab id="Balance" heading="My Balance" (select)="onSelect($event)">
+                <div class="row align-items-center">
+                    <div class="col text-right">
+                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <a href="javascript:void(0)" (click)="refresh(3)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
+                    </div>
+                </div>
+                <div class="card  p-3 mt-3">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col">
+                                <small class="text-secondary">ETH</small>
+                            </div>
+                            <div class="col">
+                                <small class="text-secondary">Vote Token</small>
+                            </div>
+                            <div class="col">
+                                <small class="text-secondary">Withdraw</small>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col">
+                                <h5> {{myBalance.eth}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{myBalance.token}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{myBalance.withdraw | fromWei}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </tab>
         </tabset>
         <!-- </div>

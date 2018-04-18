@@ -74,18 +74,13 @@ contract WccStorage is Ownable {
             i: i
         });
     }
-    // function getGamesByType(GameType _gameType) external view {
-    //     uint length = gameIndexes.length;
-    //     bytes32[]  array;
-    //     for (uint i = 0; i < length; i ++) {
-    //         if (games[gameIndexes[i]].gameType == _gameType) {
-    //             array.push(gameIndexes[i]);
-    //         }
-    //     }
-    // }
+    function setPlayer(bytes32 _index, string _p1, string _p2) external onlyOwner {
+        require(!games[_index].isValued);
+        games[_index].p1 = _p1;
+        games[_index].p2 = _p2;
+    }
     function arrayRemove(bytes32[] storage array, uint index) internal {
         if (index >= array.length) return;
-
         for (uint i = index; i<array.length-1; i++){
             array[i] = array[i+1];
         }

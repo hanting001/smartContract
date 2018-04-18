@@ -563,5 +563,7 @@ export class WCCService {
     }
     async getUserWithdraw() {
         const player = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const account = await this.web3Service.getMainAccount();
+        return player.methods.withdraws(account).call();
     }
 }

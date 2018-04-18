@@ -8,6 +8,9 @@ export class FromWeiPipe implements PipeTransform {
 
     }
     transform(value: any, args?: any): any {
+        if (!value) {
+            value = '0';
+        }
         return this.web3Service.instance().utils.fromWei(value);
     }
 
