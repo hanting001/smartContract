@@ -35,6 +35,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     balance = {};
     USDPrice = 0;
     myVote = 1;
+    firstStageFlag = 1;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 

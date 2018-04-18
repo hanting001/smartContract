@@ -9,3 +9,28 @@ match-dot {
 .table tbody tr td {
     vertical-align: middle;
 }
+
+.nav-item.active {
+    outline: none;
+    border: none;
+    color: #0087e6;
+    border-color: #ffffff;
+    box-shadow: none;
+    box-sizing: none;
+    background-color: #ffffff;
+    border-radius: 0;
+    margin-right: 15px;
+    border-bottom: 3px solid #0087e6;
+}
+
+.nav-item.default {
+    outline: none;
+    color: #0087e6;
+    border: none;
+    margin-right: 15px;
+    border-color: #ffffff;
+    box-shadow: none;
+    box-sizing: none;
+    border-radius: 0;
+    background-color: #ffffff;
+}
