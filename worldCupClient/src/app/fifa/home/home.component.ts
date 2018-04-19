@@ -71,10 +71,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (tempEnvState.checkEnv) {
                 if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
-                    this.getAllGames();
+
                 } else {
                     this.envState.changed = false;
                 }
+                this.envState = tempEnvState;
+                this.getAllGames();
             }
             this.envState = tempEnvState;
         });
