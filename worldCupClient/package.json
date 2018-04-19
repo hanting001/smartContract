@@ -5,7 +5,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "textBuild": "ng build --base-href /wceb/",
+        "testBuild": "ng build --base-href /wceb/",
         "build": "ng build  --prod",
         "test": "ng test",
         "lint": "ng lint",
