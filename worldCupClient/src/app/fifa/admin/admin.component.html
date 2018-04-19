@@ -11,33 +11,33 @@
             <h1 id="showGames">All Games</h1>
             <div class="row justify-content-md-center">
                 <p *ngIf="!gameInfos||gameInfos.length==0">No game</p>
-                <table *ngIf="gameInfos&&gameInfos.length!=0" class="table">
+                <table *ngIf="gameInfos&&gameInfos.length!=0" class="table table-hover table-sm">
                     <thead class="thead-light">
                         <tr>
-                            <th class="text-center" scope="col">P1</th>
-                            <th class="text-center" scope="col">P2</th>
-                            <th class="text-center" scope="col">Time</th>
-                            <th class="text-center" scope="col">Type</th>
-                            <th class="text-center" scope="col">status</th>
-                            <th class="text-center" scope="col">opration</th>
+                            <th class="text-center align-middle" scope="col">P1</th>
+                            <th class="text-center align-middle" scope="col">P2</th>
+                            <th class="text-center align-middle" scope="col">Time</th>
+                            <th class="text-center align-middle" scope="col">Type</th>
+                            <th class="text-center align-middle" scope="col">status</th>
+                            <th class="text-center align-middle" scope="col">opration</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let game of gameInfos;">
-                            <td class="text-center" scope="row">
+                            <td class="text-center align-middle" scope="row">
                                 <img [src]="game.p1|nationFlag" [alt]="game.p1" style="border:1px solid #c7c6c6">
                                 <br>
                                 <p class="small text-secondary m-0">{{game.p1}}</p>
                             </td>
-                            <td class="text-center" scope="row">
+                            <td class="text-center align-middle" scope="row">
                                 <img [src]="game.p2|nationFlag" [alt]="game.p2" style="border:1px solid #c7c6c6">
                                 <br>
                                 <p class="small text-secondary m-0">{{game.p2}}</p>
                             </td>
-                            <td class="text-center">{{game.time+'000' | date:'yyyy-MM-dd HH:mm' }}</td>
-                            <td class="text-center">{{game.gameType|gameType}}</td>
-                            <td class="text-center">{{game.status|gameStatus }}</td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">{{game.time+'000' | date:'yyyy-MM-dd HH:mm' }}</td>
+                            <td class="text-center align-middle">{{game.gameType|gameType}}</td>
+                            <td class="text-center align-middle">{{game.status|gameStatus }}</td>
+                            <td class="text-center align-middle">
                                 <button type="button" (click)="showIndex(game)" class="btn btn-primary btn-sm">Get Index</button>
                                 <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
                                 <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
