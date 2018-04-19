@@ -48,16 +48,29 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
     ethChange() {
-        const value = this.web3.instance().utils.toWei(String(this.form.controls.ethValue.value)) * this.rate;
-        this.form.controls.kotValue.setValue(this.web3.instance().utils.fromWei(String(value)));
+        const web3 = this.web3.instance();
+        let ethValue = this.form.controls.ethValue.value;
+        const BN = web3.utils.BN;
+        if (ethValue) {
+            ethValue = new BN(ethValue);
+            this.form.controls.kotValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(ethValue)).mul(new BN(this.rate))));
+        }
     }
 
     kotChange() {
-        const value = this.web3.instance().utils.toWei(String(this.form.controls.kotValue.value)) / this.rate;
-        this.form.controls.ethValue.setValue(this.web3.instance().utils.fromWei(String(value)));
+        const web3 = this.web3.instance();
+        let tokenValue = this.form.controls.kotValue.value;
+        const BN = web3.utils.BN;
+        if (tokenValue) {
+            tokenValue = new BN(tokenValue);
+            this.form.controls.ethValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(tokenValue)).div(new BN(this.rate))));
+        }
     }
 
-
+    resetForm() {
+        this.form.controls.kotValue.setValue(0);
+        this.form.controls.ethValue.setValue(0);
+    }
     async exchange() {
         if (this.form.valid) {
             const model: any = this.form.value;
@@ -72,15 +85,16 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             }
             if (model.ethValue) {
                 this.loadingSer.show();
-                const confirmApprove = async (confirmationNumber, receipt) => {
+                const confirmApprove = (confirmationNumber, receipt) => {
                     if (confirmationNumber === 2) {
                         this.getBalance();
-                        this.form.reset();
+                        this.resetForm();
                         this.loadingSer.hide();
+                        this.alertSer.show('Success!');
                     }
                 };
-                this.wccSer.exchange(valueInWei, async (transactionHash) => {
-                    await this.localActionSer.addAction({
+                this.wccSer.exchange(valueInWei, (transactionHash) => {
+                    this.localActionSer.addAction({
                         transactionHash: transactionHash, netType: this.envState.netType,
                         eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
                     }, this.account);

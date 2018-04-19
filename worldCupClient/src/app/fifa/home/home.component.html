@@ -191,7 +191,8 @@
                     <div class="row">
                         <div class="col">
                             <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
-                                Currently, if you win this bet, you can win <span class="text-warning">{{betCanWin}}</span>  eth.
+                                Currently, if you win this bet, you can win
+                                <span class="text-warning">{{betCanWin}}</span> eth.
                             </small>
                         </div>
                     </div>
@@ -249,8 +250,15 @@
 
         <form (ngSubmit)="vote()" [formGroup]="voteForm">
             <div class="card  bg-info" style="margin-top:15px;">
-                <div class="card-body">
-                    <table class="table">
+                <div class="card-header pb-0">
+                    <div class="row text-center">
+                        <div class="col">
+                            <h4 class="text-light">Vote Target</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0 pb-0">
+                    <table class="table mb-0">
                         <tr>
                             <td style="border:0;width:40%" class="text-center align-middle">
                                 <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
