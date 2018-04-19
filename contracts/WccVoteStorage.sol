@@ -15,7 +15,6 @@ contract WccVoteStorage is Ownable {
             admins[admin] = true;
         }
     }
-
     struct VoteInfo {
         string target;
         uint yesCount;

@@ -37,6 +37,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     USDPrice = 0;
     myVote = 1;
     firstStageFlag = 1;
+    gameCount = 0;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -66,7 +67,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
-            // console.log(tempEnvState);
+            console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
                 if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
@@ -74,8 +75,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 } else {
                     this.envState.changed = false;
                 }
-                this.envState = tempEnvState;
             }
+            this.envState = tempEnvState;
         });
         this.web3.check();
     }
@@ -324,6 +325,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             console.log(this.games);
             console.log('from local storage');
         } else {
+            this.gameCount = 0;
             const sortNumber = function (a, b) {
                 return a.time - b.time;
             };
@@ -335,11 +337,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             for (let i = 0; i < indexes.length; i++) {
                 const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
                 temps.push(gameInfo);
-                this.setGameData(temps, sortNumber);
-                this.loadingProgress = Number((temps.length / indexes.length).toFixed(2)) * 100;
+                this.setGameData(temps, sortNumber, indexes.length);
+                this.gameCount ++;
             }
-            this.loading = false;
             this.loadingProgress = 0;
+            this.loading = false;
             this.localStorage.setItem('games', this.games).toPromise();
         }
     }
@@ -348,7 +350,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
     }
 
-    setGameData(games, sortNumber) {
+    setGameData(games, sortNumber, totalCount) {
         let gameInfos = games;
         gameInfos = gameInfos.sort(sortNumber);
         console.log(gameInfos);
@@ -356,8 +358,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         const gameLen = gameInfos.length;
         for (let i = 0; i < gameLen; i++) {
             const game: any = {};
-            console.log(gameInfos[i].time);
-            console.log(new Date(gameInfos[i].time * 1));
+            // console.log(gameInfos[i].time);
+            // console.log(new Date(gameInfos[i].time * 1));
 
             game.local = false;
             const date = moment(gameInfos[i].time * 1000);
@@ -377,6 +379,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 game.courts = [gameInfos[i]];
                 games.push(game);
             }
+            this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;
+            console.log(this.loadingProgress);
         }
         this.games = games;
     }
