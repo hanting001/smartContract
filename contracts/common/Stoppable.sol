@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 contract Stoppable {
     address curator;
-    bool stopped;
+    bool public stopped;
 
     modifier stopInEmergency { 
         require(!stopped);
@@ -20,5 +20,9 @@ contract Stoppable {
     function emergencyStop() external {
         require(msg.sender == curator);
         stopped = true;
+    }
+    function start() external {
+        require(msg.sender == curator);
+        stopped = false;
     }
 }

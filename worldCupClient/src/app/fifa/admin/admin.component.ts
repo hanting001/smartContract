@@ -234,9 +234,10 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     this.loadingSer.hide();
                     return this.alertSer.show(check.message);
                 }
-                this.wccSer.startVote(gameIndex, async (confirmNum, receipt) => {
+                this.wccSer.startVote(gameIndex, score, async (confirmNum, receipt) => {
                     if (confirmNum == 1) {
                         game.status = '2';
+                        this.loadingSer.hide();
                         this.alertSer.show('Success!');
                     }
                 }, async (err) => {

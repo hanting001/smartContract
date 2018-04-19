@@ -468,7 +468,6 @@ export class WCCService {
         //   });
     }
     async getUserJoinedGameIndexes() {
-        console.log('get user joined game indexes');
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         return sc.methods.getUserJoinedGameIndexes().call();
     }
@@ -603,12 +602,12 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-    async startVote(gameIndex, onConfirmation, onError) {
+    async startVote(gameIndex, target, onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
-        sc.methods.startVote(gameIndex).send(options)
+        sc.methods.startVote(gameIndex, target).send(options)
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
                     onConfirmation(confNumber, receipt);
@@ -652,5 +651,24 @@ export class WCCService {
                     onError(error);
                 }
             });
+    }
+    async withdraw(onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.withdraw().send(options)
+        .on('confirmation', (confNumber, receipt) => {
+            if (onConfirmation) {
+                onConfirmation(confNumber, receipt);
+            }
+        })
+        .on('error', (error) => {
+            console.log(error);
+            if (onError) {
+                onError(error);
+            }
+        });
     }
 }

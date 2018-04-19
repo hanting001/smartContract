@@ -71,7 +71,8 @@
                                     {{bet.win}}
                                 </td>
                                 <td>
-                                    <button *ngIf="bet.win > 0" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-primary btn-sm">Win Bet</button>
+                                    <button *ngIf="bet.win > 0 && !bet.paid" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-outline-info btn-sm">Claim Bonus</button>
+                                    <button *ngIf="bet.paid" type="button" disabled class="btn btn-outline-secondary btn-sm">Already Claimed</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -152,7 +153,7 @@
                                 <small class="text-secondary">Vote Token</small>
                             </div>
                             <div class="col">
-                                <small class="text-secondary">Withdraw</small>
+                                <small class="text-secondary">Can Withdraw</small>
                             </div>
                         </div>
                         <div class="row text-center">
@@ -163,7 +164,7 @@
                                 <h5>{{myBalance.token}}</h5>
                             </div>
                             <div class="col">
-                                <h5>{{myBalance.withdraw | fromWei}}</h5>
+                                <h5>{{myBalance.withdraw | fromWei}}</h5><button *ngIf="myBalance.withdraw > 0" type="button" (click)="withdraw()" class="btn btn-outline-primary btn-sm">Withdraw</button>
                             </div>
                         </div>
                     </div>

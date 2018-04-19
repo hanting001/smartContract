@@ -73,17 +73,20 @@ contract WccExchanger is Ownable, Stoppable{
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
         require(value > 0);
-        require(this.balance >= value);
+        require(address(this).balance >= value);
         require(msg.sender != owner);
-        withdraws[msg.sender] = 0;
+        require(withdraws[owner] >= value);
+        delete withdraws[msg.sender];
         withdraws[owner] = withdraws[owner].sub(value);
         msg.sender.transfer(value);
         UserWithdraw(msg.sender, value);
     }
+    /// @author Bob Clampett
+    /// @notice owner withdraw eth 
     function withdrawByOwner() external stopInEmergency onlyOwner{
         uint value = withdraws[msg.sender];
         require(value > 0);
-        require(this.balance >= value);
+        require(address(this).balance >= value);
         withdraws[msg.sender] = 0;
         msg.sender.transfer(value);
         UserWithdraw(msg.sender, value);

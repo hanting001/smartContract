@@ -161,10 +161,20 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.hide();
             this.alertSer.show('User denied transaction signature');
         });
-
-
     }
-
+    async withdraw() {
+        this.loading.show();
+        this.wccService.withdraw(async (confirmNum, receipt) => {
+            if (confirmNum == 1) {
+                this.getBalanceAndWithdraw();
+                this.loadingSer.hide();
+                this.alertSer.show('Success!');
+            }
+        }, async (err) => {
+            this.loadingSer.hide();
+            this.alertSer.show('Transaction error or user denied');
+        });
+    }
     async refresh(type) {
         if (type === 1) {
             this.betInfos = [];

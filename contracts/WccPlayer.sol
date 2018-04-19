@@ -58,7 +58,7 @@ contract WccPlayer is Ownable, Stoppable{
         bytes32 scoreIndex = keccak256(score);
         wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
         testOK = scoreIndex;
-        withdraws[owner].add(msg.value);
+        withdraws[owner] = withdraws[owner].add(msg.value);
         UserJoin(gameIndex, score, msg.sender);
     }
     /// @author Bob Clampett
@@ -114,7 +114,9 @@ contract WccPlayer is Ownable, Stoppable{
         testOK = keccak256(block.number);
         UserClaim(_gameIndex, _scoreIndex, msg.sender);
     }
-    
+    function setWithdraw(address user, uint value) external onlyOwner {
+        withdraws[user] = value;
+    }
     /// @author Bob Clampett
     /// @notice check voter user can claim bonus
     /// @param _gameIndex game index
@@ -152,25 +154,41 @@ contract WccPlayer is Ownable, Stoppable{
         withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(yesCount));
     }
     function() public payable { 
-        withdraws[owner].add(msg.value);
+        withdraws[owner] = withdraws[owner].add(msg.value);
     }
     event UserWithdraw(address user, uint value);
+    function withdrawCheck(address user) public view returns(uint) {
+        uint value = withdraws[user];
+        if (value == 0) {
+            return 1; // no balance
+        }
+        if (address(this).balance < value.div(10).mul(9)) {
+            return 2; // no enough balance
+        }
+        if (msg.sender == owner) {
+            return 3; // owner
+        }
+        if (withdraws[owner] < value.div(10).mul(9)) {
+            return 4; // withdraws[owner] not enough
+        }
+        return 0;
+    }
     /// @author Bob Clampett
     /// @notice user withdraw eth    
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
-        require(value > 0);
-        require(this.balance >= value.div(10).mul(9));
-        require(msg.sender != owner);
-        withdraws[msg.sender] = 0;
+        require(withdrawCheck(msg.sender) == 0);
         msg.sender.transfer(value.div(10).mul(9));
+        delete withdraws[msg.sender];
         withdraws[owner] = withdraws[owner].sub(value.div(10).mul(9));
         UserWithdraw(msg.sender, value.div(10).mul(9));
     }
+    /// @author Bob Clampett
+    /// @notice owner withdraw eth 
     function withdrawByOwner() external stopInEmergency onlyOwner{
         uint value = withdraws[msg.sender];
         require(value > 0);
-        require(this.balance >= value);
+        require(address(this).balance >= value);
         withdraws[msg.sender] = 0;
         msg.sender.transfer(value);
         UserWithdraw(msg.sender, value);
