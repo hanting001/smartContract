@@ -8,6 +8,8 @@ sticky-wrapper {
 .backdrop {
     z-index: 1999;
     position: absolute;
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
     right: 0;
