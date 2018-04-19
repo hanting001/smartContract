@@ -343,6 +343,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.localStorage.setItem('games', this.games).toPromise();
         }
     }
+
+    installWallet() {
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
+
     setGameData(games, sortNumber) {
         let gameInfos = games;
         gameInfos = gameInfos.sort(sortNumber);

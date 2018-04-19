@@ -38,6 +38,10 @@ export class TransComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
+
+    installWallet() {
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
     onSelect(data: TabDirective): void {
         console.log(data);
         if (data.id === 'Bets') {
