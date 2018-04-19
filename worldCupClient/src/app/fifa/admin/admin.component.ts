@@ -28,6 +28,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     selectedVote;
     modalRef: BsModalRef;
     startVoteForm: FormGroup;
+    scIndex = 1;
     @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
     @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,

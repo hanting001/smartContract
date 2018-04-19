@@ -1,12 +1,54 @@
 <div *ngIf="isOwner">
     <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
         <ul class="list-inline" style="position: fixed; top: 200;z-index: 100;">
-            <li class="list-inline-item" [ngx-scroll-to]="'addGame'">Add Game</li>
-            <li class="list-inline-item" [ngx-scroll-to]="'batch'">Batch Add All Games</li>
-            <li class="list-inline-item" [ngx-scroll-to]="'transfer'">Transfer KOT</li>
-            <li class="list-inline-item" [ngx-scroll-to]="'setAdmin'">Set SC Admin</li>
-            <li class="list-inline-item" [ngx-scroll-to]="'showGames'">Show Games</li>
+            <li class="list-inline-item" (click)="scIndex = 1" [class.text-muted]="scIndex==1" [ngx-scroll-to-offset]="-150" [ngx-scroll-to]="'showGames'">Show Games</li>
+            <li class="list-inline-item" (click)="scIndex = 2" [class.text-muted]="scIndex==2" [ngx-scroll-to-offset]="-150" [ngx-scroll-to]="'addGame'">Add Game</li>
+            <li class="list-inline-item" (click)="scIndex = 3" [class.text-muted]="scIndex==3" [ngx-scroll-to-offset]="-150" [ngx-scroll-to]="'batch'">Batch Add All Games</li>
+            <li class="list-inline-item" (click)="scIndex = 4" [class.text-muted]="scIndex==4" [ngx-scroll-to-offset]="-150" [ngx-scroll-to]="'transfer'">Transfer KOT</li>
+            <li class="list-inline-item" (click)="scIndex = 5" [class.text-muted]="scIndex==5" [ngx-scroll-to-offset]="-150" [ngx-scroll-to]="'setAdmin'">Set SC Admin</li>
         </ul>
+        <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
+            <h1 id="showGames">All Games</h1>
+            <div class="row justify-content-md-center">
+                <p *ngIf="!gameInfos||gameInfos.length==0">No game</p>
+                <table *ngIf="gameInfos&&gameInfos.length!=0" class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-center" scope="col">P1</th>
+                            <th class="text-center" scope="col">P2</th>
+                            <th class="text-center" scope="col">Time</th>
+                            <th class="text-center" scope="col">Type</th>
+                            <th class="text-center" scope="col">status</th>
+                            <th class="text-center" scope="col">opration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let game of gameInfos;">
+                            <td class="text-center" scope="row">
+                                <img [src]="game.p1|nationFlag" [alt]="game.p1" style="border:1px solid #c7c6c6">
+                                <br>
+                                <p class="small text-secondary m-0">{{game.p1}}</p>
+                            </td>
+                            <td class="text-center" scope="row">
+                                <img [src]="game.p2|nationFlag" [alt]="game.p2" style="border:1px solid #c7c6c6">
+                                <br>
+                                <p class="small text-secondary m-0">{{game.p2}}</p>
+                            </td>
+                            <td class="text-center">{{game.time+'000' | date:'yyyy-MM-dd HH:mm' }}</td>
+                            <td class="text-center">{{game.gameType|gameType}}</td>
+                            <td class="text-center">{{game.status|gameStatus }}</td>
+                            <td class="text-center">
+                                <button type="button" (click)="showIndex(game)" class="btn btn-primary btn-sm">Get Index</button>
+                                <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
+                                <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
+                                <button *ngIf="game.status == 1" type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">Start Vote</button>
+                                <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 2)" class="btn btn-primary btn-sm">Set Vote can end</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div id="addGame">
             <h1 class="mt-4">Add Game</h1>
             <div class="row justify-content-md-center">
@@ -138,48 +180,6 @@
 
                 </div>
             </form>
-        </div>
-    </div>>
-
-
-
-    <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
-        <h1 id="showGames">All Games</h1>
-        <div class="row justify-content-md-center">
-            <p *ngIf="!gameInfos||gameInfos.length==0">No game</p>
-            <table *ngIf="gameInfos&&gameInfos.length!=0" class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th class="text-left" scope="col">P1</th>
-                        <th class="text-left" scope="col">P2</th>
-                        <th class="text-left" scope="col">Time</th>
-                        <th class="text-left" scope="col">Type</th>
-                        <th class="text-left" scope="col">status</th>
-                        <th class="text-left" scope="col">opration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let game of gameInfos;">
-                        <td class="text-left" scope="row">
-                            <img [src]="game.p1|nationFlag" [alt]="game.p1" style="border:1px solid #c7c6c6">
-                        </td>
-                        <td class="text-left" scope="row">
-                            <img [src]="game.p2|nationFlag" [alt]="game.p2" style="border:1px solid #c7c6c6">
-                        </td>
-                        <td class="text-left">{{game.time+'000' | date:'yyyy-MM-dd HH:mm' }}</td>
-                        <td class="text-left">{{game.gameType|gameType}}</td>
-                        <td class="text-left">{{game.status|gameStatus }}</td>
-                        <td class="text-left">
-                            <button type="button" (click)="showIndex(game)" class="btn btn-primary btn-sm">Get Index</button>
-                            <!-- <button type="button" (click)="delGame(game.index)" class="btn btn-primary btn-sm">del</button> -->
-                            <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">Start Play</button>
-                            <button *ngIf="game.status == 1" type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">Start Vote</button>
-                            <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 2)" class="btn btn-primary btn-sm">Set Vote can end</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
         </div>
     </div>
 </div>
