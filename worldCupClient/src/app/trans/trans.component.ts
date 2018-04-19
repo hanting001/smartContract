@@ -136,6 +136,7 @@ export class TransComponent implements OnInit, OnDestroy {
         // this.loadingSer.show('Sending Transaction');
         console.log(gameInfo);
         console.log(bet);
+        this.loadingSer.show();
         const gameIndex = this.wccService.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
         const scoreIndex = this.wccService.getScoreIndex(bet.score);
 
@@ -154,6 +155,7 @@ export class TransComponent implements OnInit, OnDestroy {
         }, async (confirmNum, receipt) => {
             if (confirmNum == 1) {
                 this.loadingSer.hide();
+                bet.paid = true;
                 this.alertSer.show('claim success!');
             }
         }, async (err) => {
@@ -164,6 +166,12 @@ export class TransComponent implements OnInit, OnDestroy {
     }
     async withdraw() {
         this.loading.show();
+        const check = await this.wccService.withdrawCheck();
+        console.log(check);
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
         this.wccService.withdraw(async (confirmNum, receipt) => {
             if (confirmNum == 1) {
                 this.getBalanceAndWithdraw();

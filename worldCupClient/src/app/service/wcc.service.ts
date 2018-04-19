@@ -652,6 +652,21 @@ export class WCCService {
                 }
             });
     }
+    async withdrawCheck() {
+        const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        const msgObj = {
+            1: 'no withdraw balance',
+            2: 'contract no enough balance',
+            3: 'owner can not withdraw',
+            4: 'owner no enough balance'
+        };
+        const checkResult = await sc.methods.withdrawCheck(account).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
     async withdraw(onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
