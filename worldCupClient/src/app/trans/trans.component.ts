@@ -64,9 +64,11 @@ export class TransComponent implements OnInit, OnDestroy {
         if (this.voteInfos && this.voteInfos.length > 0) {
             return;
         }
+        console.log('get new data');
         this.loading.show();
         const gameIndexes = await this.wccService.getUserVotedGameIndexes();
         this.loading.hide();
+        const temp = [];
         for (let i = 0; i < gameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
             const voteInfos = [];
@@ -74,13 +76,14 @@ export class TransComponent implements OnInit, OnDestroy {
             const gameVoteInfo = await this.wccService.getVoteInfo(gameIndexes[i]);
             voteInfo.weight = (Number(voteInfo.value) / (Number(gameVoteInfo.yesCount) + Number(gameVoteInfo.noCount)) * 100).toFixed(2);
             console.log(voteInfo);
-            this.voteInfos.push({
+            temp.push({
                 gameInfo: gameInfo,
                 voteInfo: voteInfo,
                 gameIndex: gameIndexes[i]
             });
             this.loadingProgress = Number((this.voteInfos.length / gameIndexes.length).toFixed(2)) * 100;
         }
+        this.voteInfos = temp;
         this.loadingProgress = 0;
     }
     async claimVote(info) {
@@ -106,6 +109,7 @@ export class TransComponent implements OnInit, OnDestroy {
         if (this.betInfos && this.betInfos.length > 0) {
             return;
         }
+        console.log('get bet infos');
         this.loading.show();
         const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
         this.loading.hide();
@@ -161,7 +165,7 @@ export class TransComponent implements OnInit, OnDestroy {
 
     }
 
-    refresh(type) {
+    async refresh(type) {
         if (type === 1) {
             this.betInfos = [];
             this.getBetInfos();

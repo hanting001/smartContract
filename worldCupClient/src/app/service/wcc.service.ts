@@ -14,7 +14,7 @@ export class WCCService {
 
         // 获取所有场次的详细信息
         const gameInfos = [];
-        for (let index of gameIndexes) {
+        for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
             gameInfos.push(gameInfo);
         }
@@ -23,7 +23,7 @@ export class WCCService {
         const scoreIndexes = await sc.methods.getGameScoreIndexes(gameIndex).call();
         // 获取该场次的所有下注详细信息
         const scoreInfos = [];
-        for (let scoreIndex of scoreIndexes) {
+        for (const scoreIndex of scoreIndexes) {
             const scoreInfo = await sc.methods.getGameScoreTotalInfo(gameIndex, scoreIndex).call();
             scoreInfos.push(scoreInfo);
         }
@@ -45,7 +45,7 @@ export class WCCService {
         const uerJoinedGameScoreIndexes = await sc.methods.getUserJoinedGameScoreIndexes(userJoinedGameIndex).call();
         // 获取所有下注的详细信息
         const uerJoinedGameScoreInfos = [];
-        for (let uerJoinedGameScoreIndex of uerJoinedGameScoreIndexes) {
+        for (const uerJoinedGameScoreIndex of uerJoinedGameScoreIndexes) {
             const uerJoinedGameScoreInfo = await sc.methods.
                 getUserJoinedGameScoreInfo(userJoinedGameIndex, uerJoinedGameScoreIndex).call();
             uerJoinedGameScoreInfos.push(uerJoinedGameScoreInfo);
@@ -92,7 +92,7 @@ export class WCCService {
     async addPlayer(model, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const options = {
-            from: await this.web3Service.getFirstAccount()
+            from: await this.web3Service.getMainAccount()
         };
         sc.methods.setGame(model.awayCourt, model.homeCourt, model.gameType, moment(model.startTime).unix())
             .send(options, function (err, transactionHash) {
@@ -122,6 +122,7 @@ export class WCCService {
     }
 
     async  getAllPlayers() {
+        console.log('get all player');
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameIndexes = await sc.methods.getAllGameIndexes().call();
         // get all games
@@ -137,11 +138,8 @@ export class WCCService {
         return sc.methods.getAllGameIndexes().call();
     }
     async getGameInfo(index) {
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getGameInfo(index).call(options);
+        return sc.methods.getGameInfo(index).call();
     }
     async getGameScoreIndexes(gameIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -470,18 +468,13 @@ export class WCCService {
         //   });
     }
     async getUserJoinedGameIndexes() {
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
+        console.log('get user joined game indexes');
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getUserJoinedGameIndexes().call(options);
+        return sc.methods.getUserJoinedGameIndexes().call();
     }
     async getUserJoinedGameScoreIndexes(gameIndex) {
-        const options = {
-            from: await this.web3Service.getMainAccount()
-        };
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call(options);
+        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call();
     }
     async getUserJoinedGameScoreInfo(gameIndex, gameInfo, scoreIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');

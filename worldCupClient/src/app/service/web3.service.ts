@@ -14,7 +14,6 @@ export class Web3Service {
         // Web3.givenProvider
         // this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
         // this.web3.setProvider('http://localhost:7545');
-        console.log('============================');
         setInterval(() => {
             this.check();
         }, 10000);
@@ -26,7 +25,9 @@ export class Web3Service {
     async checkAccount() {
         const accounts = await this.web3.eth.getAccounts();
         if (this.web3.eth.defaultAccount != accounts[0]) {
+            this.clearContract();
             this.web3.eth.defaultAccount = accounts[0];
+            console.log(this.web3.eth.defaultAccount);
             this.check();
         }
     }
@@ -81,6 +82,9 @@ export class Web3Service {
         const sc = new this.web3.eth.Contract(abi, address);
         this.contracts[name] = sc;
         return sc;
+    }
+    clearContract() {
+        this.contracts = [];
     }
     // 通过组装参数，调用web3.eth.sendTransaction发起交易，一般不需要
     async sendTx(params, to, scName, func, onConfirmation) {
