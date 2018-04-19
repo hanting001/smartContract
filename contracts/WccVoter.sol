@@ -11,8 +11,8 @@ contract WccVoter is Ownable, Stoppable{
     WccVoteStorage vs;
     KnotToken token;
     uint public testOK;
-    mapping(bytes32 => bool) canEnd;
-    mapping(address => bool) judges;
+    mapping(bytes32 => bool) public canEnd;
+    mapping(address => bool) public judges;
     modifier onlyJudge() {
         require(judges[msg.sender]);
         _;

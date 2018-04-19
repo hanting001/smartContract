@@ -183,7 +183,10 @@ export class WCCService {
         const web3 = this.web3Service.instance();
         return web3.utils.soliditySha3({ t: 'string', v: p1 }, { t: 'string', v: p2 }, { t: 'uint8', v: gameType });
     }
-
+    async isVoteCanEnd(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        return sc.methods.canEnd(gameIndex).call();
+    }
     getScoreIndex(score) {
         const web3 = this.web3Service.instance();
         return web3.utils.keccak256(score);

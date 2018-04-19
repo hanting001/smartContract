@@ -192,32 +192,17 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const web3 = this.web3.instance();
             const from = await this.web3.getMainAccount();
             // 第一个账户用于部署合约
+            this.loadingSer.show('set storage`s admin');
             console.log('setAdmin');
             const sc = await this.web3.getContract('wccStorage', 'WccStorage');
-            this.loadingSer.show('set storage`s admin');
-            await sc.methods.setAdmin(model.address).send({ from: from })
-                .on('confirmation', async (confNumber, receipt) => {
-                    if (confNumber == 2) {
-                        const isAdmin = await sc.methods.admins(model.address).call();
-                        if (isAdmin) {
-                            this.alertSer.show(model.address + '已设置为admin');
-                        }
-                        this.loadingSer.hide();
-                    }
-
-                });
             const vs = await this.web3.getContract('wccVoteStorage', 'WccVoteStorage');
-            this.loadingSer.show('set vote storage`s admin');
-            await vs.methods.setAdmin(model.address).send({ from: from })
-                .on('confirmation', async (confNumber, receipt) => {
-                    if (confNumber == 2) {
-                        const isAdmin = await sc.methods.admins(model.address).call();
-                        if (isAdmin) {
-                            this.alertSer.show(model.address + '已设置为admin');
-                        }
-                        this.loadingSer.hide();
-                    }
-                });
+            await sc.methods.setAdmin(model.address).send({ from: from });
+            await vs.methods.setAdmin(model.address).send({ from: from });
+            const isAdmin = await sc.methods.admins(model.address).call();
+            if (isAdmin) {
+                this.loadingSer.hide();
+                this.alertSer.show(model.address + '已设置为admin');
+            }
         }
 
     }
@@ -275,6 +260,10 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         } else if (type == 2) {
             const web3 = this.web3.instance();
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            const canEnd = await this.wccSer.isVoteCanEnd(gameIndex);
+            if (canEnd) {
+                return this.alertSer.show('Already can end');
+            }
             const voteInfo = await this.wccSer.getVoteInfo(gameIndex);
             const BN = web3.utils.BN;
             this.selectedVote = {
