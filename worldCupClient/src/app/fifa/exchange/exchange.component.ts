@@ -71,6 +71,10 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.form.controls.kotValue.setValue(0);
         this.form.controls.ethValue.setValue(0);
     }
+
+    installWallet() {
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
     async exchange() {
         if (this.form.valid) {
             const model: any = this.form.value;
