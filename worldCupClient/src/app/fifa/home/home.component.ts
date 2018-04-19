@@ -144,7 +144,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartData.currentGameIndex = index;
             this.chartData.limit = limit;
             this.buyModalRef = this.openModal(this.buyTemplate);
-        } else if (currentGameInfo.status == '2') {
+        } else if (currentGameInfo.status == '2' || currentGameInfo.status == '3') {
             this.chartData = {};
             const voteInfo = await this.wccSer.getVoteInfo(index);
             console.log(voteInfo);
@@ -162,8 +162,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartData.data = [Number(web3.utils.fromWei(voteInfo.yesCount)), Number(web3.utils.fromWei(voteInfo.noCount))];
             this.chartData.labels = ['yesCount', 'noCount'];
             this.voteModalRef = this.openModal(this.voteTemplate);
-        } else if (currentGameInfo.status == '3') {
-            this.alertSer.show(' Game Over!');
         }
 
         this.loadingSer.hide();

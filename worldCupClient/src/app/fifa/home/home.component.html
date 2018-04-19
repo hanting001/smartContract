@@ -130,77 +130,81 @@
         <div class="row">
             <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
                 <div class="card  bg-info" style="margin-top:15px;">
-                    <table class="table">
-                        <tr>
-                            <td style="border:0;width:40%" class="text-left align-middle">
-                                <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                            <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
-                            <td style="border:0;width:40%" class="text-left align-middle">
-                                <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                        </tr>
-                        <tr>
-                            <td style="border:0">
-                                <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value=">10">>10</option>
-                                </select>
-                            </td>
-                            <td style="border:0">
-                                <select class="form-control" (change)="calculat()" formControlName="awayScore">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value=">10">>10</option>
-                                </select>
-                            </td>
+                    <tr class="row mt-2">
+                        <td style="border:0;width:40%" class="text-center align-middle">
+                            <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-center align-middle">
+                            <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                    </tr>
 
-                        </tr>
-                    </table>
-                    <div class="form-group row border-bottom m-0 p-2 ">
-                        <div class="input-group col-7 pl-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3">Your ETH:{{balance.eth}}</span>
+
+                    <div [hidden]="chartData.currentGameInfo.status != 0">
+                        <table class="table">
+                            <tr>
+                                <td style="border:0">
+                                    <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value=">10">>10</option>
+                                    </select>
+                                </td>
+                                <td style="border:0">
+                                    <select class="form-control" (change)="calculat()" formControlName="awayScore">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value=">10">>10</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <div class="form-group row border-bottom m-0 p-2 ">
+                            <div class="input-group col-7 pl-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">Your ETH:{{balance.eth}}</span>
+                                </div>
+                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                             </div>
-                            <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
-                        </div>
-                        <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
-                            {{USDPrice|currency}}, ETH price get from etherscan.io.
-                        </small>
-                        <small [hidden]="USDPrice > 0" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
-                            Min bet value is {{this.chartData.limit}} eth.
-                        </small>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
-                                Currently, if you win this bet, you can win
-                                <span class="text-warning">{{betCanWin}}</span> eth.
+                            <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                                {{USDPrice|currency}}, ETH price get from etherscan.io.
                             </small>
+                            <small [hidden]="USDPrice > 0" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
+                                Min bet value is {{this.chartData.limit}} eth.
+                            </small>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
+                                    Currently, if you win this bet, you can win
+                                    <span class="text-warning">{{betCanWin}}</span> eth.
+                                </small>
+                            </div>
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">
                             <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" class="btn btn-outline-light">Submit Bet</button>
                             <button [hidden]="chartData.currentGameInfo.status != 1" type="submit" disabled class="btn btn-outline-secondary disabled"
-                                readonly>Game is playing</button>
+                                readonly>Game is playing...</button>
                         </div>
                     </div>
                 </div>
@@ -289,7 +293,9 @@
                         </div>
                         <div class="col-4 text-left align-middle">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-outline-light">Submit Vote</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-light">Submit Vote</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 3" type="submit" disabled class="btn btn-outline-secondary disabled"
+                                    readonly>Game is paying</button>
                             </div>
                         </div>
                     </div>
