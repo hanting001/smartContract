@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WCCService } from '../service/wcc.service';
+import { WCCService } from '../../service/wcc.service';
 import { TabDirective } from 'ngx-bootstrap/tabs';
-import { Web3Service, LoadingService, AlertService, LocalActionService } from '../service/index';
+import { Web3Service, LoadingService, AlertService, LocalActionService } from '../../service/index';
 
 @Component({
     selector: 'app-trans',

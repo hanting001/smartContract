@@ -8,7 +8,7 @@ import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
-import { TransComponent } from './trans/trans.component';
+import { TransComponent } from './fifa/trans/trans.component';
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
