@@ -5,7 +5,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "testBuild": "ng build --base-href /wceb/ && rm -rf wceb  && mkdir wceb  && cp -rf dist/* wceb/  && rm -rf dist/* && cp -rf wceb dist/ && rm -rf wceb",
+        "testBuild": "ng build --prod --base-href /wceb/ && rm -rf wceb  && mkdir wceb  && cp -rf dist/* wceb/  && rm -rf dist/* && cp -rf wceb dist/ && rm -rf wceb",
         "build": "ng build  --prod",
         "test": "ng test",
         "lint": "ng lint",
