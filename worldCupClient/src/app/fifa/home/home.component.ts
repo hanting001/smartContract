@@ -113,6 +113,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         if (currentGameInfo.status == '0' || currentGameInfo.status == '1') {
             this.chartData = {};
+            const limit = await this.wccSer.getBetLimit();
+            this.buyForm = this.fb.group({
+                homeScore: ['0', [Validators.required]],
+                awayScore: ['0', [Validators.required]],
+                eth: ['0.01', [Validators.required, Validators.min(limit)]]
+            });
             this.web3.currenPrice().then(obj => {
                 // console.log(obj.result);
                 this.price = obj.result.ethusd;
@@ -126,12 +132,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 console.log(balance);
                 this.balance = balance;
             });
-            const limit = await this.wccSer.getBetLimit();
-            this.buyForm = this.fb.group({
-                homeScore: ['0', [Validators.required]],
-                awayScore: ['0', [Validators.required]],
-                eth: ['0.01', [Validators.required, Validators.min(limit)]]
-            });
+
             // this.buyForm.controls('eth').setValidators([Validators.required, Validators.min(limit)]);
             const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
             const totalBets = currentGameInfo.totalBets;
@@ -338,7 +339,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
                 temps.push(gameInfo);
                 this.setGameData(temps, sortNumber, indexes.length);
-                this.gameCount ++;
+                this.gameCount++;
             }
             this.loadingProgress = 0;
             this.loading = false;
