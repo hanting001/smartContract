@@ -9,16 +9,18 @@ import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { TransComponent } from './fifa/trans/trans.component';
+import { ContactComponent } from './fifa/contact/contact.component';
+import { FaqComponent } from './fifa/faq/faq.component';
 
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: FifaHomeComponent },
-    { path: 'fifa/court', component: CourtComponent },
-    { path: 'fifa/order', component: OrderComponent },
     { path: 'fifa/admin', component: FifaAdminComponent },
     { path: 'exchange', component: ExchangeComponent },
+    { path: 'contact', component: ContactComponent },
+    { path: 'faq', component: FaqComponent },
     { path: 'trans', component: TransComponent },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }
 ];
