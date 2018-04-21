@@ -268,7 +268,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.value.eth = '0.0';
                     this.USDPrice = 0;
                 }
-            }, async (err) => {
+            }, (err) => {
                 console.log(err);
                 this.loadingSer.hide();
                 this.alertSer.show('User denied transaction signature');
