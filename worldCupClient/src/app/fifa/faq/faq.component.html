@@ -1,0 +1,17 @@
+<div class="jumbotron bg-default">
+    <div class="card" *ngFor="let faq of faqs" style="margin-bottom: 5px;">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-11">{{faq.question}}</div>
+                <div class="col-1 text-right" (click)="faq.flag=!faq.flag"><span class="oi " [ngClass]="{'oi-chevron-right':!faq.flag,'oi-chevron-bottom':faq.flag}"></span>
+                </div>
+            </div>
+
+        </div>
+        <p *ngIf="faq.flag" style="padding-left:24px;">{{faq.title}}</p>
+        <ul *ngIf="faq.flag">
+            <li *ngFor=" let answer of faq.answers ">{{answer}}</li>
+        </ul>
+
+    </div>
+</div>

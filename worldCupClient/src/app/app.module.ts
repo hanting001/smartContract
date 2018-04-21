@@ -42,7 +42,9 @@ import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { ShowDatePipe } from './service/pipe/show-date.pipe';
 import { NationFlagPipe } from './service/pipe/nation-flag.pipe';
 import { ChartComponent } from './fifa/chart/chart.component';
-import { TransComponent } from './trans/trans.component';
+import { TransComponent } from './fifa/trans/trans.component';
+import { ContactComponent } from './fifa/contact/contact.component';
+import { FaqComponent } from './fifa/faq/faq.component';
 
 
 @NgModule({
@@ -64,7 +66,9 @@ import { TransComponent } from './trans/trans.component';
         ShowDatePipe,
         NationFlagPipe,
         ChartComponent,
-        TransComponent
+        TransComponent,
+        ContactComponent,
+        FaqComponent
     ],
     imports: [
         BrowserModule,

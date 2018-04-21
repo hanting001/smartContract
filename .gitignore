@@ -1,6 +1,7 @@
 .vscode/
 node_modules/
 /build/
+/build/contracts/
 installed_contracts/
 dump.rdb
 /flightDelayClient/node_modules/

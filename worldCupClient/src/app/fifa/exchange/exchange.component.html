@@ -1,15 +1,15 @@
-<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您要购买world cup bet?</h1>
-    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
+<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
+    <h1>Wanna play?</h1>
+    <p class="lead">You’ll need a safe place to store all of your bets! The perfect place is in a secure wallet like MetaMask. This will
+        also act as your login to the game (no extra password needed).</p>
     <button type="button" class="btn btn-primary" (click)="installWallet()">
-        安装MetaMask
+        Install MetaMask
     </button>
 </div>
 
-<div [hidden]="envState.checkWeb3&&envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您的账号被锁住了</h1>
-    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
-
+<div [hidden]="!envState.checkWeb3||envState.checkAccount" class="jumbotron bg-warning text-center">
+    <h1>Your MetaMask is locked</h1>
+    <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
 <div [hidden]="!envState.checkEnv" class="jumbotron text-center bg-white " id="changePage">
