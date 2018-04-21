@@ -129,7 +129,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         this.court = court;
         // console.log(court);
-        this.loadingSer.show('正在加载');
+        this.loadingSer.show('Loading...');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
