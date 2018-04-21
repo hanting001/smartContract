@@ -33,15 +33,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.web3.check();
-        this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                await this.getBalance();
+                this.getBalance();
             }
             this.envState = tempEnvState;
         });
+        this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -112,7 +112,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
 
     async getBalance() {
-        this.loadingSer.show();
+        this.loadingSer.show('Loading balance...');
         const result = await this.wccSer.getExchangerInfo();
         this.rate = result.rate;
         this.exchanged = result.exchanged;
