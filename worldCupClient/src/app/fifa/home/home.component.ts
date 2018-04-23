@@ -20,7 +20,10 @@ import * as moment from 'moment';
 export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
+
     games: any = [];
+    contries: any = {};
+
     secondStageStartDate: string;
     court: any = {};
     isSticky: Boolean = true;
@@ -69,46 +72,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
-                if (tempEnvState.checkEnv !== this.envState.checkEnv) {
-                    this.envState.changed = true;
-                    this.getAllGames();
-                } else {
-                    this.envState.changed = false;
-                }
-                this.envState = tempEnvState;
+                this.getAllGames();
             }
             this.envState = tempEnvState;
         });
-        this.web3.check();
     }
-    async getAllGames() {
-        const isGameUpdated = await this.wccSer.isGameUpdated();
-        const games = await this.localStorage.getItem<any[]>('games').toPromise();
-        if (!isGameUpdated && games && games.length > 0 && !this.envState.changed) {
-            this.games = games;
-            console.log(this.games);
-            console.log('from local storage');
-        } else {
-            this.gameCount = 0;
-            const sortNumber = function (a, b) {
-                return a.time - b.time;
-            };
-            this.loadingSer.show('Loading games...');
-            const indexes = await this.wccSer.getAllGameIndexes();
-            const temps = [];
-            this.loadingSer.hide();
-            this.loading = true;
-            for (let i = 0; i < indexes.length; i++) {
-                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
-                temps.push(gameInfo);
-                this.setGameData(temps, sortNumber, indexes.length);
-                this.gameCount ++;
-            }
-            this.loadingProgress = 0;
-            this.loading = false;
-            this.localStorage.setItem('games', this.games).toPromise();
-        }
-    }
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
@@ -321,18 +290,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         }
     }
-
-    async checkEnv() {
-        const tempEnvState: any = await this.web3.check();
-        console.log(tempEnvState);
-        if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
-
-            await this.getAllGames();
-        }
-        this.envState = tempEnvState;
-
-    }
-
     mouseEnter(event) {
         // $("table tr td:nth-child(3)")
         $(event.target).children('table').addClass('bg-secondary');
@@ -345,6 +302,38 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     counter(i: number) {
         return new Array(i);
     }
+    async getAllGames() {
+        const isGameUpdated = await this.wccSer.isGameUpdated();
+        const games = await this.localStorage.getItem<any[]>('games').toPromise();
+        const contries = await this.localStorage.getItem<any>('contries').toPromise();
+        if (!isGameUpdated && games && games.length > 0 && contries) {
+            this.games = games;
+            this.contries = contries;
+            // console.log(this.games);
+            console.log('from local storage');
+        } else {
+            this.gameCount = 0;
+            const sortNumber = function (a, b) {
+                return a.time - b.time;
+            };
+            this.loadingSer.show();
+            const indexes = await this.wccSer.getAllGameIndexes();
+            const temps = [];
+            this.loadingSer.hide();
+            this.loading = true;
+            for (let i = 0; i < indexes.length; i++) {
+                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
+                temps.push(gameInfo);
+                this.setGameData(temps, sortNumber, indexes.length);
+                this.gameCount++;
+            }
+            this.loadingProgress = 0;
+            this.loading = false;
+            this.localStorage.setItem('games', this.games).toPromise();
+            this.localStorage.setItem('contries', this.contries).toPromise();
+        }
+    }
+
     installWallet() {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
     }
@@ -366,6 +355,11 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             game.day = date.format('DD');
             game.dayOfWeek = date.isoWeekday();
 
+            if (gameInfos[i].gameType == '0') {
+                this.contries[gameInfos[i].p1] = 1;
+                this.contries[gameInfos[i].p2] = 1;
+            }
+
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
@@ -379,7 +373,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 games.push(game);
             }
             this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;
-            console.log(this.loadingProgress);
+            // console.log(this.loadingProgress);
         }
         this.games = games;
     }

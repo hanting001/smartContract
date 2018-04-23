@@ -73,14 +73,14 @@
                 <tbody>
                     <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
                         <td class="align-middle" style="width:40%">
-                            <img [src]="court.p1|nationFlag" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+                            <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
                         </td>
                         <td class="align-middle" style="width:30%">
                             <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
                             <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
                         </td>
                         <td class="align-middle" style="width:30%">
-                            <img [src]="court.p2|nationFlag"  class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                            <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -132,10 +132,10 @@
                 <div class="card  bg-info" style="margin-top:15px;">
                     <tr class="row mt-2">
                         <td style="border:0;width:40%" class="text-center align-middle">
-                            <img [src]="court.p1|nationFlag"  class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                            <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
                         <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
                         <td style="border:0;width:40%" class="text-center align-middle">
-                            <img [src]="court.p2|nationFlag"  class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                            <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
 
 
@@ -265,10 +265,10 @@
                     <table class="table mb-0">
                         <tr>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p1|nationFlag" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
                             <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p2|nationFlag" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                                <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                         </tr>
                         <tr>
                             <td style="border:0">

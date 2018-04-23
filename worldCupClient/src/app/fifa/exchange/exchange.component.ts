@@ -33,6 +33,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
@@ -41,7 +42,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             }
             this.envState = tempEnvState;
         });
-        this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();

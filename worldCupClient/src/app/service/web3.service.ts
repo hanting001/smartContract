@@ -25,6 +25,7 @@ export class Web3Service {
     async checkAccount() {
         const accounts = await this.web3.eth.getAccounts();
         if (this.web3.eth.defaultAccount != accounts[0]) {
+            console.log('------非defaultCount');
             this.clearContract();
             this.web3.eth.defaultAccount = accounts[0];
             console.log(this.web3.eth.defaultAccount);
