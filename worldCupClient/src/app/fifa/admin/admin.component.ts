@@ -103,6 +103,9 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         const myHeaders = new Headers();
         myHeaders.set('Content-Type', 'text/html');
         this.loadingSer.show();
+
+        let timeout = 5000;
+
         this.http.get('assets/games.txt?' + new Date().getTime(), { responseType: 'text' }).toPromise().then((data) => {
             console.log(data);
 
@@ -110,7 +113,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             console.log(gamesArray);
             const gamesLen = gamesArray.length;
             let i = 0;
-            const addingTimeout = setInterval(() => {
+
+            const addGame = async () => {
                 console.log('添加第' + i + '场比赛');
                 const tmpAry = gamesArray[i].split(',');
 
@@ -119,29 +123,45 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 //     return;
                 // }
 
-                if (tmpAry && tmpAry.length == 3) {
-                    this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
-                    this.addingGame = tmpAry;
-                    this.wccSer.addPlayer({
-                        awayCourt: tmpAry[0],
-                        startTime: new Date(tmpAry[1].trim() + ':00'),
-                        homeCourt: tmpAry[2],
-                        gameType: '0'
-                    }, async (transactionHash) => { }, async (confirmNum, recipt) => {
-                        if (confirmNum == 2) {
-                            this.gameInfos = await this.wccSer.getAllPlayers();
-                            this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
-                        }
-                    });
+                if (tmpAry && tmpAry.length == 4) {
+                    const gameIndex = this.wccSer.getGameIndex(tmpAry[0], tmpAry[2], tmpAry[3]);
+                    const gameInfo = await this.wccSer.getGameInfo(gameIndex);
+                    console.log(gameInfo);
+                    if (!gameInfo.p1) {
+                        console.log('比赛不存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3];
+                        this.addingGame = tmpAry;
+                        this.wccSer.addPlayer({
+                            awayCourt: tmpAry[0],
+                            startTime: new Date(tmpAry[1].trim() + ':00'),
+                            homeCourt: tmpAry[2],
+                            gameType: tmpAry[3]
+                        }, async (transactionHash) => { }, async (confirmNum, recipt) => {
+                            if (confirmNum == 2) {
+                                this.gameInfos = await this.wccSer.getAllPlayers();
+                                this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' +
+                                    tmpAry[1] + ',gameType=' + tmpAry[3];
+                            }
+                        });
+                        timeout = 5000;
+                    } else {
+                        console.log('比赛已存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        timeout = 2000;
+                    }
+                    if (i < gamesLen - 1) {
+                        setTimeout(addGame, timeout);
+                    }
 
                 } else {
                     this.addingText = '完成添加所有比赛';
-                    clearInterval(addingTimeout);
+                    // clearInterval(addingTimeout);
                     this.loadingSer.hide();
 
                 }
                 i++;
-            }, 5000);
+            };
+
+            setTimeout(addGame, timeout);
         });
 
     }

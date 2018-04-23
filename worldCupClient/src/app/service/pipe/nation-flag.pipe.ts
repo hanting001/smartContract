@@ -5,9 +5,19 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NationFlagPipe implements PipeTransform {
 
-    transform(value: any, args?: any): any {
-        value = String(value).toUpperCase();
-        return 'assets/images/nation-flags/' + value.replace(/[ ]/g, '') + '.png';
+    transform(value: any, contries?: any): any {
+        // console.log(contries);
+        // console.log(value);
+        if (!contries) {
+            return 'assets/images/nation-flags/' + value.replace(/[ ]/g, '') + '.png';
+        }
+
+        if (contries[value]) {
+            value = String(value).toUpperCase();
+            return 'assets/images/nation-flags/' + value.replace(/[ ]/g, '') + '.png';
+        }
+
+        return 'assets/images/nation-flags/none.png';
     }
 
 }

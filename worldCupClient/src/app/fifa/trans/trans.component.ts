@@ -25,7 +25,6 @@ export class TransComponent implements OnInit, OnDestroy {
         private loading: LoadingService) { }
 
     ngOnInit() {
-        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)

@@ -682,16 +682,16 @@ export class WCCService {
         };
         console.log(options);
         sc.methods.withdraw().send(options)
-        .on('confirmation', (confNumber, receipt) => {
-            if (onConfirmation) {
-                onConfirmation(confNumber, receipt);
-            }
-        })
-        .on('error', (error) => {
-            console.log(error);
-            if (onError) {
-                onError(error);
-            }
-        });
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
     }
 }

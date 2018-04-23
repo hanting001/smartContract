@@ -33,7 +33,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv === true &&
