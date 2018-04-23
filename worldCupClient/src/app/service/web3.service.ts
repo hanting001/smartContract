@@ -118,7 +118,7 @@ export class Web3Service {
         this.web3 = new Web3();
         // const ret = this.web3.setProvider(Web3.givenProvider);
         try {
-            const state = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
+            const state: any = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
             const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
             // const ret = this.web3.setProvider('http://localhost:7545');
             if (!ret) {
@@ -152,7 +152,7 @@ export class Web3Service {
                         break;
                     case 'kovan':
                         state.netName = 'Kovan testnet';
-                        // console.log('This is the Kovan test network.');
+                        state.canLoadData = true;
                         break;
                     case 'private':
                         state.netName = 'unknow net';
