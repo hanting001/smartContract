@@ -70,14 +70,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
-            console.log(tempEnvState);
-            console.log(this.envState);
+
             if (tempEnvState.checkEnv) {
                 this.envState = tempEnvState;
-                this.getAllGames();
             }
         });
     }
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
@@ -98,7 +97,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         this.court = court;
         // console.log(court);
-        this.loadingSer.show('Sending Transaction');
+        this.loadingSer.show('Loading...');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
@@ -237,7 +236,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.value.eth = '0.0';
                     this.USDPrice = 0;
                 }
-            }, async (err) => {
+            }, (err) => {
                 console.log(err);
                 this.loadingSer.hide();
                 this.alertSer.show('User denied transaction signature');

@@ -19,7 +19,7 @@ export class Web3Service {
         }, 10000);
         setInterval(() => {
             this.checkAccount();
-        }, 1000);
+        }, 2000);
         // this.check();
     }
     async checkAccount() {

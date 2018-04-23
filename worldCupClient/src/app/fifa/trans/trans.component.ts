@@ -33,6 +33,7 @@ export class TransComponent implements OnInit, OnDestroy {
             }
             this.envState = tempEnvState;
         });
+        this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();

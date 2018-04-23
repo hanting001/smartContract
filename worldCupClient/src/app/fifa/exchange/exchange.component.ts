@@ -33,12 +33,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
-            console.log(tempEnvState);
+
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                await this.getBalance();
+                this.getBalance();
             }
             this.envState = tempEnvState;
         });
@@ -51,7 +51,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         let ethValue = this.form.controls.ethValue.value;
         const BN = web3.utils.BN;
         if (ethValue) {
-            ethValue = new BN(ethValue);
+            ethValue = String(ethValue);
+            console.log(ethValue);
             this.form.controls.kotValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(ethValue)).mul(new BN(this.rate))));
         }
     }
@@ -61,7 +62,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         let tokenValue = this.form.controls.kotValue.value;
         const BN = web3.utils.BN;
         if (tokenValue) {
-            tokenValue = new BN(tokenValue);
+            tokenValue = String(tokenValue);
             this.form.controls.ethValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(tokenValue)).div(new BN(this.rate))));
         }
     }
@@ -101,14 +102,17 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                         transactionHash: transactionHash, netType: this.envState.netType,
                         eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
                     }, this.account);
-                }, confirmApprove);
+                }, confirmApprove, (err) => {
+                    this.loadingSer.hide();
+                    this.alertSer.show('User denied transaction signature');
+                });
             }
         }
     }
 
 
     async getBalance() {
-        this.loadingSer.show();
+        this.loadingSer.show('Loading balance...');
         const result = await this.wccSer.getExchangerInfo();
         this.rate = result.rate;
         this.exchanged = result.exchanged;

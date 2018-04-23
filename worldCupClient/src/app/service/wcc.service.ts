@@ -433,7 +433,7 @@ export class WCCService {
             tokenBalance: web3.utils.fromWei(token)
         };
     }
-    async exchange(value, onTransactionHash, onConfirmation) {
+    async exchange(value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -459,6 +459,9 @@ export class WCCService {
             })
             .on('error', (error) => {
                 console.log(error);
+                if (onError) {
+                    onError(error);
+                }
             });
         // const web3 = this.web3Service.instance();
         // return web3.eth.sendTransaction(options)
