@@ -29,7 +29,9 @@ export class TransComponent implements OnInit, OnDestroy {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                this.refresh(this.selectTab);
+                if (tempEnvState.canLoadData) {
+                    this.refresh(this.selectTab);
+                }
             }
             this.envState = tempEnvState;
         });

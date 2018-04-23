@@ -38,7 +38,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                this.getBalance();
+                if (tempEnvState.canLoadData) {
+                    this.getBalance();
+                }
             }
             this.envState = tempEnvState;
         });

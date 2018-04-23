@@ -66,7 +66,6 @@ export class AppComponent implements OnInit, OnDestroy {
         // })();
     }
     ngOnInit() {
-        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
