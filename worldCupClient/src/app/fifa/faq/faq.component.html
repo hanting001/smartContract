@@ -1,19 +1,46 @@
 <div class="jumbotron bg-default">
-    <div id="accordion">
+    <h1>Getting started</h1>
+    <div id="faqs">
         <div class="card" *ngFor="let faq of faqs; let idx = index;" style="margin-bottom: 5px;">
             <div class="card-header" id="heading{{idx}}">
-                <div class="row" data-toggle="collapse" [attr.data-target]="'#collapse' + idx" [attr.aria-expanded]="'true'" [attr.aria-controls]="'collapse' + idx">
-                    <div class="col">{{faq.question}}</div>
-                </div>
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" [attr.data-target]="'#collapse' + idx" [attr.aria-expanded]="'true'" [attr.aria-controls]="'collapse' + idx">
+                        {{faq.question}}
+                    </button>
+                </h5>
             </div>
-            <div id="collapse{{idx}}" class="collapse" [attr.aria-labelledby]="'heading' + idx" data-parent="#accordion">
-                <div class="card-body">
+            <div id="collapse{{idx}}" class="collapse" [attr.aria-labelledby]="'heading' + idx" data-parent="#faqs">
+                <div class="card-body text-secondary">
                     <p style="padding-left:24px;">{{faq.title}}</p>
                     <ul>
-                        <li *ngFor=" let answer of faq.answers ">{{answer}}</li>
+                        <li *ngFor=" let answer of faq.answers "[innerHtml]="answer" ></li>
                     </ul>
+                    <div class="text-center" [innerHtml]="faq.other"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="jumbotron bg-default">
+        <h1>About this game</h1>
+        <div id="abouts">
+            <div class="card" *ngFor="let about of abouts; let idx = index;" style="margin-bottom: 5px;">
+                <div class="card-header" id="heading{{idx}}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" [attr.data-target]="'#aboutCollapse' + idx" [attr.aria-expanded]="'true'" [attr.aria-controls]="'aboutCollapse' + idx">
+                            {{about.question}}
+                        </button>
+                    </h5>
+                </div>
+                <div id="aboutCollapse{{idx}}" class="collapse" [attr.aria-labelledby]="'heading' + idx" data-parent="#abouts">
+                    <div class="card-body text-secondary">
+                        <p style="padding-left:24px;">{{about.title}}</p>
+                        <ul>
+                            <li *ngFor=" let answer of about.answers "[innerHtml]="answer" ></li>
+                        </ul>
+                        <div class="text-center" [innerHtml]="about.other"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
