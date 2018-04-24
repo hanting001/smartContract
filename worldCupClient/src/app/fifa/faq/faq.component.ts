@@ -88,7 +88,7 @@ export class FaqComponent implements OnInit {
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot-buy-usa.png">'
             }, {
-                question: 'How to send ETH to MetaMask',
+                question: '下注时的赔率是如何确定的?',
                 title: '', answers: [
                     'For U.S. citizens only: you are able to purchase ETH directly from the MetaMask wallet using the Coinbase widget. This is more convenient and doesn’t require you to create two accounts.',
                     'For everyone else: you need to buy ETH from an exchange using normal fiat currency. Copy your MetaMask address by clicking on the large ‘...’ next to your account, then select ‘Copy Address to clipboard’. Go to your exchange, click ‘Accounts’, and select your ETH Wallet and click ‘send’. Paste the MetaMask address in the box with the amount you’d like to transfer.'
