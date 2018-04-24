@@ -58,6 +58,7 @@ export class TransComponent implements OnInit, OnDestroy {
         }
     }
     async getBalanceAndWithdraw() {
+        this.loading.show('get balance info...');
         const withdraw = await this.wccService.getUserWithdraw();
         const balance = await this.web3.getBalance();
         this.myBalance = {
@@ -65,13 +66,14 @@ export class TransComponent implements OnInit, OnDestroy {
             token: balance.token,
             withdraw: withdraw
         };
+        this.loading.hide();
     }
     async getVoteInfos() {
         if (this.voteInfos && this.voteInfos.length > 0) {
             return;
         }
         console.log('get new data');
-        this.loading.show();
+        this.loading.show('get vote info...');
         const gameIndexes = await this.wccService.getUserVotedGameIndexes();
         this.loading.hide();
         const temp = [];
@@ -116,7 +118,7 @@ export class TransComponent implements OnInit, OnDestroy {
             return;
         }
         console.log('get bet infos');
-        this.loading.show();
+        this.loading.show('get bet info...');
         const joinedGameIndexes = await this.wccService.getUserJoinedGameIndexes();
         this.loading.hide();
         for (let i = 0; i < joinedGameIndexes.length; i++) {
