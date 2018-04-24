@@ -58,8 +58,8 @@ export class TransComponent implements OnInit, OnDestroy {
         }
     }
     async getBalanceAndWithdraw() {
-        const balance = await this.web3.getBalance();
         const withdraw = await this.wccService.getUserWithdraw();
+        const balance = await this.web3.getBalance();
         this.myBalance = {
             eth: balance.eth,
             token: balance.token,
@@ -180,9 +180,9 @@ export class TransComponent implements OnInit, OnDestroy {
         }
         this.wccService.withdraw(async (confirmNum, receipt) => {
             if (confirmNum == 1) {
-                this.getBalanceAndWithdraw();
                 this.loadingSer.hide();
                 this.alertSer.show('Success!');
+                this.getBalanceAndWithdraw();
             }
         }, async (err) => {
             this.loadingSer.hide();

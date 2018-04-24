@@ -10,7 +10,7 @@
         <div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
             <h1 id="showGames">All Games</h1>
             <div class="row justify-content-md-center">
-                <p *ngIf="!gameInfos||gameInfos.length==0">No game</p>
+                <p *ngIf="!gameInfos||gameInfos.length==0">{{gameMessage}}</p>
                 <table *ngIf="gameInfos&&gameInfos.length!=0" class="table table-hover table-sm">
                     <thead class="thead-light">
                         <tr>
@@ -25,12 +25,12 @@
                     <tbody>
                         <tr *ngFor="let game of gameInfos;">
                             <td class="text-center align-middle" scope="row">
-                                <img [src]="game.p1|nationFlag" [alt]="game.p1" style="border:1px solid #c7c6c6">
+                                <img [src]="game.p1|nationFlag:contries" [alt]="game.p1" style="border:1px solid #c7c6c6">
                                 <br>
                                 <p class="small text-secondary m-0">{{game.p1}}</p>
                             </td>
                             <td class="text-center align-middle" scope="row">
-                                <img [src]="game.p2|nationFlag" [alt]="game.p2" style="border:1px solid #c7c6c6">
+                                <img [src]="game.p2|nationFlag:contries" [alt]="game.p2" style="border:1px solid #c7c6c6">
                                 <br>
                                 <p class="small text-secondary m-0">{{game.p2}}</p>
                             </td>

@@ -2,6 +2,7 @@ import { WCCService } from '../../service/wcc.service';
 import { Component, OnInit, OnDestroy, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service } from '../../service/index';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +30,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     modalRef: BsModalRef;
     startVoteForm: FormGroup;
     scIndex = 1;
+    gameMessage = 'no games';
+    contries: any;
     @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
     @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
@@ -38,6 +41,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private modalService: BsModalService,
         public alertSer: AlertService,
+        private localStorage: LocalStorage
     ) {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
@@ -77,6 +81,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     async checkEnv() {
         this.isOwner = await this.wccSer.isOwner();
         if (this.isOwner) {
+            this.gameMessage = 'loading games...';
+            this.contries = await this.localStorage.getItem<any>('contries').toPromise();
             this.gameInfos = await this.wccSer.getAllPlayers();
         }
     }

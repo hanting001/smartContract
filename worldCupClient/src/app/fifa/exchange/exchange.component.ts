@@ -91,12 +91,11 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             }
             if (model.ethValue) {
                 this.loadingSer.show();
-                const confirmApprove = (confirmationNumber, receipt) => {
+                const confirmApprove = async (confirmationNumber, receipt) => {
                     if (confirmationNumber === 2) {
-                        this.getBalance();
                         this.resetForm();
-                        this.loadingSer.hide();
                         this.alertSer.show('Success!');
+                        this.getBalance();
                     }
                 };
                 this.wccSer.exchange(valueInWei, (transactionHash) => {
