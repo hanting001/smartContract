@@ -182,6 +182,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartData.currentGameIndex = index;
             this.chartData.limit = limit;
             this.buyModalRef = this.openModal(this.buyTemplate);
+
         } else if (currentGameInfo.status == '2' || currentGameInfo.status == '3') {
             this.chartData = {};
             const voteInfo = await this.wccSer.getVoteInfo(index);
@@ -206,6 +207,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     getChartsData(betInfos) {
         this.chartData.betInfos = betInfos;
+        this.calculat();
     }
     getUSDValue(event) {
         if (this.buyForm.valid) {
