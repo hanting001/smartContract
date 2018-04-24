@@ -10,7 +10,7 @@ export class FaqComponent implements OnInit {
         {
             question: 'What do I need to play?',
             title: 'Here’s what you need to get started:', answers: [
-                'A computer or laptop running the desktop version of Chrome or Firefox',
+                'A computer or laptop running the desktop version of Chrome or Brave browser',
                 'MetaMask, a digital wallet used specifically with web apps'
             ]
         }, {

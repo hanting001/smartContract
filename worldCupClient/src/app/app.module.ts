@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
@@ -84,6 +85,7 @@ import { FaqComponent } from './fifa/faq/faq.component';
         TimepickerModule.forRoot(),
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
+        CollapseModule.forRoot(),
         FormsModule,
         LocalStorageModule,
         ReactiveFormsModule,
