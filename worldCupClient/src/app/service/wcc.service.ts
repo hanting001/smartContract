@@ -697,4 +697,58 @@ export class WCCService {
                 }
             });
     }
+    async redeemCheck(value) {
+        const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const msgObj = {
+            1: 'too small value',
+            2: 'no token allowance'
+        };
+        const checkResult = await sc.methods.redeemCheck(value).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async redeem(value, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.redeem(value).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+    async exchangerWithdrawBalance() {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const account = await this.web3Service.getMainAccount();
+        return sc.methods.withdraws(account).call();
+    }
+    async exchangerWithdraw(onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.withdraw().send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
 }

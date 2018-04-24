@@ -53,6 +53,12 @@
 <ng-template #alertTemplate>
     <div class="modal-body text-center">
         <p>{{tip.msg}}</p>
-        <button type="button" class="btn btn-primary" (click)="closeAlert()">Done</button>
+        <div *ngIf="tip.confirm">
+            <button type="button" class="btn btn-primary" (click)="doComfirm()">Confirm</button>
+            <button type="button" class="btn btn-secondary" (click)="closeAlert()">Cancel</button>
+        </div>
+        <div *ngIf="!tip.confirm">
+            <button type="button" class="btn btn-primary" (click)="closeAlert()">Done</button>
+        </div>
     </div>
 </ng-template>

@@ -21,6 +21,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     totalSupply: any;
     scTokenBalance: any;
     subscription;
+    withdrawFlag = false;
     @ViewChild('exTemplate') exTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
@@ -53,6 +54,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
     async showExModal() {
         if (this.envState.canLoadData) {
+            this.withdrawFlag = false;
+            await this.getBalance();
+            this.openModal(this.exTemplate);
+        }
+    }
+    async showWModal() {
+        if (this.envState.canLoadData) {
+            this.withdrawFlag = true;
             await this.getBalance();
             this.openModal(this.exTemplate);
         }
@@ -91,36 +100,95 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const model: any = this.form.value;
             console.log(model);
             const web3 = this.web3.instance();
-            const valueInWei = web3.utils.toWei(String(model.ethValue));
-            const check = await this.wccSer.exchangeCheck(valueInWei);
-            console.log(check);
-            if (check.checkResult != 0) {
-                this.loadingSer.hide();
-                return this.alertSer.show(check.message);
-            }
-            if (model.ethValue) {
-                this.loadingSer.show();
-                const confirmApprove = async (confirmationNumber, receipt) => {
-                    if (confirmationNumber === 2) {
-                        this.resetForm();
-                        this.alertSer.show('Success!');
-                        this.getBalance();
-                    }
-                };
-                this.wccSer.exchange(valueInWei, (transactionHash) => {
-                    this.localActionSer.addAction({
-                        transactionHash: transactionHash, netType: this.envState.netType,
-                        eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
-                    }, this.account);
-                }, confirmApprove, (err) => {
-                    this.loadingSer.hide();
-                    this.alertSer.show('User denied transaction signature');
+            if (this.withdrawFlag) {
+                this.alertSer.confirm('确定授权合约可以转走token?');
+                const valueInWei = web3.utils.toWei(String(model.kotValue));
+                const confirmOb = this.alertSer.getComfirmObservable().subscribe(async () => {
+                    this.alertSer.hide();
+                    this.loadingSer.show('Approving the token address...');
+                    confirmOb.unsubscribe();
+                    const scName = 'wccExchanger';
+                    this.web3.tokenApprove(valueInWei, scName, async (confNumber, receipt) => {
+                        if (confNumber == 1) {
+                            const check = await this.wccSer.redeemCheck(valueInWei);
+                            if (check.checkResult != 0) {
+                                this.loadingSer.hide();
+                                return this.alertSer.show(check.message);
+                            }
+                            this.loadingSer.show();
+                            this.wccSer.redeem(valueInWei, (c, r) => {
+                                if (c === 1) {
+                                    this.resetForm();
+                                    this.alertSer.show('Success!');
+                                    this.getBalance();
+                                }
+                            }, (err) => {
+                                this.loadingSer.hide();
+                                this.alertSer.show('User denied transaction signature');
+                            });
+                        }
+                    }, (err) => {
+                        this.loadingSer.hide();
+                        this.alertSer.show('User denied transaction signature');
+                    });
                 });
+            } else {
+                const valueInWei = web3.utils.toWei(String(model.ethValue));
+                const check = await this.wccSer.exchangeCheck(valueInWei);
+                if (check.checkResult != 0) {
+                    this.loadingSer.hide();
+                    return this.alertSer.show(check.message);
+                }
+                if (model.ethValue) {
+                    this.loadingSer.show();
+                    const confirmApprove = async (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            this.resetForm();
+                            this.alertSer.show('Success!');
+                            this.getBalance();
+                        }
+                    };
+                    this.wccSer.exchange(valueInWei, (transactionHash) => {
+                        this.localActionSer.addAction({
+                            transactionHash: transactionHash, netType: this.envState.netType,
+                            eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
+                        }, this.account);
+                    }, confirmApprove, (err) => {
+                        this.loadingSer.hide();
+                        this.alertSer.show('User denied transaction signature');
+                    });
+                }
             }
         }
     }
 
+    async withdraw() {
+        const web3 = this.web3.instance();
+        const balance = await this.wccSer.exchangerWithdrawBalance();
+        const b = web3.utils.fromWei(balance);
+        if (Number(b) > 0) {
+            this.alertSer.confirm(`确定提现${b}个ETH?`);
+            const confirmOb = this.alertSer.getComfirmObservable().subscribe(
+                async () => {
+                    confirmOb.unsubscribe();
+                    this.alertSer.hide();
+                    this.loadingSer.show();
+                    this.wccSer.exchangerWithdraw((confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            this.alertSer.show('Success!');
+                            this.loadingSer.hide();
+                        }
+                    }, (err) => {
+                        this.loadingSer.hide();
+                        this.alertSer.show('User denied transaction signature');
+                    });
+                }
+            );
+        } else {
+            this.alertSer.show('You have no withdraw balance');
+        }
 
+    }
     async getBalance() {
         this.loadingSer.show('Loading balance...');
         const result = await this.wccSer.getExchangerInfo();

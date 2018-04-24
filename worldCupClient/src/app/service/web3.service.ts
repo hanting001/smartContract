@@ -205,6 +205,26 @@ export class Web3Service {
             token: this.web3.utils.fromWei(token)
         };
     }
+    async tokenApprove(value, scName, onConfirmation, onError) {
+        const sc = await this.getContract('knotToken', 'KnotToken');
+        const address = await this.getAddress(scName);
+        const options = {
+            from: await this.getMainAccount()
+        };
+        console.log(`address: ${address}, value:${value}`);
+        sc.methods.approve(address, value).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
     async getBalanceByAccount(account) {
         const tokenSC = await this.getContract('knotToken', 'KnotToken');
         const eth = await this.web3.eth.getBalance(account);
