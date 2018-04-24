@@ -64,7 +64,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             // get bets info
             await this.getBetsInfo(gameInfo, gameIndex);
             this.betChart();
-        } else if (gameInfo.status == 2) {
+        } else if (gameInfo.status == 2 || gameInfo.status == 3) {
             this.pieChart();
         }
     }
@@ -76,7 +76,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             data: {
                 datasets: [{
                     data: this.chartData.data,
-                    backgroundColor: ['#006600', '#CC0000']
+                    backgroundColor: ['#006600', '#999999']
                 }],
                 labels: this.chartData.labels
             },

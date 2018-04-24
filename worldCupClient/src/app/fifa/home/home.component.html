@@ -193,10 +193,10 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
-                                    Currently, if you win this bet, you can win
+                                <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
+                                        Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can win
                                     <span class="text-warning">{{betCanWin}}</span> eth.
-                                </small>
+                                </p>
                             </div>
                         </div>
                     </div>
