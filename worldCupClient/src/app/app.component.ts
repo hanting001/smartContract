@@ -77,6 +77,9 @@ export class AppComponent implements OnInit, OnDestroy {
             this.envState = tempEnvState;
         });
     }
+    doComfirm() {
+        this.alertSer.doConfirm();
+    }
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
