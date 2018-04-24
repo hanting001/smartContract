@@ -93,6 +93,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         if (!isGameUpdated && games && games.length > 0 && contries) {
             this.games = games;
             this.contries = contries;
+            this.secondStageStartDate = this.contries['secondStageStartDate'];
             // console.log(this.games);
             console.log('from local storage');
         } else {
@@ -114,6 +115,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.loadingProgress = 0;
             this.loading = false;
             this.localStorage.setItem('games', this.games).toPromise();
+            this.contries['secondStageStartDate'] = this.secondStageStartDate;
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
     }
