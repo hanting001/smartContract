@@ -55,31 +55,32 @@ export class FaqComponent implements OnInit {
         ];
         this.abouts = [
             {
-                question: 'What do I need to play this game?',
-                title: 'Here’s what you need to get started:', answers: [
-                    'A computer or laptop running the desktop version of Chrome or Brave browser',
-                    'MetaMask, a digital wallet used specifically with web apps',
-                    'Ether, a form of digital payment that powers this game'
+                question: '我如何赢取ETH?',
+                title: '游戏中有两种途径可以赢取ETH:',
+                answers: [
+                    '通过预测比赛的比分下注，如果猜中了比分，所有猜中比分的人共享整个下注盘的90%',
+                    '通过对比赛的结果进行投票，如果投票通过，所有投赞成票的人共享整个下注盘的5%'
                 ]
             }, {
-                question: 'Installing MetaMask, your digital wallet',
-                title: 'To use this game, you will need to install MetaMask, a digital wallet. You will need to put money in it to make your first purchase.',
+                question: '奖金的计算规则',
+                title: '',
                 answers: [
-                    '<strong>Note:</strong> A digital wallet like MetaMask acts like a bank account—treat it with respect and make sure you don’t forget your password or the seed words.'
+                    '对于下注,',
+                    '对于投票,'
                 ],
                 other: this.sanitizer.bypassSecurityTrustHtml(`<iframe width="787" height="315" src="https://www.youtube.com/embed/tfETpi-9ORs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`)
             }, {
-                question: 'Why is MetaMask locked?',
+                question: '如何下注?',
                 title: 'Occasionally the ‘Home’ page displays a lock screen. This happens because MetaMask automatically locks your account after a certain period of time. To unlock simply click on the MetaMask extension and type in your password.',
                 answers: [],
                 other: '<img class="img-fluid" src="assets/images/screenshot-locked.png">'
             }, {
-                question: 'Reinstalling MetaMask',
+                question: '投票的权重如何确定?',
                 title: 'Some users need to uninstall and reinstall MetaMask because they’ve experienced a bug. If you kept your seed words, this is very easy! Just delete the extension, reinstall it, and import your twelve seed words. Then you’ll set the password you want to use (this can be the same one you used before or a whole new password).',
                 answers: [
                 ]
             }, {
-                question: 'Getting Ether, your digital currency',
+                question: '我如何领取奖金?',
                 title: '',
                 answers: [
                     'For U.S. citizens only: you can buy ether (ETH) in MetaMask. ETH is a digital currency that enables our game to run.',
