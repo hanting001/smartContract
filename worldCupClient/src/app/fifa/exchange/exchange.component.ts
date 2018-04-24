@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
 import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
     selector: 'app-exchange',
@@ -19,12 +21,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     totalSupply: any;
     scTokenBalance: any;
     subscription;
+    @ViewChild('exTemplate') exTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         private router: Router,
         public loadingSer: LoadingService,
         public localActionSer: LocalActionService,
+        private modalService: BsModalService,
         public alertSer: AlertService) {
         this.form = this.fb.group({
             ethValue: ['0', [Validators.required]],
@@ -36,17 +40,22 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
-            ) {
-                if (tempEnvState.canLoadData) {
-                    this.getBalance();
-                }
-            }
+            ) { }
             this.envState = tempEnvState;
         });
         this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+    openModal(template: TemplateRef<any>) {
+        return this.modalService.show(template, { class: 'modal-lg' });
+    }
+    async showExModal() {
+        if (this.envState.canLoadData) {
+            await this.getBalance();
+            this.openModal(this.exTemplate);
+        }
     }
     ethChange() {
         const web3 = this.web3.instance();
