@@ -1,7 +1,7 @@
 <div class="jumbotron bg-default mb-1">
     <h1>Getting Started</h1>
     <div id="faqs">
-        <div class="card" *ngFor="let faq of faqs; let idx = index;" style="margin-bottom: 5px;">
+        <div class="card bg-main" *ngFor="let faq of faqs; let idx = index;" style="margin-bottom: 5px;">
             <div class="card-header" id="heading{{idx}}">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" [attr.data-target]="'#collapse' + idx" [attr.aria-expanded]="'true'" [attr.aria-controls]="'collapse' + idx">
@@ -24,7 +24,7 @@
 <div class="jumbotron bg-default mb-1">
         <h1>About This Game</h1>
         <div id="abouts">
-            <div class="card" *ngFor="let about of abouts; let idx = index;" style="margin-bottom: 5px;">
+            <div class="card bg-main" *ngFor="let about of abouts; let idx = index;" style="margin-bottom: 5px;">
                 <div class="card-header" id="heading{{idx}}">
                     <h5 class="mb-0">
                         <button class="btn btn-link" data-toggle="collapse" [attr.data-target]="'#aboutCollapse' + idx" [attr.aria-expanded]="'true'" [attr.aria-controls]="'aboutCollapse' + idx">

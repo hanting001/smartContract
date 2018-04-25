@@ -18,7 +18,9 @@
     </p>
     <hr class="my-4">
     <p>用ETH已固定汇率换取投票token，可兑换的token数量为一个固定值</p>
-    <p>你可以随时已同样的汇率<a href="javascript:void(0)" (click)="showWModal()">换回</a>ETH，并<a href="javascript:void(0)" (click)="withdraw()">提取</a>到自己的账户中。</p>
+    <p>你可以随时已同样的汇率
+        <a href="javascript:void(0)" (click)="showWModal()">换回</a>ETH，并
+        <a href="javascript:void(0)" (click)="withdraw()">提取</a>到自己的账户中。</p>
     <p>可以认为持有token并积极参加投票是使用ETH进行一场投资</p>
     <p class="lead text-center">
         <a class="btn btn-outline-primary btn-lg" href="javascript:void(0)" (click)="showExModal()" role="button">Get Token</a>
@@ -73,13 +75,18 @@
                         <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
                     </div>
                 </div>
-                <div *ngIf="!withdrawFlag" class="form-group row  pt-3 align-items-center justify-content-center">
+                <div *ngIf="!withdrawFlag" class="form-group row pt-3 align-items-center justify-content-center">
                     <div class="input-group col-3 text-center">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">ETH</span>
                         </div>
                         <input type="number" class="col form-control" (keyup)="ethChange()" formControlName="ethValue">
                     </div>
+                    <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
+                        <div *ngIf="ethValue.errors.required">
+                            required
+                        </div>
+                    </small>
                     <div class="col-1">
                         <span class="oi oi-arrow-thick-right large"></span>
                     </div>
@@ -87,8 +94,16 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">KOT</span>
                         </div>
-                        <input type="number" class="col form-control" (keyup)="kotChange()" formControlName="kotValue">
+                        <input type="number" class="form-control" (keyup)="kotChange()" formControlName="kotValue">
                     </div>
+                    <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
+                        <div *ngIf="kotValue.errors.required">
+                            required
+                        </div>
+                        <div *ngIf="kotValue.errors.min">
+                            min value is 1
+                        </div>
+                    </small>
                 </div>
                 <div *ngIf="withdrawFlag" class="form-group row  pt-3 align-items-center justify-content-center">
                     <div class="input-group col-3  text-cente">
@@ -97,6 +112,14 @@
                         </div>
                         <input type="number" class="col form-control" (keyup)="kotChange()" formControlName="kotValue">
                     </div>
+                    <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
+                        <div *ngIf="kotValue.errors.required">
+                            required
+                        </div>
+                        <div *ngIf="kotValue.errors.min">
+                            min value is 1
+                        </div>
+                    </small>
                     <div class="col-1">
                         <span class="oi oi-arrow-thick-right large"></span>
                     </div>
@@ -106,10 +129,15 @@
                         </div>
                         <input type="number" class="col form-control" (keyup)="ethChange()" formControlName="ethValue">
                     </div>
+                    <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
+                        <div *ngIf="ethValue.errors.required">
+                            required
+                        </div>
+                    </small>
                 </div>
                 <div class="row border-top p-2">
                     <div class="col text-center align-middle">
-                        <button type="submit" class="btn btn-outline-primary">Exchange</button>
+                        <button type="submit" [disabled]="!form.valid" class="btn btn-outline-primary">Exchange</button>
                     </div>
                 </div>
 

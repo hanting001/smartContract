@@ -199,5 +199,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.balance = await this.web3.getBalance();
         this.loadingSer.hide();
     }
-
+    get kotValue() { return this.form.get('kotValue'); }
+    get ethValue() { return this.form.get('ethValue'); }
 }
