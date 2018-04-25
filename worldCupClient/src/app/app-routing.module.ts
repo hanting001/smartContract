@@ -3,6 +3,7 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { HomeComponent } from './home/home.component';
 import { FifaHomeComponent } from './fifa/home/home.component';
 import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { OrderComponent } from './fifa/order/order.component';
@@ -15,7 +16,8 @@ import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'home', component: FifaHomeComponent },
+    { path: 'home', component: HomeComponent },
+    { path: 'matches', component: FifaHomeComponent },
     { path: 'admin', component: FifaAdminComponent },
     { path: 'exchange', component: ExchangeComponent },
     { path: 'contact', component: ContactComponent },

@@ -45,6 +45,7 @@ import { ChartComponent } from './fifa/chart/chart.component';
 import { TransComponent } from './fifa/trans/trans.component';
 import { ContactComponent } from './fifa/contact/contact.component';
 import { FaqComponent } from './fifa/faq/faq.component';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { FaqComponent } from './fifa/faq/faq.component';
         ChartComponent,
         TransComponent,
         ContactComponent,
-        FaqComponent
+        FaqComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
