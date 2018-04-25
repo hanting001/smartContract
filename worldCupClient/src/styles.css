@@ -34,7 +34,12 @@ a:hover {
 .text-primary {
     color: #fed136 !important;
 }
-
+.text-main {
+    color: #3C3C3D;
+}
+.card.bg-main {
+    background-color: #ECF0F1;
+}
 #chartjs-tooltip {
     opacity: 1;
     position: absolute;
