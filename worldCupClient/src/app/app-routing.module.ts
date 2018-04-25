@@ -16,7 +16,7 @@ import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: FifaHomeComponent },
-    { path: 'fifa/admin', component: FifaAdminComponent },
+    { path: 'admin', component: FifaAdminComponent },
     { path: 'exchange', component: ExchangeComponent },
     { path: 'contact', component: ContactComponent },
     { path: 'faq', component: FaqComponent },
