@@ -80,7 +80,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">ETH</span>
                         </div>
-                        <input type="number" class="col form-control" (keyup)="ethChange()" formControlName="ethValue">
+                        <input type="number" class="col form-control" (change)="ethChange()" formControlName="ethValue">
                     </div>
                     <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
                         <div *ngIf="ethValue.errors.required">
@@ -94,7 +94,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon3">KOT</span>
                         </div>
-                        <input type="number" class="form-control" (keyup)="kotChange()" formControlName="kotValue">
+                        <input type="number" class="form-control" (change)="kotChange()" formControlName="kotValue">
                     </div>
                     <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
                         <div *ngIf="kotValue.errors.required">
