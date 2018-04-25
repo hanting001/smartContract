@@ -45,27 +45,27 @@
         </div>
         <ul class="nav" *ngIf="games&&games.length>0">
             <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="games[0].date">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="games[0].date">
                 Group Phase
             </li>
             <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.roundOf16">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="stageObj.roundOf16">
                 Round of 16
             </li>
             <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.quarterFinal">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="stageObj.quarterFinal">
                 Quarter-final
             </li>
             <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.semiFinal">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="stageObj.semiFinal">
                 Semi-final
             </li>
             <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.playOffForThirdPlace">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="stageObj.playOffForThirdPlace">
                 Play-off for third place
             </li>
             <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
-                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.final">
+                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="stageObj.final">
                 Final
             </li>
         </ul>
