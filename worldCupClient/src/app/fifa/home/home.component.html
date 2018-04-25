@@ -12,7 +12,7 @@
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div class="container-fluid" style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+<div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
     <div *ngIf="envState.checkEnv">
         <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
         <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
@@ -20,7 +20,7 @@
             <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
             <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
         </div>
-        <div class="">
+        <div class="col-12 text-center">
             <table class="table m-0 table-responsive bg-white table-sm rounded">
                 <tr>
                     <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
@@ -43,9 +43,9 @@
                 </tr>
             </table>
         </div>
-        <ul class="nav" *ngIf="games&&games.length>0">
-            <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="games[0].date">
+        <ul class="nav justify-content-center" *ngIf="games&&games.length>0">
+            <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
+                [ngx-scroll-to]="games[0].date">
                 Group Phase
             </li>
             <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
