@@ -12,8 +12,8 @@
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div [hidden]="!envState.checkEnv" class="jumbotron mt-5">
-    <h1 class="display-4">KOT Vote Token</h1>
+<div [hidden]="!envState.checkEnv" class="jumbotron mt-5 bg-main text-main">
+    <h1 class="display-4 ">KOT Vote Token</h1>
     <p class="lead">KOT是我们发行的token名称，拥有KOT即可对比赛结果进行投票，赢取ETH作为回报！
     </p>
     <hr class="my-4">
@@ -26,18 +26,18 @@
 </div>
 <ng-template #exTemplate>
     <form (ngSubmit)="exchange()" [formGroup]="form">
-        <div class="card text-center  bg-info m-2">
+        <div class="card text-center  bg-main m-2">
             <div class="card-header" [hidden]="withdrawFlag">
                 <div class="container text-center" id="chartDiv" align="center">
                     <div class="row text-center">
                         <div class="col">
-                            <small class="text-light">Total Supply</small>
+                            <small class="text-main">Total Supply</small>
                         </div>
                         <div class="col">
-                            <small class="text-light">Remain</small>
+                            <small class="text-main">Remain</small>
                         </div>
                         <div class="col">
-                            <small class="text-light">Exchange Rate</small>
+                            <small class="text-main">Exchange Rate</small>
                         </div>
                     </div>
                     <div class="row text-center">
@@ -55,20 +55,20 @@
             </div>
             <div class="card-body">
                 <div class="form-group row align-items-center">
-                    <label class="col-3 col-form-label text-light text-right" style="font-size:1.2rem">Wallet Address</label>
+                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Wallet Address</label>
                     <div class="col-9">
                         <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-3 col-form-label text-light text-right" style="font-size:1.2rem">Balance Of ETH</label>
+                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of ETH</label>
                     <div class="col-9">
                         <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.eth}}">
                     </div>
 
                 </div>
                 <div class="form-group row">
-                    <label class="col-3 col-form-label text-light text-right" style="font-size:1.2rem">Balance Of KOT</label>
+                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of KOT</label>
                     <div class="col-9">
                         <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
                     </div>
@@ -109,7 +109,7 @@
                 </div>
                 <div class="row border-top p-2">
                     <div class="col text-center align-middle">
-                        <button type="submit" class="btn btn-outline-light">Exchange</button>
+                        <button type="submit" class="btn btn-outline-primary">Exchange</button>
                     </div>
                 </div>
 

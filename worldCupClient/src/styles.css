@@ -35,10 +35,13 @@ a:hover {
     color: #fed136 !important;
 }
 .text-main {
-    color: #3C3C3D;
+    color: #3C3C3D !important;
 }
-.card.bg-main {
+.card.bg-main, .jumbotron.bg-main {
     background-color: #ECF0F1;
+}
+.bg-main {
+    background-color: #ECF0F1 !important;
 }
 #chartjs-tooltip {
     opacity: 1;
