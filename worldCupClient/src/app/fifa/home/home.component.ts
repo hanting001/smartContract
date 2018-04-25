@@ -420,4 +420,5 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         return this.modalService.show(template, { class: 'modal-lg' });
     }
     get voteOption() { return this.voteForm.get('voteOption'); }
+    get eth() { return this.buyForm.get('eth'); }
 }

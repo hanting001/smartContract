@@ -177,24 +177,32 @@
 
                             </tr>
                         </table>
-                        <div class="form-group row border-bottom m-0 p-2 ">
+                        <div class="form-group row align-items-center border-bottom m-0 p-2 ">
                             <div class="input-group col-7 pl-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon3">Your ETH:{{balance.eth}}</span>
                                 </div>
                                 <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                             </div>
-                            <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                            <small [hidden]="USDPrice == 0 || eth.invalid" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                                 {{USDPrice|currency}}, ETH price get from etherscan.io.
                             </small>
-                            <small [hidden]="USDPrice > 0" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
+                            <small [hidden]="USDPrice > 0 || eth.invalid" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
                                 Min bet value is {{this.chartData.limit}} eth.
+                            </small>
+                            <small *ngIf="eth.invalid && (eth.dirty || eth.touched)" class="text-danger">
+                                <div *ngIf="eth.errors.required">
+                                    required
+                                </div>
+                                <div *ngIf="eth.errors.min">
+                                    min value is 0.01
+                                </div>
                             </small>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
-                                        Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can win
+                                    Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can win
                                     <span class="text-warning">{{betCanWin}}</span> eth.
                                 </p>
                             </div>
@@ -202,7 +210,7 @@
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">
-                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" class="btn btn-outline-primary">Submit Bet</button>
+                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" [disabled]="!buyForm.valid" class="btn btn-outline-primary">Submit Bet</button>
                             <button [hidden]="chartData.currentGameInfo.status != 1" type="submit" disabled class="btn btn-outline-secondary disabled"
                                 readonly>Game is playing...</button>
                         </div>
