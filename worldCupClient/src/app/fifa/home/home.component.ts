@@ -23,14 +23,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
     games: any = [];
     contries: any = {};
-
-    secondStageStartDate: string;
+    secondStageStartDate;
     court: any = {};
     isSticky: Boolean = true;
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
-
+    stageObj: any = {};
     voteModalRef: BsModalRef;
     voteForm: FormGroup;
     loading = false;
@@ -67,7 +66,19 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             voteOption: ['1', [Validators.required]]
         });
     }
-
+    setShow(type, index) {
+        if (type == 1) {
+            this.stageObj.roundOf16 = index;
+        } else if (type == 2) {
+            this.stageObj.quarterFinal = index;
+        } else if ( type == 3) {
+            this.stageObj.semiFinal = index;
+        } else if (type == 4) {
+            this.stageObj.playOffForThirdPlace = index;
+        } else if (type == 5) {
+            this.stageObj.final = index;
+        }
+    }
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
@@ -357,24 +368,18 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         const gameLen = gameInfos.length;
         for (let i = 0; i < gameLen; i++) {
             const game: any = {};
-            // console.log(gameInfos[i].time);
-            // console.log(new Date(gameInfos[i].time * 1));
-
             game.local = false;
             const date = moment(gameInfos[i].time * 1000);
             game.date = date.format('YYYY-MM-DD');
             game.day = date.format('DD');
             game.dayOfWeek = date.isoWeekday();
-
             if (gameInfos[i].gameType == '0') {
                 this.contries[gameInfos[i].p1] = 1;
                 this.contries[gameInfos[i].p2] = 1;
             }
-
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
-
             if (games.length > 0 && games[games.length - 1].date == game.date) {
                 games[games.length - 1].count++;
                 games[games.length - 1].courts.push(gameInfos[i]);
@@ -383,6 +388,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 game.courts = [gameInfos[i]];
                 games.push(game);
             }
+
             this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;
             // console.log(this.loadingProgress);
         }

@@ -14,8 +14,8 @@
 
 <div class="container-fluid" style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
     <div *ngIf="envState.checkEnv">
-        <p [hidden]="loading" class="lead text-muted text-center mb-1">Matches</p>
-        <p [hidden]="!loading" class="lead text-muted text-center mb-1">Loading matches...</p>
+        <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
+        <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
         <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
             <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
             <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
@@ -23,7 +23,7 @@
         <div class="">
             <table class="table m-0 bg-white table-sm rounded">
                 <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-220" [ngx-scroll-to]="game.date"
+                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="game.date"
                         *ngFor="let game of games" class="text-center p-0">
                         <table class="table-sm ">
                             <tr>
@@ -44,24 +44,63 @@
             </table>
         </div>
         <ul class="nav" *ngIf="games&&games.length>0">
-            <li class="nav-item" (click)="firstStageFlag=!firstStageFlag" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="games[0].date">
-                First Stage
+            <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="games[0].date">
+                Group Phase
             </li>
-            <li class="nav-item default" (click)="firstStageFlag=!firstStageFlag" [ngClass]="{'active':firstStageFlag!=1,'default':firstStageFlag==1}"
-                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="secondStageStartDate||games[games.length-1].date">
-                Second Stage
+            <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.roundOf16">
+                Round of 16
+            </li>
+            <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.quarterFinal">
+                Quarter-final
+            </li>
+            <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.semiFinal">
+                Semi-final
+            </li>
+            <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.playOffForThirdPlace">
+                Play-off for third place
+            </li>
+            <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
+                [ngx-scroll-to-offset]="-240" [ngx-scroll-to]="stageObj.final">
+                Final
             </li>
         </ul>
 
     </div>
 </div>
 <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
-    <div *ngFor="let game of games" class="container mb-5" id="{{game.date}}">
+    <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
+        <div *ngIf="!stageObj.roundOf16 && game.courts[0] && game.courts[0].gameType == '1'">{{setShow(1, idx)}}</div>
+        <div *ngIf="!stageObj.quarterFinal && game.courts[0] && game.courts[0].gameType == '2'">{{setShow(2, idx)}}</div>
+        <div *ngIf="!stageObj.semiFinal && game.courts[0] && game.courts[0].gameType == '3'">{{setShow(3, idx)}}</div>
+        <div *ngIf="!stageObj.playOffForThirdPlace && game.courts[0] && game.courts[0].gameType == '4'">{{setShow(4, idx)}}</div>
+        <div *ngIf="!stageObj.final && game.courts[0] && game.courts[0].gameType == '5'">{{setShow(5, idx)}}</div>
+        <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
+        <div class="row bg-main align-items-center">
+            <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="stageObj.roundOf16">
+                <h3 class="m-0 pt-2 pb-2">Round of 16</h3>
+            </div>
+            <div *ngIf="idx == stageObj.quarterFinal" class="col" [id]="stageObj.quarterFinal">
+                <h3 class="m-0 pt-2 pb-2">Quarter-final</h3>
+            </div>
+            <div *ngIf="idx == stageObj.semiFinal" class="col" [id]="stageObj.semiFinal">
+                <h3 class="m-0 pt-2 pb-2">Semi-final</h3>
+            </div>
+            <div *ngIf="idx == stageObj.playOffForThirdPlace" class="col" [id]="stageObj.playOffForThirdPlace">
+                <h3 class="m-0 pt-2 pb-2">Play-off for third place</h3>
+            </div>
+            <div *ngIf="idx == stageObj.final" class="col" [id]="stageObj.final">
+                <h3 class="m-0 pt-2 pb-2">Final</h3>
+            </div>
+        </div>
         <div class="row align-items-center">
-            <h3 class="col mb-1">
+            <h5 class="col mb-1 text-left">
                 {{game.date|showDate}}&nbsp;&nbsp;
-            </h3>
+            </h5>
             <div class="col text-right">
                 <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
                 <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
@@ -200,9 +239,9 @@
                             </small>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col text-left">
                                 <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
-                                    Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can win
+                                    Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can get
                                     <span class="text-warning">{{betCanWin}}</span> eth.
                                 </p>
                             </div>
