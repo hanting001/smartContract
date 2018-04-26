@@ -3,8 +3,8 @@ import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 contract WccVoteStorage is Ownable {
     using SafeMath for uint256;
-    enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
-    enum GameStatus { Standby, Playing, Voting, Paying, End}
+    // enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
+    // enum GameStatus { Standby, Playing, Voting, Paying, End}
     mapping(address => bool) public admins;
     modifier onlyAdmin() {
         require(admins[msg.sender]);
