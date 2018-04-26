@@ -63,7 +63,7 @@ contract WccVoteStorage is Ownable {
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
         voteInfos[_gameIndex].passed = _passed;
         voteInfos[_gameIndex].ended = _ended;
-        if (_passed && _ended) {
+        if (_ended) {
             voteInfos[_gameIndex].number = block.number;
         }
     }
