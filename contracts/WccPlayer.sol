@@ -83,7 +83,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _scoreIndex score index
     /// @return 0 if check passed 
     function claimCheck(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(uint) {
-        var (,,, passed, ended,,) = vs.voteInfos(_gameIndex);
+        var (,,, passed, ended,,,blockNum) = vs.voteInfos(_gameIndex);
         var (win,) = isWin(_gameIndex, _scoreIndex);
         if (!ended) {
             return 1; // vote not finish
@@ -98,10 +98,17 @@ contract WccPlayer is Ownable, Stoppable{
         if (paid) {
             return 4; //paid
         }
+        if (blockNum > 0) {
+            if (block.number < blockNum) {
+                return 5; // wrong block number
+            }
+            if (block.number.sub(blockNum) > 576000 ) {
+                return 6; // more than 100 days
+            }
+        }
         return 0;
     }
     event UserClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
-
     /// @author Bob Clampett
     /// @notice user claim win value
     /// @param _gameIndex game index
@@ -122,7 +129,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _gameIndex game index
     /// @return 0 if check passed     
     function claimByVoterCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,, passed, ended, changed,) = vs.voteInfos(_gameIndex);
+        var (,,, passed, ended, changed,, blockNum) = vs.voteInfos(_gameIndex);
         var (vote,,paid,) = vs.userVotes(_gameIndex, msg.sender);
         if (!ended) {
             return 1; // vote not finish
@@ -136,6 +143,14 @@ contract WccPlayer is Ownable, Stoppable{
         if (paid) {
             return 4; //paid
         }
+        if (blockNum > 0) {
+            if (block.number < blockNum) {
+                return 5; // wrong block number
+            }
+            if (block.number.sub(blockNum) > 576000 ) {
+                return 6; // more than 100 days
+            }
+        }
         return 0;
     }
     event VoterClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
@@ -146,7 +161,7 @@ contract WccPlayer is Ownable, Stoppable{
     function claimByVoter(bytes32 _gameIndex) external stopInEmergency {
         require(claimByVoterCheck(_gameIndex) == 0);
         var (,value,,) = vs.userVotes(_gameIndex, msg.sender);
-        var (,yesCount,,,,,) = vs.voteInfos(_gameIndex);
+        var (,yesCount,,,,,,) = vs.voteInfos(_gameIndex);
         vs.setUserVotePaid(_gameIndex, msg.sender);
         var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
         // uint totalCount = yesCount.add(noCount);
@@ -198,11 +213,10 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param _gameIndex game index
     /// @return true if check passed and win value 
     function isVoterWin(bytes32 _gameIndex) public view returns(bool win, uint value) {
-        var (,,, passed, ended, changed,) = vs.voteInfos(_gameIndex);
+        var (,yesCount,, passed, ended, changed,,) = vs.voteInfos(_gameIndex);
         var (vote,weight,,) = vs.userVotes(_gameIndex, msg.sender);
         if(passed && ended) {
             if (vote || changed) {
-                var (,yesCount,,,,,) = vs.voteInfos(_gameIndex);
                 var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
                 return (true, totalValue.div(20).mul(weight).div(yesCount));
             } else {

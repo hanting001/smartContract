@@ -102,7 +102,6 @@ contract WccStorage is Ownable {
         delete games[_gameIndex];
         arrayRemove(gameIndexes, i);
     }
-
     mapping(address => bytes32[]) userJoinedGameIndexes;
     struct Score {
         string score;
@@ -115,7 +114,6 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     
-
     function userJoin(address user, uint value, bytes32 gameIndex, string score, bytes32 scoreIndex) external onlyAdmin {
         // bytes32 scoreIndex = keccak256(score);
 
