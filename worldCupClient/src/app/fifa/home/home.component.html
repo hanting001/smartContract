@@ -21,11 +21,11 @@
             <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
         </div>
         <div class="col-12 text-center">
-            <table class="table m-0 table-responsive bg-white table-sm rounded">
+            <table class="table m-0 table-responsive bg-white table-sm rounded" style="border:solid red 1px;">
                 <tr>
                     <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
-                        *ngFor="let game of games" class="text-center p-0">
-                        <table class="table-sm ">
+                        *ngFor="let game of games" class="text-center">
+                        <table class="table-sm " style="boder:solid green 1px;">
                             <tr>
                                 <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
                             </tr>
