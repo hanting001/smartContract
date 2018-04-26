@@ -15,7 +15,10 @@ sticky-wrapper {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
 }
-
+.logo {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2rem;
+}
 .loading {
     position: fixed;
     width: 30%;
