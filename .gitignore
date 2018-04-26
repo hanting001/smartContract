@@ -6,3 +6,5 @@ installed_contracts/
 dump.rdb
 /flightDelayClient/node_modules/
 migrations/db.json
+/worldCupClient/dist.tar
+/worldCupClient/dist/
