@@ -12,118 +12,119 @@
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
-    <div *ngIf="envState.checkEnv" id="top">
-        <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
-        <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
-        <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
-            <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
-            <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
-        </div>
-        <div class="col-12 text-center">
-            <table class="table m-0 table-responsive bg-white table-sm rounded">
-                <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
-                        *ngFor="let game of games" class="text-center">
-                        <table class="table-sm " style="boder:solid green 1px;">
-                            <tr>
-                                <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-sm-center pt-0 bg-light " style="border: 0;">
-                                    <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
-                                    <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <ul class="nav justify-content-center" *ngIf="games&&games.length>0">
-            <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
-                [ngx-scroll-to]="games[0].date">
-                Group Phase
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.roundOf16'">
-                Round of 16
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.quarterFinal'">
-                Quarter-final
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.semiFinal'">
-                Semi-final
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
-                Play-off for third place
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
-                [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.final'">
-                Final
-            </li>
-        </ul>
-
-    </div>
-</div>
-<div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
-    <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
-        <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
-        <div class="row bg-main align-items-center">
-            <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
-                <h3 class="m-0 pt-2 pb-2">Round of 16</h3>
+<div class="bg-c-light">
+    <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+        <div *ngIf="envState.checkEnv" id="top">
+            <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
+            <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
+            <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
+                <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+                <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
             </div>
-            <div *ngIf="idx == stageObj.quarterFinal" class="col" [id]="'stageObj.quarterFinal'">
-                <h3 class="m-0 pt-2 pb-2">Quarter-final</h3>
-            </div>
-            <div *ngIf="idx == stageObj.semiFinal" class="col" [id]="'stageObj.semiFinal'">
-                <h3 class="m-0 pt-2 pb-2">Semi-final</h3>
-            </div>
-            <div *ngIf="idx == stageObj.playOffForThirdPlace" class="col" [id]="'stageObj.playOffForThirdPlace'">
-                <h3 class="m-0 pt-2 pb-2">Play-off for third place</h3>
-            </div>
-            <div *ngIf="idx == stageObj.final" class="col" [id]="'stageObj.final'">
-                <h3 class="m-0 pt-2 pb-2">Final</h3>
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <h5 class="col mb-1 text-left">
-                {{game.date|showDate}}&nbsp;&nbsp;
-            </h5>
-            <div class="col text-right">
-                <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
-                <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
-                <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == true" class="text-secondary" style="font-size: 0.5rem">Chane to local time</a>
-            </div>
-        </div>
-        <div class="row ">
-            <table class="table table-hover mb-4">
-                <tbody>
-                    <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
-                        <td class="align-middle" style="width:40%">
-                            <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+            <div class="col-12 text-center">
+                <table class="table m-0 table-responsive bg-white table-sm rounded">
+                    <tr>
+                        <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
+                            *ngFor="let game of games" class="text-center">
+                            <table class="table-sm " style="boder:solid green 1px;">
+                                <tr>
+                                    <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-sm-center pt-0 bg-light " style="border: 0;">
+                                        <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
+                                        <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                        <td class="align-middle" style="width:30%">
-                            <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
-                            <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
-                        </td>
-                        <td class="align-middle" style="width:30%">
-                            <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
                     </tr>
-                </tbody>
-            </table>
+                </table>
+            </div>
+            <ul class="nav justify-content-center" *ngIf="games&&games.length>0">
+                <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
+                    [ngx-scroll-to]="games[0].date">
+                    Group Phase
+                </li>
+                <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
+                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.roundOf16'">
+                    Round of 16
+                </li>
+                <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
+                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.quarterFinal'">
+                    Quarter-final
+                </li>
+                <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
+                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.semiFinal'">
+                    Semi-final
+                </li>
+                <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
+                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
+                    Play-off for third place
+                </li>
+                <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
+                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.final'">
+                    Final
+                </li>
+            </ul>
 
         </div>
+    </div>
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
+        <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
+            <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
+            <div class="row bg-main align-items-center">
+                <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
+                    <h3 class="m-0 pt-2 pb-2">Round of 16</h3>
+                </div>
+                <div *ngIf="idx == stageObj.quarterFinal" class="col" [id]="'stageObj.quarterFinal'">
+                    <h3 class="m-0 pt-2 pb-2">Quarter-final</h3>
+                </div>
+                <div *ngIf="idx == stageObj.semiFinal" class="col" [id]="'stageObj.semiFinal'">
+                    <h3 class="m-0 pt-2 pb-2">Semi-final</h3>
+                </div>
+                <div *ngIf="idx == stageObj.playOffForThirdPlace" class="col" [id]="'stageObj.playOffForThirdPlace'">
+                    <h3 class="m-0 pt-2 pb-2">Play-off for third place</h3>
+                </div>
+                <div *ngIf="idx == stageObj.final" class="col" [id]="'stageObj.final'">
+                    <h3 class="m-0 pt-2 pb-2">Final</h3>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <h5 class="col mb-1 text-left">
+                    {{game.date|showDate}}&nbsp;&nbsp;
+                </h5>
+                <div class="col text-right">
+                    <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
+                    <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
+                    <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == true" class="text-secondary" style="font-size: 0.5rem">Chane to local time</a>
+                </div>
+            </div>
+            <div class="row ">
+                <table class="table table-hover mb-4">
+                    <tbody>
+                        <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
+                            <td class="align-middle" style="width:40%">
+                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+                            </td>
+                            <td class="align-middle" style="width:30%">
+                                <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
+                                <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
+                            </td>
+                            <td class="align-middle" style="width:30%">
+                                <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
+            </div>
+
+        </div>
     </div>
 </div>
-
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
         <div class="container text-center" id="chartDiv" align="center">
@@ -236,7 +237,8 @@
                         <div class="row">
                             <div class="col text-left">
                                 <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
-                                 Estimated win: <span class="h3 text-warning">{{betCanWin}} ETH</span>
+                                    Estimated win:
+                                    <span class="h3 text-warning">{{betCanWin}} ETH</span>
                                 </p>
                             </div>
                         </div>

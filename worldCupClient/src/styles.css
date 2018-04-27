@@ -22,6 +22,7 @@ body {
 p {
     line-height: 1.75;
 }
+
 .bg {
     background-image: url(assets/images/9401665.jpg);
     height: 38rem;
@@ -33,23 +34,28 @@ p {
     -o-background-size: cover;
     background-size: cover;
 }
+
 .circular {
     position: absolute;
     left: calc(50% - 24px);
     top: calc(50% - 24px);
     display: block;
 }
+
 .bg-header {
     background-image: url(assets/images/bg-header.jpg);
-    
     background-repeat: no-repeat;
-    
     background-position: center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 }
+
+jumbotron.bg-c-light, .bg-c-light {
+    background-image: url(assets/images/pattern.svg);
+}
+
 a {
     color: #fed136;
 }
@@ -61,18 +67,23 @@ a:hover {
 .text-primary {
     color: #fed136 !important;
 }
+
 .text-main {
     color: #3C3C3D !important;
 }
+
 .card.bg-main, .jumbotron.bg-main {
     background-color: #ECF0F1;
 }
+
 .bg-main {
     background-color: #ECF0F1 !important;
 }
+
 .bg-s {
     background-color: rgba(236, 340, 241, 0.5) !important;
 }
+
 #chartjs-tooltip {
     opacity: 1;
     position: absolute;
