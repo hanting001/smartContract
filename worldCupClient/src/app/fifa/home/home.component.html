@@ -13,7 +13,7 @@
 </div>
 
 <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
-    <div *ngIf="envState.checkEnv">
+    <div *ngIf="envState.checkEnv" id="top">
         <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
         <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
         <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
@@ -346,3 +346,8 @@
         </form>
     </div>
 </ng-template>
+<footer class="container">
+    <p class="float-right">
+        <a class="link" [ngx-scroll-to]="'top'">Back to top</a>
+    </p>
+</footer>

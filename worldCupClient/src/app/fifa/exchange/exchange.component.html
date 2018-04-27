@@ -1,3 +1,4 @@
+<div id="top"></div>
 <div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
     <h1>Wanna play?</h1>
     <p class="lead">You’ll need a safe place to store all of your bets! The perfect place is in a secure wallet like MetaMask. This will
@@ -6,142 +7,150 @@
         Install MetaMask
     </button>
 </div>
-
 <div [hidden]="!envState.checkWeb3||envState.checkAccount" class="jumbotron bg-warning text-center">
     <h1>Your MetaMask is locked</h1>
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div [hidden]="!envState.checkEnv" class="jumbotron mt-5 bg-main text-main">
-    <h1 class="display-4 ">KOT Vote Token</h1>
-    <p class="lead">KOT是我们发行的token名称，拥有KOT即可对比赛结果进行投票，赢取ETH作为回报！
-    </p>
-    <hr class="my-4">
-    <p>用ETH已固定汇率换取投票token，可兑换的token数量为一个固定值</p>
-    <p>你可以随时已同样的汇率
-        <a href="javascript:void(0)" (click)="showWModal()">换回</a>ETH，并
-        <a href="javascript:void(0)" (click)="withdraw()">提取</a>到自己的账户中。</p>
-    <p>可以认为持有token并积极参加投票是使用ETH进行一场投资</p>
-    <p class="lead text-center">
-        <a class="btn btn-outline-primary btn-lg" href="javascript:void(0)" (click)="showExModal()" role="button">Get Token</a>
-    </p>
+<div [hidden]="!envState.checkEnv">
+    <div class="jumbotron mb-0 rounded-0 bg text-light" >
+        <h1 class="display-4 text-white pt-4">KOT Vote Token</h1>
+        <h5 class="pt-4">KOT is token for voting system, the purpose of which enables players to vote on match results in order to gain ETH.
+        </h5>
+        <h5 class="pt-4">Token can be exchanged with ETH at a fixed rate 5. Token`s total supply will be set at 10000.</h5>
+        <h5 class="pt-4">KOT can be
+            <a href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting ETH can be
+            <a href="javascript:void(0)"
+                (click)="withdraw()">sent to</a> address at user's metamask selected.</h5>
+        <h5 class="pt-4">You can think of holding a token and actively participating in the vote is to use ETH for an investment.</h5>
+        <h5 class="text-center" style="margin-top: 5rem;">
+            <a class="btn btn-primary btn-lg" href="javascript:void(0)" (click)="showExModal()" [ngx-scroll-to]="'inputForm'" role="button">Get Token</a>
+        </h5>
+    </div>
+    <div class="jumbotron rounded-0 bg " id="inputForm">
+        <form (ngSubmit)="exchange()" class="form" [formGroup]="form">
+            <div class="card bg-main text-center m-5">
+                <div class="card-header" [hidden]="withdrawFlag">
+                    <div class=" text-center" id="chartDiv" align="center">
+                        <div class="row text-center">
+                            <div class="col">
+                                <small class="text-main">Total Supply</small>
+                            </div>
+                            <div class="col">
+                                <small class="text-main">Remain</small>
+                            </div>
+                            <div class="col">
+                                <small class="text-main">Exchange Rate</small>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col">
+                                <h5>{{totalSupply}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{scTokenBalance}}</h5>
+                            </div>
+                            <div class="col">
+                                <h5>{{rate}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center">
+                        <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Wallet Address</label>
+                        <div class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of ETH</label>
+                        <div class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.eth}}">
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of KOT</label>
+                        <div class="col-9">
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
+                        </div>
+                    </div>
+                    <div *ngIf="!withdrawFlag" class="form-group row pt-3 align-items-center justify-content-center">
+                        <div class="input-group col-3 text-center">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">ETH</span>
+                            </div>
+                            <input type="number" class="col form-control" (change)="ethChange()" formControlName="ethValue">
+                        </div>
+                        <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
+                            <div *ngIf="ethValue.errors.required">
+                                required
+                            </div>
+                        </small>
+                        <div class="col-1">
+                            <span class="oi oi-arrow-thick-right large"></span>
+                        </div>
+                        <div class="input-group col-3  text-cente">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">KOT</span>
+                            </div>
+                            <input type="number" class="form-control" (change)="kotChange()" formControlName="kotValue">
+                        </div>
+                        <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
+                            <div *ngIf="kotValue.errors.required">
+                                required
+                            </div>
+                            <div *ngIf="kotValue.errors.min">
+                                min value is 1
+                            </div>
+                        </small>
+                    </div>
+                    <div *ngIf="withdrawFlag" class="form-group row  pt-3 align-items-center justify-content-center">
+                        <div class="input-group col-3  text-cente">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">KOT</span>
+                            </div>
+                            <input type="number" class="col form-control" (keyup)="kotChange()" formControlName="kotValue">
+                        </div>
+                        <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
+                            <div *ngIf="kotValue.errors.required">
+                                required
+                            </div>
+                            <div *ngIf="kotValue.errors.min">
+                                min value is 1
+                            </div>
+                        </small>
+                        <div class="col-1">
+                            <span class="oi oi-arrow-thick-right large"></span>
+                        </div>
+                        <div class="input-group col-3 text-center">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">ETH</span>
+                            </div>
+                            <input type="number" class="col form-control" (keyup)="ethChange()" formControlName="ethValue">
+                        </div>
+                        <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
+                            <div *ngIf="ethValue.errors.required">
+                                required
+                            </div>
+                        </small>
+                    </div>
+                    <div class="row border-top p-2">
+                        <div class="col text-center align-middle">
+                            <button type="submit" [disabled]="!form.valid" class="btn btn-outline-primary">Exchange</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<ng-template #exTemplate>
-    <form (ngSubmit)="exchange()" [formGroup]="form">
-        <div class="card text-center  bg-main m-2">
-            <div class="card-header" [hidden]="withdrawFlag">
-                <div class="container text-center" id="chartDiv" align="center">
-                    <div class="row text-center">
-                        <div class="col">
-                            <small class="text-main">Total Supply</small>
-                        </div>
-                        <div class="col">
-                            <small class="text-main">Remain</small>
-                        </div>
-                        <div class="col">
-                            <small class="text-main">Exchange Rate</small>
-                        </div>
-                    </div>
-                    <div class="row text-center">
-                        <div class="col">
-                            <h5>{{totalSupply}}</h5>
-                        </div>
-                        <div class="col">
-                            <h5>{{scTokenBalance}}</h5>
-                        </div>
-                        <div class="col">
-                            <h5>{{rate}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group row align-items-center">
-                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Wallet Address</label>
-                    <div class="col-9">
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of ETH</label>
-                    <div class="col-9">
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.eth}}">
-                    </div>
-
-                </div>
-                <div class="form-group row">
-                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of KOT</label>
-                    <div class="col-9">
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
-                    </div>
-                </div>
-                <div *ngIf="!withdrawFlag" class="form-group row pt-3 align-items-center justify-content-center">
-                    <div class="input-group col-3 text-center">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">ETH</span>
-                        </div>
-                        <input type="number" class="col form-control" (change)="ethChange()" formControlName="ethValue">
-                    </div>
-                    <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
-                        <div *ngIf="ethValue.errors.required">
-                            required
-                        </div>
-                    </small>
-                    <div class="col-1">
-                        <span class="oi oi-arrow-thick-right large"></span>
-                    </div>
-                    <div class="input-group col-3  text-cente">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">KOT</span>
-                        </div>
-                        <input type="number" class="form-control" (change)="kotChange()" formControlName="kotValue">
-                    </div>
-                    <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
-                        <div *ngIf="kotValue.errors.required">
-                            required
-                        </div>
-                        <div *ngIf="kotValue.errors.min">
-                            min value is 1
-                        </div>
-                    </small>
-                </div>
-                <div *ngIf="withdrawFlag" class="form-group row  pt-3 align-items-center justify-content-center">
-                    <div class="input-group col-3  text-cente">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">KOT</span>
-                        </div>
-                        <input type="number" class="col form-control" (keyup)="kotChange()" formControlName="kotValue">
-                    </div>
-                    <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
-                        <div *ngIf="kotValue.errors.required">
-                            required
-                        </div>
-                        <div *ngIf="kotValue.errors.min">
-                            min value is 1
-                        </div>
-                    </small>
-                    <div class="col-1">
-                        <span class="oi oi-arrow-thick-right large"></span>
-                    </div>
-                    <div class="input-group col-3 text-center">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">ETH</span>
-                        </div>
-                        <input type="number" class="col form-control" (keyup)="ethChange()" formControlName="ethValue">
-                    </div>
-                    <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
-                        <div *ngIf="ethValue.errors.required">
-                            required
-                        </div>
-                    </small>
-                </div>
-                <div class="row border-top p-2">
-                    <div class="col text-center align-middle">
-                        <button type="submit" [disabled]="!form.valid" class="btn btn-outline-primary">Exchange</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </form>
-</ng-template>
+<footer class="container">
+    <p class="float-right">
+        <a class="link" [ngx-scroll-to]="'top'">Back to top</a>
+    </p>
+</footer>
+<!-- <ng-template #exTemplate> -->
+<!-- </ng-template> -->

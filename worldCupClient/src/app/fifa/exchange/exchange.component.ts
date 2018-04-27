@@ -41,7 +41,11 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
-            ) { }
+            ) {
+                if (tempEnvState.canLoadData) {
+                    this.getBalance();
+                }
+            }
             this.envState = tempEnvState;
         });
         this.web3.check();
@@ -56,14 +60,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         if (this.envState.canLoadData) {
             this.withdrawFlag = false;
             await this.getBalance();
-            this.openModal(this.exTemplate);
+            // this.openModal(this.exTemplate);
         }
     }
     async showWModal() {
         if (this.envState.canLoadData) {
             this.withdrawFlag = true;
             await this.getBalance();
-            this.openModal(this.exTemplate);
+            // this.openModal(this.exTemplate);
         }
     }
     ethChange() {
