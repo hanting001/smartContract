@@ -115,6 +115,10 @@ export class FaqComponent implements OnInit {
                 question: '为什么有时候比赛信息显示的这么慢?',
                 title: '由于我们已经将所有的比赛数据都录入到了区块链上，所以从区块链上查询的过程是比较慢的。不过这个缓慢的过程肯能只需要经历一次，因为web页面之后会缓存所有的比赛信息',
                 answers: []
+            }, {
+                question: '为什么要投票?',
+                title: '既然比赛的结果是既成事实了，我们为什么还需要投票来确定谁是赢家呢？',
+                answers: []
             }
         ];
     }
