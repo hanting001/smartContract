@@ -93,30 +93,23 @@ export class FaqComponent implements OnInit {
                 title: 'For security reasons, getting a prize requires two steps',
                 answers: [
                     'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the prize amount will be transferred to your withdraw balance',
-                    'Under my balance, you can transfer eth within the withdraw balance to your wallet address once',
+                    'Under my balance tab, you can transfer eth within the withdraw balance to your wallet address once',
                     'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.'
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
-                question: '下注时的赔率是如何确定的?',
+                question: 'How is the odds determined?',
                 title: '',
                 answers: [
                     '赔率有总盘的大小和你下注的大小决定，计算公式为（你的下注额占该比分下注总额乘以该比赛的总下注额）',
-                    '赔率是一个动态变化的值，下注集中度越高的比分往往其赔率也越低'
+                    'Odds are a dynamically changing value. The higher the bet concentration is, the lower the odds are.'
                 ]
             }, {
-                question: '什么是withdraw账户余额?',
-                title: '',
-                answers: [
-                    '赔率有总盘的大小和你下注的大小决定，计算公式为（你的下注额占该比分下注总额乘以该比赛的总下注额）',
-                    '赔率是一个动态变化的值，下注集中度越高的比分往往其赔率也越低'
-                ]
-            }, {
-                question: '为什么有时候比赛信息显示的这么慢?',
-                title: '由于我们已经将所有的比赛数据都录入到了区块链上，所以从区块链上查询的过程是比较慢的。不过这个缓慢的过程肯能只需要经历一次，因为web页面之后会缓存所有的比赛信息',
+                question: 'Why is the game information displayed so slowly sometimes?',
+                title: 'Since we have entered all the game data into the blockchain, the process of querying from the blockchain is relatively slow. However, this slow process will only need to go through once because the web page will cache all game information later.',
                 answers: []
             }, {
-                question: '为什么要投票?',
+                question: 'Why voting?',
                 title: '既然比赛的结果是既成事实了，我们为什么还需要投票来确定谁是赢家呢？',
                 answers: []
             }
