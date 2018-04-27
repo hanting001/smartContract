@@ -89,10 +89,10 @@ export class FaqComponent implements OnInit {
                     'The weight of the vote is determined by the balance of the voting token you have. The more tokens you have, the greater the weight is.'
                 ]
             }, {
-                question: 'How do I receive the bonus?',
-                title: 'For security reasons, getting a bonus requires two steps',
+                question: 'How do I receive the prize?',
+                title: 'For security reasons, getting a prize requires two steps',
                 answers: [
-                    'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the bonus amount will be transferred to your withdraw balance',
+                    'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the prize amount will be transferred to your withdraw balance',
                     'Under my balance, you can transfer eth within the withdraw balance to your wallet address once',
                     'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.'
                 ],

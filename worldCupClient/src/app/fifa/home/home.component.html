@@ -236,17 +236,16 @@
                         <div class="row">
                             <div class="col text-left">
                                 <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
-                                    Odds are constantly changing as the number of bets increases. Currently, if you win this bet, you can get
-                                    <span class="text-warning">{{betCanWin}}</span> eth.
+                                 Estimated win: <span class="h3 text-warning">{{betCanWin}} ETH</span>
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">
-                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" [disabled]="!buyForm.valid" class="btn btn-outline-primary">Submit Bet</button>
+                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" [disabled]="!buyForm.valid" class="btn btn-outline-primary">MAKE A BET</button>
                             <button [hidden]="chartData.currentGameInfo.status != 1" type="submit" disabled class="btn btn-outline-secondary disabled"
-                                readonly>Game is playing...</button>
+                                readonly>GAME IS PLAYING...</button>
                         </div>
                     </div>
                 </div>
@@ -335,9 +334,9 @@
                         </div>
                         <div class="col-4 text-left align-middle">
                             <div class="form-group">
-                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-light">Submit Vote</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-light">MAKE A VOTE</button>
                                 <button [hidden]="chartData.currentGameInfo.status != 3" type="submit" disabled class="btn btn-outline-secondary disabled"
-                                    readonly>Game is paying</button>
+                                    readonly>VOTTING ENDED</button>
                             </div>
                         </div>
                     </div>
