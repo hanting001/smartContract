@@ -43,7 +43,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
                 if (tempEnvState.canLoadData) {
-                    this.getBalance();
+                    this.getBalance(true);
                 }
             }
             this.envState = tempEnvState;
@@ -193,8 +193,10 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
 
     }
-    async getBalance() {
-        this.loadingSer.show('Loading balance...');
+    async getBalance(hideLoading?) {
+        if (!hideLoading) {
+            this.loadingSer.show('Loading balance...');
+        }
         const result = await this.wccSer.getExchangerInfo();
         this.rate = result.rate;
         this.exchanged = result.exchanged;

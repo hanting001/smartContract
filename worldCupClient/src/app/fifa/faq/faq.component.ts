@@ -16,8 +16,8 @@ export class FaqComponent implements OnInit {
                 question: 'What do I need to play this game?',
                 title: 'Here’s what you need to get started:', answers: [
                     'A computer or laptop running the desktop version of Chrome or Brave browser',
-                    'MetaMask, a digital wallet used specifically with web apps',
-                    'Ether, a form of digital payment that powers this game'
+                    '<span class="text-primary">MetaMask</span>, a digital wallet used specifically with web apps',
+                    '<span class="text-primary">Ether</span>, a form of digital payment that powers this game'
                 ]
             }, {
                 question: 'Installing MetaMask, your digital wallet',
@@ -55,45 +55,48 @@ export class FaqComponent implements OnInit {
         ];
         this.abouts = [
             {
-                question: '我如何赢取ETH?',
-                title: '游戏中有两种途径可以赢取ETH:',
+                question: 'How do I win ETH?',
+                title: 'There are two ways to win ETH in the game',
                 answers: [
-                    '通过预测比赛的比分下注，如果猜中了比分，所有猜中比分的人共享整个下注盘的总额',
-                    '通过对比赛的结果进行投票，如果投票通过，所有投赞成票的人共享整个下注盘的5%'
+                    'By predicting the score of the game, if the score is guessed, all the people who guessed the score <span class="text-primary">share the total amount of the entire bet</span>.',
+                    'By voting on the results of the contest, if the vote is passed, all those who voted in favor <span class="text-primary">share the 5% of entire bet</span>'
                 ]
             }, {
-                question: '奖金的计算规则',
-                title: '奖金的计算规则非常简单，你投入越多，赢取的ETH也就越多',
-                answers: [
-                    '对于下注,你的下注额在所有赢家中的占比乘以该场比赛总盘面大小',
-                    '对于投票,你的投票币的余额在所有赢家总余额的占比乘以该场比赛总盘面的5%'
-                ],
-                other: this.sanitizer.bypassSecurityTrustHtml(`<iframe width="787" height="315" src="https://www.youtube.com/embed/tfETpi-9ORs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`)
+                question: 'Do I need to signup?',
+                title: 'Nope. No signups are necessary! We will never ask you for any personal information and all betting can be done anonymously.',
+                answers: []
             }, {
-                question: '如何下注?',
-                title: '下注跟比赛的状态有关',
+                question: 'What is the rules for calculating bonuses?',
+                title: 'The rules for calculating bonuses are very simple. The more you invest, the more ETHs are won.',
                 answers: [
-                    '比赛只有在未开赛的状态下才可以下注',
-                    '下注最小额度是0.01ETH',
-                    '下注时需要报上你竞猜的比分和下注额度',
-                    '一场比赛可以多次下注'
-                ],
-                other: '<img class="img-fluid" src="assets/images/screenshot-locked.png">'
+                    'For betting players, the proportion of your bet in all winners multiplied by the total size of the game',
+                    'For the voting player, the percentage of the total balance of all the winners that you have held in the voting token is multiplied by 5% of the total game\'s bets.'
+                ]
             }, {
-                question: '投票的权重如何确定?',
+                question: 'How to bet?',
+                title: 'Bets related to the state of the game',
+                answers: [
+                    'The match can only bet if it is not start to play',
+                    'The minimum bet is 0.01ETH',
+                    'Need to submit scores and amounts when betting',
+                    'You can bet multiple times on the same match'
+                ],
+                other: '<img class="img-fluid" src="assets/images/screenshot1.png">'
+            }, {
+                question: 'How to determine the weight of the vote?',
                 title: '',
                 answers: [
-                    '投票的权重有你所拥有的投票token的余额决定，拥有的token越多，权重也越大'
+                    'The weight of the vote is determined by the balance of the voting token you have. The more tokens you have, the greater the weight is.'
                 ]
             }, {
-                question: '我如何领取奖金?',
-                title: '领取奖金需要两个步骤',
+                question: 'How do I receive the bonus?',
+                title: 'For security reasons, getting a bonus requires two steps',
                 answers: [
-                    '如果你赢了下注或者投票，可以到交易菜单下查看赢取金额，点击领取按钮，奖金金额将转到你的withdraw余额内',
-                    '你可以将withdraw余额内的eth一次性转到自己的钱包地址内',
-                    '领取奖金时，合约会扣取10%的手续费，所以实际转到你钱包内的ETH可能会比奖金额略少'
+                    'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the bonus amount will be transferred to your withdraw balance',
+                    'Under my balance, you can transfer eth within the withdraw balance to your wallet address once',
+                    'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.'
                 ],
-                other: '<img class="img-fluid" src="assets/images/screenshot-buy-usa.png">'
+                other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
                 question: '下注时的赔率是如何确定的?',
                 title: '',
@@ -102,8 +105,15 @@ export class FaqComponent implements OnInit {
                     '赔率是一个动态变化的值，下注集中度越高的比分往往其赔率也越低'
                 ]
             }, {
-                question: '为什么比赛信息显示的这么慢?',
-                title: '由于我们已经将所有的比赛都录入到了区块链上，所以从区块链上查询的过程是比较慢的。不过这个缓慢的过程肯能只需要经历一次，因为web页面之后会缓存所有的比赛信息',
+                question: '什么是withdraw账户余额?',
+                title: '',
+                answers: [
+                    '赔率有总盘的大小和你下注的大小决定，计算公式为（你的下注额占该比分下注总额乘以该比赛的总下注额）',
+                    '赔率是一个动态变化的值，下注集中度越高的比分往往其赔率也越低'
+                ]
+            }, {
+                question: '为什么有时候比赛信息显示的这么慢?',
+                title: '由于我们已经将所有的比赛数据都录入到了区块链上，所以从区块链上查询的过程是比较慢的。不过这个缓慢的过程肯能只需要经历一次，因为web页面之后会缓存所有的比赛信息',
                 answers: []
             }
         ];

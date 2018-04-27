@@ -11,24 +11,23 @@
     <h1>Your MetaMask is locked</h1>
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
-
 <div [hidden]="!envState.checkEnv">
-    <div class="jumbotron mb-0 rounded-0 bg text-light" >
+    <div class="jumbotron mb-0 p-5 rounded-0 bg text-light" >
         <h1 class="display-4 text-white pt-4">KOT Voting Token</h1>
         <h5 class="pt-4">KOT is token for voting system, the purpose of which enables players to vote on match results in order to gain ETH.
         </h5>
         <h5 class="pt-4">Token can be exchanged with ETH at a fixed rate 5. Token`s total supply will be set at 10000.</h5>
         <h5 class="pt-4">KOT can be
-            <a href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting ETH can be
-            <a href="javascript:void(0)"
-                (click)="withdraw()">sent to</a> address at user's metamask selected.</h5>
+            <a class="text-dark" href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting ETH can be
+            <a class="text-dark" href="javascript:void(0)"
+                (click)="withdraw()">sent to</a> address as user's metamask selected.</h5>
         <h5 class="pt-4">You can gain ETH by holding tokens and actively participating in the voting.</h5>
         <h5 class="text-center" style="margin-top: 5rem;">
             <a class="btn btn-primary btn-lg" href="javascript:void(0)" (click)="showExModal()" [ngx-scroll-to]="'inputForm'" role="button">Get Token</a>
         </h5>
     </div>
-    <div class="jumbotron rounded-0 bg " id="inputForm">
-        <form (ngSubmit)="exchange()" class="form" [formGroup]="form">
+    <div class="jumbotron rounded-0 bg" id="inputForm">
+        <form (ngSubmit)="exchange()" class="form pt-5 " [formGroup]="form">
             <div class="card bg-main text-center m-5">
                 <div class="card-header" [hidden]="withdrawFlag">
                     <div class=" text-center" id="chartDiv" align="center">
