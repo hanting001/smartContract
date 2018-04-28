@@ -100,25 +100,28 @@ export class FaqComponent implements OnInit {
                 other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
                 question: 'Why we takes 15% of the total prize?',
-                title: 'Remember the voter will take 5% as their rewards. We developed program, support game, so we will take 10% as rewards. ',
+                title: 'Remember the voter will take 5% as their rewards. In addition, We developed program, and support game running, so we will take 10% as rewards.',
                 answers: [
                 ],
-                other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
+                other: ''
             }, {
-                question: 'How is the odds determined?',
+                question: 'How dose the odds determined?',
                 title: '',
                 answers: [
-                    '赔率有总盘的大小和你下注的大小决定，计算公式为（你的下注额占该比分下注总额乘以该比赛的总下注额）',
+                    'The odds are determined by the total value of the bet and the value of the bet you are betting on. The odds is the ratio of your bet amount to the total bet amount of the score.',
                     'Odds are a dynamically changing value. The higher the bet concentration is, the lower the odds are.'
                 ]
             }, {
                 question: 'Why is the game information displayed so slowly sometimes?',
-                title: 'Since we have entered all the game data into the blockchain, the process of querying from the blockchain is relatively slow. However, this slow process will only need to go through once because the web page will cache all game information later.',
+                title: 'Since we have entered all the game data into the blockchain, the process of querying from the blockchain is relatively slow. However, this slow process will only need to go through once because the web page will cache all game informations later.',
                 answers: []
             }, {
                 question: 'Why voting?',
-                title: '既然比赛的结果是既成事实了，我们为什么还需要投票来确定谁是赢家呢？',
-                answers: []
+                title: 'Since the outcome of the game is a fait accompli, why do we still need to vote to determine who is the winner?',
+                answers: [
+                    'We want the game to be as fair as possible.',
+                    'No one can control the game to decide who is the winner.'
+                ]
             }
         ];
     }
