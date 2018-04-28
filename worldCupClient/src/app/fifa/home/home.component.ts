@@ -140,16 +140,16 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     async refreshGameData() {
         const web3 = this.web3.instance();
-        for (let i = 0; i < this.games.length; i ++) {
+        for (let i = 0; i < this.games.length; i++) {
             const obj = this.games[i];
-            for (let j = 0; j < obj.courts.length; j ++) {
+            for (let j = 0; j < obj.courts.length; j++) {
                 const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
                 const info = await this.wccSer.getGameFreshDetail(index);
                 obj.courts[j] = info.gameInfo;
                 if (info.voteInfo) {
                     // console.log(info.voteInfo);
                     obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
-                    + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                        + Number(web3.utils.fromWei(info.voteInfo.noCount));
                     obj.courts[j].score = info.voteInfo.target;
                 }
             }
@@ -158,9 +158,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     async refreshOneGameData(gameIndex) {
         const web3 = this.web3.instance();
-        for (let i = 0; i < this.games.length; i ++) {
+        for (let i = 0; i < this.games.length; i++) {
             const obj = this.games[i];
-            for (let j = 0; j < obj.courts.length; j ++) {
+            for (let j = 0; j < obj.courts.length; j++) {
                 const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
                 if (gameIndex == index) {
                     const info = await this.wccSer.getGameFreshDetail(index);
@@ -168,7 +168,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     if (info.voteInfo) {
                         // console.log(info.voteInfo);
                         obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
-                        + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                            + Number(web3.utils.fromWei(info.voteInfo.noCount));
                         obj.courts[j].score = info.voteInfo.target;
                     }
                 }
@@ -320,13 +320,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 return this.alertSer.show(check.message);
             }
 
-            this.wccSer.join(index, score, valueInWei, async (transactionHash) => {
-                await this.localActionSer.addAction({
+            await this.wccSer.join(index, score, valueInWei, (transactionHash) => {
+                this.loadingSer.show('Transaction submitted, waiting confirm...');
+                this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'join'
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     if (this.buyModalRef) {
                         this.buyModalRef.hide();
                     }
@@ -343,8 +344,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 this.loadingSer.hide();
                 this.alertSer.show('User denied transaction signature');
             });
-
-
         }
     }
 
@@ -367,13 +366,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 return this.alertSer.show(check.message);
             }
 
-            this.wccSer.vote(index, (model.voteOption == 1 ? true : false), async (transactionHash) => {
-                await this.localActionSer.addAction({
+            this.wccSer.vote(index, (model.voteOption == 1 ? true : false), (transactionHash) => {
+                this.loadingSer.show('Transaction submitted, waiting confirm...');
+                this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'vote'
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     if (this.voteModalRef) {
                         this.voteModalRef.hide();
                     }
@@ -446,7 +446,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 game.count = 1;
                 game.courts = [gameInfos[i]];
                 games.push(game);
-                j ++;
+                j++;
             }
 
             this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;

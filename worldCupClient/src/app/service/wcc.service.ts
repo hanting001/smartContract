@@ -319,7 +319,7 @@ export class WCCService {
             value: value
         };
         console.log(options);
-        sc.methods.join(gameIndex, score)
+        return sc.methods.join(gameIndex, score)
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
@@ -521,13 +521,18 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-    async claimByVoter(gameIndex, onConfirmation, onError) {
+    async claimByVoter(gameIndex, onTransactionHash, onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
-        console.log(options);
+        // console.log(options);
         sc.methods.claimByVoter(gameIndex).send(options)
+            .on('transactionHash', hash => {
+                if (onTransactionHash) {
+                    onTransactionHash(hash);
+                }
+            })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
                     onConfirmation(confNumber, receipt);
@@ -678,13 +683,18 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-    async withdraw(onConfirmation, onError) {
+    async withdraw(onTransactionHash, onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
         console.log(options);
         sc.methods.withdraw().send(options)
+            .on('transactionHash', (hash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(hash);
+                }
+            })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
                     onConfirmation(confNumber, receipt);

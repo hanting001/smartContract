@@ -113,7 +113,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     confirmOb.unsubscribe();
                     const scName = 'wccExchanger';
                     this.web3.tokenApprove(valueInWei, scName, async (confNumber, receipt) => {
-                        if (confNumber == 1) {
+                        if (confNumber == 0) {
                             const check = await this.wccSer.redeemCheck(valueInWei);
                             if (check.checkResult != 0) {
                                 this.loadingSer.hide();
@@ -121,7 +121,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                             }
                             this.loadingSer.show();
                             this.wccSer.redeem(valueInWei, (c, r) => {
-                                if (c === 1) {
+                                if (c === 0) {
                                     this.resetForm();
                                     this.alertSer.show('Success!');
                                     this.getBalance();
@@ -153,6 +153,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                         }
                     };
                     this.wccSer.exchange(valueInWei, (transactionHash) => {
+                        this.loadingSer.show('Transaction submitted, waiting confirm...');
                         this.localActionSer.addAction({
                             transactionHash: transactionHash, netType: this.envState.netType,
                             eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'

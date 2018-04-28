@@ -102,8 +102,11 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
-        this.wccService.claimByVoter(info.gameIndex, async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
+        this.wccService.claimByVoter(info.gameIndex, hash => {
+            this.loadingSer.show('Transaction submitted, waiting confirm...');
+        },
+        async (confirmNum, receipt) => {
+            if (confirmNum == 0) {
                 info.voteInfo.paid = true;
                 this.loadingSer.hide();
                 this.alertSer.show('Success!');
@@ -169,12 +172,13 @@ export class TransComponent implements OnInit, OnDestroy {
         }
 
         this.wccService.claim(gameIndex, scoreIndex, async (transactionHash) => {
+            this.loadingSer.show('Transaction submitted, waiting confirm...');
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType,
                 model: { gameInfo: gameInfo, bet: bet }, createdAt: new Date(), type: 'claim'
             }, this.envState.account);
         }, async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
+            if (confirmNum == 0) {
                 this.loadingSer.hide();
                 bet.paid = true;
                 this.alertSer.show('claim success!');
@@ -193,8 +197,10 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
-        this.wccService.withdraw(async (confirmNum, receipt) => {
-            if (confirmNum == 1) {
+        this.wccService.withdraw( hash => {
+            this.loadingSer.show('Transaction submitted, waiting confirm...');
+        }, async (confirmNum, receipt) => {
+            if (confirmNum == 0) {
                 this.loadingSer.hide();
                 this.alertSer.show('Success!');
                 this.getBalanceAndWithdraw();
