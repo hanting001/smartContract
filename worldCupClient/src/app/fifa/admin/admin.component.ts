@@ -41,8 +41,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private modalService: BsModalService,
         public alertSer: AlertService,
-        private localStorage: LocalStorage
-    ) {
+        private localStorage: LocalStorage) {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
             homeCourt: ['', [Validators.required]],
@@ -83,10 +82,19 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         if (this.isOwner) {
             this.gameMessage = 'loading games...';
             this.contries = await this.localStorage.getItem<any>('contries').toPromise();
-            this.gameInfos = await this.wccSer.getAllPlayers();
+            this.getAllPlayers();
         }
     }
-
+    async getAllPlayers() {
+        const plays = await this.localStorage.getItem<any[]>('plays').toPromise();
+        if (plays && plays.length > 0) {
+            console.log(plays.length);
+            this.gameInfos = plays;
+        } else {
+            this.gameInfos = await this.wccSer.getAllPlayers();
+            this.localStorage.setItem('plays', this.gameInfos).toPromise();
+        }
+    }
     addPlayer() {
         if (this.form.valid) {
             this.loadingSer.show();
@@ -239,10 +247,11 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             this.loadingSer.show();
             this.wccSer.startPlayByJudge(gameIndex, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     game.status = '1';
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
+                    this.localStorage.setItem('plays', this.gameInfos).toPromise();
                 }
             }, async (err) => {
                 this.loadingSer.hide();
@@ -262,10 +271,11 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     return this.alertSer.show(check.message);
                 }
                 this.wccSer.startVote(gameIndex, score, async (confirmNum, receipt) => {
-                    if (confirmNum == 1) {
+                    if (confirmNum == 0) {
                         game.status = '2';
                         this.loadingSer.hide();
                         this.alertSer.show('Success!');
+                        this.localStorage.setItem('plays', this.gameInfos).toPromise();
                     }
                 }, async (err) => {
                     this.loadingSer.hide();
@@ -315,14 +325,22 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 return this.alertSer.show(check.message);
             }
             this.wccSer.setVoteCanEnd(gameIndex, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
+                    this.localStorage.setItem('plays', this.gameInfos).toPromise();
                 }
             }, async (err) => {
                 this.loadingSer.hide();
                 this.alertSer.show('Transaction error or user denied');
             });
         }
+    }
+    async refresh(game) {
+        this.loadingSer.show('loading...');
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        game = await this.wccSer.getGameInfo(gameIndex);
+        this.localStorage.setItem('plays', this.gameInfos).toPromise();
+        this.loadingSer.hide();
     }
 }

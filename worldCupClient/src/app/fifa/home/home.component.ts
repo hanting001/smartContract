@@ -472,9 +472,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     //         if (tmpAryA[0] > tmpAryA[1] && tmpAryB[0] <= tmpAryB[1]) {
     //             return -1;
     //         }
-            
+
     //             return tmpAryA[0] - tmpAryB[0];
-            
+
     //     };
     //     console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
     //     betInfos.betInfos = betInfos.betInfos.sort(sortScore);
