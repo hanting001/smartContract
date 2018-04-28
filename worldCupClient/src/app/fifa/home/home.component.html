@@ -12,12 +12,12 @@
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div class="bg-c-light">
-    <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+<div class="bg-c-light" style="background-attachment: fixed;">
+    <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
                 <div class="col-10 text-center">
-                    <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
+                    <h3 [hidden]="loading" class="display-4 text-main text-center mb-1">2018 World Cup</h3>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
                     <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
                         <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'56px'}">
         <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
             <div class="row bg-light align-items-center">
@@ -115,7 +115,7 @@
             <div class="row ">
                 <table class="table table-hover mb-4">
                     <tbody>
-                        <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
+                        <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Click">
                             <td class="align-middle text-main small" style="width:20%">
                                 <small class="text-muted">Status: </small>
                                 <span class="text-warning">{{court.status | gameStatus}}</span>
@@ -183,7 +183,7 @@
 
         <div class="row">
             <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
-                <div class="card  bg-main" style="margin-top:15px;">
+                <div class="card  bg-c-light" style="margin-top:15px;">
                     <tr class="row mt-2">
                         <td style="border:0;width:40%" class="text-center align-middle">
                             <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
@@ -323,7 +323,7 @@
         </div>
 
         <form (ngSubmit)="vote()" [formGroup]="voteForm">
-            <div class="card  bg-main" style="margin-top:15px;">
+            <div class="card  bg-c-light" style="margin-top:15px;">
                 <div class="card-header pb-0">
                     <div class="row text-center">
                         <div class="col">

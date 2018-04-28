@@ -16,6 +16,7 @@ export class TransComponent implements OnInit, OnDestroy {
     loadingProgress = 0;
     myBalance: any = {};
     selectTab = 1;
+    spinner = false;
     constructor(
         private wccService: WCCService,
         private web3: Web3Service,
@@ -145,7 +146,7 @@ export class TransComponent implements OnInit, OnDestroy {
     }
     async getBetDetail(obj) {
         if (obj.scoreInfos.length == 0) {
-            obj.loading = true;
+            this.spinner = true;
             const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(obj.index);
             const scoreInfos = [];
             obj.scoreInfos = scoreInfos;
@@ -153,7 +154,7 @@ export class TransComponent implements OnInit, OnDestroy {
                 const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(obj.index, obj.gameInfo, scoreIndexes[j]);
                 scoreInfos.push(scoreInfo);
             }
-            obj.loading = false;
+            this.spinner = false;
         }
     }
     async winBet(gameInfo, bet) {
