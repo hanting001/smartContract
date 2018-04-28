@@ -195,8 +195,8 @@ contract WccPlayer is Ownable, Stoppable{
         require(withdrawCheck(msg.sender) == 0);
         msg.sender.transfer(value.div(10).mul(9));
         delete withdraws[msg.sender];
-        withdraws[owner] = withdraws[owner].sub(value.div(10).mul(9));
-        UserWithdraw(msg.sender, value.div(10).mul(9));
+        withdraws[owner] = withdraws[owner].sub(value.div(100).mul(85));
+        UserWithdraw(msg.sender, value.div(100).mul(85));
     }
     /// @author Bob Clampett
     /// @notice owner withdraw eth 

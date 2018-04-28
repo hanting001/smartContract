@@ -94,8 +94,14 @@ export class FaqComponent implements OnInit {
                 answers: [
                     'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the prize amount will be transferred to your withdraw balance',
                     'Under my balance tab, you can transfer eth within the withdraw balance to your wallet address once',
-                    'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.',
+                    'When transferring from ETH with withindraw balance, the contract will deduct 15% of the processing fee, so the ETH actually transferred to your wallet may be less than the prize amount.',
                     'Prize can be collected only within <span class="text-primary">90 days</span> after the end of voting.'
+                ],
+                other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
+            }, {
+                question: 'Why we takes 15% of the total prize?',
+                title: 'Remember the voter will take 5% as their rewards. We developed program, support game, so we will take 10% as rewards. ',
+                answers: [
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
