@@ -108,7 +108,7 @@
                     <tbody>
                         <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
                             <td class="align-middle text-main small" style="width:20%">
-                                <small class="text-muted">Status: </small>{{court.status | gameStatus}}<br>
+                                <small class="text-muted">Status: </small><span class="text-warning">{{court.status | gameStatus}}</span><br>
                                 <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH<br>
                                 <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
                             </td>
