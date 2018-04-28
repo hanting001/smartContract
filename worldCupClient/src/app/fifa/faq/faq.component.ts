@@ -74,7 +74,7 @@ export class FaqComponent implements OnInit {
                 ]
             }, {
                 question: 'How to bet?',
-                title: 'Bets related to the state of the game',
+                title: 'Navigate to a match you’d like to make a wager on. Take note of details like the Smart Contract Value and minimum buy-in price. Some games have a limited amount of spots so join quickly! Click on your match and you’ll be taken to the next page where you make your predictions and wager amount.',
                 answers: [
                     'The match can only bet if it is not start to play',
                     'The minimum bet is 0.01ETH',
@@ -94,7 +94,8 @@ export class FaqComponent implements OnInit {
                 answers: [
                     'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the prize amount will be transferred to your withdraw balance',
                     'Under my balance tab, you can transfer eth within the withdraw balance to your wallet address once',
-                    'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.'
+                    'When transferring from ETH with withindraw balance, the contract will deduct 10% of the processing fee, so the ETH actually transferred to your wallet may be slightly less than the prize amount.',
+                    'Prize can be collected only within <span class="text-primary">90 days</span> after the end of voting.'
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
