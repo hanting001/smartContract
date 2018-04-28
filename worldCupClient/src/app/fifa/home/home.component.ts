@@ -147,8 +147,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const info = await this.wccSer.getGameFreshDetail(index);
                 obj.courts[j] = info.gameInfo;
                 if (info.voteInfo) {
+                    console.log(info.voteInfo);
                     obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
                     + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                    obj.courts[j].score = info.voteInfo.target;
                 }
             }
         }

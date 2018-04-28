@@ -59,7 +59,8 @@ export class FaqComponent implements OnInit {
                 title: 'There are two ways to win ETH in the game',
                 answers: [
                     'By predicting the score of the game, if the score is guessed, all the people who guessed the score <span class="text-primary">share the total amount of the entire bet</span>.',
-                    'By voting on the results of the contest, if the vote is passed, all those who voted in favor <span class="text-primary">share the 5% of entire bet</span>'
+                    'By voting on the results of the contest, if the vote is passed, all those who voted in favor <span class="text-primary">share the 5% of entire bet</span>',
+                    '<span class="text-primary">Only 90 minutes</span> of match(first half and second half) outcome as final score, excludes extra time and penalty shootout.'
                 ]
             }, {
                 question: 'Do I need to signup?',
