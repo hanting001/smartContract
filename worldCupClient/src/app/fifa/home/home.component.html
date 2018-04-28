@@ -123,7 +123,7 @@
                                 <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH
                                 <br>
                                 <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
-                                <br> 
+                                <br>
                                 <small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}
                             </td>
                             <td class="align-middle" style="width:30%">
@@ -196,7 +196,7 @@
                     <div [hidden]="chartData.currentGameInfo.status != 0">
                         <table class="table mb-0">
                             <tr>
-                                <td style="border:0">
+                                <td style="border:0" class="pb-0">
                                     <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
                                         <option value="0">0</option>
                                         <option value="1">1</option>
@@ -212,7 +212,7 @@
                                         <option value=">10">>10</option>
                                     </select>
                                 </td>
-                                <td style="border:0">
+                                <td style="border:0" class="pb-0">
                                     <select class="form-control" (change)="calculat()" formControlName="awayScore">
                                         <option value="0">0</option>
                                         <option value="1">1</option>
@@ -230,7 +230,15 @@
                                 </td>
 
                             </tr>
+                            <tr>
+                                <td colspan="3" class="text-left pt-0 pb-0 border-0">
+                                    <small id="passwordHelpBlock" class="text-muted">
+                                        <span class="oi oi-eye"></span> Score for full time, excludes extra time and penalty shootout.
+                                    </small>
+                                </td>
+                            </tr>
                         </table>
+
                         <div class="form-group row align-items-center border-bottom m-0 p-2 ">
                             <div class="input-group col-7 pl-0">
                                 <div class="input-group-prepend">
@@ -257,7 +265,7 @@
                             <div class="col text-left">
                                 <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
                                     Estimated win:
-                                    <span class="h3 text-warning">{{betCanWin}} ETH</span>
+                                    <span class="h5 text-warning">{{betCanWin}} ETH</span>
                                 </p>
                             </div>
                         </div>
