@@ -454,33 +454,35 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
         this.games = games;
     }
-    async gotoCourt(gameInfo) {
-        // get new game info
-        console.log(gameInfo);
-        const index = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
-        console.log(index);
-        const currenGameInfo = await this.wccSer.getGameInfo(index);
-        const betInfos = await this.wccSer.getGameBetInfos(index);
+    // async gotoCourt(gameInfo) {
+    //     // get new game info
+    //     console.log(gameInfo);
+    //     const index = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
+    //     console.log(index);
+    //     const currenGameInfo = await this.wccSer.getGameInfo(index);
+    //     const betInfos = await this.wccSer.getGameBetInfos(index);
 
-        const sortScore = function (a, b) {
-            const scoreA = a.score.replace(/>10/g, '11');
-            const scoreB = b.score.replace(/>10/g, '11');
-            const tmpAryA = scoreA.split(':');
-            const tmpAryB = scoreA.split(':');
+    //     const sortScore = function (a, b) {
+    //         const scoreA = a.score.replace(/>10/g, '11');
+    //         const scoreB = b.score.replace(/>10/g, '11');
+    //         const tmpAryA = scoreA.split(':');
+    //         const tmpAryB = scoreB.split(':');
+    //         console.log(tmpAryA);
+    //         console.log(tmpAryB);
+    //         if (tmpAryA[0] > tmpAryA[1] && tmpAryB[0] <= tmpAryB[1]) {
+    //             return -1;
+    //         }
+            
+    //             return tmpAryA[0] - tmpAryB[0];
+            
+    //     };
+    //     console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
+    //     betInfos.betInfos = betInfos.betInfos.sort(sortScore);
 
-            if (tmpAryA[0] == tmpAryB[0]) {
-                return tmpAryA[1] - tmpAryB[1];
-            } else {
-                return tmpAryA[0] - tmpAryB[0];
-            }
-        };
-        console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
-        betInfos.betInfos = betInfos.betInfos.sort(sortScore);
-
-        console.log(betInfos);
-        return console.log(currenGameInfo);
-        // this.router.navigate(['fifa/court']);
-    }
+    //     console.log(betInfos);
+    //     return console.log(currenGameInfo);
+    //     // this.router.navigate(['fifa/court']);
+    // }
 
     openModal(template: TemplateRef<any>) {
         return this.modalService.show(template, { class: 'modal-lg' });

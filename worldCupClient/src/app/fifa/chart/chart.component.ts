@@ -94,19 +94,18 @@ export class ChartComponent implements OnInit, AfterViewInit {
             betInfos.push(betInfo);
             this.loadingProgress = Number((betInfos.length / indexLength).toFixed(2)) * 100;
         }
-        this.getData.emit(betInfos);
-        const sortScore = function (a, b) {
+        // console.log(betInfos);
+        const sortScore1 = function (a, b) {
             const scoreA = a.score.replace(/>10/g, '11');
             const scoreB = b.score.replace(/>10/g, '11');
             const tmpAryA = scoreA.split(':');
             const tmpAryB = scoreB.split(':');
-            if (tmpAryA[0] == tmpAryB[0]) {
-                return tmpAryA[1] - tmpAryB[1];
-            } else {
-                return tmpAryA[0] - tmpAryB[0];
-            }
+            const vA = tmpAryA[0] - tmpAryA[1];
+            const vB = tmpAryB[0] - tmpAryB[1];
+            return vB - vA;
         };
-        betInfos = betInfos.sort(sortScore);
+        betInfos = betInfos.sort(sortScore1);
+        this.getData.emit(betInfos);
         const web3 = this.web3Service.instance();
         this.chartLabels = [];
         const totalValue = web3.utils.fromWei(gameInfo.totalValue);
