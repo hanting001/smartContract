@@ -751,4 +751,16 @@ export class WCCService {
                 }
             });
     }
+    async getGameFreshDetail(gameIndex) {
+        const vs = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
+        const s = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const gameInfo = await s.methods.games(gameIndex).call();
+        const obj: any = {
+            gameInfo: gameInfo
+        };
+        if (Number(gameInfo.status) >= 2) {
+            obj.voteInfo = await vs.methods.voteInfos(gameIndex).call();
+        }
+        return obj;
+    }
 }

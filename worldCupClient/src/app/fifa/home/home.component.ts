@@ -136,6 +136,22 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             console.log(this.stageObj);
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
+        this.refreshGameData();
+    }
+    async refreshGameData() {
+        const web3 = this.web3.instance();
+        for (let i = 0; i < this.games.length; i ++) {
+            const obj = this.games[i];
+            for (let j = 0; j < obj.courts.length; j ++) {
+                const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
+                const info = await this.wccSer.getGameFreshDetail(index);
+                obj.courts[j] = info.gameInfo;
+                if (info.voteInfo) {
+                    obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
+                    + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                }
+            }
+        }
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();

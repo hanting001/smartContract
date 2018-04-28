@@ -107,10 +107,15 @@
                 <table class="table table-hover mb-4">
                     <tbody>
                         <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
-                            <td class="align-middle" style="width:40%">
-                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+                            <td class="align-middle text-main small" style="width:20%">
+                                <small class="text-muted">Status: </small>{{court.status | gameStatus}}<br>
+                                <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH<br>
+                                <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
                             </td>
                             <td class="align-middle" style="width:30%">
+                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+                            </td>
+                            <td class="align-middle" style="width:20%">
                                 <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
                                 <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
                             </td>

@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class GameStatusPipe implements PipeTransform {
     transform(value: any, args?: any): any {
         if (value === '0') {
-            return 'Standby';
+            return 'Open';
         } else if (value === '1') {
             return 'Playing';
         } else if (value === '2') {
