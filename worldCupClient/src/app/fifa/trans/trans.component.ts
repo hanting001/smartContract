@@ -123,23 +123,36 @@ export class TransComponent implements OnInit, OnDestroy {
         this.loading.hide();
         for (let i = 0; i < joinedGameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
-            const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
+            // const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
             const scoreInfos = [];
             const obj = {
                 gameInfo: gameInfo,
-                scoreInfos: scoreInfos
+                scoreInfos: scoreInfos,
+                index: joinedGameIndexes[i]
             };
             this.betInfos.push(obj);
-            for (let j = 0; j < scoreIndexes.length; j++) {
-                const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(joinedGameIndexes[i], gameInfo, scoreIndexes[j]);
-                scoreInfos.push(scoreInfo);
-            }
+            // for (let j = 0; j < scoreIndexes.length; j++) {
+            //     const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(joinedGameIndexes[i], gameInfo, scoreIndexes[j]);
+            //     scoreInfos.push(scoreInfo);
+            // }
             this.loadingProgress = Number((this.betInfos.length / joinedGameIndexes.length).toFixed(2)) * 100;
             console.log(this.betInfos);
         }
         this.loadingProgress = 0;
     }
-
+    async getBetDetail(obj) {
+        if (obj.scoreInfos.length == 0) {
+            obj.loading = true;
+            const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(obj.index);
+            const scoreInfos = [];
+            obj.scoreInfos = scoreInfos;
+            for (let j = 0; j < scoreIndexes.length; j++) {
+                const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(obj.index, obj.gameInfo, scoreIndexes[j]);
+                scoreInfos.push(scoreInfo);
+            }
+            obj.loading = false;
+        }
+    }
     async winBet(gameInfo, bet) {
         // this.loadingSer.show('Sending Transaction');
         console.log(gameInfo);

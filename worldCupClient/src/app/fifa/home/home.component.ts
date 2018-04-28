@@ -147,13 +147,34 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 const info = await this.wccSer.getGameFreshDetail(index);
                 obj.courts[j] = info.gameInfo;
                 if (info.voteInfo) {
-                    console.log(info.voteInfo);
+                    // console.log(info.voteInfo);
                     obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
                     + Number(web3.utils.fromWei(info.voteInfo.noCount));
                     obj.courts[j].score = info.voteInfo.target;
                 }
             }
         }
+        this.localStorage.setItem('games', this.games).toPromise();
+    }
+    async refreshOneGameData(gameIndex) {
+        const web3 = this.web3.instance();
+        for (let i = 0; i < this.games.length; i ++) {
+            const obj = this.games[i];
+            for (let j = 0; j < obj.courts.length; j ++) {
+                const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
+                if (gameIndex == index) {
+                    const info = await this.wccSer.getGameFreshDetail(index);
+                    obj.courts[j] = info.gameInfo;
+                    if (info.voteInfo) {
+                        // console.log(info.voteInfo);
+                        obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
+                        + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                        obj.courts[j].score = info.voteInfo.target;
+                    }
+                }
+            }
+        }
+        this.localStorage.setItem('games', this.games).toPromise();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -315,6 +336,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.value.awayScore = 0;
                     this.buyForm.value.eth = '0.0';
                     this.USDPrice = 0;
+                    this.refreshOneGameData(index);
                 }
             }, (err) => {
                 console.log(err);
@@ -359,6 +381,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.alertSer.show(' Vote success!');
                     this.voteForm.reset();
                     this.voteForm.controls['voteOption'].setValue(1);
+                    this.refreshOneGameData(index);
                 }
             }, async (err) => {
                 console.log(err);
