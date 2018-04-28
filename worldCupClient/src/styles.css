@@ -35,13 +35,6 @@ p {
     background-size: cover;
 }
 
-.circular {
-    position: absolute;
-    left: calc(50% - 24px);
-    top: calc(50% - 24px);
-    display: block;
-}
-
 .bg-header {
     background-image: url(assets/images/bg-header.jpg);
     background-repeat: no-repeat;

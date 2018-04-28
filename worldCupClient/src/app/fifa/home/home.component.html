@@ -15,68 +15,77 @@
 <div class="bg-c-light">
     <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
-            <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
-            <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
-            <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
-                <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
-                <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <h1 [hidden]="loading" class="display-4 text-main text-center mb-1">Matches</h1>
+                    <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
+                    <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
+                        <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+                        <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 text-center">
-                <table class="table m-0 table-responsive bg-white table-sm rounded">
-                    <tr>
-                        <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
-                            *ngFor="let game of games" class="text-center">
-                            <table class="table-sm " style="boder:solid green 1px;">
-                                <tr>
-                                    <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm-center pt-0 bg-light " style="border: 0;">
-                                        <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
-                                        <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <table class="table m-0 table-responsive bg-white table-sm rounded">
+                        <tr>
+                            <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
+                                *ngFor="let game of games" class="text-center p-0">
+                                <table class="table-sm " style="boder:solid green 1px;">
+                                    <tr>
+                                        <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-sm-center pt-0 bg-light " style="border: 0;">
+                                            <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
+                                            <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <ul class="nav justify-content-center" *ngIf="games&&games.length>0">
-                <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
-                    [ngx-scroll-to]="games[0].date">
-                    Group Phase
-                </li>
-                <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
-                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.roundOf16'">
-                    Round of 16
-                </li>
-                <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
-                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.quarterFinal'">
-                    Quarter-final
-                </li>
-                <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
-                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.semiFinal'">
-                    Semi-final
-                </li>
-                <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
-                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
-                    Play-off for third place
-                </li>
-                <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
-                    [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'stageObj.final'">
-                    Final
-                </li>
-            </ul>
-
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <ul class="nav" *ngIf="games&&games.length>0">
+                        <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
+                            [ngx-scroll-to]="games[0].date">
+                            Group Phase
+                        </li>
+                        <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.roundOf16'">
+                            Round of 16
+                        </li>
+                        <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.quarterFinal'">
+                            Quarter-final
+                        </li>
+                        <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.semiFinal'">
+                            Semi-final
+                        </li>
+                        <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
+                            Play-off for third place
+                        </li>
+                        <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.final'">
+                            Final
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
         <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
-            <div class="row bg-main align-items-center">
+            <div class="row bg-light align-items-center">
                 <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
                     <h3 class="m-0 pt-2 pb-2">Round of 16</h3>
                 </div>
@@ -94,9 +103,9 @@
                 </div>
             </div>
             <div class="row align-items-center">
-                <h5 class="col mb-1 text-left">
+                <h6 class="col mb-1 text-left">
                     {{game.date|showDate}}&nbsp;&nbsp;
-                </h5>
+                </h6>
                 <div class="col text-right">
                     <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
                     <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
@@ -108,8 +117,11 @@
                     <tbody>
                         <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
                             <td class="align-middle text-main small" style="width:20%">
-                                <small class="text-muted">Status: </small><span class="text-warning">{{court.status | gameStatus}}</span><br>
-                                <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH<br>
+                                <small class="text-muted">Status: </small>
+                                <span class="text-warning">{{court.status | gameStatus}}</span>
+                                <br>
+                                <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH
+                                <br>
                                 <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
                             </td>
                             <td class="align-middle" style="width:30%">

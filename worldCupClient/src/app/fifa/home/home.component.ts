@@ -403,16 +403,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
-
-            if (games.length > 0 && games[games.length - 1].date == game.date) {
-                games[games.length - 1].count++;
-                games[games.length - 1].courts.push(gameInfos[i]);
-            } else {
-                game.count = 1;
-                game.courts = [gameInfos[i]];
-                games.push(game);
-                j ++;
-            }
             if (!this.stageObj.roundOf16 && gameInfos[i].gameType == '1') {
                 this.setShow(1, j);
             } else if (!this.stageObj.quarterFinal && gameInfos[i].gameType == '2') {
@@ -424,6 +414,16 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             } else if (!this.stageObj.final && gameInfos[i].gameType == '5') {
                 this.setShow(5, j);
             }
+            if (games.length > 0 && games[games.length - 1].date == game.date) {
+                games[games.length - 1].count++;
+                games[games.length - 1].courts.push(gameInfos[i]);
+            } else {
+                game.count = 1;
+                game.courts = [gameInfos[i]];
+                games.push(game);
+                j ++;
+            }
+
             this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;
             // console.log(this.loadingProgress);
         }
