@@ -81,7 +81,7 @@ contract WccStorage is Ownable {
         });
     }
     function setPlayer(bytes32 _index, string _p1, string _p2) external onlyOwner {
-        require(!games[_index].isValued);
+        require(games[_index].isValued);
         playerNames[_index] = PlayerName({
             p1: _p1,
             p2: _p2,

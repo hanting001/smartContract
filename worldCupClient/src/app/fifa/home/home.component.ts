@@ -119,6 +119,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (this.contries['secondStageStartDate']) {
                 this.secondStageStartDate = this.contries['secondStageStartDate'];
             }
+            if (this.contries['firstStageFlag']) {
+                this.firstStageFlag = this.contries['firstStageFlag'];
+            }
             if (this.contries['stageObj']) {
                 this.stageObj = this.contries['stageObj'];
             }
@@ -145,6 +148,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.localStorage.setItem('games', this.games).toPromise();
             this.contries['secondStageStartDate'] = this.secondStageStartDate;
             this.contries['stageObj'] = this.stageObj;
+            this.contries['firstStageFlag'] = this.firstStageFlag;
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
         this.refreshGameData();
@@ -445,7 +449,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             } else if (!this.stageObj.quarterFinalFlag && gameInfos[i].gameType == '2') {
                 this.setShow(2, j);
             } else if (!this.stageObj.semiFinalFlag && gameInfos[i].gameType == '3') {
-                console.log(j);
                 this.setShow(3, j);
             } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[i].gameType == '4') {
                 this.setShow(4, j);

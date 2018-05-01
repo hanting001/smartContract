@@ -269,7 +269,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     setFilterPlays() {
         const players = new Set();
         for (const gameInfo of this.gameInfos) {
-            if (gameInfo.gameType == '0') {
+            if (gameInfo.p1.length > 2) {
                 players.add(gameInfo.p1);
                 players.add(gameInfo.p2);
             }
