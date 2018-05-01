@@ -38,7 +38,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     balance = {};
     USDPrice = 0;
     myVote = 1;
-    firstStageFlag = 1;
+    firstStageFlag = 0;
     gameCount = 0;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
@@ -67,16 +67,28 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         });
     }
     setShow(type, index) {
-        if (type == 1) {
+        if (this.firstStageFlag == 0) {
+            this.firstStageFlag = type + 1;
+        }
+        console.log(this.firstStageFlag);
+        if (type == 0) {
+            this.stageObj.groupPhase = index;
+            this.stageObj.groupPhaseFlag = true;
+        } else if (type == 1) {
             this.stageObj.roundOf16 = index;
+            this.stageObj.roundOf16Flag = true;
         } else if (type == 2) {
             this.stageObj.quarterFinal = index;
+            this.stageObj.quarterFinalFlag = true;
         } else if (type == 3) {
             this.stageObj.semiFinal = index;
+            this.stageObj.semiFinalFlag = true;
         } else if (type == 4) {
             this.stageObj.playOffForThirdPlace = index;
+            this.stageObj.playOffForThirdPlaceFlag = true;
         } else if (type == 5) {
             this.stageObj.final = index;
+            this.stageObj.finalFlag = true;
         }
     }
     ngOnInit() {
@@ -426,15 +438,18 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
-            if (!this.stageObj.roundOf16 && gameInfos[i].gameType == '1') {
+            if (!this.stageObj.groupPhase && gameInfos[i].gameType == '0') {
+                this.setShow(0, j);
+            } else if (!this.stageObj.roundOf16Flag && gameInfos[i].gameType == '1') {
                 this.setShow(1, j);
-            } else if (!this.stageObj.quarterFinal && gameInfos[i].gameType == '2') {
+            } else if (!this.stageObj.quarterFinalFlag && gameInfos[i].gameType == '2') {
                 this.setShow(2, j);
-            } else if (!this.stageObj.semiFinal && gameInfos[i].gameType == '3') {
+            } else if (!this.stageObj.semiFinalFlag && gameInfos[i].gameType == '3') {
+                console.log(j);
                 this.setShow(3, j);
-            } else if (!this.stageObj.playOffForThirdPlace && gameInfos[i].gameType == '4') {
+            } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[i].gameType == '4') {
                 this.setShow(4, j);
-            } else if (!this.stageObj.final && gameInfos[i].gameType == '5') {
+            } else if (!this.stageObj.finalFlag && gameInfos[i].gameType == '5') {
                 this.setShow(5, j);
             }
             if (games.length > 0 && games[games.length - 1].date == game.date) {

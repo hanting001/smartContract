@@ -53,27 +53,27 @@
             <div class="row justify-content-center">
                 <div class="col-10 text-center">
                     <ul class="nav" *ngIf="games&&games.length>0">
-                        <li class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
+                        <li *ngIf="stageObj.groupPhaseFlag" class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
                             [ngx-scroll-to]="games[0].date">
                             Group Phase
                         </li>
-                        <li class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
+                        <li *ngIf="stageObj.roundOf16Flag" class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
                             [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.roundOf16'">
                             Round of 16
                         </li>
-                        <li class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
+                        <li *ngIf="stageObj.quarterFinalFlag" class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
                             [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.quarterFinal'">
                             Quarter-final
                         </li>
-                        <li class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
+                        <li *ngIf="stageObj.semiFinalFlag" class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
                             [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.semiFinal'">
                             Semi-final
                         </li>
-                        <li class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
+                        <li *ngIf="stageObj.playOffForThirdPlaceFlag" class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
                             [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
                             Play-off for third place
                         </li>
-                        <li class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
+                        <li *ngIf="stageObj.final" class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
                             [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.final'">
                             Final
                         </li>
@@ -127,14 +127,14 @@
                                 <small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}
                             </td>
                             <td class="align-middle" style="width:30%">
-                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
+                                <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}
                             </td>
                             <td class="align-middle" style="width:20%">
                                 <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
                                 <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
                             </td>
                             <td class="align-middle" style="width:30%">
-                                <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                                <img [src]="court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.p2}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -186,10 +186,10 @@
                 <div class="card  bg-c-light" style="margin-top:15px;">
                     <tr class="row mt-2">
                         <td style="border:0;width:40%" class="text-center align-middle">
-                            <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                            <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}</td>
                         <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
                         <td style="border:0;width:40%" class="text-center align-middle">
-                            <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                            <img [src]="court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.p2}}</td>
                     </tr>
 
 
@@ -335,10 +335,10 @@
                     <table class="table mb-0">
                         <tr>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                                <img [src]="court.s_p1 || court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.s_p1 || court.p1}}</td>
                             <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                                <img [src]="court.s_p2 ||court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.s_p2 || court.p2}}</td>
                         </tr>
                         <tr>
                             <td style="border:0">
@@ -354,7 +354,9 @@
                     <div class="row align-items-center justify-content-center">
                         <div class="col-4 align-middle">
                             <div class="form-group">
-                                <label for="myVote">My Vote</label>
+                                <label class="small" for="myVote">Vote:
+                                    <span class="text-success">{{voteOption.value == 1? 'YES': 'NO'}}</span>
+                                </label>
                                 <div class="btn-group" id="myVote" btnRadioGroup formControlName="voteOption">
                                     <label class="btn btn-success m-0" [class.active]="voteOption.value == 1" btnRadio="1">YES</label>
                                     <label class="btn border-left-0 btn-outline-secondary m-0" [class.active]="voteOption.value == 0" btnRadio="0">NO</label>
@@ -376,7 +378,12 @@
 </ng-template>
 <footer class="container">
     <p class="float-right">
-        <a class="text-primary" [ngx-scroll-to]="'top'"><span class="oi  oi-arrow-thick-top large"></span></a>
+        <a class="text-primary" [ngx-scroll-to]="'top'">
+            <span class="oi  oi-arrow-thick-top large"></span>
+        </a>
     </p>
-    <p>&middot; <a href="https://www.stateofthedapps.com/dapps/eth-sports-betting">ETH Sports Betting</a> &middot; <a href="https://www.stateofthedapps.com/">State Of DAPPs</a></p>
+    <p>&middot;
+        <a href="https://www.stateofthedapps.com/dapps/eth-sports-betting">ETH Sports Betting</a> &middot;
+        <a href="https://www.stateofthedapps.com/">State Of DAPPs</a>
+    </p>
 </footer>

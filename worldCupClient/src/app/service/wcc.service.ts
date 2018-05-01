@@ -129,6 +129,13 @@ export class WCCService {
         const gameInfos = [];
         for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
+            if (gameInfo.gameType != '0') {
+                const playerNames = await sc.methods.playerNames(index).call();
+                if (playerNames.isValued) {
+                    gameInfo.s_p1 = playerNames.p1;
+                    gameInfo.s_p2 = playerNames.p2;
+                }
+            }
             gameInfos.push(gameInfo);
         }
         return gameInfos;
@@ -140,13 +147,15 @@ export class WCCService {
     async getGameInfo(index) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameInfo = await sc.methods.getGameInfo(index).call();
-        // if (gameInfo.gameType != '0') {
-        //     const playerName = await sc.methods.playerNames(index).call();
-        //     if (playerName.isValued) {
-        //         gameInfo.p1 = playerName.p1;
-        //         gameInfo.p2 = playerName.p2;
-        //     }
-        // }
+
+        if (gameInfo.gameType != '0') {
+            // const playerNames = await sc.methods.playerNames(index).call();
+            // console.log(playerNames);
+            // if (playerNames.isValued) {
+            //     gameInfo.s_p1 = playerNames.p1;
+            //     gameInfo.s_p2 = playerNames.p2;
+            // }
+        }
         return gameInfo;
     }
     async getGameScoreIndexes(gameIndex) {
@@ -765,6 +774,13 @@ export class WCCService {
         const vs = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
         const s = await this.web3Service.getContract('wccStorage', 'WccStorage');
         const gameInfo = await s.methods.games(gameIndex).call();
+        if (gameInfo.gameType != '0') {
+            const players = await s.methods.playerNames(gameIndex).call();
+            if (players.isValued) {
+                gameInfo.s_p1 = players.p1;
+                gameInfo.s_p2 = players.p2;
+            }
+        }
         const obj: any = {
             gameInfo: gameInfo
         };
@@ -772,5 +788,24 @@ export class WCCService {
             obj.voteInfo = await vs.methods.voteInfos(gameIndex).call();
         }
         return obj;
+    }
+    async setPlayer(gameIndex, p1, p2, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(`${gameIndex}, ${p1}, ${p2}`);
+        sc.methods.setPlayer(gameIndex, p1, p2).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
     }
 }

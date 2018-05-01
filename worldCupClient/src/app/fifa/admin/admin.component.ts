@@ -29,11 +29,14 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     selectedVote;
     modalRef: BsModalRef;
     startVoteForm: FormGroup;
+    setPlayerForm: FormGroup;
     scIndex = 1;
     gameMessage = 'no games';
     contries: any;
+    filterPlays: any;
     @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
     @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
+    @ViewChild('setPlayerTemplate') setPlayerTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
@@ -56,6 +59,10 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
 
         this.adminForm = this.fb.group({
             address: ['', [Validators.required]],
+        });
+        this.setPlayerForm = this.fb.group({
+            p1: ['', [Validators.required]],
+            p2: ['', [Validators.required]]
         });
     }
 
@@ -82,13 +89,13 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         if (this.isOwner) {
             this.gameMessage = 'loading games...';
             this.contries = await this.localStorage.getItem<any>('contries').toPromise();
-            this.getAllPlayers();
+            await this.getAllPlayers();
+            this.setFilterPlays();
         }
     }
     async getAllPlayers() {
         const plays = await this.localStorage.getItem<any[]>('plays').toPromise();
         if (plays && plays.length > 0) {
-            console.log(plays.length);
             this.gameInfos = plays;
         } else {
             this.gameInfos = await this.wccSer.getAllPlayers();
@@ -259,6 +266,37 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             });
         }
     }
+    setFilterPlays() {
+        const players = new Set();
+        for (const gameInfo of this.gameInfos) {
+            if (gameInfo.gameType == '0') {
+                players.add(gameInfo.p1);
+                players.add(gameInfo.p2);
+            }
+        }
+        this.filterPlays = Array.from(players).sort();
+    }
+    setPlayer(game) {
+        if (this.setPlayerForm.valid) {
+            const model = this.setPlayerForm.value;
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            if (confirm(`set this game  ${model.p1}:${model.p2} , submit?`)) {
+                this.loadingSer.show();
+                this.wccSer.setPlayer(gameIndex, model.p1, model.p2, async (confirmNum, receipt) => {
+                    if (confirmNum == 0) {
+                        game.s_p1 = model.p1;
+                        game.s_p2 = model.p2;
+                        this.loadingSer.hide();
+                        this.alertSer.show('Success!');
+                        this.localStorage.setItem('plays', this.gameInfos).toPromise();
+                    }
+                }, async (err) => {
+                    this.loadingSer.hide();
+                    this.alertSer.show('Transaction error or user denied');
+                });
+            }
+        }
+    }
     async startVote(game) {
         if (this.startVoteForm.valid) {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
@@ -310,6 +348,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 totalCount: web3.utils.fromWei(new BN(voteInfo.yesCount).add(new BN(voteInfo.noCount)))
             };
             this.modalRef = this.openModal(this.setVoteCanEndTemplate);
+        } else if (type == 3) {
+            this.modalRef = this.openModal(this.setPlayerTemplate);
         }
     }
     openModal(template: TemplateRef<any>) {
