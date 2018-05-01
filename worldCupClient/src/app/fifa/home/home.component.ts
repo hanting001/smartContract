@@ -110,7 +110,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (this.contries['stageObj']) {
                 this.stageObj = this.contries['stageObj'];
             }
-            console.log(this.stageObj);
+            // console.log(this.stageObj);
             console.log('from local storage');
         } else {
             this.gameCount = 0;
@@ -133,7 +133,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.localStorage.setItem('games', this.games).toPromise();
             this.contries['secondStageStartDate'] = this.secondStageStartDate;
             this.contries['stageObj'] = this.stageObj;
-            console.log(this.stageObj);
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
         this.refreshGameData();
@@ -145,7 +144,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             for (let j = 0; j < obj.courts.length; j++) {
                 const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
                 const info = await this.wccSer.getGameFreshDetail(index);
-                obj.courts[j] = info.gameInfo;
                 if (info.voteInfo) {
                     // console.log(info.voteInfo);
                     obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))

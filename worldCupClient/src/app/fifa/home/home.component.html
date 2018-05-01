@@ -363,7 +363,7 @@
                         </div>
                         <div class="col-4 text-left align-middle">
                             <div class="form-group">
-                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-light">MAKE A VOTE</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-primary">MAKE A VOTE</button>
                                 <button [hidden]="chartData.currentGameInfo.status != 3" type="submit" disabled class="btn btn-outline-secondary disabled"
                                     readonly>VOTTING ENDED</button>
                             </div>
@@ -376,6 +376,7 @@
 </ng-template>
 <footer class="container">
     <p class="float-right">
-        <a class="link" [ngx-scroll-to]="'top'">Back to top</a>
+        <a class="text-primary" [ngx-scroll-to]="'top'"><span class="oi  oi-arrow-thick-top large"></span></a>
     </p>
+    <p>&middot; <a href="https://www.stateofthedapps.com/dapps/eth-sports-betting">ETH Sports Betting</a> &middot; <a href="https://www.stateofthedapps.com/">State Of DAPPs</a></p>
 </footer>

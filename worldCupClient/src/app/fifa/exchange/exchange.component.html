@@ -31,7 +31,7 @@
     <div class="jumbotron jumbotron-fluid bg" id="inputForm">
         <div class="container">
             <form (ngSubmit)="exchange()" class="form pt-5 " [formGroup]="form">
-                <div class="card bg-main text-center m-5">
+                <div class="card bg-c-light text-center m-5">
                     <div class="card-header" [hidden]="withdrawFlag">
                         <div class=" text-center" id="chartDiv" align="center">
                             <div class="row text-center">
@@ -153,7 +153,7 @@
 </div>
 <footer class="container">
     <p class="float-right">
-        <a class="link" [ngx-scroll-to]="'top'">Back to top</a>
+        <a class="text-primary" [ngx-scroll-to]="'top'"><span class="oi  oi-arrow-thick-top large"></span></a>
     </p>
 </footer>
 <!-- <ng-template #exTemplate> -->

@@ -263,7 +263,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         if (this.startVoteForm.valid) {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             const score = this.startVoteForm.value.homeScore + ':' + this.startVoteForm.value.awayScore;
-            if (confirm(`Vote target is ${score}, submit?`)) {
+            if (confirm(`${game.p1}:${game.p2} Vote target is ${score}, submit?`)) {
                 const check = await this.wccSer.startVoteCheck(gameIndex);
                 this.loadingSer.show();
                 if (check.checkResult != 0) {
