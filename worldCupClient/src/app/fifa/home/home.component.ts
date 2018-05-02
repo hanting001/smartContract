@@ -20,7 +20,7 @@ import * as moment from 'moment';
 export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
-
+    title: string;
     games: any = [];
     contries: any = {};
     secondStageStartDate;
@@ -108,6 +108,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.envState = tempEnvState;
         });
         this.web3.check();
+        this.title = '2018 Champions League';
+        // this.title = '2018 World Cup';
     }
     async getAllGames() {
         const isGameUpdated = await this.wccSer.isGameUpdated();
@@ -160,6 +162,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             for (let j = 0; j < obj.courts.length; j++) {
                 const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
                 const info = await this.wccSer.getGameFreshDetail(index);
+                obj.courts[j] = info.gameInfo;
                 if (info.voteInfo) {
                     // console.log(info.voteInfo);
                     obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
@@ -375,6 +378,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
+            console.log(check);
             if (check.checkResult != 0) {
                 this.loadingSer.hide();
                 return this.alertSer.show(check.message);

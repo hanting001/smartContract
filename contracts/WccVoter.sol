@@ -97,7 +97,7 @@ contract WccVoter is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Voting) {
             return 2; //wrong status
         }
-        var (,,,,ended,voteValued,,) = vs.voteInfos(_gameIndex);
+        var (,,,,ended,,voteValued,) = vs.voteInfos(_gameIndex);
         if (ended) {
             return 3; //vote ended
         }
@@ -140,7 +140,7 @@ contract WccVoter is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Voting) {
             return 2; //wrong status
         }
-        var (,,,,ended,voteValued,,) = vs.voteInfos(_gameIndex);
+        var (,,,,ended,,voteValued,) = vs.voteInfos(_gameIndex);
         if (ended) {
             return 3; //vote ended
         }
