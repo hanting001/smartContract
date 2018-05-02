@@ -8,7 +8,7 @@ export class GameStatusPipe implements PipeTransform {
         if (value === '0') {
             return 'Open';
         } else if (value === '1') {
-            return 'Playing';
+            return 'Stop Bet';
         } else if (value === '2') {
             return 'Voting';
         } else if (value === '3') {
