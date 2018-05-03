@@ -149,12 +149,11 @@ export class WCCService {
         const gameInfo = await sc.methods.getGameInfo(index).call();
 
         if (gameInfo.gameType != '0') {
-            // const playerNames = await sc.methods.playerNames(index).call();
-            // console.log(playerNames);
-            // if (playerNames.isValued) {
-            //     gameInfo.s_p1 = playerNames.p1;
-            //     gameInfo.s_p2 = playerNames.p2;
-            // }
+            const playerNames = await sc.methods.playerNames(index).call();
+            if (playerNames.isValued) {
+                gameInfo.s_p1 = playerNames.p1;
+                gameInfo.s_p2 = playerNames.p2;
+            }
         }
         return gameInfo;
     }
