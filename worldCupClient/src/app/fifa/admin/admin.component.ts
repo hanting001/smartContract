@@ -2,6 +2,7 @@ import { WCCService } from '../../service/wcc.service';
 import { Component, OnInit, OnDestroy, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service } from '../../service/index';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { LoadingService } from '../../service/loading.service';
 import { AlertService } from '../../service/alert.service';
 import { HttpClient } from '@angular/common/http';
@@ -28,8 +29,14 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     selectedVote;
     modalRef: BsModalRef;
     startVoteForm: FormGroup;
+    setPlayerForm: FormGroup;
+    scIndex = 1;
+    gameMessage = 'no games';
+    contries: any;
+    filterPlays: any;
     @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
     @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
+    @ViewChild('setPlayerTemplate') setPlayerTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
@@ -37,7 +44,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private modalService: BsModalService,
         public alertSer: AlertService,
-    ) {
+        private localStorage: LocalStorage) {
         this.form = this.fb.group({
             awayCourt: ['', [Validators.required]],
             homeCourt: ['', [Validators.required]],
@@ -52,6 +59,10 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
 
         this.adminForm = this.fb.group({
             address: ['', [Validators.required]],
+        });
+        this.setPlayerForm = this.fb.group({
+            p1: ['', [Validators.required]],
+            p2: ['', [Validators.required]]
         });
     }
 
@@ -76,10 +87,21 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     async checkEnv() {
         this.isOwner = await this.wccSer.isOwner();
         if (this.isOwner) {
-            this.gameInfos = await this.wccSer.getAllPlayers();
+            this.gameMessage = 'loading games...';
+            this.contries = await this.localStorage.getItem<any>('contries').toPromise();
+            await this.getAllPlayers();
+            this.setFilterPlays();
         }
     }
-
+    async getAllPlayers() {
+        const plays = await this.localStorage.getItem<any[]>('plays').toPromise();
+        if (plays && plays.length > 0) {
+            this.gameInfos = plays;
+        } else {
+            this.gameInfos = await this.wccSer.getAllPlayers();
+            this.localStorage.setItem('plays', this.gameInfos).toPromise();
+        }
+    }
     addPlayer() {
         if (this.form.valid) {
             this.loadingSer.show();
@@ -102,6 +124,9 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
         const myHeaders = new Headers();
         myHeaders.set('Content-Type', 'text/html');
         this.loadingSer.show();
+
+        let timeout = 5000;
+
         this.http.get('assets/games.txt?' + new Date().getTime(), { responseType: 'text' }).toPromise().then((data) => {
             console.log(data);
 
@@ -109,7 +134,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             console.log(gamesArray);
             const gamesLen = gamesArray.length;
             let i = 0;
-            const addingTimeout = setInterval(() => {
+
+            const addGame = async () => {
                 console.log('添加第' + i + '场比赛');
                 const tmpAry = gamesArray[i].split(',');
 
@@ -118,29 +144,45 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 //     return;
                 // }
 
-                if (tmpAry && tmpAry.length == 3) {
-                    this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
-                    this.addingGame = tmpAry;
-                    this.wccSer.addPlayer({
-                        awayCourt: tmpAry[0],
-                        startTime: new Date(tmpAry[1].trim() + ':00'),
-                        homeCourt: tmpAry[2],
-                        gameType: '0'
-                    }, async (transactionHash) => { }, async (confirmNum, recipt) => {
-                        if (confirmNum == 2) {
-                            this.gameInfos = await this.wccSer.getAllPlayers();
-                            this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1];
-                        }
-                    });
+                if (tmpAry && tmpAry.length == 4) {
+                    const gameIndex = this.wccSer.getGameIndex(tmpAry[0], tmpAry[2], tmpAry[3]);
+                    const gameInfo = await this.wccSer.getGameInfo(gameIndex);
+                    console.log(gameInfo);
+                    if (!gameInfo.p1) {
+                        console.log('比赛不存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3];
+                        this.addingGame = tmpAry;
+                        this.wccSer.addPlayer({
+                            awayCourt: tmpAry[0],
+                            startTime: new Date(tmpAry[1].trim() + ':00'),
+                            homeCourt: tmpAry[2],
+                            gameType: tmpAry[3]
+                        }, async (transactionHash) => { }, async (confirmNum, recipt) => {
+                            if (confirmNum == 2) {
+                                this.gameInfos = await this.wccSer.getAllPlayers();
+                                this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' +
+                                    tmpAry[1] + ',gameType=' + tmpAry[3];
+                            }
+                        });
+                        timeout = 5000;
+                    } else {
+                        console.log('比赛已存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        timeout = 2000;
+                    }
+                    if (i < gamesLen - 1) {
+                        setTimeout(addGame, timeout);
+                    }
 
                 } else {
                     this.addingText = '完成添加所有比赛';
-                    clearInterval(addingTimeout);
+                    // clearInterval(addingTimeout);
                     this.loadingSer.hide();
 
                 }
                 i++;
-            }, 5000);
+            };
+
+            setTimeout(addGame, timeout);
         });
 
     }
@@ -212,10 +254,11 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             this.loadingSer.show();
             this.wccSer.startPlayByJudge(gameIndex, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     game.status = '1';
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
+                    this.localStorage.setItem('plays', this.gameInfos).toPromise();
                 }
             }, async (err) => {
                 this.loadingSer.hide();
@@ -223,11 +266,42 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             });
         }
     }
+    setFilterPlays() {
+        const players = new Set();
+        for (const gameInfo of this.gameInfos) {
+            if (gameInfo.p1.length > 2) {
+                players.add(gameInfo.p1);
+                players.add(gameInfo.p2);
+            }
+        }
+        this.filterPlays = Array.from(players).sort();
+    }
+    setPlayer(game) {
+        if (this.setPlayerForm.valid) {
+            const model = this.setPlayerForm.value;
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            if (confirm(`set this game  ${model.p1}:${model.p2} , submit?`)) {
+                this.loadingSer.show();
+                this.wccSer.setPlayer(gameIndex, model.p1, model.p2, async (confirmNum, receipt) => {
+                    if (confirmNum == 0) {
+                        game.s_p1 = model.p1;
+                        game.s_p2 = model.p2;
+                        this.loadingSer.hide();
+                        this.alertSer.show('Success!');
+                        this.localStorage.setItem('plays', this.gameInfos).toPromise();
+                    }
+                }, async (err) => {
+                    this.loadingSer.hide();
+                    this.alertSer.show('Transaction error or user denied');
+                });
+            }
+        }
+    }
     async startVote(game) {
         if (this.startVoteForm.valid) {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             const score = this.startVoteForm.value.homeScore + ':' + this.startVoteForm.value.awayScore;
-            if (confirm(`Vote target is ${score}, submit?`)) {
+            if (confirm(`${game.p1}:${game.p2} Vote target is ${score}, submit?`)) {
                 const check = await this.wccSer.startVoteCheck(gameIndex);
                 this.loadingSer.show();
                 if (check.checkResult != 0) {
@@ -235,10 +309,11 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     return this.alertSer.show(check.message);
                 }
                 this.wccSer.startVote(gameIndex, score, async (confirmNum, receipt) => {
-                    if (confirmNum == 1) {
+                    if (confirmNum == 0) {
                         game.status = '2';
                         this.loadingSer.hide();
                         this.alertSer.show('Success!');
+                        this.localStorage.setItem('plays', this.gameInfos).toPromise();
                     }
                 }, async (err) => {
                     this.loadingSer.hide();
@@ -273,6 +348,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 totalCount: web3.utils.fromWei(new BN(voteInfo.yesCount).add(new BN(voteInfo.noCount)))
             };
             this.modalRef = this.openModal(this.setVoteCanEndTemplate);
+        } else if (type == 3) {
+            this.modalRef = this.openModal(this.setPlayerTemplate);
         }
     }
     openModal(template: TemplateRef<any>) {
@@ -288,14 +365,22 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 return this.alertSer.show(check.message);
             }
             this.wccSer.setVoteCanEnd(gameIndex, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
+                    this.localStorage.setItem('plays', this.gameInfos).toPromise();
                 }
             }, async (err) => {
                 this.loadingSer.hide();
                 this.alertSer.show('Transaction error or user denied');
             });
         }
+    }
+    async refresh(game) {
+        this.loadingSer.show('loading...');
+        const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+        game = await this.wccSer.getGameInfo(gameIndex);
+        this.localStorage.setItem('plays', this.gameInfos).toPromise();
+        this.loadingSer.hide();
     }
 }

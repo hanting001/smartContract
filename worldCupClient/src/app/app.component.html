@@ -1,4 +1,4 @@
-<div *ngIf="loading" class="backdrop">
+<div class="backdrop">
 
 </div>
 <div *ngIf="loading" class="loading">
@@ -10,39 +10,44 @@
     </div>
 </div>
 
+<header>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-nav">
+        <a class="navbar-brand logo" routerLinkActive="active" routerLink="/">Ethsb</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<nav class="navbar fixed-top  navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
-    <a class="navbar-brand" href="/">WCEB</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse " id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto justify-content-center">
-            <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" routerLink="/home">Home </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" routerLink="/exchange">Exchange</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" routerLink="/trans">Transactions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" routerLink="/aboutUs">About Us</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLinkActive="active" routerLink="/faq">FAQ</a>
-            </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a class="nav-link" routerLinkActive="active" class="text-muted small" routerLink="/trans">Address:{{account}}</a>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/exchange">TOKEN </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/matches">MATCH </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/trans">TRANSACTION </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/faq">SUPPORT & FAQ </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" routerLinkActive="active" routerLink="/contact">Contact Us</a>
+                </li> -->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="nav-link" routerLinkActive="active" class="text-muted small" routerLink="/trans">{{envState.netType}}: {{account}}</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div *ngIf="envState.netType && envState.netType != 'kovan'" class="alert alert-danger pb-0 mb-0" role="alert">
+        <h3 class="mb-0">Dapp in Beta status, only support kovan network!</h3>
     </div>
-</nav>
+</header>
+
 
 
 <!--The content below is only a placeholder and can be replaced.-->
@@ -53,6 +58,12 @@
 <ng-template #alertTemplate>
     <div class="modal-body text-center">
         <p>{{tip.msg}}</p>
-        <button type="button" class="btn btn-primary" (click)="closeAlert()">Done</button>
+        <div *ngIf="tip.confirm">
+            <button type="button" class="btn btn-primary" (click)="doComfirm()">Confirm</button>
+            <button type="button" class="btn btn-secondary" (click)="closeAlert()">Cancel</button>
+        </div>
+        <div *ngIf="!tip.confirm">
+            <button type="button" class="btn btn-primary" (click)="closeAlert()">Done</button>
+        </div>
     </div>
 </ng-template>

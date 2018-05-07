@@ -46,7 +46,6 @@ contract WccVoter is Ownable, Stoppable{
     function setGameStart(bytes32 _gameIndex) external stopInEmergency onlyJudge {
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Playing);
     }
-    
     /// @author Bob Clampett
     /// @notice judge start vote check
     /// @param _gameIndex game index
@@ -98,7 +97,7 @@ contract WccVoter is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Voting) {
             return 2; //wrong status
         }
-        var (,,,,ended,voteValued) = vs.voteInfos(_gameIndex);
+        var (,,,,ended,,voteValued,) = vs.voteInfos(_gameIndex);
         if (ended) {
             return 3; //vote ended
         }
@@ -118,7 +117,6 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
     event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
-
     /// @author Bob Clampett
     /// @notice user vote
     /// @param _gameIndex game index
@@ -142,7 +140,7 @@ contract WccVoter is Ownable, Stoppable{
         if (status != WccStorage.GameStatus.Voting) {
             return 2; //wrong status
         }
-        var (,,,,ended,voteValued) = vs.voteInfos(_gameIndex);
+        var (,,,,ended,,voteValued,) = vs.voteInfos(_gameIndex);
         if (ended) {
             return 3; //vote ended
         }
@@ -167,7 +165,7 @@ contract WccVoter is Ownable, Stoppable{
         if (!canEnd[_gameIndex]) {
             return 3; // can not end
         }
-        var (,yesCount,noCount,,,,) = vs.voteInfos(_gameIndex);
+        var (,yesCount,noCount,,,,,) = vs.voteInfos(_gameIndex);
         // need change in future
         if (yesCount < yesCount.add(noCount).div(10)) {
             return 4; // not enough yes vote

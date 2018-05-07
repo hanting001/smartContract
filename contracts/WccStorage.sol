@@ -26,7 +26,13 @@ contract WccStorage is Ownable {
         bool isValued;
         uint i;
     }
+    struct PlayerName {
+        string p1;
+        string p2;
+        bool isValued;
+    }
     mapping(bytes32 => GameInfo) public games;
+    mapping(bytes32 => PlayerName) public playerNames;
     bytes32[] public gameIndexes;
     uint public gamesUpdated;
 
@@ -75,9 +81,12 @@ contract WccStorage is Ownable {
         });
     }
     function setPlayer(bytes32 _index, string _p1, string _p2) external onlyOwner {
-        require(!games[_index].isValued);
-        games[_index].p1 = _p1;
-        games[_index].p2 = _p2;
+        require(games[_index].isValued);
+        playerNames[_index] = PlayerName({
+            p1: _p1,
+            p2: _p2,
+            isValued: true
+        });
     }
     function arrayRemove(bytes32[] storage array, uint index) internal {
         if (index >= array.length) return;
@@ -93,7 +102,6 @@ contract WccStorage is Ownable {
         delete games[_gameIndex];
         arrayRemove(gameIndexes, i);
     }
-
     mapping(address => bytes32[]) userJoinedGameIndexes;
     struct Score {
         string score;
@@ -106,7 +114,6 @@ contract WccStorage is Ownable {
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     
-
     function userJoin(address user, uint value, bytes32 gameIndex, string score, bytes32 scoreIndex) external onlyAdmin {
         // bytes32 scoreIndex = keccak256(score);
 

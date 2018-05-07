@@ -19,16 +19,19 @@ export class Web3Service {
         }, 10000);
         setInterval(() => {
             this.checkAccount();
-        }, 1000);
+        }, 2000);
         // this.check();
     }
     async checkAccount() {
-        const accounts = await this.web3.eth.getAccounts();
-        if (this.web3.eth.defaultAccount != accounts[0]) {
-            this.clearContract();
-            this.web3.eth.defaultAccount = accounts[0];
-            console.log(this.web3.eth.defaultAccount);
-            this.check();
+        if (this.web3) {
+            const accounts = await this.web3.eth.getAccounts();
+            if (this.web3.eth.defaultAccount != accounts[0]) {
+                console.log('------非defaultCount');
+                this.clearContract();
+                this.web3.eth.defaultAccount = accounts[0];
+                console.log(this.web3.eth.defaultAccount);
+                this.check();
+            }
         }
     }
     async getMainAccount() {
@@ -117,9 +120,9 @@ export class Web3Service {
         this.web3 = new Web3();
         // const ret = this.web3.setProvider(Web3.givenProvider);
         try {
-            const state = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
-            // const ret = this.web3.setProvider(Web3.givenProvider || 'http://localhost:7545');
-            const ret = this.web3.setProvider('http://localhost:7545');
+            const state: any = { checkEnv: true, checkWeb3: true, checkAccount: true, account: '', netName: '', netType: '' };
+            const ret = this.web3.setProvider(Web3.givenProvider);
+            // const ret = this.web3.setProvider('http://localhost:7545');
             if (!ret) {
                 state.checkWeb3 = false;
             } else {
@@ -151,7 +154,7 @@ export class Web3Service {
                         break;
                     case 'kovan':
                         state.netName = 'Kovan testnet';
-                        // console.log('This is the Kovan test network.');
+                        state.canLoadData = true;
                         break;
                     case 'private':
                         state.netName = 'unknow net';
@@ -201,6 +204,26 @@ export class Web3Service {
             eth: this.web3.utils.fromWei(eth),
             token: this.web3.utils.fromWei(token)
         };
+    }
+    async tokenApprove(value, scName, onConfirmation, onError) {
+        const sc = await this.getContract('knotToken', 'KnotToken');
+        const address = await this.getAddress(scName);
+        const options = {
+            from: await this.getMainAccount()
+        };
+        console.log(`address: ${address}, value:${value}`);
+        sc.methods.approve(address, value).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
     }
     async getBalanceByAccount(account) {
         const tokenSC = await this.getContract('knotToken', 'KnotToken');

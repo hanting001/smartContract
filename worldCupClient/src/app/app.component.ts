@@ -26,6 +26,11 @@ export class AppComponent implements OnInit, OnDestroy {
     ) {
         this.isSupportBrowser = this.getIsSupportBrowser();
         this.loadingSer.getLoadingObservable().subscribe((data: any) => {
+            if (data.loading) {
+                $('.backdrop').css({ 'height': $('html').height() }).show();
+            } else {
+                $('.backdrop').hide();
+            }
             this.loading = data.loading;
             this.loadingText = data.loadingText;
         });
@@ -66,7 +71,6 @@ export class AppComponent implements OnInit, OnDestroy {
         // })();
     }
     ngOnInit() {
-        this.web3.check();
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
@@ -77,6 +81,9 @@ export class AppComponent implements OnInit, OnDestroy {
             }
             this.envState = tempEnvState;
         });
+    }
+    doComfirm() {
+        this.alertSer.doConfirm();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();

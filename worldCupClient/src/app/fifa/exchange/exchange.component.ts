@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Web3Service, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
 import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 @Component({
     selector: 'app-exchange',
@@ -19,12 +21,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     totalSupply: any;
     scTokenBalance: any;
     subscription;
+    withdrawFlag = false;
+    @ViewChild('exTemplate') exTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
         private router: Router,
         public loadingSer: LoadingService,
         public localActionSer: LocalActionService,
+        private modalService: BsModalService,
         public alertSer: AlertService) {
         this.form = this.fb.group({
             ethValue: ['0', [Validators.required]],
@@ -33,26 +38,45 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.web3.check();
-        this.subscription = this.web3.getCheckEnvSubject().subscribe(async (tempEnvState: any) => {
-            console.log(tempEnvState);
+        this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             if (tempEnvState.checkEnv === true &&
                 (tempEnvState.checkEnv !== this.envState.checkEnv || tempEnvState.account != this.envState.account)
             ) {
-                await this.getBalance();
+                if (tempEnvState.canLoadData) {
+                    this.getBalance(true);
+                }
             }
             this.envState = tempEnvState;
         });
+        this.web3.check();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+    openModal(template: TemplateRef<any>) {
+        return this.modalService.show(template, { class: 'modal-lg' });
+    }
+    async showExModal() {
+        if (this.envState.canLoadData) {
+            this.withdrawFlag = false;
+            await this.getBalance();
+            // this.openModal(this.exTemplate);
+        }
+    }
+    async showWModal() {
+        if (this.envState.canLoadData) {
+            this.withdrawFlag = true;
+            await this.getBalance();
+            // this.openModal(this.exTemplate);
+        }
     }
     ethChange() {
         const web3 = this.web3.instance();
         let ethValue = this.form.controls.ethValue.value;
         const BN = web3.utils.BN;
         if (ethValue) {
-            ethValue = new BN(ethValue);
+            ethValue = String(ethValue);
+            console.log(ethValue);
             this.form.controls.kotValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(ethValue)).mul(new BN(this.rate))));
         }
     }
@@ -62,7 +86,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         let tokenValue = this.form.controls.kotValue.value;
         const BN = web3.utils.BN;
         if (tokenValue) {
-            tokenValue = new BN(tokenValue);
+            tokenValue = String(tokenValue);
             this.form.controls.ethValue.setValue(web3.utils.fromWei(new BN(web3.utils.toWei(tokenValue)).div(new BN(this.rate))));
         }
     }
@@ -80,36 +104,100 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const model: any = this.form.value;
             console.log(model);
             const web3 = this.web3.instance();
-            const valueInWei = web3.utils.toWei(String(model.ethValue));
-            const check = await this.wccSer.exchangeCheck(valueInWei);
-            console.log(check);
-            if (check.checkResult != 0) {
-                this.loadingSer.hide();
-                return this.alertSer.show(check.message);
-            }
-            if (model.ethValue) {
-                this.loadingSer.show();
-                const confirmApprove = (confirmationNumber, receipt) => {
-                    if (confirmationNumber === 2) {
-                        this.getBalance();
-                        this.resetForm();
+            if (this.withdrawFlag) {
+                this.alertSer.confirm('确定授权合约可以转走token?');
+                const valueInWei = web3.utils.toWei(String(model.kotValue));
+                const confirmOb = this.alertSer.getComfirmObservable().subscribe(async () => {
+                    this.alertSer.hide();
+                    this.loadingSer.show('Approving the token address...');
+                    confirmOb.unsubscribe();
+                    const scName = 'wccExchanger';
+                    this.web3.tokenApprove(valueInWei, scName, async (confNumber, receipt) => {
+                        if (confNumber == 0) {
+                            const check = await this.wccSer.redeemCheck(valueInWei);
+                            if (check.checkResult != 0) {
+                                this.loadingSer.hide();
+                                return this.alertSer.show(check.message);
+                            }
+                            this.loadingSer.show();
+                            this.wccSer.redeem(valueInWei, (c, r) => {
+                                if (c === 0) {
+                                    this.resetForm();
+                                    this.alertSer.show('Success!');
+                                    this.getBalance();
+                                }
+                            }, (err) => {
+                                this.loadingSer.hide();
+                                this.alertSer.show('User denied transaction signature');
+                            });
+                        }
+                    }, (err) => {
                         this.loadingSer.hide();
-                        this.alertSer.show('Success!');
-                    }
-                };
-                this.wccSer.exchange(valueInWei, (transactionHash) => {
-                    this.localActionSer.addAction({
-                        transactionHash: transactionHash, netType: this.envState.netType,
-                        eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
-                    }, this.account);
-                }, confirmApprove);
+                        this.alertSer.show('User denied transaction signature');
+                    });
+                });
+            } else {
+                const valueInWei = web3.utils.toWei(String(model.ethValue));
+                const check = await this.wccSer.exchangeCheck(valueInWei);
+                if (check.checkResult != 0) {
+                    this.loadingSer.hide();
+                    return this.alertSer.show(check.message);
+                }
+                if (model.ethValue) {
+                    this.loadingSer.show();
+                    const confirmApprove = async (confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            this.resetForm();
+                            this.alertSer.show('Success!');
+                            this.getBalance();
+                        }
+                    };
+                    this.wccSer.exchange(valueInWei, (transactionHash) => {
+                        this.loadingSer.show('Transaction submitted, waiting confirm...');
+                        this.localActionSer.addAction({
+                            transactionHash: transactionHash, netType: this.envState.netType,
+                            eth: model.ethValue, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
+                        }, this.account);
+                    }, confirmApprove, (err) => {
+                        this.loadingSer.hide();
+                        this.alertSer.show('User denied transaction signature');
+                    });
+                }
             }
         }
     }
 
+    async withdraw() {
+        const web3 = this.web3.instance();
+        const balance = await this.wccSer.exchangerWithdrawBalance();
+        const b = web3.utils.fromWei(balance);
+        if (Number(b) > 0) {
+            this.alertSer.confirm(`确定提现${b}个ETH?`);
+            const confirmOb = this.alertSer.getComfirmObservable().subscribe(
+                async () => {
+                    confirmOb.unsubscribe();
+                    this.alertSer.hide();
+                    this.loadingSer.show();
+                    this.wccSer.exchangerWithdraw((confirmationNumber, receipt) => {
+                        if (confirmationNumber === 1) {
+                            this.alertSer.show('Success!');
+                            this.loadingSer.hide();
+                        }
+                    }, (err) => {
+                        this.loadingSer.hide();
+                        this.alertSer.show('User denied transaction signature');
+                    });
+                }
+            );
+        } else {
+            this.alertSer.show('You have no withdraw balance');
+        }
 
-    async getBalance() {
-        this.loadingSer.show();
+    }
+    async getBalance(hideLoading?) {
+        if (!hideLoading) {
+            this.loadingSer.show('Loading balance...');
+        }
         const result = await this.wccSer.getExchangerInfo();
         this.rate = result.rate;
         this.exchanged = result.exchanged;
@@ -118,5 +206,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.balance = await this.web3.getBalance();
         this.loadingSer.hide();
     }
-
+    get kotValue() { return this.form.get('kotValue'); }
+    get ethValue() { return this.form.get('ethValue'); }
 }

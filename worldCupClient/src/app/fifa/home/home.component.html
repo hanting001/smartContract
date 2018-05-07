@@ -1,95 +1,150 @@
-<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您要购买world cup bet?</h1>
-    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
+<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
+    <h1>Wanna play?</h1>
+    <p class="lead">You’ll need a safe place to store all of your bets! The perfect place is in a secure wallet like MetaMask. This will
+        also act as your login to the game (no extra password needed).</p>
     <button type="button" class="btn btn-primary" (click)="installWallet()">
-        安装MetaMask
+        Install MetaMask
     </button>
 </div>
 
-<div [hidden]="envState.checkWeb3&&envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您的账号被锁住了</h1>
-    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
-
+<div [hidden]="!envState.checkWeb3||envState.checkAccount" class="jumbotron bg-warning text-center">
+    <h1>Your MetaMask is locked</h1>
+    <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
 
-<div class="container-fluid" style="background-color:rgba(255, 255,255, 0.7);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
-    <div *ngIf="envState.checkEnv">
-        <p [hidden]="loading" class="lead text-muted text-center mb-1">Matches</p>
-        <p [hidden]="!loading" class="lead text-muted text-center mb-1">Loading...</p>
-        <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
-            <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
-            <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
-        </div>
-        <div class="">
-            <table class="table m-0 bg-white table-sm rounded">
-                <tr>
-                    <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-220" [ngx-scroll-to]="game.date"
-                        *ngFor="let game of games" class="text-center p-0">
-                        <table class="table-sm ">
-                            <tr>
-                                <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-sm-center pt-0 bg-light " style="border: 0;">
-                                    <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
-                                    <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <ul class="nav" *ngIf="games&&games.length>0">
-            <li class="nav-item" (click)="firstStageFlag=!firstStageFlag" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="games[0].date">
-                First Stage
-            </li>
-            <li class="nav-item default" (click)="firstStageFlag=!firstStageFlag" [ngClass]="{'active':firstStageFlag!=1,'default':firstStageFlag==1}"
-                [ngx-scroll-to-offset]="-200" [ngx-scroll-to]="secondStageStartDate||games[games.length-1].date">
-                Second Stage
-            </li>
-        </ul>
-
-    </div>
-</div>
-<div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'margin-top':isSticky?'270px':'56px'}">
-    <div *ngFor="let game of games" class="container mb-5" id="{{game.date}}">
-        <div class="row align-items-center">
-            <h3 class="col mb-1">
-                {{game.date|showDate}}&nbsp;&nbsp;
-            </h3>
-            <div class="col text-right">
-                <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
-                <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
-                <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == true" class="text-secondary" style="font-size: 0.5rem">Chane to local time</a>
+<div class="bg-c-light" style="background-attachment: fixed;">
+    <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+        <div *ngIf="envState.checkEnv" id="top">
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <p [hidden]="loading" class=" display-4 text-main text-center mb-1">{{title}}</p>
+                    <span [hidden]="loading" class="text-success text-center mb-1">World Cup Coming Soon!</span>
+                    <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
+                    <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
+                        <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+                        <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <table class="table m-0 table-responsive bg-white table-sm rounded">
+                        <tr>
+                            <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
+                                *ngFor="let game of games" class="text-center p-0">
+                                <table class="table-sm " style="boder:solid green 1px;">
+                                    <tr>
+                                        <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark pt-0 pb-0" style="border: 0;">{{game.day}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-sm-center pt-0 bg-light " style="border: 0;">
+                                            <span *ngFor="let in of counter(game.count)" style="font-size:1.5rem">.</span>
+                                            <!-- <span *ngFor="let in of counter(game.count)"><h1  class="m-0"  >.</h1></span> -->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-10 text-center">
+                    <ul class="nav" *ngIf="games&&games.length>0">
+                        <li *ngIf="stageObj.groupPhaseFlag" class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}" [ngx-scroll-to-offset]="-250"
+                            [ngx-scroll-to]="games[0].date">
+                            Group Phase
+                        </li>
+                        <li *ngIf="stageObj.roundOf16Flag" class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.roundOf16'">
+                            Round of 16
+                        </li>
+                        <li *ngIf="stageObj.quarterFinalFlag" class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.quarterFinal'">
+                            Quarter-final
+                        </li>
+                        <li *ngIf="stageObj.semiFinalFlag" class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.semiFinal'">
+                            Semi-final
+                        </li>
+                        <li *ngIf="stageObj.playOffForThirdPlaceFlag" class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
+                            Play-off for third place
+                        </li>
+                        <li *ngIf="stageObj.final" class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
+                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.final'">
+                            Final
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="row ">
-            <table class="table table-hover mb-4">
-                <tbody>
-                    <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Go Detail">
-                        <td class="align-middle" style="width:40%">
-                            <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}
-                        </td>
-                        <td class="align-middle" style="width:30%">
-                            <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
-                            <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
-                        </td>
-                        <td class="align-middle" style="width:30%">
-                            <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                    </tr>
-                </tbody>
-            </table>
+    </div>
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'56px'}">
+        <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
+            <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
+            <div class="row bg-light align-items-center">
+                <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
+                    <h3 class="m-0 pt-2 pb-2">Round of 16</h3>
+                </div>
+                <div *ngIf="idx == stageObj.quarterFinal" class="col" [id]="'stageObj.quarterFinal'">
+                    <h3 class="m-0 pt-2 pb-2">Quarter-final</h3>
+                </div>
+                <div *ngIf="idx == stageObj.semiFinal" class="col" [id]="'stageObj.semiFinal'">
+                    <h3 class="m-0 pt-2 pb-2">Semi-final</h3>
+                </div>
+                <div *ngIf="idx == stageObj.playOffForThirdPlace" class="col" [id]="'stageObj.playOffForThirdPlace'">
+                    <h3 class="m-0 pt-2 pb-2">Play-off for third place</h3>
+                </div>
+                <div *ngIf="idx == stageObj.final" class="col" [id]="'stageObj.final'">
+                    <h3 class="m-0 pt-2 pb-2">Final</h3>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <h6 class="col mb-1 text-left">
+                    {{game.date|showDate}}&nbsp;&nbsp;
+                </h6>
+                <div class="col text-right">
+                    <span class="oi oi-clock text-secondary" style="font-size: 0.5rem"></span>
+                    <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == false" class="text-secondary" style="font-size: 0.5rem">Chane to your time</a>
+                    <a href="javascript:void(0)" (click)="game.local = !game.local" [hidden]="game.local == true" class="text-secondary" style="font-size: 0.5rem">Chane to local time</a>
+                </div>
+            </div>
+            <div class="row ">
+                <table class="table table-hover mb-4">
+                    <tbody>
+                        <tr *ngFor="let court of game.courts" (click)='show(court)' placement="top" tooltip="Click">
+                            <td class="align-middle text-main small" style="width:20%">
+                                <small class="text-muted">Status: </small>
+                                <span class="text-warning">{{court.status | gameStatus}}</span>
+                                <br>
+                                <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} ETH
+                                <br>
+                                <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
+                                <br>
+                                <small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}
+                            </td>
+                            <td class="align-middle" style="width:30%">
+                                <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}
+                            </td>
+                            <td class="align-middle" style="width:20%">
+                                <small [hidden]="!game.local">{{court.time+'000'|date:'MM-dd HH:mm':'+0300'}} Russia Time</small>
+                                <h4 [hidden]="game.local">{{court.time+'000'|date:'HH:mm'}}</h4>
+                            </td>
+                            <td class="align-middle" style="width:30%">
+                                <img [src]="court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.p2}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
 
         </div>
-
     </div>
 </div>
-
 <ng-template #buyTemplate>
     <div class="modal-body text-center">
         <div class="container text-center" id="chartDiv" align="center">
@@ -129,78 +184,98 @@
 
         <div class="row">
             <form (ngSubmit)="bet()" [formGroup]="buyForm" class="col-sm-12">
-                <div class="card  bg-info" style="margin-top:15px;">
-                    <table class="table">
-                        <tr>
-                            <td style="border:0;width:40%" class="text-left align-middle">
-                                <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
-                            <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
-                            <td style="border:0;width:40%" class="text-left align-middle">
-                                <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
-                        </tr>
-                        <tr>
-                            <td style="border:0">
-                                <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value=">10">>10</option>
-                                </select>
-                            </td>
-                            <td style="border:0">
-                                <select class="form-control" (change)="calculat()" formControlName="awayScore">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value=">10">>10</option>
-                                </select>
-                            </td>
+                <div class="card  bg-c-light" style="margin-top:15px;">
+                    <tr class="row mt-2">
+                        <td style="border:0;width:40%" class="text-center align-middle">
+                            <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}</td>
+                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-center align-middle">
+                            <img [src]="court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.p2}}</td>
+                    </tr>
 
-                        </tr>
-                    </table>
-                    <div class="form-group row border-bottom m-0 p-2 ">
-                        <div class="input-group col-7 pl-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3">Your ETH:{{balance.eth}}</span>
+
+                    <div [hidden]="chartData.currentGameInfo.status != 0">
+                        <table class="table mb-0">
+                            <tr>
+                                <td style="border:0" class="pb-0">
+                                    <select class=" form-control" (change)="calculat()" formControlName="homeScore" aria-describedby="scoreHelpBlock">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value=">10">>10</option>
+                                    </select>
+                                </td>
+                                <td style="border:0" class="pb-0">
+                                    <select class="form-control" (change)="calculat()" formControlName="awayScore">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value=">10">>10</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-left pt-0 pb-0 border-0">
+                                    <small id="passwordHelpBlock" class="text-muted">
+                                        <span class="oi oi-eye"></span> Score for full time, excludes extra time and penalty shootout.
+                                    </small>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="form-group row align-items-center border-bottom m-0 p-2 ">
+                            <div class="input-group col-7 pl-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">ETH:{{balance.eth}}</span>
+                                </div>
+                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                             </div>
-                            <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
-                        </div>
-                        <small [hidden]="USDPrice == 0" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
-                            {{USDPrice|currency}}, ETH price get from etherscan.io.
-                        </small>
-                        <small [hidden]="USDPrice > 0" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
-                            Min bet value is {{this.chartData.limit}} eth.
-                        </small>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <small [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-light align-middle m-2">
-                                Currently, if you win this bet, you can win
-                                <span class="text-warning">{{betCanWin}}</span> eth.
+                            <small [hidden]="USDPrice == 0 || eth.invalid" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
+                                {{USDPrice|currency}}, ETH price get from etherscan.io.
                             </small>
+                            <small [hidden]="USDPrice > 0 || eth.invalid" id="usdHelpBlock" class="form-text text-warning align-middle m-2">
+                                Min bet value is {{this.chartData.limit}} eth.
+                            </small>
+                            <small *ngIf="eth.invalid && (eth.dirty || eth.touched)" class="text-danger">
+                                <div *ngIf="eth.errors.required">
+                                    required
+                                </div>
+                                <div *ngIf="eth.errors.min">
+                                    min value is 0.01
+                                </div>
+                            </small>
+                        </div>
+                        <div class="row">
+                            <div class="col text-left">
+                                <p [hidden]="!buyForm.valid || chartData.currentGameInfo.status != 0 || betCanWin == 0" id="usdHelpBlock" class="form-text text-main align-middle m-2">
+                                    Estimated win:
+                                    <span class="h5 text-warning">{{betCanWin}} ETH</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col text-center align-middle">
-                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" class="btn btn-outline-light">Submit Bet</button>
+                            <button [hidden]="chartData.currentGameInfo.status != 0" type="submit" [disabled]="!buyForm.valid" class="btn btn-outline-primary">MAKE A BET</button>
                             <button [hidden]="chartData.currentGameInfo.status != 1" type="submit" disabled class="btn btn-outline-secondary disabled"
-                                readonly>Game is playing</button>
+                                readonly>GAME IS PLAYING...</button>
                         </div>
                     </div>
                 </div>
@@ -216,7 +291,7 @@
         <div class="container text-center" id="chartDiv" align="center">
             <div class="row text-center">
                 <div class="col">
-                    <h4 class="text-secondary">Vote Info</h4>
+                    <h4 class="text-main">Vote Info</h4>
                 </div>
             </div>
             <div class="row text-center">
@@ -249,11 +324,11 @@
         </div>
 
         <form (ngSubmit)="vote()" [formGroup]="voteForm">
-            <div class="card  bg-info" style="margin-top:15px;">
+            <div class="card  bg-c-light" style="margin-top:15px;">
                 <div class="card-header pb-0">
                     <div class="row text-center">
                         <div class="col">
-                            <h4 class="text-light">Vote Target</h4>
+                            <h4 class="text-main">Vote Target</h4>
                         </div>
                     </div>
                 </div>
@@ -261,10 +336,10 @@
                     <table class="table mb-0">
                         <tr>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p1}}</td>
+                                <img [src]="court.s_p1 || court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.s_p1 || court.p1}}</td>
                             <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
                             <td style="border:0;width:40%" class="text-center align-middle">
-                                <img [src]="court.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.p2}}</td>
+                                <img [src]="court.s_p2 ||court.s_p2 || court.p2|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p2 || court.s_p2 || court.p2}}</td>
                         </tr>
                         <tr>
                             <td style="border:0">
@@ -276,11 +351,13 @@
                         </tr>
                     </table>
                 </div>
-                <div class="card-footer text-light">
+                <div class="card-footer text-main">
                     <div class="row align-items-center justify-content-center">
                         <div class="col-4 align-middle">
                             <div class="form-group">
-                                <label for="myVote">My Vote</label>
+                                <label class="small" for="myVote">Vote:
+                                    <span class="text-success">{{voteOption.value == 1? 'YES': 'NO'}}</span>
+                                </label>
                                 <div class="btn-group" id="myVote" btnRadioGroup formControlName="voteOption">
                                     <label class="btn btn-success m-0" [class.active]="voteOption.value == 1" btnRadio="1">YES</label>
                                     <label class="btn border-left-0 btn-outline-secondary m-0" [class.active]="voteOption.value == 0" btnRadio="0">NO</label>
@@ -289,7 +366,9 @@
                         </div>
                         <div class="col-4 text-left align-middle">
                             <div class="form-group">
-                                <button type="submit" class="btn btn-outline-light">Submit Vote</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 2" type="submit" class="btn btn-outline-primary">MAKE A VOTE</button>
+                                <button [hidden]="chartData.currentGameInfo.status != 3" type="submit" disabled class="btn btn-outline-secondary disabled"
+                                    readonly>VOTTING ENDED</button>
                             </div>
                         </div>
                     </div>
@@ -298,3 +377,14 @@
         </form>
     </div>
 </ng-template>
+<footer class="container">
+    <p class="float-right">
+        <a class="text-primary" [ngx-scroll-to]="'top'">
+            <span class="oi  oi-arrow-thick-top large"></span>
+        </a>
+    </p>
+    <p>&middot;
+        <a href="https://www.stateofthedapps.com/dapps/eth-sports-betting">ETH Sports Betting</a> &middot;
+        <a href="https://www.stateofthedapps.com/">State Of DAPPs</a>
+    </p>
+</footer>

@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
@@ -36,13 +37,15 @@ import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
 import { FromWeiPipe } from './service/pipe/fromWei.pipe';
-import { CourtComponent } from './fifa/court/court.component';
 import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { ShowDatePipe } from './service/pipe/show-date.pipe';
 import { NationFlagPipe } from './service/pipe/nation-flag.pipe';
 import { ChartComponent } from './fifa/chart/chart.component';
-import { TransComponent } from './trans/trans.component';
+import { TransComponent } from './fifa/trans/trans.component';
+import { ContactComponent } from './fifa/contact/contact.component';
+import { FaqComponent } from './fifa/faq/faq.component';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -58,13 +61,15 @@ import { TransComponent } from './trans/trans.component';
         GameTypePipe,
         GameStatusPipe,
         WeekdayPipe,
-        CourtComponent,
         OrderComponent,
         ExchangeComponent,
         ShowDatePipe,
         NationFlagPipe,
         ChartComponent,
-        TransComponent
+        TransComponent,
+        ContactComponent,
+        FaqComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
@@ -80,6 +85,7 @@ import { TransComponent } from './trans/trans.component';
         TimepickerModule.forRoot(),
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
+        CollapseModule.forRoot(),
         FormsModule,
         LocalStorageModule,
         ReactiveFormsModule,

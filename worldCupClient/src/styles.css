@@ -16,11 +16,37 @@
 
 body {
     overflow-x: hidden;
-    font-family: 'Roboto Slab', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding-top: 3rem;
 }
 
 p {
     line-height: 1.75;
+}
+
+.bg {
+    background-image: url(assets/images/9401665.jpg);
+    height: 38rem;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.bg-header {
+    background-image: url(assets/images/bg-header.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+jumbotron.bg-c-light, .bg-c-light {
+    background-image: url(assets/images/pattern.svg);
 }
 
 a {
@@ -33,6 +59,23 @@ a:hover {
 
 .text-primary {
     color: #fed136 !important;
+}
+
+.text-main {
+    color: #3C3C3D !important;
+}
+
+.card.bg-main, .jumbotron.bg-main {
+    background-color: #ECF0F1;
+}
+.bg-main {
+    background-color: #99FFCC !important;
+}
+.bg-nav {
+    background-color: rgba(255, 255, 255, 1) !important;
+}
+.bg-s {
+    background-color: rgba(236, 340, 241, 0.5) !important;
 }
 
 #chartjs-tooltip {

@@ -1,19 +1,18 @@
-<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您要购买world cup bet</h1>
-    <p class="lead">您将需要一个安全的地方存储您的航班延误互助计划！像MetaMask这样的安全钱包即是完美之地。同时您也可以通过钱包（如：Parity）正常购买航班延误互助计划（无需另设密码）</p>
+<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
+    <h1>Wanna play?</h1>
+    <p class="lead">You’ll need a safe place to store all of your bets! The perfect place is in a secure wallet like MetaMask. This will
+        also act as your login to the game (no extra password needed).</p>
     <button type="button" class="btn btn-primary" (click)="installWallet()">
-        安装MetaMask
+        Install MetaMask
     </button>
 </div>
-
-<div [hidden]="envState.checkWeb3&&envState.checkAccount" class="jumbotron bg-warning text-center" id="changePage">
-    <h1>您的账号被锁住了</h1>
-    <p class="lead">只需打开MetaMask并按照说明进行解锁即可</p>
-
+<div [hidden]="!envState.checkWeb3||envState.checkAccount" class="jumbotron bg-warning text-center">
+    <h1>Your MetaMask is locked</h1>
+    <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
-
-<div [hidden]="!envState.checkWeb3" class="jumbotron jumbotron-fluid bg-white">
-    <div class="container">
+<img [hidden]="!spinner" class="loading" src="assets/images/Spinner-1s-44px.gif">
+<div class="mt-5">
+    <div [hidden]="!envState.checkEnv" class="container">
         <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
             <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
             <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
@@ -28,21 +27,21 @@
                         <a href="javascript:void(0)" (click)="refresh(1)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
-                <div class="card  p-3 mt-3">
+                <div class="card bg-c-light p-3 mt-3">
                     <table class="table table-striped table-sm mb-4" *ngFor="let info of betInfos">
                         <thead class="border-bottom-0">
-                            <tr>
+                            <tr class="info" (click)="getBetDetail(info)">
                                 <th scope="col" colspan="3" class="pl-3">
-                                    <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
+                                    <img [src]="info.gameInfo.s_p1 || info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
                                     <p class="d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
-                                    <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
+                                    <img [src]="info.gameInfo.s_p2 || info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
                                 </th>
                                 <th scope="col" class="align-middle text-right text-success pr-3">
                                     <small>status:</small> {{info.gameInfo.status | gameStatus}}
                                 </th>
                             </tr>
                         </thead>
-                        <thead class="">
+                        <thead [hidden]="info.scoreInfos.length == 0" class="">
                             <tr class="text-center">
                                 <th>
                                     Score
@@ -86,14 +85,14 @@
                         <a href="javascript:void(0)" (click)="refresh(2)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
-                <div class="card  p-3 mt-3">
+                <div class="card  bg-c-light p-3 mt-3">
                     <table class="table table-striped table-sm mb-4" *ngFor="let info of voteInfos">
                         <thead class="border-bottom-0">
                             <tr>
                                 <th scope="col" colspan="3" class="pl-3">
-                                    <img [src]="info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
+                                    <img [src]="info.gameInfo.s_p1 || info.gameInfo.p1|nationFlag" style="border:1px solid #c7c6c6">
                                     <p class="d-inline small">{{info.gameInfo.time+'000'|date:'yyyy-MM-dd HH:mm'}}</p>
-                                    <img [src]="info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
+                                    <img [src]="info.gameInfo.s_p2 || info.gameInfo.p2|nationFlag" style="border:1px solid #c7c6c6">
                                 </th>
                                 <th scope="col" class="align-middle text-right text-success pr-3">
                                     <small>status:</small> {{info.gameInfo.status | gameStatus}}
@@ -143,7 +142,7 @@
                         <a href="javascript:void(0)" (click)="refresh(3)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
-                <div class="card  p-3 mt-3">
+                <div class="card bg-c-light p-3 mt-3">
                     <div class="card-body">
                         <div class="row text-center">
                             <div class="col">
@@ -153,7 +152,7 @@
                                 <small class="text-secondary">Vote Token</small>
                             </div>
                             <div class="col">
-                                <small class="text-secondary">Can Withdraw</small>
+                                <small class="text-secondary">Withdraw Balance</small>
                             </div>
                         </div>
                         <div class="row text-center">
@@ -175,4 +174,5 @@
         <!-- </div>
         </div> -->
     </div>
+
 </div>

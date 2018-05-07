@@ -3,8 +3,8 @@ import '../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol';
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 contract WccVoteStorage is Ownable {
     using SafeMath for uint256;
-    enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
-    enum GameStatus { Standby, Playing, Voting, Paying, End}
+    // enum GameType { First_stage, Round_of_16, Quarter_finals, Semi_finals, For_third, Final }
+    // enum GameStatus { Standby, Playing, Voting, Paying, End}
     mapping(address => bool) public admins;
     modifier onlyAdmin() {
         require(admins[msg.sender]);
@@ -15,7 +15,6 @@ contract WccVoteStorage is Ownable {
             admins[admin] = true;
         }
     }
-
     struct VoteInfo {
         string target;
         uint yesCount;
@@ -24,6 +23,7 @@ contract WccVoteStorage is Ownable {
         bool ended;
         bool changed;
         bool isValued;
+        uint number;
     }
     struct UserVote {
         bool vote;
@@ -44,7 +44,8 @@ contract WccVoteStorage is Ownable {
                 passed: false,
                 ended: false,
                 changed: false,
-                isValued: true
+                isValued: true,
+                number: 0
             });
         } else {
             if (keccak256(voteInfos[_gameIndex].target) != keccak256(_result)) {
@@ -62,6 +63,9 @@ contract WccVoteStorage is Ownable {
     function updateVote(bytes32 _gameIndex, bool _passed, bool _ended) external onlyAdmin {
         voteInfos[_gameIndex].passed = _passed;
         voteInfos[_gameIndex].ended = _ended;
+        if (_ended) {
+            voteInfos[_gameIndex].number = block.number;
+        }
     }
     function setUserVote(bytes32 _gameIndex, bool yesOrNo, address user, uint votes) external onlyAdmin {
         if (!userVotes[_gameIndex][user].isValued) {

@@ -20,14 +20,16 @@ import * as moment from 'moment';
 export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
+    title: string;
     games: any = [];
-    secondStageStartDate: string;
+    contries: any = {};
+    secondStageStartDate;
     court: any = {};
     isSticky: Boolean = true;
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
-
+    stageObj: any = {};
     voteModalRef: BsModalRef;
     voteForm: FormGroup;
     loading = false;
@@ -36,7 +38,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     balance = {};
     USDPrice = 0;
     myVote = 1;
-    firstStageFlag = 1;
+    firstStageFlag = 0;
+    gameCount = 0;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -63,21 +66,132 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             voteOption: ['1', [Validators.required]]
         });
     }
-
+    setShow(type, index) {
+        if (this.firstStageFlag == 0) {
+            this.firstStageFlag = type + 1;
+        }
+        console.log(this.firstStageFlag);
+        if (type == 0) {
+            this.stageObj.groupPhase = index;
+            this.stageObj.groupPhaseFlag = true;
+        } else if (type == 1) {
+            this.stageObj.roundOf16 = index;
+            this.stageObj.roundOf16Flag = true;
+        } else if (type == 2) {
+            this.stageObj.quarterFinal = index;
+            this.stageObj.quarterFinalFlag = true;
+        } else if (type == 3) {
+            this.stageObj.semiFinal = index;
+            this.stageObj.semiFinalFlag = true;
+        } else if (type == 4) {
+            this.stageObj.playOffForThirdPlace = index;
+            this.stageObj.playOffForThirdPlaceFlag = true;
+        } else if (type == 5) {
+            this.stageObj.final = index;
+            this.stageObj.finalFlag = true;
+        }
+    }
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             // console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
                 if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
-                    this.getAllGames();
+                    if (tempEnvState.canLoadData) {
+                        this.getAllGames();
+                    }
                 } else {
                     this.envState.changed = false;
                 }
                 this.envState = tempEnvState;
             }
+            this.envState = tempEnvState;
         });
         this.web3.check();
+        this.title = '2018 Champions League';
+        // this.title = '2018 World Cup';
+    }
+    async getAllGames() {
+        const isGameUpdated = await this.wccSer.isGameUpdated();
+        const games = await this.localStorage.getItem<any[]>('games').toPromise();
+        const contries = await this.localStorage.getItem<any>('contries').toPromise();
+        if (!isGameUpdated && games && games.length > 0 && contries) {
+            this.games = games;
+            this.contries = contries;
+            if (this.contries['secondStageStartDate']) {
+                this.secondStageStartDate = this.contries['secondStageStartDate'];
+            }
+            if (this.contries['firstStageFlag']) {
+                this.firstStageFlag = this.contries['firstStageFlag'];
+            }
+            if (this.contries['stageObj']) {
+                this.stageObj = this.contries['stageObj'];
+            }
+            // console.log(this.stageObj);
+            console.log('from local storage');
+        } else {
+            this.gameCount = 0;
+            const sortNumber = function (a, b) {
+                return a.time - b.time;
+            };
+            this.loadingSer.show();
+            const indexes = await this.wccSer.getAllGameIndexes();
+            const temps = [];
+            this.loadingSer.hide();
+            this.loading = true;
+            for (let i = 0; i < indexes.length; i++) {
+                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
+                temps.push(gameInfo);
+                this.setGameData(temps, sortNumber, indexes.length);
+                this.gameCount++;
+            }
+            this.loadingProgress = 0;
+            this.loading = false;
+            this.localStorage.setItem('games', this.games).toPromise();
+            this.contries['secondStageStartDate'] = this.secondStageStartDate;
+            this.contries['stageObj'] = this.stageObj;
+            this.contries['firstStageFlag'] = this.firstStageFlag;
+            this.localStorage.setItem('contries', this.contries).toPromise();
+        }
+        this.refreshGameData();
+    }
+    async refreshGameData() {
+        const web3 = this.web3.instance();
+        for (let i = 0; i < this.games.length; i++) {
+            const obj = this.games[i];
+            for (let j = 0; j < obj.courts.length; j++) {
+                const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
+                const info = await this.wccSer.getGameFreshDetail(index);
+                obj.courts[j] = info.gameInfo;
+                if (info.voteInfo) {
+                    // console.log(info.voteInfo);
+                    obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
+                        + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                    obj.courts[j].score = info.voteInfo.target;
+                }
+            }
+        }
+        this.localStorage.setItem('games', this.games).toPromise();
+    }
+    async refreshOneGameData(gameIndex) {
+        const web3 = this.web3.instance();
+        for (let i = 0; i < this.games.length; i++) {
+            const obj = this.games[i];
+            for (let j = 0; j < obj.courts.length; j++) {
+                const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
+                if (gameIndex == index) {
+                    const info = await this.wccSer.getGameFreshDetail(index);
+                    obj.courts[j] = info.gameInfo;
+                    if (info.voteInfo) {
+                        // console.log(info.voteInfo);
+                        obj.courts[j].totalVotes = Number(web3.utils.fromWei(info.voteInfo.yesCount))
+                            + Number(web3.utils.fromWei(info.voteInfo.noCount));
+                        obj.courts[j].score = info.voteInfo.target;
+                    }
+                }
+            }
+        }
+        this.localStorage.setItem('games', this.games).toPromise();
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
@@ -99,7 +213,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     async show(court) {
         this.court = court;
         // console.log(court);
-        this.loadingSer.show('正在加载');
+        this.loadingSer.show('Loading...');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
         console.log(index);
@@ -110,6 +224,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         if (currentGameInfo.status == '0' || currentGameInfo.status == '1') {
             this.chartData = {};
+            const limit = await this.wccSer.getBetLimit();
+            this.buyForm = this.fb.group({
+                homeScore: ['0', [Validators.required]],
+                awayScore: ['0', [Validators.required]],
+                eth: ['0.01', [Validators.required, Validators.min(limit)]]
+            });
             this.web3.currenPrice().then(obj => {
                 // console.log(obj.result);
                 this.price = obj.result.ethusd;
@@ -123,12 +243,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 console.log(balance);
                 this.balance = balance;
             });
-            const limit = await this.wccSer.getBetLimit();
-            this.buyForm = this.fb.group({
-                homeScore: ['0', [Validators.required]],
-                awayScore: ['0', [Validators.required]],
-                eth: ['0.01', [Validators.required, Validators.min(limit)]]
-            });
+
             // this.buyForm.controls('eth').setValidators([Validators.required, Validators.min(limit)]);
             const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
             const totalBets = currentGameInfo.totalBets;
@@ -141,7 +256,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartData.currentGameIndex = index;
             this.chartData.limit = limit;
             this.buyModalRef = this.openModal(this.buyTemplate);
-        } else if (currentGameInfo.status == '2') {
+
+        } else if (currentGameInfo.status == '2' || currentGameInfo.status == '3') {
             this.chartData = {};
             const voteInfo = await this.wccSer.getVoteInfo(index);
             console.log(voteInfo);
@@ -159,14 +275,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.chartData.data = [Number(web3.utils.fromWei(voteInfo.yesCount)), Number(web3.utils.fromWei(voteInfo.noCount))];
             this.chartData.labels = ['yesCount', 'noCount'];
             this.voteModalRef = this.openModal(this.voteTemplate);
-        } else if (currentGameInfo.status == '3') {
-            this.alertSer.show(' Game Over!');
         }
 
         this.loadingSer.hide();
     }
     getChartsData(betInfos) {
         this.chartData.betInfos = betInfos;
+        this.calculat();
     }
     getUSDValue(event) {
         if (this.buyForm.valid) {
@@ -222,13 +337,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 return this.alertSer.show(check.message);
             }
 
-            this.wccSer.join(index, score, valueInWei, async (transactionHash) => {
-                await this.localActionSer.addAction({
+            await this.wccSer.join(index, score, valueInWei, (transactionHash) => {
+                this.loadingSer.show('Transaction submitted, waiting confirm...');
+                this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'join'
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     if (this.buyModalRef) {
                         this.buyModalRef.hide();
                     }
@@ -238,14 +354,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.buyForm.value.awayScore = 0;
                     this.buyForm.value.eth = '0.0';
                     this.USDPrice = 0;
+                    this.refreshOneGameData(index);
                 }
-            }, async (err) => {
+            }, (err) => {
                 console.log(err);
                 this.loadingSer.hide();
                 this.alertSer.show('User denied transaction signature');
             });
-
-
         }
     }
 
@@ -263,18 +378,20 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
+            console.log(check);
             if (check.checkResult != 0) {
                 this.loadingSer.hide();
                 return this.alertSer.show(check.message);
             }
 
-            this.wccSer.vote(index, (model.voteOption == 1 ? true : false), async (transactionHash) => {
-                await this.localActionSer.addAction({
+            this.wccSer.vote(index, (model.voteOption == 1 ? true : false), (transactionHash) => {
+                this.loadingSer.show('Transaction submitted, waiting confirm...');
+                this.localActionSer.addAction({
                     transactionHash: transactionHash, netType: this.envState.netType,
                     model: model, createdAt: new Date(), type: 'vote'
                 }, this.envState.account);
             }, async (confirmNum, receipt) => {
-                if (confirmNum == 1) {
+                if (confirmNum == 0) {
                     if (this.voteModalRef) {
                         this.voteModalRef.hide();
                     }
@@ -282,6 +399,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.alertSer.show(' Vote success!');
                     this.voteForm.reset();
                     this.voteForm.controls['voteOption'].setValue(1);
+                    this.refreshOneGameData(index);
                 }
             }, async (err) => {
                 console.log(err);
@@ -292,18 +410,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
 
         }
     }
-
-    async checkEnv() {
-        const tempEnvState: any = await this.web3.check();
-        console.log(tempEnvState);
-        if (tempEnvState.checkEnv === true && tempEnvState.checkEnv !== this.envState.checkEnv) {
-
-            await this.getAllGames();
-        }
-        this.envState = tempEnvState;
-
-    }
-
     mouseEnter(event) {
         // $("table tr td:nth-child(3)")
         $(event.target).children('table').addClass('bg-secondary');
@@ -316,59 +422,43 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     counter(i: number) {
         return new Array(i);
     }
-    async getAllGames() {
-        const isGameUpdated = await this.wccSer.isGameUpdated();
-        const games = await this.localStorage.getItem<any[]>('games').toPromise();
-        if (!isGameUpdated && games && games.length > 0 && !this.envState.changed) {
-            this.games = games;
-            console.log(this.games);
-            console.log('from local storage');
-        } else {
-            const sortNumber = function (a, b) {
-                return a.time - b.time;
-            };
-            this.loadingSer.show();
-            const indexes = await this.wccSer.getAllGameIndexes();
-            const temps = [];
-            this.loadingSer.hide();
-            this.loading = true;
-            for (let i = 0; i < indexes.length; i++) {
-                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
-                temps.push(gameInfo);
-                this.setGameData(temps, sortNumber);
-                this.loadingProgress = Number((temps.length / indexes.length).toFixed(2)) * 100;
-            }
-            this.loading = false;
-            this.loadingProgress = 0;
-            this.localStorage.setItem('games', this.games).toPromise();
-        }
-    }
-
     installWallet() {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
     }
 
-    setGameData(games, sortNumber) {
+    setGameData(games, sortNumber, totalCount) {
         let gameInfos = games;
         gameInfos = gameInfos.sort(sortNumber);
-        console.log(gameInfos);
         games = [];
         const gameLen = gameInfos.length;
+        let j = 0;
         for (let i = 0; i < gameLen; i++) {
             const game: any = {};
-            console.log(gameInfos[i].time);
-            console.log(new Date(gameInfos[i].time * 1));
-
             game.local = false;
             const date = moment(gameInfos[i].time * 1000);
             game.date = date.format('YYYY-MM-DD');
             game.day = date.format('DD');
             game.dayOfWeek = date.isoWeekday();
-
+            if (gameInfos[i].gameType == '0') {
+                this.contries[gameInfos[i].p1] = 1;
+                this.contries[gameInfos[i].p2] = 1;
+            }
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
-
+            if (!this.stageObj.groupPhase && gameInfos[i].gameType == '0') {
+                this.setShow(0, j);
+            } else if (!this.stageObj.roundOf16Flag && gameInfos[i].gameType == '1') {
+                this.setShow(1, j);
+            } else if (!this.stageObj.quarterFinalFlag && gameInfos[i].gameType == '2') {
+                this.setShow(2, j);
+            } else if (!this.stageObj.semiFinalFlag && gameInfos[i].gameType == '3') {
+                this.setShow(3, j);
+            } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[i].gameType == '4') {
+                this.setShow(4, j);
+            } else if (!this.stageObj.finalFlag && gameInfos[i].gameType == '5') {
+                this.setShow(5, j);
+            }
             if (games.length > 0 && games[games.length - 1].date == game.date) {
                 games[games.length - 1].count++;
                 games[games.length - 1].courts.push(gameInfos[i]);
@@ -376,40 +466,47 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                 game.count = 1;
                 game.courts = [gameInfos[i]];
                 games.push(game);
+                j++;
             }
+
+            this.loadingProgress = Number((this.gameCount / totalCount).toFixed(2)) * 100;
+            // console.log(this.loadingProgress);
         }
         this.games = games;
     }
-    async gotoCourt(gameInfo) {
-        // get new game info
-        console.log(gameInfo);
-        const index = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
-        console.log(index);
-        const currenGameInfo = await this.wccSer.getGameInfo(index);
-        const betInfos = await this.wccSer.getGameBetInfos(index);
+    // async gotoCourt(gameInfo) {
+    //     // get new game info
+    //     console.log(gameInfo);
+    //     const index = this.wccSer.getGameIndex(gameInfo.p1, gameInfo.p2, gameInfo.gameType);
+    //     console.log(index);
+    //     const currenGameInfo = await this.wccSer.getGameInfo(index);
+    //     const betInfos = await this.wccSer.getGameBetInfos(index);
 
-        const sortScore = function (a, b) {
-            const scoreA = a.score.replace(/>10/g, '11');
-            const scoreB = b.score.replace(/>10/g, '11');
-            const tmpAryA = scoreA.split(':');
-            const tmpAryB = scoreA.split(':');
+    //     const sortScore = function (a, b) {
+    //         const scoreA = a.score.replace(/>10/g, '11');
+    //         const scoreB = b.score.replace(/>10/g, '11');
+    //         const tmpAryA = scoreA.split(':');
+    //         const tmpAryB = scoreB.split(':');
+    //         console.log(tmpAryA);
+    //         console.log(tmpAryB);
+    //         if (tmpAryA[0] > tmpAryA[1] && tmpAryB[0] <= tmpAryB[1]) {
+    //             return -1;
+    //         }
 
-            if (tmpAryA[0] == tmpAryB[0]) {
-                return tmpAryA[1] - tmpAryB[1];
-            } else {
-                return tmpAryA[0] - tmpAryB[0];
-            }
-        };
-        console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
-        betInfos.betInfos = betInfos.betInfos.sort(sortScore);
+    //             return tmpAryA[0] - tmpAryB[0];
 
-        console.log(betInfos);
-        return console.log(currenGameInfo);
-        // this.router.navigate(['fifa/court']);
-    }
+    //     };
+    //     console.log(betInfos.betInfos[betInfos.betInfos.length - 1].score.replace(/>10/g, '11'));
+    //     betInfos.betInfos = betInfos.betInfos.sort(sortScore);
+
+    //     console.log(betInfos);
+    //     return console.log(currenGameInfo);
+    //     // this.router.navigate(['fifa/court']);
+    // }
 
     openModal(template: TemplateRef<any>) {
         return this.modalService.show(template, { class: 'modal-lg' });
     }
     get voteOption() { return this.voteForm.get('voteOption'); }
+    get eth() { return this.buyForm.get('eth'); }
 }

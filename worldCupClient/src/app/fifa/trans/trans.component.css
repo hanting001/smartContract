@@ -1,0 +1,11 @@
+tr.info:hover {
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+.loading {
+    position: absolute;
+    left: calc(50% - 22px);
+    top: calc(50% - 22px);
+    display: block;
+    z-index: 2001;
+}

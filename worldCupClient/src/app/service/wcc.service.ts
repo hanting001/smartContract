@@ -129,6 +129,13 @@ export class WCCService {
         const gameInfos = [];
         for (const index of gameIndexes) {
             const gameInfo = await sc.methods.getGameInfo(index).call();
+            if (gameInfo.gameType != '0') {
+                const playerNames = await sc.methods.playerNames(index).call();
+                if (playerNames.isValued) {
+                    gameInfo.s_p1 = playerNames.p1;
+                    gameInfo.s_p2 = playerNames.p2;
+                }
+            }
             gameInfos.push(gameInfo);
         }
         return gameInfos;
@@ -139,7 +146,16 @@ export class WCCService {
     }
     async getGameInfo(index) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getGameInfo(index).call();
+        const gameInfo = await sc.methods.getGameInfo(index).call();
+
+        if (gameInfo.gameType != '0') {
+            const playerNames = await sc.methods.playerNames(index).call();
+            if (playerNames.isValued) {
+                gameInfo.s_p1 = playerNames.p1;
+                gameInfo.s_p2 = playerNames.p2;
+            }
+        }
+        return gameInfo;
     }
     async getGameScoreIndexes(gameIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
@@ -311,7 +327,7 @@ export class WCCService {
             value: value
         };
         console.log(options);
-        sc.methods.join(gameIndex, score)
+        return sc.methods.join(gameIndex, score)
             .send(options, function (err, transactionHash) {
                 if (err) {
                     console.log(err);
@@ -425,7 +441,7 @@ export class WCCService {
             tokenBalance: web3.utils.fromWei(token)
         };
     }
-    async exchange(value, onTransactionHash, onConfirmation) {
+    async exchange(value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -451,6 +467,9 @@ export class WCCService {
             })
             .on('error', (error) => {
                 console.log(error);
+                if (onError) {
+                    onError(error);
+                }
             });
         // const web3 = this.web3Service.instance();
         // return web3.eth.sendTransaction(options)
@@ -510,13 +529,18 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-    async claimByVoter(gameIndex, onConfirmation, onError) {
+    async claimByVoter(gameIndex, onTransactionHash, onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
-        console.log(options);
+        // console.log(options);
         sc.methods.claimByVoter(gameIndex).send(options)
+            .on('transactionHash', hash => {
+                if (onTransactionHash) {
+                    onTransactionHash(hash);
+                }
+            })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
                     onConfirmation(confNumber, receipt);
@@ -667,23 +691,120 @@ export class WCCService {
             message: msgObj[checkResult]
         };
     }
-    async withdraw(onConfirmation, onError) {
+    async withdraw(onTransactionHash, onConfirmation, onError) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
         console.log(options);
         sc.methods.withdraw().send(options)
-        .on('confirmation', (confNumber, receipt) => {
-            if (onConfirmation) {
-                onConfirmation(confNumber, receipt);
+            .on('transactionHash', (hash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(hash);
+                }
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+    async redeemCheck(value) {
+        const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const msgObj = {
+            1: 'too small value',
+            2: 'no token allowance'
+        };
+        const checkResult = await sc.methods.redeemCheck(value).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async redeem(value, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.redeem(value).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+    async exchangerWithdrawBalance() {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const account = await this.web3Service.getMainAccount();
+        return sc.methods.withdraws(account).call();
+    }
+    async exchangerWithdraw(onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.withdraw().send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
+    async getGameFreshDetail(gameIndex) {
+        const vs = await this.web3Service.getContract('wccVoteStorage', 'WccVoteStorage');
+        const s = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const gameInfo = await s.methods.games(gameIndex).call();
+        if (gameInfo.gameType != '0') {
+            const players = await s.methods.playerNames(gameIndex).call();
+            if (players.isValued) {
+                gameInfo.s_p1 = players.p1;
+                gameInfo.s_p2 = players.p2;
             }
-        })
-        .on('error', (error) => {
-            console.log(error);
-            if (onError) {
-                onError(error);
-            }
-        });
+        }
+        const obj: any = {
+            gameInfo: gameInfo
+        };
+        if (Number(gameInfo.status) >= 2) {
+            obj.voteInfo = await vs.methods.voteInfos(gameIndex).call();
+        }
+        return obj;
+    }
+    async setPlayer(gameIndex, p1, p2, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(`${gameIndex}, ${p1}, ${p2}`);
+        sc.methods.setPlayer(gameIndex, p1, p2).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
     }
 }
