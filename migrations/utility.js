@@ -7,7 +7,7 @@ const conf = require('../server/lib/config');
 web3.setProvider(new web3.providers.HttpProvider(conf.get('httpProvider')));
 
 module.exports = {
-    updateDB: (name, scName, address) => {
+    updateDB: async(name, scName, address) => {
         // let options = {
         //     uri: conf.get('apiHost') + '/contract/deployed',
         //     method: 'POST',
@@ -21,7 +21,9 @@ module.exports = {
         //     json: true
         // };
         // return request(options);
-        let raw = fs.readFileSync(__dirname + '/db.json');
+        const net = await web3.eth.net.getNetworkType();
+        const path = `${__dirname}/db/${net}.json`;
+        let raw = fs.readFileSync(path);
         if (raw == '') {
             raw = JSON.stringify({});
         }
@@ -30,7 +32,7 @@ module.exports = {
             scName: scName,
             address: address
         };
-        fs.writeFileSync(__dirname + '/db.json', JSON.stringify(data));
+        fs.writeFileSync(path);
     },
     deploy: async(contract, password, params) => {
         const contractJson = require('../build/contracts/' + contract);

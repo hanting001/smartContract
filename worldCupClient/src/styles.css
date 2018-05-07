@@ -25,7 +25,7 @@ p {
 
 .bg {
     background-image: url(assets/images/9401665.jpg);
-    height: 38rem;
+    height: auto;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center center;

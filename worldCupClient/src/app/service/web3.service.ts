@@ -71,7 +71,8 @@ export class Web3Service {
         }
     }
     async getAddress(name) {
-        const db = await this.http.get<any>('assets/db.json?' + new Date().getTime()).toPromise();
+        const net = await this.web3.eth.net.getNetworkType();
+        const db = await this.http.get<any>(`assets/db/${net}.json?` + new Date().getTime()).toPromise();
         // const db = require('../../../../migrations/db');
         return db[name].address;
     }

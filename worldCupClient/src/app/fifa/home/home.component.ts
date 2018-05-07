@@ -25,7 +25,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     contries: any = {};
     secondStageStartDate;
     court: any = {};
-    isSticky: Boolean = true;
+    isSticky: Boolean = false;
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
@@ -378,7 +378,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const index = this.wccSer.getGameIndex(this.court.p1, this.court.p2, this.court.gameType);
 
             const check = await this.wccSer.voteCheck(index);
-            console.log(check);
             if (check.checkResult != 0) {
                 this.loadingSer.hide();
                 return this.alertSer.show(check.message);
