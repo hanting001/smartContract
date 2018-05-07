@@ -15,7 +15,7 @@ import { FaqComponent } from './fifa/faq/faq.component';
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: '', redirectTo: 'matches', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'matches', component: FifaHomeComponent },
     { path: 'admin', component: FifaAdminComponent },
@@ -23,7 +23,7 @@ const routes: Routes = [
     { path: 'contact', component: ContactComponent },
     { path: 'faq', component: FaqComponent },
     { path: 'trans', component: TransComponent },
-    { path: '**', redirectTo: 'home', pathMatch: 'full' }
+    { path: '**', redirectTo: 'matches', pathMatch: 'full' }
 ];
 
 @NgModule({
