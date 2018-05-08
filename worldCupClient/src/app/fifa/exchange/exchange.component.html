@@ -1,15 +1,3 @@
-<!-- <div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <h1>Join us as a partner and GET PAID!</h1>
-    <p>1. Our project want to be more open and more transparent. So we want judgers from all over the world.</p>
-    <p>2. You can exchange our vote token which called KOT with your ETH on this page.</p>
-    <p>3. Once a game result is set by administrator, you can vote with your KOT to support or oppose administrator's judgement.</p>
-    <p>4. Once a game result is comfirmed, all voters who voted correctly will share 5% eth of the bet by percent.</p>
-</div> -->
-
 <div id="top"></div>
 <div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
     <h1>Wanna play?</h1>
@@ -28,43 +16,41 @@
         <div class="col">
             <div class="jumbotron jumbotron-fluid mb-0 p-5" style="background: none;">
                 <div class="container text-white">
-                    <h1 class="display-4  pt-4">KOT Voting Token</h1>
-                    <p class="lead ">KOT is token for voting system, the purpose of which enables players to vote on match results in order
-                        to gain ETH.
-                    </p>
-                    <p class="">Token can be exchanged with ETH at a fixed rate 5. Token`s total supply will be set at 10000.</p>
-                    <p class="">KOT can be
-                        <a class="text-dark" href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting ETH can
-                        be
-                        <a class="text-dark" href="javascript:void(0)" (click)="withdraw()">sent to</a> address as user's metamask selected.</p>
-                    <p class="">You can gain ETH by holding tokens and actively participating in the voting.</p>
-                    <div class="row">
+                    <div class="row text-center">
                         <div class="col">
-                            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image"
-                                width="140" height="140">
-                            <h2>Heading</h2>
-                            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies
-                                vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent
-                                commodo cursus magna.</p>
-                            <p>
-                                <a class="btn btn-secondary" href="#" role="button">View details &raquo;</a>
+                            <img class="rounded-circle" src="assets/images/token.png" width="200" height="200">
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col">
+                            <!-- <img class="rounded-circle" src="assets/images/token.png" width="200" height="200"> -->
+                            <h2>KOT Voting Token</h2>
+                            <p class="text-left">KOT is token for voting system, the purpose of which enables players to vote on match results
+                                in order to gain ETH.
                             </p>
+                            <p class="text-left">Token can be exchanged with ETH at a fixed rate 5. Token total supply will be set at 10000.</p>
+                            <p class="text-left">KOT can be
+                                <a class="text-warning" href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting
+                                ETH can be
+                                <a class="text-warning" href="javascript:void(0)" (click)="withdraw()">sent to</a> address as user's metamask selected.</p>
+
                         </div>
                         <div class="col">
-                            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image"
-                                width="140" height="140">
-                            <h2>Heading</h2>
-                            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                                Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo,
-                                tortor mauris condimentum nibh.</p>
-                            <p>
-                                <a class="btn btn-secondary" href="#" role="button">View details &raquo;</a>
+                            <!-- <img class="rounded-circle" src="assets/images/vote.jpg" width="200" height="200"> -->
+                            <h2>Join us as a partner and GET PAID!</h2>
+                            <p class="text-left">Our project want to be more open and more transparent.
                             </p>
+                            <p class="text-left">Once a game result is set by administrator, you can vote with your KOT to support or oppose administrator's
+                                judgement.
+                            </p>
+                            <p class="text-left">Once a game result is comfirmed by voting, all voters who voted correctly will share 5% eth of
+                                the bet by percent.</p>
+                            <p class="text-left">You can gain ETH by holding tokens and actively participating in the voting.</p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <p class="text-center" style="margin-top: 5rem;">
+                            <p class="text-center" style="margin-top: 3rem;">
                                 <a class="btn btn-primary btn-lg" href="javascript:void(0)" (click)="showExModal()" [ngx-scroll-to]="'inputForm'" role="button">Get Token</a>
                             </p>
                         </div>
@@ -195,7 +181,7 @@
                         </div>
                     </form>
                     <p class="float-right">
-                        <a class="text-primary" [ngx-scroll-to]="'top'">
+                        <a class="text-primary" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="'top'">
                             <i class="icon-arrow-up text-primary icon-2x"></i>
                         </a>
                     </p>
