@@ -17,6 +17,7 @@ export class TransComponent implements OnInit, OnDestroy {
     myBalance: any = {};
     selectTab = 1;
     spinner = false;
+    gameStatusFilter;
     constructor(
         private wccService: WCCService,
         private web3: Web3Service,
@@ -58,6 +59,11 @@ export class TransComponent implements OnInit, OnDestroy {
             this.getBalanceAndWithdraw();
         }
     }
+    statusFilter(event, tab) {
+        console.log(event.target.value);
+        this.gameStatusFilter = event.target.value;
+        this.refresh(tab);
+    }
     async getBalanceAndWithdraw() {
         this.loading.show('get balance info...');
         const withdraw = await this.wccService.getUserWithdraw();
@@ -78,8 +84,12 @@ export class TransComponent implements OnInit, OnDestroy {
         const gameIndexes = await this.wccService.getUserVotedGameIndexes();
         this.loading.hide();
         const temp = [];
+        this.voteInfos = temp;
         for (let i = 0; i < gameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(gameIndexes[i]);
+            if (this.gameStatusFilter && this.gameStatusFilter != gameInfo.status) {
+                continue;
+            }
             const voteInfos = [];
             const voteInfo = await this.wccService.getUserVoteInfo(gameIndexes[i], gameInfo);
             const gameVoteInfo = await this.wccService.getVoteInfo(gameIndexes[i]);
@@ -92,7 +102,6 @@ export class TransComponent implements OnInit, OnDestroy {
             });
             this.loadingProgress = Number((this.voteInfos.length / gameIndexes.length).toFixed(2)) * 100;
         }
-        this.voteInfos = temp;
         this.loadingProgress = 0;
     }
     async claimVote(info) {
@@ -127,7 +136,9 @@ export class TransComponent implements OnInit, OnDestroy {
         this.loading.hide();
         for (let i = 0; i < joinedGameIndexes.length; i++) {
             const gameInfo = await this.wccService.getGameInfo(joinedGameIndexes[i]);
-            // const scoreIndexes = await this.wccService.getUserJoinedGameScoreIndexes(joinedGameIndexes[i]);
+            if (this.gameStatusFilter && this.gameStatusFilter != gameInfo.status) {
+                continue;
+            }
             const scoreInfos = [];
             const obj = {
                 gameInfo: gameInfo,

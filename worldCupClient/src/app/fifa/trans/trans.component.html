@@ -22,8 +22,17 @@
         <tabset>
             <tab id="Bets" heading="My Bets" id="tab1" (select)="onSelect($event)">
                 <div class="row align-items-center">
+                    <div class="col text-left">
+                        Filter:
+                        <select (change)="statusFilter($event, 1)">
+                            <option value="">All</option>
+                            <option value="0">Open</option>
+                            <option value="2">Voting</option>
+                            <option value="3">Paying</option>
+                        </select>
+                    </div>
                     <div class="col text-right">
-                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <i class="icon-refresh text-secondary" style="font-size: 0.5rem;"></i>
                         <a href="javascript:void(0)" (click)="refresh(1)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
@@ -80,8 +89,16 @@
             </tab>
             <tab id="Votes" heading="My Votes" (select)="onSelect($event)">
                 <div class="row align-items-center">
+                    <div class="col text-left">
+                        Filter:
+                        <select (change)="statusFilter($event, 2)">
+                            <option value="">All</option>
+                            <option value="2">Voting</option>
+                            <option value="3">Paying</option>
+                        </select>
+                    </div>
                     <div class="col text-right">
-                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <i class="icon-refresh text-secondary" style="font-size: 0.5rem;"></i>
                         <a href="javascript:void(0)" (click)="refresh(2)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
@@ -138,7 +155,7 @@
             <tab id="Balance" heading="My Balance" (select)="onSelect($event)">
                 <div class="row align-items-center">
                     <div class="col text-right">
-                        <span class="oi oi-loop-circular text-secondary" style="font-size: 0.5rem"></span>
+                        <i class="icon-refresh text-secondary" style="font-size: 0.5rem;"></i>
                         <a href="javascript:void(0)" (click)="refresh(3)" class="text-secondary" style="font-size: 0.5rem">Refresh Data</a>
                     </div>
                 </div>
@@ -163,8 +180,8 @@
                                 <h5>{{myBalance.token}}</h5>
                             </div>
                             <div class="col">
-                                <h5>{{myBalance.withdraw | fromWei}}</h5><button *ngIf="myBalance.withdraw > 0" type="button"
-                                    (click)="withdraw()" class="btn btn-outline-primary btn-sm">Withdraw</button>
+                                <h5>{{myBalance.withdraw | fromWei}}</h5>
+                                <button *ngIf="myBalance.withdraw > 0" type="button" (click)="withdraw()" class="btn btn-outline-primary btn-sm">Withdraw</button>
                             </div>
                         </div>
                     </div>
