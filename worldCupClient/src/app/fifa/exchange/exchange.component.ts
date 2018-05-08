@@ -105,7 +105,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             console.log(model);
             const web3 = this.web3.instance();
             if (this.withdrawFlag) {
-                this.alertSer.confirm('确定授权合约可以转走token?');
+                this.alertSer.confirm(`confirm contract can transfer ${model.kotValue} token?`);
                 const valueInWei = web3.utils.toWei(String(model.kotValue));
                 const confirmOb = this.alertSer.getComfirmObservable().subscribe(async () => {
                     this.alertSer.hide();
@@ -172,7 +172,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         const balance = await this.wccSer.exchangerWithdrawBalance();
         const b = web3.utils.fromWei(balance);
         if (Number(b) > 0) {
-            this.alertSer.confirm(`确定提现${b}个ETH?`);
+            this.alertSer.confirm(`withdraw ${b} ETH?`);
             const confirmOb = this.alertSer.getComfirmObservable().subscribe(
                 async () => {
                     confirmOb.unsubscribe();

@@ -10,7 +10,8 @@
     <h1>Your MetaMask is locked</h1>
     <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
 </div>
-<img [hidden]="!spinner" class="loading" src="assets/images/Spinner-1s-44px.gif">
+<!-- <img [hidden]="!spinner" class="loading" src="assets/images/Spinner-1s-44px.gif"> -->
+<i [hidden]="!spinner" class="icon-spinner icon-spin icon-2x loading"></i>
 <div class="mt-5">
     <div [hidden]="!envState.checkEnv" class="container">
         <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
