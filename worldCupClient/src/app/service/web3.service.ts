@@ -140,6 +140,7 @@ export class Web3Service {
                     case 'main':
                         console.log('This is mainnet');
                         state.netName = 'mainnet';
+                        state.canLoadData = true;
                         break;
                     case 'morden':
                         console.log('This is the deprecated Morden test network.');
