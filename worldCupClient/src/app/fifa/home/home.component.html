@@ -17,7 +17,7 @@
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
                 <div class="col-10 text-center">
-                    <p [hidden]="loading" class=" display-4 text-main text-center mb-1">{{title}}</p>
+                    <p [hidden]="loading" class=" display-4 text-main text-center mb-1"><img src="assets/images/champion.png" height="70">{{title}}</p>
                     <span [hidden]="loading" class="text-success text-center mb-1">World Cup Coming Soon!</span>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
                     <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
