@@ -8,7 +8,7 @@ contract WccPlayer is Ownable, Stoppable{
     using SafeMath for uint256;
     WccStorage wccs;
     WccVoteStorage vs;
-    bytes32 public testOK;
+    // bytes32 public testOK;
     mapping(address => uint) public withdraws;
     uint public limit = 10 finney;
     function WccPlayer(address wccsAddress, address vsAddress) public Stoppable(msg.sender){
@@ -57,7 +57,7 @@ contract WccPlayer is Ownable, Stoppable{
         require(joinCheck(gameIndex, msg.value) == 0);
         bytes32 scoreIndex = keccak256(score);
         wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
-        testOK = scoreIndex;
+        // testOK = scoreIndex;
         withdraws[owner] = withdraws[owner].add(msg.value);
         UserJoin(gameIndex, score, msg.sender);
     }
@@ -118,7 +118,7 @@ contract WccPlayer is Ownable, Stoppable{
         var (, winValue) = isWin(_gameIndex, _scoreIndex);
         wccs.setUserScorePaid(_gameIndex, _scoreIndex, msg.sender);
         withdraws[msg.sender] = withdraws[msg.sender].add(winValue);
-        testOK = keccak256(block.number);
+        // testOK = keccak256(block.number);
         UserClaim(_gameIndex, _scoreIndex, msg.sender);
     }
     function setWithdraw(address user, uint value) external onlyOwner {

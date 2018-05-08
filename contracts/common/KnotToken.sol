@@ -7,7 +7,7 @@ contract KnotToken is StandardToken {
     string public symbol = 'KTC';
     uint public totalSupply = 0;
     uint public decimals = 18;
-    uint public INITIAL_SUPPLY = 1000000000 * (10 ** decimals);
+    uint public INITIAL_SUPPLY = 20000 * (10 ** decimals);
     
     function KnotToken(string _name, string _symbol) public {
         name =_name;

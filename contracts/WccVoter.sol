@@ -10,7 +10,7 @@ contract WccVoter is Ownable, Stoppable{
     WccStorage wccs;
     WccVoteStorage vs;
     KnotToken token;
-    uint public testOK;
+    // uint public testOK;
     mapping(bytes32 => bool) public canEnd;
     mapping(address => bool) public judges;
     modifier onlyJudge() {
@@ -71,7 +71,7 @@ contract WccVoter is Ownable, Stoppable{
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Voting);
         // create new Vote info
         vs.setVote(_gameIndex, _result);
-        testOK = block.number;
+        // testOK = block.number;
         StartVote(_gameIndex, _result);
     }
     event ChangeVote(bytes32 _gameIndex, string _result);
@@ -82,7 +82,7 @@ contract WccVoter is Ownable, Stoppable{
     function changeResult(bytes32 _gameIndex, string _result) external stopInEmergency onlyJudge {
         require(startVoteCheck(_gameIndex) == 0);
         vs.setVote(_gameIndex, _result);
-        testOK = block.number;
+        // testOK = block.number;
         ChangeVote(_gameIndex, _result);
     }
     /// @author Bob Clampett
@@ -129,7 +129,7 @@ contract WccVoter is Ownable, Stoppable{
         if (endVoteCheck(_gameIndex) == 0 && yesOrNo) {
             endVote(_gameIndex);
         }
-        testOK = block.number;
+        // testOK = block.number;
         UserVote(_gameIndex, yesOrNo, msg.sender);
     }
     function canEndCheck(bytes32 _gameIndex) public view returns(uint) {
@@ -178,7 +178,32 @@ contract WccVoter is Ownable, Stoppable{
         // change game status to Paying
         wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Paying);
         vs.updateVote(_gameIndex, true, true);
-        testOK = block.number;
+        // testOK = block.number;
+        EndVote(_gameIndex);
+    }
+    function endVoteByAdminCheck(bytes32 _gameIndex) public view returns(uint) {
+        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
+        if (!gameValued) {
+            return 1; //game not exist
+        }
+        if (status != WccStorage.GameStatus.Voting) {
+            return 2; //wrong status
+        }
+        var (,,,,ended,,voteValued,) = vs.voteInfos(_gameIndex);
+        if (ended) {
+            return 3; //vote ended
+        }
+        if (!voteValued) {
+            return 4; //vote not exist
+        }
+        return 0;
+    }
+    function endVoteByAdmin(bytes32 _gameIndex) external stopInEmergency onlyJudge {
+        require(endVoteByAdminCheck(_gameIndex) == 0);
+        // change game status to Paying
+        wccs.setGameStatus(_gameIndex, WccStorage.GameStatus.Paying);
+        vs.updateVote(_gameIndex, true, true);
+        // testOK = block.number;
         EndVote(_gameIndex);
     }
 }
