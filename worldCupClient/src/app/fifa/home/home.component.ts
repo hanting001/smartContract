@@ -216,6 +216,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.loadingSer.show('Loading...');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        this.refreshOneGameData(index);
         console.log(index);
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
