@@ -22,8 +22,10 @@ module.exports = {
         // };
         // return request(options);
         const net = await web3.eth.net.getNetworkType();
+        console.log(net);
         const path = `${__dirname}/db/${net}.json`;
         let raw = fs.readFileSync(path);
+        console.log(raw);
         if (raw == '') {
             raw = JSON.stringify({});
         }
@@ -32,7 +34,7 @@ module.exports = {
             scName: scName,
             address: address
         };
-        fs.writeFileSync(path);
+        fs.writeFileSync(path, JSON.stringify(data));
     },
     deploy: async(contract, password, params) => {
         const contractJson = require('../build/contracts/' + contract);
