@@ -67,6 +67,10 @@ export class FaqComponent implements OnInit {
                 title: 'Nope. No signups are necessary! We will never ask you for any personal information and all betting can be done anonymously.',
                 answers: []
             }, {
+                question: 'Why my transaction is pending?',
+                title: 'You can read this <a href="https://medium.com/metamask/regarding-pending-transactions-4ec0ec23140d">article</a> to understand why ethereum transaction usually  pending and what you can do.',
+                answers: []
+            }, {
                 question: 'What is the rules for calculating bonuses?',
                 title: 'The rules for calculating bonuses are very simple. The more you invest, the more ETHs are won.',
                 answers: [
