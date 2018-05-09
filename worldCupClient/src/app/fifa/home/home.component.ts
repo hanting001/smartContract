@@ -134,7 +134,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const sortNumber = function (a, b) {
                 return a.time - b.time;
             };
-            this.loadingSer.show();
+            this.loadingSer.show('loading game info...');
             const indexes = await this.wccSer.getAllGameIndexes();
             const temps = [];
             this.loadingSer.hide();
