@@ -74,7 +74,7 @@ export class FaqComponent implements OnInit {
                 question: 'What is the rules for calculating bonuses?',
                 title: 'The rules for calculating bonuses are very simple. The more you invest, the more ETHs are won.',
                 answers: [
-                    'For betting players, the proportion of your bet in all winners multiplied by the total size of the game',
+                    'For betting players, the proportion of your bet in all winners multiplied by the total betting value of the game',
                     'For the voting player, the percentage of the total balance of all the winners that you have held in the voting token is multiplied by 5% of the total game\'s bets.'
                 ]
             }, {
