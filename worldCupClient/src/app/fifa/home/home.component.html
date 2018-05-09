@@ -13,10 +13,10 @@
 </div>
 
 <div class="bg-c-light" style="background-attachment: fixed;">
-    <div class="container-fluid " style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
-                <div class="col-10 text-center">
+                <div class="col text-center">
                     <p [hidden]="loading" class=" display-4 text-main text-center mb-1"><img src="assets/images/champion.png" height="70">{{title}}</p>
                     <span [hidden]="loading" class="text-success text-center mb-1">World Cup Coming Soon!</span>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
@@ -27,8 +27,8 @@
                 </div>
             </div>
             <div class="row justify-content-center">
-                <div class="col-10 text-center">
-                    <table class="table m-0 table-responsive bg-white table-sm rounded">
+                <div class="col text-center">
+                    <table class="table m-0 table-responsive table-sm rounded" >
                         <tr>
                             <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
                                 *ngFor="let game of games" class="text-center p-0">
@@ -178,7 +178,7 @@
         </div>
         <div id="chartDiv" align="center">
             <chartjs-component [chartType]="'line'" (getData)="getChartsData($event)" [dataSetLabel]="dataSetLable" [chartData]='chartData'
-                [chartLabels]='chartLabels' [chartOtherInfo]='chartOtherInfo'>
+                [chartLabels]='chartLabels'>
             </chartjs-component>
         </div>
 
@@ -245,7 +245,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon3">ETH:{{balance.eth}}</span>
                                 </div>
-                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
+                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" (change)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                             </div>
                             <small [hidden]="USDPrice == 0 || eth.invalid" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                                 {{USDPrice|currency}}, ETH price get from etherscan.io.
@@ -318,8 +318,7 @@
             </div>
         </div>
         <div id="chartDiv" align="center">
-            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'
-                [chartOtherInfo]='chartOtherInfo'>
+            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'>
             </chartjs-component>
         </div>
 

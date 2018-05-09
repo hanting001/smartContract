@@ -7,7 +7,7 @@ const conf = require('../server/lib/config');
 web3.setProvider(new web3.providers.HttpProvider(conf.get('httpProvider')));
 
 module.exports = {
-    updateDB: async(name, scName, address) => {
+    updateDB: async (name, scName, address) => {
         // let options = {
         //     uri: conf.get('apiHost') + '/contract/deployed',
         //     method: 'POST',
@@ -22,10 +22,8 @@ module.exports = {
         // };
         // return request(options);
         const net = await web3.eth.net.getNetworkType();
-        console.log(net);
         const path = `${__dirname}/db/${net}.json`;
         let raw = fs.readFileSync(path);
-        console.log(raw);
         if (raw == '') {
             raw = JSON.stringify({});
         }
@@ -36,12 +34,13 @@ module.exports = {
         };
         fs.writeFileSync(path, JSON.stringify(data));
     },
-    deploy: async(contract, password, params) => {
+    deploy: async (contract, password, params, onReceipt) => {
         const contractJson = require('../build/contracts/' + contract);
         const contractObj = new web3.eth.Contract(contractJson.abi);
         const code = contractJson.bytecode;
         console.log(`-------${contract}开始部署--------`);
         const accounts = await web3.eth.getAccounts();
+        console.log(accounts);
         const account = accounts[0];
         // if (password) {//password
         //     web3.eth.personal.unlockAccount(account, password, web3.utils.toHex(15000));
@@ -54,11 +53,31 @@ module.exports = {
         }
         const obj = contractObj.deploy(options);
         const gas = await obj.estimateGas();
-        const newContractInstance = await obj.send({
-            from: account,
-            gas: gas * 2
-        });
-        console.log(`-------部署结束，地址:${newContractInstance.options.address}--------`)
-        return newContractInstance.options.address;
+        obj.send({
+                from: account,
+                gas: gas * 2
+            })
+            .on('error', function (error) {
+                console.log(error)
+            })
+            .on('transactionHash', function (transactionHash) {
+                console.log(transactionHash)
+            })
+            .on('receipt', function (receipt) {
+                console.log(`-------部署结束，地址:${receipt.contractAddress}--------`)
+                onReceipt(receipt.contractAddress) // contains the new contract address
+            })
+            .on('confirmation', function (confirmationNumber, receipt) {
+                if (confirmationNumber == 0) {
+                    console.log('confirmation');
+                }
+            });
+
+        // // const gas = await obj.estimateGas();
+        // const newContractInstance = await obj.send({
+        //     from: account
+        // });
+
+        // return newContractInstance.options.address;
     }
 }

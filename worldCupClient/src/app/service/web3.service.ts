@@ -138,12 +138,12 @@ export class Web3Service {
 
                 switch (netType) {
                     case 'main':
-                        console.log('This is mainnet');
+                        // console.log('This is mainnet');
                         state.netName = 'mainnet';
                         state.canLoadData = true;
                         break;
                     case 'morden':
-                        console.log('This is the deprecated Morden test network.');
+                        // console.log('This is the deprecated Morden test network.');
                         state.netName = 'Morden testnet';
                         break;
                     case 'ropsten':
@@ -151,7 +151,7 @@ export class Web3Service {
                         console.log('This is the ropsten test network.');
                         break;
                     case 'rinkeby':
-                        console.log('This is the Rinkeby test network.');
+                        // console.log('This is the Rinkeby test network.');
                         state.netName = 'Rinkeby testnet';
                         break;
                     case 'kovan':

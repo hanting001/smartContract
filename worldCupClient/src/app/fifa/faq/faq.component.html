@@ -39,7 +39,7 @@
                 </div>
                 <div id="aboutCollapse{{idx}}" class="collapse" [attr.aria-labelledby]="'heading' + idx" data-parent="#abouts">
                     <div class="card-body text-secondary">
-                        <p style="padding-left:24px;">{{about.title}}</p>
+                        <p style="padding-left:24px;" [innerHtml]="about.title"></p>
                         <ul>
                             <li *ngFor=" let answer of about.answers " [innerHtml]="answer"></li>
                         </ul>

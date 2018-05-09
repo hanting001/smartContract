@@ -134,7 +134,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             const sortNumber = function (a, b) {
                 return a.time - b.time;
             };
-            this.loadingSer.show();
+            this.loadingSer.show('loading game info...');
             const indexes = await this.wccSer.getAllGameIndexes();
             const temps = [];
             this.loadingSer.hide();
@@ -216,6 +216,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.loadingSer.show('Loading...');
         // return;
         const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        this.refreshOneGameData(index);
         console.log(index);
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
