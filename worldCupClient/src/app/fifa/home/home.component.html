@@ -245,7 +245,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon3">ETH:{{balance.eth}}</span>
                                 </div>
-                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
+                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" (change)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
                             </div>
                             <small [hidden]="USDPrice == 0 || eth.invalid" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                                 {{USDPrice|currency}}, ETH price get from etherscan.io.
