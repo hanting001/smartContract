@@ -44,13 +44,6 @@ export class HomeComponent implements OnInit {
         public alertSer: AlertService) {
 
 
-        setInterval(() => {
-            this.checkEnv();
-        }, 20000);
-
-        this.checkEnv();
-
-
         this.form = this.fb.group({
             flightNO: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{2}[0-9]{4}$/)]],
             flightDate: ['', [Validators.required]],
@@ -107,9 +100,22 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.web3.getMainAccount().then(account => {
-            this.account = account;
+        this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
+            // console.log(tempEnvState);
+            if (tempEnvState.checkEnv) {
+                if (tempEnvState.checkEnv !== this.envState.checkEnv) {
+                    this.envState.changed = true;
+                    if (tempEnvState.canLoadData) {
+                        this.getAllData();
+                    }
+                } else {
+                    this.envState.changed = false;
+                }
+                this.envState = tempEnvState;
+            }
+            this.envState = tempEnvState;
         });
+        this.web3.check();
         // 测试是否已加入航延计划
 
         this.localService.use('zh-cn');
@@ -194,7 +200,7 @@ export class HomeComponent implements OnInit {
 
     }
     async startClaim(flightNO, flightDate) {
-        const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
+        const claimCheck = await this.flightDelayService.canStartVote(flightNO, flightDate);
         const account = await this.web3.getMainAccount();
         console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
@@ -203,7 +209,7 @@ export class HomeComponent implements OnInit {
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
         this.loadingSer.show();
-        this.flightDelayService.startClaim(flightNO, flightDate, target, async (transactionHash) => {
+        this.flightDelayService.startClaimVote(flightNO, flightDate, target, async (transactionHash) => {
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
                 type: 'applyClaim', flightNO: flightNO, flightDate: flightDate
@@ -213,20 +219,19 @@ export class HomeComponent implements OnInit {
                 const testOK = await this.flightDelayService.testServiceOK();
                 console.log(testOK);
                 this.voteInfo = await this.flightDelayService.getCurrentVote();
+                this.getMyOrders();
                 console.log(this.voteInfo);
                 this.loadingSer.hide();
-                this.alertSer.show('申请成功');
+                this.alertSer.show('申请成功,航班开启理赔投票');
             }
         });
     }
-    async checkEnv() {
-        this.envState = await this.web3.check();
-        if (this.envState.checkEnv === true) {
-            this.getMyOrders();
-            this.getMyActions();
-            this.getCurrentVoteInfo();
-            this.getBalance();
-        }
+    async getAllData() {
+        console.log('get all data');
+        this.getMyOrders();
+        this.getMyActions();
+        this.getCurrentVoteInfo();
+        this.getBalance();
     }
 
     openModal(template: TemplateRef<any>) {

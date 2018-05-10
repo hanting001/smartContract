@@ -170,6 +170,24 @@ export class FlightDelayService {
             message: msgObj[checkResult]
         };
     }
+
+    async canStartVote(flightNO, flightDate) {
+        const web3 = this.web3Service.instance();
+        flightDate = moment(flightDate).format('YYYY-MM-DD');
+        const key = web3.utils.keccak256(flightNO + flightDate);
+        // const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const msgObj = {
+            1: '您没有购买该航班计划',
+            2: '已有人对该航班发起了理赔申请，请关注投票结果',
+            3: '该航班的投票已经结束'
+        };
+        const checkResult = await sc.methods.claimVoteCheck(key).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
     // 加入航延计划，不带投票信息
     async join(mySfInfo: any, votedSfIndex, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelay', 'FlightDelay');
@@ -378,6 +396,33 @@ export class FlightDelayService {
                     onTransactionHash(transactionHash);
                 }
                 console.log(`start claim txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
+    async startClaimVote(flightNO, flightDate, target, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        const web3 = this.web3Service.instance();
+        const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
+        sc.methods.claimVote(key, '0').send(options)
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`start claim vote txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {

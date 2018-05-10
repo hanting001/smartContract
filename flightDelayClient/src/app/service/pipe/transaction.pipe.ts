@@ -7,6 +7,7 @@ import * as moment from 'moment';
 export class TransactionPipe implements PipeTransform {
 
     transform(value: any, args?: any): any {
+        console.log(value);
         if (value.type === 'approve') {
             return '您已授权扣除' + value.sfInfo.price + '个代币，用于购买航班号为'
                 + value.sfInfo.flightNO + ',出发日期为'
