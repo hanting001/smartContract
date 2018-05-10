@@ -58,8 +58,8 @@ export class FaqComponent implements OnInit {
                 question: 'How do I win ETH?',
                 title: 'There are two ways to win ETH in the game',
                 answers: [
-                    'By predicting the score of the game, if the score is guessed, all the people who guessed the score <span class="text-primary">share the total amount of the entire bet</span>.',
-                    'By voting on the results of the contest, if the vote is passed, all those who voted in favor <span class="text-primary">share the 5% of entire bet</span>',
+                    'By predicting the score of the match, if the score is guessed right, all the winner will <span class="text-primary">share the total amount of the entire bet</span>.',
+                    'By voting on the results of the match, if the vote is passed, all those who voted in favor will <span class="text-primary">share the 5% of entire bet</span>.',
                     '<span class="text-primary">Only 90 minutes</span> of match(first half and second half) outcome as final score, excludes extra time and penalty shootout.'
                 ]
             }, {
@@ -68,7 +68,7 @@ export class FaqComponent implements OnInit {
                 answers: []
             }, {
                 question: 'Why my transaction is pending?',
-                title: 'You can read this <a href="https://medium.com/metamask/regarding-pending-transactions-4ec0ec23140d">article</a> to understand why ethereum transaction usually  pending and what you can do.',
+                title: 'You can read this <a href="https://medium.com/metamask/regarding-pending-transactions-4ec0ec23140d">article</a> to understand why ethereum transaction sometimes  pending and what you can do.',
                 answers: []
             }, {
                 question: 'What is the rules for calculating bonuses?',
@@ -117,7 +117,7 @@ export class FaqComponent implements OnInit {
                     'Odds are a dynamically changing value. The higher the bet concentration is, the lower the odds are.'
                 ]
             }, {
-                question: 'Why is the game information displayed so slowly sometimes?',
+                question: 'Why is the match information displayed so slowly sometimes?',
                 title: 'Since we have entered all the game data into the blockchain, the process of querying from the blockchain is relatively slow. However, this slow process will only need to go through once because the web page will cache all game informations later.',
                 answers: []
             }, {
