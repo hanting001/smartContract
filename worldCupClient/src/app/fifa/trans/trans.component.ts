@@ -213,9 +213,9 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.show('Transaction submitted, waiting confirm...');
         }, async (confirmNum, receipt) => {
             if (confirmNum == 0) {
+                await this.getBalanceAndWithdraw();
                 this.loadingSer.hide();
                 this.alertSer.show('Success!');
-                this.getBalanceAndWithdraw();
             }
         }, async (err) => {
             this.loadingSer.hide();

@@ -37,6 +37,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     @ViewChild('startVoteTemplate') startVoteTemplate: TemplateRef<any>;
     @ViewChild('setVoteCanEndTemplate') setVoteCanEndTemplate: TemplateRef<any>;
     @ViewChild('setPlayerTemplate') setPlayerTemplate: TemplateRef<any>;
+    @ViewChild('forceEndTemplate') forceEndTemplate: TemplateRef<any>;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
@@ -333,7 +334,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 awayScore: ['0', [Validators.required]]
             });
             this.modalRef = this.openModal(this.startVoteTemplate);
-        } else if (type == 2) {
+        } else if (type == 2 || type == 4) {
             const web3 = this.web3.instance();
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             const canEnd = await this.wccSer.isVoteCanEnd(gameIndex);
@@ -341,13 +342,19 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 return this.alertSer.show('Already can end');
             }
             const voteInfo = await this.wccSer.getVoteInfo(gameIndex);
+            console.log(voteInfo.target.split(':'));
             const BN = web3.utils.BN;
             this.selectedVote = {
                 yesCount: web3.utils.fromWei(voteInfo.yesCount),
                 noCount: web3.utils.fromWei(voteInfo.noCount),
-                totalCount: web3.utils.fromWei(new BN(voteInfo.yesCount).add(new BN(voteInfo.noCount)))
+                totalCount: web3.utils.fromWei(new BN(voteInfo.yesCount).add(new BN(voteInfo.noCount))),
+                target: voteInfo.target.split(':')
             };
-            this.modalRef = this.openModal(this.setVoteCanEndTemplate);
+            if (type == 2) {
+                this.modalRef = this.openModal(this.setVoteCanEndTemplate);
+            } else {
+                this.modalRef = this.openModal(this.forceEndTemplate);
+            }
         } else if (type == 3) {
             this.modalRef = this.openModal(this.setPlayerTemplate);
         }
@@ -368,7 +375,30 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 if (confirmNum == 0) {
                     this.loadingSer.hide();
                     this.alertSer.show('Success!');
-                    this.localStorage.setItem('plays', this.gameInfos).toPromise();
+                    // this.localStorage.setItem('plays', this.gameInfos).toPromise();
+                    this.refresh(game);
+                }
+            }, async (err) => {
+                this.loadingSer.hide();
+                this.alertSer.show('Transaction error or user denied');
+            });
+        }
+    }
+    async forceEnd(game) {
+        if (confirm('Still voting, force end this game?')) {
+            const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
+            this.loadingSer.show();
+            const check = await this.wccSer.endVoteByAdminCheck(gameIndex);
+            if (check.checkResult != 0) {
+                this.loadingSer.hide();
+                return this.alertSer.show(check.message);
+            }
+            this.wccSer.endVoteByAdmin(gameIndex, async (confirmNum, receipt) => {
+                if (confirmNum == 0) {
+                    this.loadingSer.hide();
+                    this.alertSer.show('Success!');
+                    // this.localStorage.setItem('plays', this.gameInfos).toPromise();
+                    this.refresh(game);
                 }
             }, async (err) => {
                 this.loadingSer.hide();
@@ -379,7 +409,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     async refresh(game) {
         this.loadingSer.show('loading...');
         const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
-        game = await this.wccSer.getGameInfo(gameIndex);
+        const tempgame = await this.wccSer.getGameInfo(gameIndex);
+        game.status = tempgame.status;
         this.localStorage.setItem('plays', this.gameInfos).toPromise();
         this.loadingSer.hide();
     }

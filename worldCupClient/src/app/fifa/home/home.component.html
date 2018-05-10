@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="row justify-content-center">
-                <div class="col-10 text-center">
+                <div class="col text-center">
                     <ul class="nav" *ngIf="games&&games.length>0">
                         <li *ngIf="stageObj.groupPhaseFlag" class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
                             [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="games[0].date">

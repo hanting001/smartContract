@@ -44,6 +44,7 @@
                                 <button *ngIf="game.status == 0" type="button" (click)="startPlay(game)" class="btn btn-primary btn-sm">StartPlay</button>
                                 <button *ngIf="game.status == 1" type="button" (click)="showModal(game, 1)" class="btn btn-primary btn-sm">StartVote</button>
                                 <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 2)" class="btn btn-primary btn-sm">SetVoteCanEnd</button>
+                                <button *ngIf="game.status == 2" type="button" (click)="showModal(game, 4)" class="btn btn-primary btn-sm">ForceEnd</button>
                                 <button *ngIf="game.gameType > 0" type="button" (click)="showModal(game, 3)" class="btn btn-primary btn-sm">SetPlayer</button>
                             </td>
                         </tr>
@@ -289,10 +290,77 @@
                         <td style="border:0;width:40%" class="text-left align-middle">
                             <img [src]="selectedGame.s_p2 || selectedGame.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.s_p2 || selectedGame.p2}}</td>
                     </tr>
+                    <tr>
+                        <td style="border:0">
+                            <h1>{{selectedVote.target[0]}}</h1>
+                        </td>
+                        <td style="border:0">
+                            <h1>{{selectedVote.target[1]}}</h1>
+                        </td>
+                    </tr>
                 </table>
                 <div class="row p-2">
                     <div class="col text-center align-middle">
                         <button (click)="setVoteCanEnd(selectedGame)" class="btn btn-outline-light">Set Vote Can End</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #forceEndTemplate>
+    <div class="modal-body text-center">
+        <div class="container text-center" id="chartDiv" align="center">
+
+            <div class="row text-center">
+                <div class="col">
+                    <h4 class="text-secondary">Vote Info</h4>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col">
+                    <small class="text-secondary">Total Votes</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">Yes Count</small>
+                </div>
+                <div class="col">
+                    <small class="text-secondary">No Count</small>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col">
+                    <h5> {{selectedVote.totalCount}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{selectedVote.yesCount}}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{selectedVote.noCount}}</h5>
+                </div>
+            </div>
+            <div class="card  bg-info" style="margin-top:15px;">
+                <table class="table">
+                    <tr>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="selectedGame.s_p1 || selectedGame.p1|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.s_p1 || selectedGame.p1}}</td>
+                        <td style="border:0;width:20%;font-size: 2rem;" class="text-center align-middle" rowspan="2">VS</td>
+                        <td style="border:0;width:40%" class="text-left align-middle">
+                            <img [src]="selectedGame.s_p2 || selectedGame.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.s_p2 || selectedGame.p2}}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:0">
+                            <h1>{{selectedVote.target[0]}}</h1>
+                        </td>
+                        <td style="border:0">
+                            <h1>{{selectedVote.target[1]}}</h1>
+                        </td>
+                    </tr>
+                </table>
+                <div class="row p-2">
+                    <div class="col text-center align-middle">
+                        <button (click)="forceEnd(selectedGame)" class="btn btn-outline-light">Force End</button>
                     </div>
                 </div>
             </div>

@@ -676,6 +676,38 @@ export class WCCService {
                 }
             });
     }
+    async endVoteByAdminCheck(gameIndex) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const msgObj = {
+            1: 'game not exist',
+            2: 'status error',
+            3: 'vote ended',
+            4: 'vote not exist'
+        };
+        const checkResult = await sc.methods.endVoteByAdminCheck(gameIndex).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async endVoteByAdmin(gameIndex, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccVoter', 'WccVoter');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.endVoteByAdmin(gameIndex).send(options)
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
     async withdrawCheck() {
         const account = await this.web3Service.getMainAccount();
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
