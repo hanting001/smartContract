@@ -55,76 +55,75 @@ export class FaqComponent implements OnInit {
         ];
         this.abouts = [
             {
-                question: 'How do I win ETH?',
-                title: 'There are two ways to win ETH in the game',
+                question: 'How to win ETH?',
+                title: 'There are two ways to win ETH in the game.',
                 answers: [
-                    'By predicting the score of the match, if the score is guessed right, all the winner will <span class="text-primary">share the total amount of the entire bet</span>.',
-                    'By voting on the results of the match, if the vote is passed, all those who voted in favor will <span class="text-primary">share the 5% of entire bet</span>.',
+                    'By predicting the score of the match, if the score is guessed right, all the winner will <span class="text-primary">share the total amount of the entire bets</span>.',
+                    'By voting on the results of the match, if the vote is passed, all those who voted in favor will <span class="text-primary">share the 5% of entire bets</span>.',
                     '<span class="text-primary">Only 90 minutes</span> of match(first half and second half) outcome as final score, excludes extra time and penalty shootout.'
                 ]
             }, {
-                question: 'Do I need to signup?',
+                question: 'Do you need to signup?',
                 title: 'Nope. No signups are necessary! We will never ask you for any personal information and all betting can be done anonymously.',
                 answers: []
             }, {
-                question: 'Why my transaction is pending?',
-                title: 'You can read this <a href="https://medium.com/metamask/regarding-pending-transactions-4ec0ec23140d">article</a> to understand why ethereum transaction sometimes  pending and what you can do.',
+                question: 'Why transaction is pending?',
+                title: 'You can read this <a href="https://medium.com/metamask/regarding-pending-transactions-4ec0ec23140d">article</a> to understand why ethereum transaction is sometimes pending and what you can do.',
                 answers: []
             }, {
-                question: 'What is the rules for calculating bonuses?',
-                title: 'The rules for calculating bonuses are very simple. The more you invest, the more ETHs are won.',
+                question: 'What are the rules in bonus calculation?',
+                title: 'The rules in bonus calculation are very simple. The more you invest, the more ETHs you will win.',
                 answers: [
-                    'For betting players, the proportion of your bet in all winners multiplied by the total betting value of the game',
-                    'For the voting player, the percentage of the total balance of all the winners that you have held in the voting token is multiplied by 5% of the total game\'s bets.'
+                    'For the betting players, the bonus = the proportion of your bet in all the winners * the total betting value of the game.',
+                    'For the voting player, the bonus = the proportion of token balance you hold in total balance of all the winners * 5% of the total game\'s bets.'
                 ]
             }, {
                 question: 'How to bet?',
-                title: 'Navigate to a match you’d like to make a wager on. Take note of details like the Smart Contract Value and minimum buy-in price. Some games have a limited amount of spots so join quickly! Click on your match and you’ll be taken to the next page where you make your predictions and wager amount.',
+                title: 'Select a match you want to wager on. Take note of details like the Smart Contract Value and minimum buy-in price. Click on your match and you’ll be taken to the modal page where you can make your predictions and wager amount.',
                 answers: [
-                    'The match can only bet if it is not start to play',
+                    'You can bet only before the match starts.',
                     'The minimum bet is 0.01ETH',
-                    'Need to submit scores and amounts when betting',
-                    'You can bet multiple times on the same match'
+                    'You can bet multiple times on the same match.'
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot1.png">'
             }, {
                 question: 'How to determine the weight of the vote?',
                 title: '',
                 answers: [
-                    'The weight of the vote is determined by the balance of the voting token you have. The more tokens you have, the greater the weight is.'
+                    'The weight of the vote is determined by the balance of the token you hold. The more tokens you have, the larger weight it will be.'
                 ]
             }, {
-                question: 'How do I receive the prize?',
-                title: 'For security reasons, getting a prize requires two steps',
+                question: 'How to receive the prize?',
+                title: 'For security reasons, receiving a prize requires two steps:',
                 answers: [
-                    'If you win, you can go to the transactions menu to see the winning amount, click on the claim button, the prize amount will be transferred to your withdraw balance',
-                    'Under my balance tab, you can transfer eth within the withdraw balance to your wallet address once',
-                    'When transferring from ETH with withindraw balance, the contract will deduct 15% of the processing fee, so the ETH actually transferred to your wallet may be less than the prize amount.',
-                    'Prize can be collected only within <span class="text-primary">90 days</span> after the end of voting.'
+                    'Step One, If you win, you can go to the transactions menu to see the prize, click on the “claim” button, the prize amount will be transferred to your withdraw balance.',
+                    'Step Two, On “my balance” tab page, you can transfer ETH within the withdrawal balance to your wallet address at once.',
+                    'When withdrawing ETH, the smart contract will deduct 15% of the processing fee, so the ETH received will be less than the prize amount.',
+                    'The prize can be collected only within <span class="text-primary">90 days</span> after the end of voting.'
                 ],
                 other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
             }, {
-                question: 'Why we takes 15% of the total prize?',
-                title: 'Remember the voter will take 5% as their rewards. In addition, We developed program, and support game running, so we will take 10% as rewards.',
+                question: 'Why ETHSB takes 15% of the total prize?',
+                title: 'Remember that the voter will take 5% as their rewards. Likewise, Our team developed program, and support game running, so we will take 10% as rewards.',
                 answers: [
                 ],
                 other: ''
             }, {
-                question: 'How dose the odds determined?',
+                question: 'How the odds are determined?',
                 title: '',
                 answers: [
-                    'The odds are determined by the total value of the bet and the value of the bet you are betting on. The odds is the ratio of your bet amount to the total bet amount of the score.',
-                    'Odds are a dynamically changing value. The higher the bet concentration is, the lower the odds are.'
+                    'The odds are related to the prize pool, and the proportion of your bet in all the winners.',
+                    'The odds are a dynamic variable. A higher concentration ratio will cause lower odds.'
                 ]
             }, {
-                question: 'Why is the match information displayed so slowly sometimes?',
-                title: 'Since we have entered all the game data into the blockchain, the process of querying from the blockchain is relatively slow. However, this slow process will only need to go through once because the web page will cache all game informations later.',
+                question: 'Why is the match information displayed slowly sometimes?',
+                title: 'Since we entered all the game data into the blockchain, the process of querying is relatively slow. However, this slow process will occur only once because the web page will cache all game data later.',
                 answers: []
             }, {
                 question: 'Why voting?',
-                title: 'Since the outcome of the game is a fait accompli, why do we still need to vote to determine who is the winner?',
+                title: 'Since the outcome of the game is a fait accompli, why do we still need to vote to decide who is the winner?',
                 answers: [
-                    'We want the game to be as fair as possible.',
+                    'We want to make the game as fair as possible.',
                     'No one can control the game to decide who is the winner.'
                 ]
             }
