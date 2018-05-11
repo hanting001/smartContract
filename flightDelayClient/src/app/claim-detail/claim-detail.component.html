@@ -18,24 +18,8 @@
 
             </div>
 
-
-            <div *ngIf="sfInfo.voteInfo" class="form-group row">
-                <label class="col col-form-label text-left" style="font-size:1.2rem;color:#FFFFFF;">当前投票结果：</label>
-
-            </div>
-
-            <div *ngIf="sfInfo.voteInfo" class="progress">
-                <div class="progress-bar" class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': sfInfo.voteInfo.noPercent}"
-                    aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">{{sfInfo.voteInfo.noPercent}}</div>
-                <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': sfInfo.voteInfo.cancelPercent}" aria-valuenow="30"
-                    aria-valuemin="0" aria-valuemax="100">{{sfInfo.voteInfo.cancelPercent}}</div>
-                <div class="progress-bar bg-warning" role="progressbar" [ngStyle]="{'width': sfInfo.voteInfo.delay1Percent}" aria-valuenow="20"
-                    aria-valuemin="0" aria-valuemax="100">{{sfInfo.voteInfo.delay1Percent}}</div>
-                <div class="progress-bar bg-primary" role="progressbar" [ngStyle]="{'width': sfInfo.voteInfo.delay2Percent}" aria-valuenow="20"
-                    aria-valuemin="0" aria-valuemax="100">{{sfInfo.voteInfo.delay2Percent}}</div>
-                <div class="progress-bar bg-danger" role="progressbar" [ngStyle]="{'width': sfInfo.voteInfo.delay3Percent}" aria-valuenow="20"
-                    aria-valuemin="0" aria-valuemax="100">{{sfInfo.voteInfo.delay3Percent}}</div>
-            </div>
+            <app-chart [chartTitle]="'当前投票'" [dataSetLabel]="'Bar Chart'" [chartType]="'pie'" [chartData]='chartData' [chartLabels]='chartLabels'>
+            </app-chart>
         </div>
 
     </div>
