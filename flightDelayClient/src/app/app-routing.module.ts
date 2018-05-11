@@ -10,16 +10,11 @@ import { AboutUsComponent } from './about-us/about-us.component';
 import { OrderComponent } from './order/order.component';
 import { FaqComponent } from './faq/faq.component';
 import { ClaimDetailComponent } from './claim-detail/claim-detail.component';
-import { FifaHomeComponent } from './fifa/home/home.component';
-import { FifaAdminComponent } from './fifa/admin/admin.component';
-
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'fifa', component: FifaHomeComponent },
-    { path: 'fifa/admin', component: FifaAdminComponent },
     { path: 'exchange', component: ExchangeComponent, resolve: { balance: BalanceResolver } },
     { path: 'myorder', component: OrderComponent },
     { path: 'aboutus', component: AboutUsComponent },

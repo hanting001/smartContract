@@ -33,6 +33,13 @@ export class HomeComponent implements OnInit {
     voteInfo: any;
     balance: any = {};
     delayRates = DelayRates;
+    // 无延误或延误不到半小时' },
+    //     { key: 1, value: '延误半小时以上' },
+    //     { key: 2, value: '延误1小时以上' },
+    //     { key: 3, value: '延误2小时以上' },
+    //     { key: 4, value: '航班取消' }
+    chartLabels: string[] = ['无延误或延误不到半小时', '延误半小时以上', '延误1小时以上', '延误2小时以上', '航班取消'];
+    chartData: number[] = [0, 0, 0, 0, 0];
 
     @ViewChild('exchangeTemplate') exchangeTemplate: TemplateRef<any>;
     @ViewChild('confirmTemplate') confirmTemplate: TemplateRef<any>;
@@ -188,6 +195,7 @@ export class HomeComponent implements OnInit {
                         // console.log(this.myOrders);
                         this.loadingSer.hide();
                         this.confirmModalRef.hide();
+                        this.getAllData();
                         const testOK = await this.flightDelayService.testOK();
                         console.log(testOK);
                         this.alertSer.show('加入成功');
@@ -283,11 +291,19 @@ export class HomeComponent implements OnInit {
                 + this.voteInfo.voteInfo.delay1Counts * 1 + this.voteInfo.voteInfo.delay2Counts * 1
                 + this.voteInfo.voteInfo.delay3Counts * 1;
 
-            this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount).toFixed(0) + '%';
-            this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount).toFixed(0) + '%';
-            this.voteInfo.voteInfo.delay1Percent = (this.voteInfo.voteInfo.delay1Counts * 100 / totalCount).toFixed(0) + '%';
-            this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount).toFixed(0) + '%';
-            this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount).toFixed(0) + '%';
+            // this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount).toFixed(0) + '%';
+            // this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount).toFixed(0) + '%';
+            // this.voteInfo.voteInfo.delay1Percent = (this.voteInfo.voteInfo.delay1Counts * 100 / totalCount).toFixed(0) + '%';
+            // this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount).toFixed(0) + '%';
+            // this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount).toFixed(0) + '%';
+
+            this.chartData[0] = this.voteInfo.voteInfo.noCounts;
+            this.chartData[1] = this.voteInfo.voteInfo.cancelCounts;
+            this.chartData[2] = this.voteInfo.voteInfo.delay1Counts;
+            this.chartData[3] = this.voteInfo.voteInfo.delay2Counts;
+            this.chartData[4] = this.voteInfo.voteInfo.delay3Counts;
+
+
             console.log(this.voteInfo);
         }
     }

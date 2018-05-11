@@ -33,11 +33,10 @@ import { TransactionPipe } from './service/pipe/transaction.pipe';
 import { TransactionUrlPipe } from './service/pipe/transaction-url.pipe';
 import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
 import { ClaimDetailComponent } from './claim-detail/claim-detail.component';
-import { FifaHomeComponent } from './fifa/home/home.component';
-import { FifaAdminComponent } from './fifa/admin/admin.component';
 import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
+import { ChartComponent } from './chart/chart.component';
 
 
 @NgModule({
@@ -54,11 +53,10 @@ import { WeekdayPipe } from './service/pipe/weekday.pipe';
         TransactionUrlPipe,
         ClaimStatusPipe,
         ClaimDetailComponent,
-        FifaHomeComponent,
-        FifaAdminComponent,
         GameTypePipe,
         GameStatusPipe,
-        WeekdayPipe
+        WeekdayPipe,
+        ChartComponent
     ],
     imports: [
         BrowserModule,
