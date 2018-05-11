@@ -58,7 +58,7 @@ export class FaqComponent implements OnInit {
                 question: 'How to win ETH?',
                 title: 'There are two ways to win ETH in the game.',
                 answers: [
-                    'By predicting the score of the match, if the score is guessed right, all the winner will <span class="text-primary">share the total amount of the entire bets</span>.',
+                    'By predicting the score of the match. If your bet score is guessed right, you are win. All the winner will <span class="text-primary">share the total amount of the entire bets value</span>.',
                     'By voting on the results of the match, if the vote is passed, all those who voted in favor will <span class="text-primary">share the 5% of entire bets</span>.',
                     '<span class="text-primary">Only 90 minutes</span> of match(first half and second half) outcome as final score, excludes extra time and penalty shootout.'
                 ]
