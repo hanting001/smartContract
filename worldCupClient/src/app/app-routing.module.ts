@@ -18,6 +18,7 @@ const routes: Routes = [
     { path: '', redirectTo: 'matches', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'matches', component: FifaHomeComponent },
+    { path: 'matches/:initGame', component: FifaHomeComponent },
     { path: 'admin', component: FifaAdminComponent },
     { path: 'exchange', component: ExchangeComponent },
     { path: 'contact', component: ContactComponent },

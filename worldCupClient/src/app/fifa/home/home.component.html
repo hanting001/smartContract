@@ -18,7 +18,7 @@
             <div class="row justify-content-center">
                 <div class="col text-center">
                     <p [hidden]="loading" class=" display-4 text-main text-center mb-1"><img src="assets/images/champion.png" height="70">{{title}}</p>
-                    <span [hidden]="loading" class="text-success text-center mb-1">World Cup Coming Soon!</span>
+                    <span [hidden]="loading" class="text-success text-center mb-1">The world cup kicks off in {{countDown}} days!</span>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
                     <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
                         <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->

@@ -1,4 +1,5 @@
 import { LocalActionService } from '../../service/local-action.service';
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
@@ -40,6 +41,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     myVote = 1;
     firstStageFlag = 0;
     gameCount = 0;
+    countDown;
+    timer;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -52,7 +55,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     };
     chartTitle: any = {};
     betCanWin = '';
-
+    initGame;
     constructor(private fb: FormBuilder,
         private web3: Web3Service,
         public wccSer: WCCService,
@@ -61,10 +64,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         public alertSer: AlertService,
         private modalService: BsModalService,
         public localActionSer: LocalActionService,
-        private localStorage: LocalStorage) {
+        private localStorage: LocalStorage,
+        private route: ActivatedRoute) {
         this.voteForm = this.fb.group({
             voteOption: ['1', [Validators.required]]
         });
+        this.countDown = this.getCountDown();
     }
     setShow(type, index) {
         if (this.firstStageFlag == 0) {
@@ -110,6 +115,18 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.web3.check();
         this.title = '2018 Champions League';
         // this.title = '2018 World Cup';
+        this.timer = setInterval(this.getCountDown, 3600);
+        this.route.params.subscribe(params => {
+            this.initGame = params.initGame;
+            if (this.initGame) {
+                this.show(null, this.initGame);
+            }
+        });
+    }
+    getCountDown() {
+        const startDay = moment('2018-06-14').dayOfYear();
+        const now = moment().dayOfYear();
+        return (startDay - now).toFixed(0);
     }
     async getAllGames() {
         const isGameUpdated = await this.wccSer.isGameUpdated();
@@ -195,6 +212,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();
+        clearInterval(this.timer);
     }
 
     @HostListener('window:scroll', [])
@@ -210,19 +228,25 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
 
 
-    async show(court) {
+    async show(court, index?) {
         this.court = court;
         // console.log(court);
-        this.loadingSer.show('Loading...');
         // return;
-        const index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        if (!index) {
+            this.loadingSer.show('Loading...');
+            index = this.wccSer.getGameIndex(court.p1, court.p2, court.gameType);
+        }
         this.refreshOneGameData(index);
-        console.log(index);
         const web3 = this.web3.instance();
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
         const currentGameInfo = await this.wccSer.getGameInfo(index);
         // console.log(currenGameInfo);
-
+        if (!currentGameInfo.isValued) {
+            return;
+        }
+        if (!court) {
+            this.court = currentGameInfo;
+        }
         if (currentGameInfo.status == '0' || currentGameInfo.status == '1') {
             this.chartData = {};
             const limit = await this.wccSer.getBetLimit();

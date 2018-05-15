@@ -163,6 +163,7 @@ export class TransComponent implements OnInit, OnDestroy {
             obj.scoreInfos = scoreInfos;
             for (let j = 0; j < scoreIndexes.length; j++) {
                 const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(obj.index, obj.gameInfo, scoreIndexes[j]);
+                scoreInfo.shareUrl = `mailto:?subject=Hi! I bet in this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/matches/${obj.index}`;
                 scoreInfos.push(scoreInfo);
             }
             this.spinner = false;

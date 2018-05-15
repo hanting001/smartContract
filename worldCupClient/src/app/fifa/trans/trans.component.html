@@ -82,6 +82,7 @@
                                 <td>
                                     <button *ngIf="bet.win > 0 && !bet.paid" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-outline-info btn-sm">Claim Bonus</button>
                                     <button *ngIf="bet.paid" type="button" disabled class="btn btn-outline-secondary btn-sm">Already Claimed</button>
+                                    <a [href]="bet.shareUrl" class=""><i class="icon-share"></i></a>
                                 </td>
                             </tr>
                         </tbody>
