@@ -13,7 +13,7 @@ contract FlightDelayService is Stoppable, Ownable {
     KnotToken token;
     mapping(bytes32 => mapping(address => bool)) paidInfos;
     uint public exchanged;
-    mapping(address => uint) withdraws;
+    mapping(address => uint) public withdraws;
     uint public rate = 4000;
 
     uint public testOK;
