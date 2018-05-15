@@ -55,7 +55,7 @@ module.exports = {
         const gas = await obj.estimateGas();
         obj.send({
                 from: account,
-                gas: gas * 2
+                gas: gas
             })
             .on('error', function (error) {
                 console.log(error)

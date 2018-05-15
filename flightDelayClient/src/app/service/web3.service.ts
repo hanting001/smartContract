@@ -133,7 +133,7 @@ export class Web3Service {
                 }
 
                 const netType = await this.web3.eth.net.getNetworkType();
-                // console.log(netType);
+                console.log(netType);
                 state.netType = netType;
 
                 switch (netType) {
@@ -160,6 +160,7 @@ export class Web3Service {
                         break;
                     case 'private':
                         state.netName = 'unknow net';
+                        state.canLoadData = true;
                         console.log('This is the private test network.');
                         break;
                     default:

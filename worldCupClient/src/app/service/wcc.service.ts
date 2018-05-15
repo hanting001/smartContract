@@ -230,8 +230,6 @@ export class WCCService {
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {
-
-
                     onConfirmation(confNumber, receipt);
                 }
             })
