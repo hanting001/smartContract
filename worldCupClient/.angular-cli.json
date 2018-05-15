@@ -30,7 +30,7 @@
             "../node_modules/popper.js/dist/umd/popper.min.js",
             "../node_modules/bootstrap/dist/js/bootstrap.min.js",
             "../node_modules/chart.js/dist/Chart.min.js",
-            "assets/ethereum/web3.js"
+            "assets/ethereum/web3.min.js"
         ],
         "environmentSource": "environments/environment.ts",
         "environments": {
