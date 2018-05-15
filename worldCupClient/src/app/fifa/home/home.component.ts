@@ -97,6 +97,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
     }
     ngOnInit() {
+        this.route.params.subscribe(params => {
+            this.initGame = params.initGame;
+        });
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             // console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
@@ -104,6 +107,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                     this.envState.changed = true;
                     if (tempEnvState.canLoadData) {
                         this.getAllGames();
+                        if (this.initGame) {
+                            this.show(null, this.initGame);
+                        }
                     }
                 } else {
                     this.envState.changed = false;
@@ -116,12 +122,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.title = '2018 Champions League';
         // this.title = '2018 World Cup';
         this.timer = setInterval(this.getCountDown, 3600);
-        this.route.params.subscribe(params => {
-            this.initGame = params.initGame;
-            if (this.initGame) {
-                this.show(null, this.initGame);
-            }
-        });
+
     }
     getCountDown() {
         const startDay = moment('2018-06-14').dayOfYear();
