@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'aboutus', component: AboutUsComponent },
     { path: 'faq', component: FaqComponent },
     { path: 'claim/:sfIndex', component: ClaimDetailComponent },
-    { path: 'admin/:account', component: AdminComponent, resolve: { balance: BalanceWithAccountResolver } },
+    { path: 'admin/:account', component: AdminComponent },
     // { path: 'airDelay', canActivate: [AuthGuard], component: AirDelayComponent },
     // { path: 'buyToken', canActivate: [AuthGuard], component: BuyTokenComponent },
     // { path: 'airDelayDetail', canActivate: [AuthGuard], component: AirDelayDetailComponent },

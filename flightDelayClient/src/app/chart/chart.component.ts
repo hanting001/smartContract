@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component, OnChanges, SimpleChanges, OnInit,
+    Input, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild
+} from '@angular/core';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -6,7 +9,7 @@ import { Chart } from 'chart.js';
     templateUrl: './chart.component.html',
     styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnInit, AfterViewInit {
+export class ChartComponent implements OnInit, AfterViewInit, OnChanges {
 
     @ViewChild('chart')
     chartRef: ElementRef;
@@ -44,6 +47,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
     ngOnInit() { }
 
     ngAfterViewInit() {
+        console.log('ngAfterViewInit===================');
         this.generateChart();
     }
 
@@ -104,28 +108,42 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
     validateChart() {
 
-        if (!this.chartTitle)
-            console.warn('Your chart does not have a title, use chartTitle input to insert one')
+        if (!this.chartTitle) {
+            console.warn('Your chart does not have a title, use chartTitle input to insert one');
+        }
 
-        if (this.chartData.length <= 0)
-            throw Error('Your chart does not have the chatDate property, please insert the chartData to load the chart')
 
-        if (this.chartLabels.length <= 0)
+        if (this.chartData.length <= 0) {
+            throw Error('Your chart does not have the chatDate property, please insert the chartData to load the chart');
+        }
+
+
+        if (this.chartLabels.length <= 0) {
             throw Error('Your chart does not have the chartLabels property, please insert the chartLabels to load the chart')
+        }
+
     }
 
     generateRandomColors() {
         const colors: string[] = [];
         for (let index = 0; index < this.chartData.length; index++) {
-            let randomColor1 = Math.floor((Math.random() * 255) + 1);
-            let randomColor2 = Math.floor((Math.random() * 255) + 1);
-            let randomColor3 = Math.floor((Math.random() * 255) + 1);
-            let randomColor4 = Math.random() * (1 - 0.1) + 0.1;
+            const randomColor1 = Math.floor((Math.random() * 255) + 1);
+            const randomColor2 = Math.floor((Math.random() * 255) + 1);
+            const randomColor3 = Math.floor((Math.random() * 255) + 1);
+            const randomColor4 = Math.random() * (1 - 0.1) + 0.1;
             let color = `rgba(${randomColor1.toString()},${randomColor2.toString()},${randomColor3.toString()},${randomColor4.toString()})`;
             colors.push(color);
             color = null;
         }
         return colors;
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log('ngOnChanges==================ngOnChanges');
+        console.log(changes);
+        console.log(this.chartData);
+        this.generateChart();
+        this.chart.update();
     }
 
 }

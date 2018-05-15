@@ -153,6 +153,22 @@ export class FlightDelayService {
             message: msgObj[checkResult]
         };
     }
+
+    async checkCanEndByAdmin(flightNO, flightDate) {
+        const web3 = this.web3Service.instance();
+        flightDate = moment(flightDate).format('YYYY-MM-DD');
+        const key = web3.utils.keccak256(flightNO + flightDate);
+        // const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const flightDelaySc = await this.web3Service.getContract('hbStorage', 'HbStorage');
+        const msgObj = {
+            false: '不能由admin结束'
+        };
+        const checkResult = await flightDelaySc.methods.checkCanEndByAdmin(key).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
     async canClaim(flightNO, flightDate) {
         const web3 = this.web3Service.instance();
         flightDate = moment(flightDate).format('YYYY-MM-DD');
@@ -343,6 +359,11 @@ export class FlightDelayService {
             returnArray.push(data);
         }
         return returnArray;
+    }
+
+    async getIndex(flightNO, flightDate) {
+        const web3 = this.web3Service.instance();
+        return web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
     }
 
     async getSfInfoByIndex(sfIndex) {
