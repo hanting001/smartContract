@@ -67,6 +67,9 @@ export class Web3Service {
         }
     }
     async getAddress(name) {
+        console.log('=======================');
+        console.log(name);
+
         const net = await this.web3.eth.net.getNetworkType();
 
         console.log(name);
@@ -84,6 +87,7 @@ export class Web3Service {
         console.log(`sc ${name} address: ${address}`);
         const sc = new this.web3.eth.Contract(abi, address);
         this.contracts[name] = sc;
+        console.log('return contract');
         return sc;
     }
     // 通过组装参数，调用web3.eth.sendTransaction发起交易，一般不需要

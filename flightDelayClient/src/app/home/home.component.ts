@@ -108,15 +108,17 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
-            // console.log(tempEnvState);
+            console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
                 if (tempEnvState.checkEnv !== this.envState.checkEnv) {
                     this.envState.changed = true;
-                    if (tempEnvState.canLoadData) {
-                        this.getAllData();
-                    }
+
                 } else {
                     this.envState.changed = false;
+                }
+
+                if (tempEnvState.canLoadData) {
+                    this.getAllData();
                 }
                 this.envState = tempEnvState;
             }
