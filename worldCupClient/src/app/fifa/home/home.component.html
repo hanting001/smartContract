@@ -13,7 +13,7 @@
 </div>
 
 <div class="bg-c-light" style="background-attachment: fixed;">
-    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100;left: 50%;transform: translateX(-50%);" [ngStyle]="{'top':'96px','position':isSticky?'fixed':'relative'}">
+    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100;left: 50%;transform: translateX(-50%);" [ngStyle]="{'top':'116px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
                 <div class="col text-center">
@@ -123,10 +123,9 @@
                                 <span class="text-warning">{{court.status | gameStatus}}</span>
                                 <br>
                                 <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} Ether
+                                <div *ngIf="court.totalVotes"><br><small class="text-muted" >Total Votes: </small>{{court.totalVotes}}</div>
                                 <br>
-                                <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
-                                <br>
-                                <small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}
+                                <small class="text-muted" *ngIf="court.score">Score: </small><h5>{{court.score}}</h5>
                             </td>
                             <td class="align-middle" style="width:30%">
                                 <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}
