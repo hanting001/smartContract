@@ -22,6 +22,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     title: string;
+    stitle: string;
     games: any = [];
     contries: any = {};
     secondStageStartDate;
@@ -43,6 +44,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     gameCount = 0;
     countDown;
     timer;
+    matchGroup = 0;
+    splitDate = moment('2018-06-14').valueOf();
+    showGames;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -119,8 +123,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.envState = tempEnvState;
         });
         this.web3.check();
-        this.title = '2018 Champions League';
-        // this.title = '2018 World Cup';
         this.timer = setInterval(this.getCountDown, 3600);
 
     }
@@ -171,7 +173,39 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.contries['firstStageFlag'] = this.firstStageFlag;
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
+        this.filtGames();
         this.refreshGameData();
+    }
+    filtGames() {
+        console.log(this.games);
+        this.showGames = this.games.filter(item => {
+            const time = moment(item.date).valueOf();
+            if (this.matchGroup == 0) {
+                this.title = '2018 Champions League';
+                this.stitle = `The world cup kicks off in ${this.countDown} days!`;
+                if (time < this.splitDate) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (this.matchGroup == 1) {
+                this.title = '2018 World Cup';
+                this.stitle = `2018 Champions League`;
+                if (time >= this.splitDate) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+    }
+    transformGames() {
+        if (this.matchGroup == 0) {
+            this.matchGroup = 1;
+        } else if (this.matchGroup == 1) {
+            this.matchGroup = 0;
+        }
+        this.filtGames();
     }
     async refreshGameData() {
         const web3 = this.web3.instance();

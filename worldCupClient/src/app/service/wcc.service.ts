@@ -240,12 +240,13 @@ export class WCCService {
                 console.log(error);
             });
     }
-
-
-    // async getRate() {
-    //     const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
-    //     return sc.methods.rate().call();
-    // }
+    async refreshCache() {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        const options = {
+            from: await this.web3Service.getFirstAccount()
+        };
+        return sc.methods.gamesUpdate().send(options);
+    }
     async exchangeCheck(value) {
         const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
         const msgObj = {
