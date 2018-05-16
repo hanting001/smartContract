@@ -77,7 +77,6 @@ contract FlightDelayService is Stoppable, Ownable {
 
     /** @dev user start claim vote
       * @param index 航班号+航班日期的index
-      * @param vote 延误类型
       */  
     function claimVote(bytes32 index) external stopInEmergency{
         require(claimVoteCheck(index) == 0);
