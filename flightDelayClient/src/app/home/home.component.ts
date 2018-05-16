@@ -228,14 +228,38 @@ export class HomeComponent implements OnInit {
             if (confirmNumber === 2) {
                 const testOK = await this.flightDelayService.testServiceOK();
                 console.log(testOK);
-                this.voteInfo = await this.flightDelayService.getCurrentVote();
-                this.getMyOrders();
-                console.log(this.voteInfo);
+                this.getAllData();
                 this.loadingSer.hide();
                 this.alertSer.show('申请成功,航班开启理赔投票');
             }
         });
     }
+
+    async getClaim(flightNO, flightDate) {
+        const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
+        const account = await this.web3.getMainAccount();
+        console.log(claimCheck);
+        if (claimCheck.checkResult != 0) {
+            return this.alertSer.show(claimCheck.message);
+        }
+        // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
+        this.loadingSer.show();
+        this.flightDelayService.startClaim(flightNO, flightDate, async (transactionHash) => {
+            await this.localActionSer.addAction({
+                transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
+                type: 'getClaim', flightNO: flightNO, flightDate: flightDate
+            }, account);
+        }, async (confirmNumber, receipt) => {
+            if (confirmNumber === 2) {
+                const testOK = await this.flightDelayService.testServiceOK();
+                console.log(testOK);
+                this.getAllData();
+                this.loadingSer.hide();
+                this.alertSer.show('获取理赔金成功,如果需要您可以领取');
+            }
+        });
+    }
+
     async getAllData() {
         console.log('get all data');
         this.getMyOrders();

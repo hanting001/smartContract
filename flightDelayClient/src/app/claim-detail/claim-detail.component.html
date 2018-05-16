@@ -14,7 +14,7 @@
             </div>
 
             <div *ngIf="sfInfo.voteInfo" class="form-group row">
-                <label class="col col-form-label text-left" style="font-size:1.2rem;color:#FFFFFF;">当前理赔状态：{{sfInfo.sfInfo.status|claimStatus}}</label>
+                <label class="col col-form-label text-left" style="font-size:1.2rem;color:#FFFFFF;">当前理赔状态：{{sfInfo.sfInfo.status|claimStatus:sfInfo.voteInfo}}</label>
 
             </div>
 

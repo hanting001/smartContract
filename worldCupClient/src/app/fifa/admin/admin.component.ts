@@ -115,12 +115,16 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     this.gameInfos = await this.wccSer.getAllPlayers();
                     this.form.reset();
                     this.form.controls['gameType'].setValue('0');
-                    this.alertSer.show('添加成功');
+                    this.alertSer.show('success');
                 }
             });
         }
     }
-
+    async refreshCache() {
+        this.loadingSer.show('refresh...');
+        await this.wccSer.refreshCache();
+        this.loadingSer.hide();
+    }
     async addAllPlayers() {
         const myHeaders = new Headers();
         myHeaders.set('Content-Type', 'text/html');
@@ -137,7 +141,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             let i = 0;
 
             const addGame = async () => {
-                console.log('添加第' + i + '场比赛');
+                console.log('add ' + i + 'match');
                 const tmpAry = gamesArray[i].split(',');
 
                 // if (i == 3) {
@@ -150,8 +154,8 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     const gameInfo = await this.wccSer.getGameInfo(gameIndex);
                     console.log(gameInfo);
                     if (!gameInfo.p1) {
-                        console.log('比赛不存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
-                        this.addingText = '正在添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3];
+                        console.log('game not exist:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        this.addingText = 'adding:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3];
                         this.addingGame = tmpAry;
                         this.wccSer.addPlayer({
                             awayCourt: tmpAry[0],
@@ -161,13 +165,13 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                         }, async (transactionHash) => { }, async (confirmNum, recipt) => {
                             if (confirmNum == 2) {
                                 this.gameInfos = await this.wccSer.getAllPlayers();
-                                this.addingText = '完成添加比赛:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' +
+                                this.addingText = 'finish:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' +
                                     tmpAry[1] + ',gameType=' + tmpAry[3];
                             }
                         });
                         timeout = 5000;
                     } else {
-                        console.log('比赛已存在:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
+                        console.log('already exist:p1=' + tmpAry[0] + ',p2=' + tmpAry[2] + ',time=' + tmpAry[1] + ',gameType=' + tmpAry[3]);
                         timeout = 2000;
                     }
                     if (i < gamesLen - 1) {
@@ -175,7 +179,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                     }
 
                 } else {
-                    this.addingText = '完成添加所有比赛';
+                    this.addingText = 'finish add all game';
                     // clearInterval(addingTimeout);
                     this.loadingSer.hide();
 
@@ -195,7 +199,6 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             console.log(model);
             const web3 = this.web3.instance();
             const from = await this.web3.getFirstAccount();
-            // 第一个账户用于部署合约
             console.log(from);
             const tokenSC = await this.web3.getContract('knotToken', 'KnotToken');
 
@@ -203,7 +206,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
                 .on('confirmation', async (confNumber, receipt) => {
                     if (confNumber == 2) {
                         const token = await tokenSC.methods.balanceOf(model.address).call();
-                        this.alertSer.show('处理成功，合约拥有KOT：' + web3.utils.fromWei(token));
+                        this.alertSer.show('success，contract have KOT：' + web3.utils.fromWei(token));
                         this.loadingSer.hide();
                     }
 
@@ -221,7 +224,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     //         if (confirmNum == 2) {
     //             this.loadingSer.hide();
     //             this.gameInfos = await this.wccSer.getAllPlayers();
-    //             this.alertSer.show('删除成功');
+    //             this.alertSer.show('delete success');
     //         }
     //     });
     // }
@@ -234,7 +237,6 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const model = this.adminForm.value;
             const web3 = this.web3.instance();
             const from = await this.web3.getMainAccount();
-            // 第一个账户用于部署合约
             this.loadingSer.show('set storage`s admin');
             console.log('setAdmin');
             const sc = await this.web3.getContract('wccStorage', 'WccStorage');
@@ -244,7 +246,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const isAdmin = await sc.methods.admins(model.address).call();
             if (isAdmin) {
                 this.loadingSer.hide();
-                this.alertSer.show(model.address + '已设置为admin');
+                this.alertSer.show(model.address + 'already set admin');
             }
         }
 

@@ -22,11 +22,12 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     title: string;
+    stitle: string;
     games: any = [];
     contries: any = {};
     secondStageStartDate;
     court: any = {};
-    isSticky: Boolean = false;
+    isSticky: Boolean = true;
     subscription;
     buyModalRef: BsModalRef;
     buyForm: FormGroup;
@@ -43,6 +44,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     gameCount = 0;
     countDown;
     timer;
+    matchGroup = 0;
+    splitDate = moment('2018-06-14').valueOf();
+    showGames;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
 
@@ -119,8 +123,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.envState = tempEnvState;
         });
         this.web3.check();
-        this.title = '2018 Champions League';
-        // this.title = '2018 World Cup';
         this.timer = setInterval(this.getCountDown, 3600);
 
     }
@@ -171,7 +173,62 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.contries['firstStageFlag'] = this.firstStageFlag;
             this.localStorage.setItem('contries', this.contries).toPromise();
         }
+        this.filtGames();
         this.refreshGameData();
+    }
+    filtGames() {
+        console.log(this.games);
+        this.showGames = this.games.filter(item => {
+            const time = moment(item.date).valueOf();
+            if (this.matchGroup == 0) {
+                this.title = '2018 Champions League';
+                this.stitle = `The world cup kicks off in ${this.countDown} days!`;
+                if (time < this.splitDate) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (this.matchGroup == 1) {
+                this.title = '2018 World Cup';
+                this.stitle = `2018 Champions League`;
+                if (time >= this.splitDate) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+        this.setShowStageObj();
+    }
+    setShowStageObj() {
+        this.stageObj = {};
+        for (let i = 0; i < this.showGames.length; i ++) {
+            const gameInfos = this.showGames[i].courts;
+            for (let j = 0; j < gameInfos.length; j ++) {
+                if (!this.stageObj.groupPhase && gameInfos[j].gameType == '0') {
+                    this.setShow(0, i);
+                } else if (!this.stageObj.roundOf16Flag && gameInfos[j].gameType == '1') {
+                    this.setShow(1, i);
+                } else if (!this.stageObj.quarterFinalFlag && gameInfos[j].gameType == '2') {
+                    this.setShow(2, i);
+                } else if (!this.stageObj.semiFinalFlag && gameInfos[j].gameType == '3') {
+                    this.setShow(3, i);
+                } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[j].gameType == '4') {
+                    this.setShow(4, i);
+                } else if (!this.stageObj.finalFlag && gameInfos[j].gameType == '5') {
+                    this.setShow(5, i);
+                }
+            }
+        }
+        console.log(this.stageObj);
+    }
+    transformGames() {
+        if (this.matchGroup == 0) {
+            this.matchGroup = 1;
+        } else if (this.matchGroup == 1) {
+            this.matchGroup = 0;
+        }
+        this.filtGames();
     }
     async refreshGameData() {
         const web3 = this.web3.instance();
@@ -216,17 +273,17 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         clearInterval(this.timer);
     }
 
-    @HostListener('window:scroll', [])
-    onWindowScroll() {
-        // console.log('window scroll');
-        const number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        // console.log(number);
-        if (number > 25) {
-            this.isSticky = true;
-        } else if (this.isSticky && number < 10) {
-            this.isSticky = true;
-        }
-    }
+    // @HostListener('window:scroll', [])
+    // onWindowScroll() {
+    //     // console.log('window scroll');
+    //     const number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    //     // console.log(number);
+    //     if (number > 25) {
+    //         this.isSticky = true;
+    //     } else if (this.isSticky && number < 10) {
+    //         this.isSticky = false;
+    //     }
+    // }
 
 
     async show(court, index?) {
@@ -450,7 +507,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     installWallet() {
         window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
     }
-
     setGameData(games, sortNumber, totalCount) {
         let gameInfos = games;
         gameInfos = gameInfos.sort(sortNumber);
@@ -471,19 +527,19 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             if (!this.secondStageStartDate && gameInfos[i].gameType != '0') {
                 this.secondStageStartDate = game.date;
             }
-            if (!this.stageObj.groupPhase && gameInfos[i].gameType == '0') {
-                this.setShow(0, j);
-            } else if (!this.stageObj.roundOf16Flag && gameInfos[i].gameType == '1') {
-                this.setShow(1, j);
-            } else if (!this.stageObj.quarterFinalFlag && gameInfos[i].gameType == '2') {
-                this.setShow(2, j);
-            } else if (!this.stageObj.semiFinalFlag && gameInfos[i].gameType == '3') {
-                this.setShow(3, j);
-            } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[i].gameType == '4') {
-                this.setShow(4, j);
-            } else if (!this.stageObj.finalFlag && gameInfos[i].gameType == '5') {
-                this.setShow(5, j);
-            }
+            // if (!this.stageObj.groupPhase && gameInfos[i].gameType == '0') {
+            //     this.setShow(0, j);
+            // } else if (!this.stageObj.roundOf16Flag && gameInfos[i].gameType == '1') {
+            //     this.setShow(1, j);
+            // } else if (!this.stageObj.quarterFinalFlag && gameInfos[i].gameType == '2') {
+            //     this.setShow(2, j);
+            // } else if (!this.stageObj.semiFinalFlag && gameInfos[i].gameType == '3') {
+            //     this.setShow(3, j);
+            // } else if (!this.stageObj.playOffForThirdPlaceFlag && gameInfos[i].gameType == '4') {
+            //     this.setShow(4, j);
+            // } else if (!this.stageObj.finalFlag && gameInfos[i].gameType == '5') {
+            //     this.setShow(5, j);
+            // }
             if (games.length > 0 && games[games.length - 1].date == game.date) {
                 games[games.length - 1].count++;
                 games[games.length - 1].courts.push(gameInfos[i]);

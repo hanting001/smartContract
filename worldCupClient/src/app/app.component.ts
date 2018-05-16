@@ -1,5 +1,5 @@
 
-import { Component, ViewChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, TemplateRef, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { Web3Service, LoadingService, AlertService } from './service/index';
@@ -18,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
     alertModalRef: BsModalRef;
     subscription;
     account = '';
+    showGoToTop = false;
     @ViewChild('alertTemplate') alertTemplate: TemplateRef<any>;
     constructor(public loadingSer: LoadingService,
         private modalService: BsModalService,
@@ -95,7 +96,16 @@ export class AppComponent implements OnInit, OnDestroy {
     closeAlert() {
         this.alertModalRef.hide();
     }
-
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        // console.log('window scroll');
+        const number = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        if (number > 500) {
+            this.showGoToTop = true;
+        } else {
+            this.showGoToTop = false;
+        }
+    }
     getIsSupportBrowser() {
         const userAgent = navigator.userAgent; // 取得浏览器的userAgent字符串
         const isOpera = userAgent.indexOf('Opera') > -1; // 判断是否Opera浏览器

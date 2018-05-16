@@ -42,6 +42,18 @@ export class FlightDelayService {
         }
         return null;
     }
+
+    async getVoteInfo(sfIndex) {
+        const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
+        const voteInfo = await storage.methods.voteInfos(sfIndex).call();
+        if (voteInfo.isValued) {
+            return {
+                voteInfo: voteInfo,
+            };
+        }
+        return null;
+    }
+
     // 获取账户余额
     async getBalance() {
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
@@ -49,9 +61,14 @@ export class FlightDelayService {
         const account = await this.web3Service.getMainAccount();
         const eth = await web3.eth.getBalance(account);
         const token = await tokenSC.methods.balanceOf(account).call();
+        // player.methods.withdraws(account).call();
+
+        // const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        // const withdraw = flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
-            token: web3.utils.fromWei(token)
+            token: web3.utils.fromWei(token),
+            // withdraw: web3.utils.fromWei(withdraw)
         };
     }
     async getBalanceByAccount(account) {
@@ -59,9 +76,13 @@ export class FlightDelayService {
         const web3 = this.web3Service.instance();
         const eth = await web3.eth.getBalance(account);
         const token = await tokenSC.methods.balanceOf(account).call();
+
+        const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const withdraw = flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
-            token: web3.utils.fromWei(token)
+            token: web3.utils.fromWei(token),
+            withdraw: web3.utils.fromWei(withdraw)
         };
     }
     // 获取eth和token的汇率
@@ -186,6 +207,23 @@ export class FlightDelayService {
             message: msgObj[checkResult]
         };
     }
+
+    async checkClaim(sfIndex) {
+        const web3 = this.web3Service.instance();
+        // const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const msgObj = {
+            1: '您没有购买该航班计划',
+            2: '已有人对该航班发起了理赔申请，请关注投票结果',
+            3: '该航班的投票已经结束'
+        };
+        const checkResult = await sc.methods.claimCheck(sfIndex).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
 
     async canStartVote(flightNO, flightDate) {
         const web3 = this.web3Service.instance();
@@ -345,16 +383,47 @@ export class FlightDelayService {
         // const sfInfo = await storage.methods.returnSFInfo(key).call();
         // const isInSF = await storage.methods.isInSF(key).call();
         const returnArray = [];
-        for (let key of sfs) {
+        for (const key of sfs) {
             const memberSFInfo = await storage.methods.returnMemberSFInfo(key).call();
             const sfInfo = await storage.methods.returnSFInfo(key).call();
             const isInSF = await storage.methods.isInSF(key).call();
+            let voteInfo: any = {};
+            let checkClaim = 0;
+            let delayStatus = 0;
+            if (sfInfo.status == '3') {
+                voteInfo = await storage.methods.voteInfos(key).call();
+
+                let delayCount = voteInfo.noCounts;
+                if (delayCount < voteInfo.delay1Counts) {
+                    delayCount = voteInfo.delay1Counts;
+                    delayStatus = 1;
+                }
+                if (delayCount < voteInfo.delay2Counts) {
+                    delayCount = voteInfo.delay2Counts;
+                    delayStatus = 2;
+                }
+                if (delayCount < voteInfo.delay3Counts) {
+                    delayCount = voteInfo.delay3Counts;
+                    delayStatus = 3;
+                }
+                if (delayCount < voteInfo.cancelCounts) {
+                    delayCount = voteInfo.delay4Counts;
+                    delayStatus = 4;
+                }
+
+                const result = await this.checkClaim(key);
+                checkClaim = result.checkResult;
+            }
+
             const data = {
                 sfInfo: sfInfo,
                 memberSFInfo: memberSFInfo,
                 isInSF: isInSF,
                 sfs: sfs,
-                key: key
+                key: key,
+                voteInfo: voteInfo,
+                delayStatus: delayStatus,
+                checkClaim: checkClaim
             };
             returnArray.push(data);
         }
@@ -404,14 +473,15 @@ export class FlightDelayService {
     }
 
     // 发起理赔
-    async startClaim(flightNO, flightDate, target, onTransactionHash, onConfirmation, onError?) {
+    async startClaim(flightNO, flightDate, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         const options = {
             from: await this.web3Service.getMainAccount()
         };
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
-        sc.methods.claim(key, target).send(options)
+        console.log(key);
+        sc.methods.claim(key).send(options)
             .on('transactionHash', (transactionHash) => {
                 if (onTransactionHash) {
                     onTransactionHash(transactionHash);

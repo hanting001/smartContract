@@ -13,12 +13,19 @@
 </div>
 
 <div class="bg-c-light" style="background-attachment: fixed;">
-    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100;left: 50%;transform: translateX(-50%);"
+        [ngStyle]="{'top':'116px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
                 <div class="col text-center">
-                    <p [hidden]="loading" class=" display-4 text-main text-center mb-1"><img src="assets/images/champion.png" height="70">{{title}}</p>
-                    <span [hidden]="loading" class="text-success text-center mb-1">The world cup kicks off in {{countDown}} days!</span>
+                    <p [hidden]="loading || matchGroup == 1" class=" display-4 text-main text-center mb-1">
+                        <img src="assets/images/champion.png" height="70">{{title}}</p>
+                    <p [hidden]="loading || matchGroup == 0" class=" display-4 text-main text-center mb-1">
+                        <img src="assets/images/world_cup_logo.png" height="70">{{title}}</p>
+                    <span [hidden]="loading" class="text-success text-center mb-1">
+                        <button class="btn btn-link" (click)="transformGames()">
+                            <i class="icon-link"></i> {{stitle}}</button>
+                    </span>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
                     <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
                         <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
@@ -28,10 +35,10 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col text-center">
-                    <table class="table m-0 table-responsive table-sm rounded" >
+                    <table class="table m-0 table-responsive table-sm rounded">
                         <tr>
                             <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
-                                *ngFor="let game of games" class="text-center p-0">
+                                *ngFor="let game of showGames" class="text-center p-0">
                                 <table class="table-sm " style="boder:solid green 1px;">
                                     <tr>
                                         <td class="text-center text-primary pb-0" style="border: 0;">{{game.dayOfWeek|weekday}}</td>
@@ -53,9 +60,9 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col text-center">
-                    <ul class="nav" *ngIf="games&&games.length>0">
+                    <ul class="nav" *ngIf="showGames&&showGames.length>0">
                         <li *ngIf="stageObj.groupPhaseFlag" class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                            [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="games[0].date">
+                            [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="showGames[0].date">
                             Group Phase
                         </li>
                         <li *ngIf="stageObj.roundOf16Flag" class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
@@ -83,8 +90,8 @@
             </div>
         </div>
     </div>
-    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'56px'}">
-        <div *ngFor="let game of games; let idx = index;" class="container mb-5" id="{{game.date}}">
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'70px'}">
+        <div *ngFor="let game of showGames; let idx = index;" class="mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
             <div class="row bg-light align-items-center">
                 <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
@@ -122,10 +129,12 @@
                                 <span class="text-warning">{{court.status | gameStatus}}</span>
                                 <br>
                                 <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} Ether
+                                <div *ngIf="court.totalVotes">
+                                    <br>
+                                    <small class="text-muted">Total Votes: </small>{{court.totalVotes}}</div>
                                 <br>
-                                <small class="text-muted" *ngIf="court.totalVotes">Total Votes: </small>{{court.totalVotes}}
-                                <br>
-                                <small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}
+                                <small class="text-muted" *ngIf="court.score">Score: </small>
+                                <h5>{{court.score}}</h5>
                             </td>
                             <td class="align-middle" style="width:30%">
                                 <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}
@@ -245,7 +254,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon3">Ether:{{balance.eth}}</span>
                                 </div>
-                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" (change)="getUSDValue($event)" formControlName="eth" aria-describedby="usdHelpBlock">
+                                <input type="number" class="form-control" (keyup)="getUSDValue($event)" (change)="getUSDValue($event)" formControlName="eth"
+                                    aria-describedby="usdHelpBlock">
                             </div>
                             <small [hidden]="USDPrice == 0 || eth.invalid" id="usdHelpBlock" class="form-text text-muted align-middle m-2">
                                 {{USDPrice|currency}}, ETH price get from etherscan.io.
@@ -377,11 +387,6 @@
     </div>
 </ng-template>
 <footer class="container">
-    <p class="float-right">
-        <a class="text-primary" [ngx-scroll-to]="'top'">
-            <i class="icon-arrow-up text-primary icon-2x"></i>
-        </a>
-    </p>
     <p>&middot;
         <a href="https://www.stateofthedapps.com/dapps/eth-sports-betting">ETH Sports Betting</a> &middot;
         <a href="https://www.stateofthedapps.com/">State Of DAPPs</a>
