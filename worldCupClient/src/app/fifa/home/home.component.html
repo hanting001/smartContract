@@ -13,7 +13,7 @@
 </div>
 
 <div class="bg-c-light" style="background-attachment: fixed;">
-    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100" [ngStyle]="{'top':'56px','position':isSticky?'fixed':'relative'}">
+    <div class="container" style="background-color:rgba(255, 255,255, 0.4);z-index: 100;left: 50%;transform: translateX(-50%);" [ngStyle]="{'top':'96px','position':isSticky?'fixed':'relative'}">
         <div *ngIf="envState.checkEnv" id="top">
             <div class="row justify-content-center">
                 <div class="col text-center">
@@ -84,8 +84,8 @@
             </div>
         </div>
     </div>
-    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'56px'}">
-        <div *ngFor="let game of showGames; let idx = index;" class="container mb-5" id="{{game.date}}">
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'270px':'70px'}">
+        <div *ngFor="let game of showGames; let idx = index;" class="mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
             <div class="row bg-light align-items-center">
                 <div *ngIf="idx == stageObj.roundOf16" class="col" [id]="'stageObj.roundOf16'">
