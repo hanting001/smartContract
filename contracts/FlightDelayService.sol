@@ -77,9 +77,8 @@ contract FlightDelayService is Stoppable, Ownable {
 
     /** @dev user start claim vote
       * @param index 航班号+航班日期的index
-      * @param vote 延误类型
       */  
-    function claimVote(bytes32 index, HbStorage.DelayStatus vote) external stopInEmergency{
+    function claimVote(bytes32 index) external stopInEmergency{
         require(claimVoteCheck(index) == 0);
         // require(hbs.isMemberInSF(index, msg.sender));
         // var (,,status,,,) = hbs.returnSFInfo(index);
@@ -87,7 +86,7 @@ contract FlightDelayService is Stoppable, Ownable {
         // 改变航班状态
         hbs.changeSFStatus(index, HbStorage.SFStatus.claiming);
         // 增加一条投票记录
-        hbs.updateVote(index, vote);
+        // hbs.updateVote(index, vote);
         bytes32 currentVote = hbs.currentVote();
         var (,,,,,,isCurrentVoteValued) = hbs.voteInfos(currentVote);
         if (!isCurrentVoteValued) {
