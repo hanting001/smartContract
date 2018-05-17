@@ -63,12 +63,12 @@ export class FlightDelayService {
         const token = await tokenSC.methods.balanceOf(account).call();
         // player.methods.withdraws(account).call();
 
-        // const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
-        // const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
+        const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
-            // withdraw: web3.utils.fromWei(withdraw)
+            withdraw: web3.utils.fromWei(withdraw)
         };
     }
     async getBalanceByAccount(account) {
@@ -508,7 +508,7 @@ export class FlightDelayService {
         };
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
-        sc.methods.claimVote(key, '0').send(options)
+        sc.methods.claimVote(key).send(options)
             .on('transactionHash', (transactionHash) => {
                 if (onTransactionHash) {
                     onTransactionHash(transactionHash);
