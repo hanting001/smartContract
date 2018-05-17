@@ -31,8 +31,8 @@ contract WccPlayer is Ownable, Stoppable{
     /// @param value bet value
     /// @return 0 if check passed
     function joinCheck(bytes32 index, uint value) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(index);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(index);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Standby) {
@@ -47,7 +47,6 @@ contract WccPlayer is Ownable, Stoppable{
         return 0;
     }
     event UserJoin(bytes32 gameIndex, string score, address user);
-
     /// @author Bob Clampett
     /// @notice user join game
     /// @dev keccak256(p1, p2, gameType) will be game index
@@ -56,6 +55,14 @@ contract WccPlayer is Ownable, Stoppable{
     function join(bytes32 gameIndex, string score) external payable stopInEmergency {
         require(joinCheck(gameIndex, msg.value) == 0);
         bytes32 scoreIndex = keccak256(score);
+        wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
+        // testOK = scoreIndex;
+        withdraws[owner] = withdraws[owner].add(msg.value);
+        UserJoin(gameIndex, score, msg.sender);
+    }
+    function join(bytes32 gameIndex, string score, bytes32 scoreIndex) external payable stopInEmergency {
+        require(joinCheck(gameIndex, msg.value) == 0);
+        // bytes32 scoreIndex = keccak256(score);
         wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
         // testOK = scoreIndex;
         withdraws[owner] = withdraws[owner].add(msg.value);
@@ -70,8 +77,8 @@ contract WccPlayer is Ownable, Stoppable{
         bytes32 target = vs.getVoteTarget(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
         if (target == _scoreIndex) { // win
-            var (,totalWinValue,,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
-            var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
+            var (,totalWinValue,totalBets) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
+            uint totalValue = wccs.getGameTotalValue(_gameIndex);
             return (true, totalValue.mul(myValue).div(totalWinValue));
         } else {
             return (false, 0);
@@ -163,7 +170,7 @@ contract WccPlayer is Ownable, Stoppable{
         var (,value,,) = vs.userVotes(_gameIndex, msg.sender);
         var (,yesCount,,,,,,) = vs.voteInfos(_gameIndex);
         vs.setUserVotePaid(_gameIndex, msg.sender);
-        var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
+        uint totalValue = wccs.getGameTotalValue(_gameIndex);
         // uint totalCount = yesCount.add(noCount);
         // (totalValue / 20) * value / (yesCount + noCount)
         withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(yesCount));
@@ -177,13 +184,13 @@ contract WccPlayer is Ownable, Stoppable{
         if (value == 0) {
             return 1; // no balance
         }
-        if (address(this).balance < value.div(10).mul(9)) {
+        if (address(this).balance < value.div(100).mul(85)) {
             return 2; // no enough balance
         }
         if (msg.sender == owner) {
             return 3; // owner
         }
-        if (withdraws[owner] < value.div(10).mul(9)) {
+        if (withdraws[owner] < value.div(100).mul(85)) {
             return 4; // withdraws[owner] not enough
         }
         return 0;
@@ -193,7 +200,7 @@ contract WccPlayer is Ownable, Stoppable{
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
         require(withdrawCheck(msg.sender) == 0);
-        msg.sender.transfer(value.div(10).mul(9));
+        msg.sender.transfer(value.div(100).mul(85));
         delete withdraws[msg.sender];
         withdraws[owner] = withdraws[owner].sub(value.div(100).mul(85));
         UserWithdraw(msg.sender, value.div(100).mul(85));
@@ -217,7 +224,7 @@ contract WccPlayer is Ownable, Stoppable{
         var (vote,weight,,) = vs.userVotes(_gameIndex, msg.sender);
         if(passed && ended) {
             if (vote || changed) {
-                var (,,,,,totalValue,,,) = wccs.games(_gameIndex);
+                uint totalValue = wccs.getGameTotalValue(_gameIndex);
                 return (true, totalValue.div(20).mul(weight).div(yesCount));
             } else {
                 return (false, 0);

@@ -129,12 +129,11 @@
                                 <span class="text-warning">{{court.status | gameStatus}}</span>
                                 <br>
                                 <small class="text-muted">Total Bets: </small>{{court.totalValue | fromWei}} Ether
-                                <div *ngIf="court.totalVotes">
+                                <span *ngIf="court.totalVotes">
                                     <br>
-                                    <small class="text-muted">Total Votes: </small>{{court.totalVotes}}</div>
+                                    <small class="text-muted">Total Votes: </small>{{court.totalVotes}}</span>
                                 <br>
-                                <small class="text-muted" *ngIf="court.score">Score: </small>
-                                <h5>{{court.score}}</h5>
+                                <h6><small class="text-muted" *ngIf="court.score">Score: </small>{{court.score}}</h6>
                             </td>
                             <td class="align-middle" style="width:30%">
                                 <img [src]="court.s_p1 || court.p1|nationFlag:contries" class="rounded-circle" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{court.s_p1 || court.p1}}
