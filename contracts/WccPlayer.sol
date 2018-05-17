@@ -181,16 +181,17 @@ contract WccPlayer is Ownable, Stoppable{
     event UserWithdraw(address user, uint value);
     function withdrawCheck(address user) public view returns(uint) {
         uint value = withdraws[user];
+        uint trueValue = value.div(100).mul(85);
         if (value == 0) {
             return 1; // no balance
         }
-        if (address(this).balance < value.div(100).mul(85)) {
+        if (address(this).balance < trueValue) {
             return 2; // no enough balance
         }
         if (msg.sender == owner) {
             return 3; // owner
         }
-        if (withdraws[owner] < value.div(100).mul(85)) {
+        if (withdraws[owner] < trueValue) {
             return 4; // withdraws[owner] not enough
         }
         return 0;
@@ -200,10 +201,11 @@ contract WccPlayer is Ownable, Stoppable{
     function withdraw() external stopInEmergency {
         uint value = withdraws[msg.sender];
         require(withdrawCheck(msg.sender) == 0);
-        msg.sender.transfer(value.div(100).mul(85));
+        uint trueValue = value.div(100).mul(85);
+        msg.sender.transfer(trueValue);
         delete withdraws[msg.sender];
-        withdraws[owner] = withdraws[owner].sub(value.div(100).mul(85));
-        UserWithdraw(msg.sender, value.div(100).mul(85));
+        withdraws[owner] = withdraws[owner].sub(trueValue);
+        UserWithdraw(msg.sender, trueValue);
     }
     /// @author Bob Clampett
     /// @notice owner withdraw eth 
