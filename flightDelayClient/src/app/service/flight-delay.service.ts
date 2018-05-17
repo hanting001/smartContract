@@ -375,6 +375,62 @@ export class FlightDelayService {
         //     console.log(error);
         //   });
     }
+
+
+    async redeemCheck(tokenValue) {
+        const web3 = this.web3Service.instance();
+        // const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const msgObj = {
+            2: 'Token必须大于1个',
+            1: '您剩余Token不足'
+        };
+        const checkResult = await sc.methods.redeemCheck(tokenValue).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
+
+    async redeem(value, onTransactionHash, onConfirmation) {
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        // const address = await this.web3Service.getAddress('flightDelay');
+        // console.log(address);
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.redeem(value).send(options)
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`redeem txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+            });
+        // const web3 = this.web3Service.instance();
+        // return web3.eth.sendTransaction(options)
+        //   // return this.sc.methods.query(100).send({from: from})
+        //   .on('transactionHash', (transactionHash) => {
+        //     console.log(`exchange txHash: ${transactionHash}`);
+        //   })
+        //   .on('confirmation', (confNumber, receipt) => {
+        //     if (onConfirmation) {
+        //       onConfirmation(confNumber, receipt);
+        //     }
+        //   })
+        //   .on('error', (error) => {
+        //     console.log(error);
+        //   });
+    }
     // 测试查询合约状态用
     async getSfInfo() {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
