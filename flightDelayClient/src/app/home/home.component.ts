@@ -255,7 +255,7 @@ export class HomeComponent implements OnInit {
                 console.log(testOK);
                 this.getAllData();
                 this.loadingSer.hide();
-                this.alertSer.show('获取理赔金成功,如果需要您可以领取');
+                this.alertSer.show('获取理赔金成功,如果需要您可以进行领取');
             }
         });
     }
@@ -311,11 +311,14 @@ export class HomeComponent implements OnInit {
 
     async getCurrentVoteInfo() {
         this.voteInfo = await this.flightDelayService.getCurrentVote();
+        console.log(this.voteInfo);
         if (this.voteInfo) {
 
             const totalCount = this.voteInfo.voteInfo.noCounts * 1 + this.voteInfo.voteInfo.cancelCounts * 1
                 + this.voteInfo.voteInfo.delay1Counts * 1 + this.voteInfo.voteInfo.delay2Counts * 1
                 + this.voteInfo.voteInfo.delay3Counts * 1;
+
+            this.voteInfo.totalCount = totalCount;
 
             // this.voteInfo.voteInfo.noPercent = (this.voteInfo.voteInfo.noCounts * 100 / totalCount).toFixed(0) + '%';
             // this.voteInfo.voteInfo.cancelPercent = (this.voteInfo.voteInfo.cancelCounts * 100 / totalCount).toFixed(0) + '%';
@@ -350,6 +353,25 @@ export class HomeComponent implements OnInit {
         const isChrome = userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Safari') > -1; // 判断Chrome浏览器
 
         return isFF || isChrome;
+    }
+
+    async withdraw(count) {
+        const account = await this.web3.getMainAccount();
+        this.loadingSer.show();
+        this.flightDelayService.withdraw(count, async (transactionHash) => {
+            await this.localActionSer.addAction({
+                transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
+                type: 'withdraw', tokenCount: count
+            }, account);
+        }, async (confirmNumber, receipt) => {
+            if (confirmNumber === 2) {
+                const testOK = await this.flightDelayService.testServiceOK();
+                console.log(testOK);
+                this.getBalance();
+                this.loadingSer.hide();
+                this.alertSer.show('提取成功');
+            }
+        });
     }
 
 

@@ -1,32 +1,54 @@
 <div class="jumbotron" style="opacity: 0.9;">
-  <h1>兑换说明</h1>
-  <p class="lead">说明详细文案</p>
+    <h1>兑换说明</h1>
+    <p class="lead">说明详细文案</p>
 
-  <div class="card w-80">
-    <div class="card-body">
-      <h5 class="card-title">{{account}}账户余额</h5>
-      <div class="row">
-        <div class="col">
-          <h6 class="card-subtitle mb-2 mr-2 text-muted">ETH</h6>
-          <p>{{balance.eth}}</p>
-        </div>
-        <div class="col">
-          <h6 class="card-subtitle mb-2 mr-2 text-muted">Token</h6>
-          <p>{{balance.token}}</p>
-        </div>
-      </div>
-      <div class="row mt-3 mb-3">
-        <div class="col">
-          <div class="input-group mb-3">
-            <input type="number" class="form-control" #eth (change)="countToken($event)" placeholder="ETH" aria-label="input ETH">
-            <input type="number" class="form-control" value="{{tokenCount}}" readonly aria-label="input token">
-            <div class="input-group-append">
-              <button class="btn btn-info" type="button" (click)="exchange(eth.value)">兑换</button>
+    <div class="card w-80">
+        <div class="card-body">
+            <h5 class="card-title">{{envState.account}}账户余额:</h5>
+            <div class="row">
+                <div class="col">
+                    <h6 class="card-subtitle mb-2 mr-2 text-muted">ETH</h6>
+                    <p>{{balance.eth}}</p>
+                </div>
+                <div class="col">
+                    <h6 class="card-subtitle mb-2 mr-2 text-muted">Token</h6>
+                    <p>{{balance.token}}</p>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <div class="row">
+                <div class="col">
+                    <input type="radio" class="" [(ngModel)]="exType" name="radio-stacked" (change)="exTypeChange()" required checked value="0">
+                    <label class="" (click)="exTypeChange('0')">ETH兑换Token</label>
+                </div>
+                <div class="col">
+                    <input type="radio" class="" [(ngModel)]="exType" (change)="exTypeChange()" name="radio-stacked" value="1">
+                    <label class="" (click)="exTypeChange('1')">Token赎回ETH</label>
+                </div>
+            </div>
+            <div *ngIf="exType=='0'" class="row mt-3 mb-3">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" #eth (change)="countToken($event)" placeholder="ETH" aria-label="input ETH">
+                        <input type="number" class="form-control" value="{{tokenCount}}" placeholder="Token" readonly aria-label="input token">
+                        <div class="input-group-append">
+                            <button class="btn btn-info" type="button" (click)="exchange(eth.value)">兑换</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  </div>
+            <div *ngIf="exType=='1'" class="row mt-3 mb-3">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" #token (change)="countEth($event)" placeholder="Token" aria-label="input token">
+                        <input type="number" class="form-control" readonly placeholder="ETH" value="{{ethCount}}" aria-label=" input ETH ">
+                        <div class="input-group-append ">
+                            <button class="btn btn-info " type="button " (click)="redeem(token.value) ">赎回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
