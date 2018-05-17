@@ -90,7 +90,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'265px':'70px'}">
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'290px':'70px'}">
         <div *ngFor="let game of showGames; let idx = index;" class="mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
             <div class="row bg-light align-items-center">
