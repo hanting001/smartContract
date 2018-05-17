@@ -15,7 +15,7 @@ import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'exchange', component: ExchangeComponent, resolve: { balance: BalanceResolver } },
+    { path: 'exchange', component: ExchangeComponent },
     { path: 'myorder', component: OrderComponent },
     { path: 'aboutus', component: AboutUsComponent },
     { path: 'faq', component: FaqComponent },

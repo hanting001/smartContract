@@ -35,16 +35,21 @@ export class FlightDelayService {
             return null;
         }
         const currentVote = currentVotes[0];
-        const voteInfo = await storage.methods.voteInfos(currentVotes).call();
-        if (voteInfo.isValued) {
-            const sfInfo = await storage.methods.returnSFInfo(currentVote).call();
-            return {
-                voteInfo: voteInfo,
-                sfInfo: sfInfo,
-                currentVote: currentVote
-            };
+        if (currentVote == '0x0000000000000000000000000000000000000000000000000000000000000000') {
+            return null;
         }
-        return null;
+
+        const voteInfo = await storage.methods.voteInfos(currentVote).call();
+        console.log(voteInfo);
+        // if (voteInfo.isValued) {
+        const sfInfo = await storage.methods.returnSFInfo(currentVote).call();
+        return {
+            voteInfo: voteInfo,
+            sfInfo: sfInfo,
+            currentVote: currentVote
+        };
+        // }
+        // return null;
     }
 
     async getVoteInfo(sfIndex) {
@@ -67,12 +72,12 @@ export class FlightDelayService {
         const token = await tokenSC.methods.balanceOf(account).call();
         // player.methods.withdraws(account).call();
 
-        // const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
-        // const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
+        const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
-            // withdraw: web3.utils.fromWei(withdraw)
+            withdraw: withdraw
         };
     }
     async getBalanceByAccount(account) {
@@ -86,7 +91,7 @@ export class FlightDelayService {
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
-            withdraw: web3.utils.fromWei(withdraw)
+            withdraw: withdraw
         };
     }
     // 获取eth和token的汇率
@@ -374,6 +379,62 @@ export class FlightDelayService {
         //     console.log(error);
         //   });
     }
+
+
+    async redeemCheck(tokenValue) {
+        const web3 = this.web3Service.instance();
+        // const account = await this.web3Service.getMainAccount();
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const msgObj = {
+            2: 'Token必须大于1个',
+            1: '您剩余Token不足'
+        };
+        const checkResult = await sc.methods.redeemCheck(tokenValue).call();
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+
+
+    async redeem(value, onTransactionHash, onConfirmation) {
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        // const address = await this.web3Service.getAddress('flightDelay');
+        // console.log(address);
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        console.log(options);
+        sc.methods.redeem(value).send(options)
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`redeem txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+            });
+        // const web3 = this.web3Service.instance();
+        // return web3.eth.sendTransaction(options)
+        //   // return this.sc.methods.query(100).send({from: from})
+        //   .on('transactionHash', (transactionHash) => {
+        //     console.log(`exchange txHash: ${transactionHash}`);
+        //   })
+        //   .on('confirmation', (confNumber, receipt) => {
+        //     if (onConfirmation) {
+        //       onConfirmation(confNumber, receipt);
+        //     }
+        //   })
+        //   .on('error', (error) => {
+        //     console.log(error);
+        //   });
+    }
     // 测试查询合约状态用
     async getSfInfo() {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
@@ -512,12 +573,38 @@ export class FlightDelayService {
         };
         const web3 = this.web3Service.instance();
         const key = web3.utils.keccak256(flightNO + moment(flightDate).format('YYYY-MM-DD'));
-        sc.methods.claimVote(key, '0').send(options)
+        sc.methods.claimVote(key).send(options)
             .on('transactionHash', (transactionHash) => {
                 if (onTransactionHash) {
                     onTransactionHash(transactionHash);
                 }
                 console.log(`start claim vote txHash: ${transactionHash}`);
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
+
+
+    async withdraw(count, onTransactionHash, onConfirmation, onError?) {
+        const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.withdraw().send(options)
+            .on('transactionHash', (transactionHash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(transactionHash);
+                }
+                console.log(`withdraw txHash: ${transactionHash}`);
             })
             .on('confirmation', (confNumber, receipt) => {
                 if (onConfirmation) {

@@ -298,7 +298,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         // const valueInWei = web3.utils.toWei(String(model.ethValue));
         const currentGameInfo = await this.wccSer.getGameInfo(index);
         // console.log(currenGameInfo);
-        if (!currentGameInfo.isValued) {
+        if (currentGameInfo.time == 0) {
             return;
         }
         if (!court) {
