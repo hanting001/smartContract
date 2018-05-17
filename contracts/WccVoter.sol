@@ -51,8 +51,8 @@ contract WccVoter is Ownable, Stoppable{
     /// @param _gameIndex game index
     /// @return 0 if check passed
     function startVoteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(_gameIndex);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Playing) {
@@ -90,8 +90,8 @@ contract WccVoter is Ownable, Stoppable{
     /// @param _gameIndex  game index
     /// @return 0 if check passed
     function voteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(_gameIndex);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Voting) {
@@ -133,8 +133,8 @@ contract WccVoter is Ownable, Stoppable{
         UserVote(_gameIndex, yesOrNo, msg.sender);
     }
     function canEndCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(_gameIndex);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Voting) {
@@ -155,8 +155,8 @@ contract WccVoter is Ownable, Stoppable{
         canEnd[_gameIndex] = true;
     }
     function endVoteCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(_gameIndex);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Voting) {
@@ -182,8 +182,8 @@ contract WccVoter is Ownable, Stoppable{
         EndVote(_gameIndex);
     }
     function endVoteByAdminCheck(bytes32 _gameIndex) public view returns(uint) {
-        var (,,,,status,,,gameValued,) = wccs.games(_gameIndex);
-        if (!gameValued) {
+        var (,,time,,status,) = wccs.games(_gameIndex);
+        if (time == 0) {
             return 1; //game not exist
         }
         if (status != WccStorage.GameStatus.Voting) {
