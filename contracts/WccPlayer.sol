@@ -77,7 +77,7 @@ contract WccPlayer is Ownable, Stoppable{
         bytes32 target = vs.getVoteTarget(_gameIndex);
         var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
         if (target == _scoreIndex) { // win
-            var (,totalWinValue,totalBets) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
+            var (,totalWinValue,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             uint totalValue = wccs.getGameTotalValue(_gameIndex);
             return (true, totalValue.mul(myValue).div(totalWinValue));
         } else {
