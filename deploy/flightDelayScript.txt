@@ -1,4 +1,4 @@
-node utility.js 123 KnotToken 1000 KnotCoin KTC
+node utility.js 123 KnotToken 1000000 KnotCoin KTC
 node utility.js 123 HbStorage
 node utility.js 123 FlightDelay 0x 0x
 node utility.js 123 FlightDelayService 0x 0x
