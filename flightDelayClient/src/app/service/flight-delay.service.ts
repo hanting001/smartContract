@@ -64,7 +64,7 @@ export class FlightDelayService {
         // player.methods.withdraws(account).call();
 
         // const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
-        // const withdraw = flightDelayServiceSc.methods.withdraws(account).call();
+        // const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
@@ -78,7 +78,7 @@ export class FlightDelayService {
         const token = await tokenSC.methods.balanceOf(account).call();
 
         const flightDelayServiceSc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
-        const withdraw = flightDelayServiceSc.methods.withdraws(account).call();
+        const withdraw = await flightDelayServiceSc.methods.withdraws(account).call();
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),

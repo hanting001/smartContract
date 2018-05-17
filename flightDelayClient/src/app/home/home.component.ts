@@ -324,10 +324,11 @@ export class HomeComponent implements OnInit {
             // this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount).toFixed(0) + '%';
 
             this.chartData[0] = this.voteInfo.voteInfo.noCounts;
-            this.chartData[1] = this.voteInfo.voteInfo.cancelCounts;
-            this.chartData[2] = this.voteInfo.voteInfo.delay1Counts;
-            this.chartData[3] = this.voteInfo.voteInfo.delay2Counts;
-            this.chartData[4] = this.voteInfo.voteInfo.delay3Counts;
+
+            this.chartData[1] = this.voteInfo.voteInfo.delay1Counts;
+            this.chartData[2] = this.voteInfo.voteInfo.delay2Counts;
+            this.chartData[3] = this.voteInfo.voteInfo.delay3Counts;
+            this.chartData[4] = this.voteInfo.voteInfo.cancelCounts;
 
 
             console.log(this.voteInfo);

@@ -57,10 +57,11 @@ export class ClaimDetailComponent implements OnInit {
         // console.log(this.sfInfo);
 
         this.chartData[0] = this.sfInfo.voteInfo.noCounts * 1;
-        this.chartData[1] = this.sfInfo.voteInfo.cancelCounts * 1;
-        this.chartData[2] = this.sfInfo.voteInfo.delay1Counts * 1;
-        this.chartData[3] = this.sfInfo.voteInfo.delay2Counts * 1;
-        this.chartData[4] = this.sfInfo.voteInfo.delay3Counts * 1;
+
+        this.chartData[1] = this.sfInfo.voteInfo.delay1Counts * 1;
+        this.chartData[2] = this.sfInfo.voteInfo.delay2Counts * 1;
+        this.chartData[3] = this.sfInfo.voteInfo.delay3Counts * 1;
+        this.chartData[4] = this.sfInfo.voteInfo.cancelCounts * 1;
 
         console.log(this.chartData);
     }
