@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="row justify-content-center">
-                <div class="col text-center">
+                <div class="col text-center pl-0 pr-0">
                     <table class="table m-0 table-responsive table-sm rounded">
                         <tr>
                             <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
@@ -90,7 +90,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'300px':'70px'}">
+    <div *ngIf="envState.checkEnv" class="container" [ngStyle]="{'padding-top':isSticky?'265px':'70px'}">
         <div *ngFor="let game of showGames; let idx = index;" class="mb-5" id="{{game.date}}">
             <div *ngIf="secondStageStartDate == game.date" [id]="secondStageStartDate"></div>
             <div class="row bg-light align-items-center">

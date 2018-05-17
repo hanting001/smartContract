@@ -124,7 +124,6 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         });
         this.web3.check();
         this.timer = setInterval(this.getCountDown, 3600);
-
     }
     getCountDown() {
         const startDay = moment('2018-06-14').dayOfYear();

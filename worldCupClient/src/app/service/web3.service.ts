@@ -56,6 +56,12 @@ export class Web3Service {
         const result = await this.http.get<any>(url).toPromise();
         return result;
     }
+    async currentGasPrice() {
+        const url = 'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=YRSS6A5WG4DD7F7SXTTBEH1ISSPQAK2GBU';
+        const result = await this.http.get<any>(url).toPromise();
+        const gasPrice = this.web3.utils.hexToNumberString(result.result);
+        return gasPrice;
+    }
     async getABI(name, func) {
         const raw = await this.http.get<any>('assets/build/contracts/' + name + '.json?' + new Date().getTime()).toPromise();
         const abi = raw.abi;
