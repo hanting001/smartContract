@@ -161,8 +161,7 @@ contract FlightDelayService is Stoppable, Ownable {
         require(redeemCheck(tokenValue) == 0);
         uint eth = tokenValue.div(rate);
         if(token.transferFrom(msg.sender, this, tokenValue)) {
-            exchanged = exchanged.sub(tokenValue);
-            withdraws[msg.sender] = withdraws[msg.sender].add(eth);
+            msg.sender.transfer(eth);
         }
     }
 } 
