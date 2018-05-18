@@ -340,7 +340,7 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             const web3 = this.web3.instance();
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
             const canEnd = await this.wccSer.isVoteCanEnd(gameIndex);
-            if (canEnd) {
+            if (canEnd && type == 2) {
                 return this.alertSer.show('Already can end');
             }
             const voteInfo = await this.wccSer.getVoteInfo(gameIndex);

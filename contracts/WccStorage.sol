@@ -95,10 +95,9 @@ contract WccStorage is Ownable {
         string score;
         uint value;
         bool paid;
-        bool isValued;
     }
     // mapping(bytes32 => mapping(address => bool)) public joinedGames;
-    mapping(bytes32 => mapping(address => bytes32[])) public joinedGamesScoreIndexes;
+    // mapping(bytes32 => mapping(address => bytes32[])) public joinedGamesScoreIndexes;
     mapping(bytes32 => mapping(address => mapping(bytes32 => Score))) public joinedGamesScoreInfo;
 
     
@@ -109,7 +108,7 @@ contract WccStorage is Ownable {
         setGameScoreTotalInfo(gameIndex, scoreIndex, score, value);
         setUserJoinedGameIndexes(user, gameIndex);
         // setJoinedGame(user, gameIndex);
-        setJoinedGameScoreIndex(user, gameIndex, scoreIndex);
+        // setJoinedGameScoreIndex(user, gameIndex, scoreIndex);
         setJoinedGameScoreInfo(user, gameIndex, scoreIndex, score, value);
     }
 
@@ -137,6 +136,7 @@ contract WccStorage is Ownable {
         for (uint8 index = 0; index < userJoinedGameIndexes[_user].length; index ++) {
             if (userJoinedGameIndexes[_user][index] == _gameIndex) {
                 exist = true;
+                break;
             }
         }
         if(!exist) {
@@ -148,20 +148,19 @@ contract WccStorage is Ownable {
     //         joinedGames[_gameIndex][_user] = true;
     //     }
     // }
-    function setJoinedGameScoreIndex(address _user, bytes32 _gameIndex, bytes32 _scoreIndex) private {
-        if(!joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
-            joinedGamesScoreIndexes[_gameIndex][_user].push(_scoreIndex);
-        }
-    }
+    // function setJoinedGameScoreIndex(address _user, bytes32 _gameIndex, bytes32 _scoreIndex) private {
+    //     if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value == 0) {
+    //         joinedGamesScoreIndexes[_gameIndex][_user].push(_scoreIndex);
+    //     }
+    // }
     function setJoinedGameScoreInfo(address _user, bytes32 _gameIndex, bytes32 _scoreIndex, string _score, uint _value) internal {
-        if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].isValued) {
+        if(joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value > 0) {
             joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value = joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex].value.add(_value);
         } else {
             joinedGamesScoreInfo[_gameIndex][_user][_scoreIndex] = Score({
                 score: _score,
                 value: _value,
-                paid: false,
-                isValued: true
+                paid: false
             });
         }
     }
@@ -205,12 +204,12 @@ contract WccStorage is Ownable {
         }
         return false;
     }
-    function getUserJoinedGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
-        return joinedGamesScoreIndexes[_gameIndex][msg.sender];
-    }
-    function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool paid, bool isValued) {
+    // function getUserJoinedGameScoreIndexes(bytes32 _gameIndex) public view returns(bytes32[]) {
+    //     return joinedGamesScoreIndexes[_gameIndex][msg.sender];
+    // }
+    function getUserJoinedGameScoreInfo(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(string score, uint value, bool paid) {
         Score storage scoreInfo = joinedGamesScoreInfo[_gameIndex][msg.sender][_scoreIndex];
-        return (scoreInfo.score, scoreInfo.value, scoreInfo.paid, scoreInfo.isValued);
+        return (scoreInfo.score, scoreInfo.value, scoreInfo.paid);
     }
     function setUserScorePaid(bytes32 _gameIndex, bytes32 _scoreIndex, address user) external onlyAdmin {
         joinedGamesScoreInfo[_gameIndex][user][_scoreIndex].paid = true;

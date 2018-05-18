@@ -496,7 +496,7 @@ export class WCCService {
     }
     async getUserJoinedGameScoreIndexes(gameIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
-        return sc.methods.getUserJoinedGameScoreIndexes(gameIndex).call();
+        return sc.methods.getGameScoreIndexes(gameIndex).call();
     }
     async getUserJoinedGameScoreInfo(gameIndex, gameInfo, scoreIndex) {
         const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');

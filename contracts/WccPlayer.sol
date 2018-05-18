@@ -46,6 +46,7 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
+
     event UserJoin(bytes32 gameIndex, string score, address user);
     /// @author Bob Clampett
     /// @notice user join game
@@ -57,7 +58,7 @@ contract WccPlayer is Ownable, Stoppable{
         bytes32 scoreIndex = keccak256(score);
         wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
         // testOK = scoreIndex;
-        withdraws[owner] = withdraws[owner].add(msg.value);
+        // withdraws[owner] = withdraws[owner].add(msg.value);
         UserJoin(gameIndex, score, msg.sender);
     }
     function join(bytes32 gameIndex, string score, bytes32 scoreIndex) external payable stopInEmergency {
@@ -65,7 +66,7 @@ contract WccPlayer is Ownable, Stoppable{
         // bytes32 scoreIndex = keccak256(score);
         wccs.userJoin(msg.sender, msg.value, gameIndex, score, scoreIndex);
         // testOK = scoreIndex;
-        withdraws[owner] = withdraws[owner].add(msg.value);
+        // withdraws[owner] = withdraws[owner].add(msg.value);
         UserJoin(gameIndex, score, msg.sender);
     }
     /// @author Bob Clampett
@@ -75,7 +76,7 @@ contract WccPlayer is Ownable, Stoppable{
     /// @return true if check passed and win value 
     function isWin(bytes32 _gameIndex, bytes32 _scoreIndex) public view returns(bool win, uint value) {
         bytes32 target = vs.getVoteTarget(_gameIndex);
-        var (, myValue,,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
+        var (, myValue,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
         if (target == _scoreIndex) { // win
             var (,totalWinValue,) = wccs.gameScoreTotalInfos(_gameIndex, _scoreIndex);
             uint totalValue = wccs.getGameTotalValue(_gameIndex);
@@ -101,7 +102,7 @@ contract WccPlayer is Ownable, Stoppable{
         if(!win) {
             return 3; // not win
         }
-        var (,,paid,) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
+        var (,,paid) = wccs.joinedGamesScoreInfo(_gameIndex, msg.sender, _scoreIndex);
         if (paid) {
             return 4; //paid
         }
@@ -191,9 +192,9 @@ contract WccPlayer is Ownable, Stoppable{
         if (msg.sender == owner) {
             return 3; // owner
         }
-        if (withdraws[owner] < trueValue) {
-            return 4; // withdraws[owner] not enough
-        }
+        // if (withdraws[owner] < trueValue) {
+        //     return 4; // withdraws[owner] not enough
+        // }
         return 0;
     }
     /// @author Bob Clampett
@@ -204,7 +205,7 @@ contract WccPlayer is Ownable, Stoppable{
         uint trueValue = value.div(100).mul(85);
         msg.sender.transfer(trueValue);
         delete withdraws[msg.sender];
-        withdraws[owner] = withdraws[owner].sub(trueValue);
+        // withdraws[owner] = withdraws[owner].sub(trueValue);
         UserWithdraw(msg.sender, trueValue);
     }
     /// @author Bob Clampett
