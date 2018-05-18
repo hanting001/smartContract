@@ -5,7 +5,7 @@ node_modules/
 installed_contracts/
 dump.rdb
 /flightDelayClient/node_modules/
-migrations/db.json
+migrations/db/
 /worldCupClient/dist.tar
 /worldCupClient/dist/
 /worldCupClient/ethsb.github.io.tar

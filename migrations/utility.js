@@ -53,9 +53,11 @@ module.exports = {
         }
         const obj = contractObj.deploy(options);
         const gas = await obj.estimateGas();
+        const gasPrice = await web3.eth.getGasPrice();
+        console.log(`Estimate gas ${gas}, Gas price ${web3.utils.fromWei(gasPrice, 'Gwei')} Gwei`);
         obj.send({
                 from: account,
-                gas: gas
+                gas: gas * 2
             })
             .on('error', function (error) {
                 console.log(error)
