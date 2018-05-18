@@ -156,6 +156,32 @@ export class FlightDelayService {
                 console.log(error);
             });
     }
+
+    async approveRedeem(price, onTransactionHash, onConfirmation, onError?) {
+        const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
+        const address = await this.web3Service.getAddress('flightDelayService');
+        console.log(address);
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        tokenSC.methods.approve(address, price).send(options).on('transactionHash', (transactionHash) => {
+            if (onTransactionHash) {
+                onTransactionHash(transactionHash);
+            }
+            console.log(`approve  txHash: ${transactionHash}`);
+        })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                if (onError) {
+                    onError(error);
+                }
+                console.log(error);
+            });
+    }
     /* 购买前校验，返回0表示校验通过
     */
     async canJoin(flightNO, flightDate) {

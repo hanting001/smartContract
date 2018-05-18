@@ -15,7 +15,7 @@ export class ExchangeComponent implements OnInit {
     rate: any;
     tokenCount: any;
     ethCount: any;
-    exType: String = '1';
+    exType: String = '0';
     account: any;
     value: any;
     envState: any = {};
@@ -96,12 +96,7 @@ export class ExchangeComponent implements OnInit {
             this.loadingSer.show();
             const web3 = this.web3Service.instance();
             const valueInWei = web3.utils.toWei(String(value));
-            const redeemCheck = await this.flightDelayService.redeemCheck(valueInWei);
-            console.log(redeemCheck);
-            if (redeemCheck.checkResult != 0) {
-                this.loadingSer.hide();
-                return this.alertSer.show(redeemCheck.message);
-            }
+
 
             const confirmApprove = async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 2) {
@@ -109,13 +104,31 @@ export class ExchangeComponent implements OnInit {
                     this.loadingSer.hide();
                 }
             };
-            // const valueInWei = web3.utils.toWei(String(value));
-            this.flightDelayService.redeem(valueInWei, async (transactionHash) => {
+
+            this.flightDelayService.approveRedeem(valueInWei, async (transactionHash) => {
                 await this.localActionSer.addAction({
-                    transactionHash: transactionHash, netType: this.envState.netType,
-                    eth: value, tokenCount: this.tokenCount, createdAt: new Date(), type: 'redeem'
-                }, this.account);
-            }, confirmApprove);
+                    transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'approve'
+                }, this.envState.account);
+            }, async (confirmNumber, receipt) => {
+                if (confirmNumber === 2) {
+
+                    const redeemCheck = await this.flightDelayService.redeemCheck(valueInWei);
+                    console.log(redeemCheck);
+                    if (redeemCheck.checkResult != 0) {
+                        this.loadingSer.hide();
+                        return this.alertSer.show(redeemCheck.message);
+                    }
+                    this.flightDelayService.redeem(valueInWei, async (transactionHash) => {
+                        await this.localActionSer.addAction({
+                            transactionHash: transactionHash, netType: this.envState.netType,
+                            eth: value, tokenCount: this.tokenCount, createdAt: new Date(), type: 'redeem'
+                        }, this.account);
+                    }, confirmApprove);
+                }
+            });
+
+            // const valueInWei = web3.utils.toWei(String(value));
+
         }
     }
 
