@@ -110,16 +110,18 @@ export class HomeComponent implements OnInit {
         this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
-                if (tempEnvState.checkEnv !== this.envState.checkEnv) {
+                if (tempEnvState.checkEnv !== this.envState.checkEnv
+                    || (tempEnvState.checkAccount && tempEnvState.account != this.envState.account)
+                ) {
                     this.envState.changed = true;
-
+                    if (tempEnvState.canLoadData) {
+                        this.getAllData();
+                    }
                 } else {
                     this.envState.changed = false;
                 }
 
-                if (tempEnvState.canLoadData) {
-                    this.getAllData();
-                }
+
                 this.envState = tempEnvState;
             }
             this.envState = tempEnvState;
