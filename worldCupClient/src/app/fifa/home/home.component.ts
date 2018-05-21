@@ -44,7 +44,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     gameCount = 0;
     countDown;
     timer;
-    matchGroup = 0;
+    matchGroup = 1;
     splitDate = moment('2018-06-14').valueOf();
     showGames;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;

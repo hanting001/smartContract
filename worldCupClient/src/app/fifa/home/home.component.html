@@ -23,8 +23,8 @@
                     <p [hidden]="loading || matchGroup == 0" class=" display-4 text-main text-center mb-1">
                         <img src="assets/images/world_cup_logo.png" height="70">{{title}}</p>
                     <span [hidden]="loading" class="text-success text-center mb-1">
-                        <button class="btn btn-link" (click)="transformGames()">
-                            <i class="icon-link"></i> {{stitle}}</button>
+                        <!-- <button class="btn btn-link" (click)="transformGames()">
+                            <i class="icon-link"></i> {{stitle}}</button> -->
                     </span>
                     <p [hidden]="!loading" class="lead text-main text-center mb-1">Loading matches...</p>
                     <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
