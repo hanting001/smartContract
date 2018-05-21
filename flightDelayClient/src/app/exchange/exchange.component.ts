@@ -100,7 +100,6 @@ export class ExchangeComponent implements OnInit {
         const value = Number(inputValue);
         if (value) {
             this.loadingSer.show('请先授权合约扣除代币，请确认...');
-            this.loadingSer.show();
             const web3 = this.web3Service.instance();
             const valueInWei = web3.utils.toWei(String(value));
 
@@ -113,7 +112,8 @@ export class ExchangeComponent implements OnInit {
 
             this.flightDelayService.approveRedeem(valueInWei, async (transactionHash) => {
                 await this.localActionSer.addAction({
-                    transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'approveRedeem'
+                    transactionHash: transactionHash, netType: this.envState.netType, eth: this.ethCount,
+                    tokenCount: value, createdAt: new Date(), type: 'approveRedeem'
                 }, this.envState.account);
             }, async (confirmNumber, receipt) => {
                 if (confirmNumber === 2) {
@@ -127,8 +127,8 @@ export class ExchangeComponent implements OnInit {
                     this.flightDelayService.redeem(valueInWei, async (transactionHash) => {
                         await this.localActionSer.addAction({
                             transactionHash: transactionHash, netType: this.envState.netType,
-                            eth: value, tokenCount: this.tokenCount, createdAt: new Date(), type: 'redeem'
-                        }, this.account);
+                            eth: this.ethCount, tokenCount: value, createdAt: new Date(), type: 'redeem'
+                        }, this.envState.account);
                     }, confirmApprove, (err) => {
                         console.log(err);
                         this.loadingSer.hide();
