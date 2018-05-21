@@ -198,4 +198,8 @@ export class Web3Service {
         dataObject.gas = await this.web3.eth.estimateGas(dataObject);
         return dataObject;
     }
+
+    getErrMsg() {
+        return '您已拒绝此次交易';
+    }
 }

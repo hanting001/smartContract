@@ -13,14 +13,21 @@ export class AppComponent {
     isSupportBrowser: Boolean = true;
     title = 'app';
     loading: Boolean = false;
+    loadingText?: string;
     tip: any = {};
     alertModalRef: BsModalRef;
 
     @ViewChild('alertTemplate') alertTemplate: TemplateRef<any>;
     constructor(public loadingSer: LoadingService, private modalService: BsModalService, public alertSer: AlertService) {
         this.isSupportBrowser = this.getIsSupportBrowser();
-        this.loadingSer.getLoadingObservable().subscribe((load) => {
-            this.loading = load;
+        this.loadingSer.getLoadingObservable().subscribe((data: any) => {
+            if (data.loading) {
+                $('.backdrop').css({ 'height': $(document).height() }).show();
+            } else {
+                $('.backdrop').hide();
+            }
+            this.loading = data.loading;
+            this.loadingText = data.loadingText;
         });
         this.alertSer.getAlertObservable().subscribe((data) => {
             this.tip = data;

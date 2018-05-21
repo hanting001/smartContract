@@ -162,7 +162,7 @@ export class HomeComponent implements OnInit {
         }
     }
     async join() {
-        this.loadingSer.show();
+        this.loadingSer.show('授权合约扣除所需的代币,请确认...');
 
         const model = this.form.value;
         const account = await this.web3.getMainAccount();
@@ -185,6 +185,7 @@ export class HomeComponent implements OnInit {
             }, account);
         }, async (confirmNumber, receipt) => {
             if (confirmNumber === 2) {
+                this.loadingSer.show('合约扣除代币并加入计划,请确认...');
                 this.flightDelayService.join(model, votedSfIndex, async (transactionHash) => {
                     await this.localActionSer.addAction({
                         transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'join', sfInfo: model
@@ -204,22 +205,30 @@ export class HomeComponent implements OnInit {
                         this.alertSer.show('加入成功');
                     }
                 }, (err) => {
+                    console.log(err);
                     this.loadingSer.hide();
+                    this.alertSer.show(this.web3.getErrMsg());
                 });
             }
+        }, (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show(this.web3.getErrMsg());
         });
 
     }
     async startClaim(flightNO, flightDate) {
+        this.loadingSer.show('您发起了一个理赔，请确认...');
         const claimCheck = await this.flightDelayService.canStartVote(flightNO, flightDate);
         const account = await this.web3.getMainAccount();
         console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
+            this.loadingSer.hide();
             return this.alertSer.show(claimCheck.message);
         }
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
         const target = 2;
-        this.loadingSer.show();
+
         this.flightDelayService.startClaimVote(flightNO, flightDate, target, async (transactionHash) => {
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
@@ -233,18 +242,24 @@ export class HomeComponent implements OnInit {
                 this.loadingSer.hide();
                 this.alertSer.show('申请成功,航班开启理赔投票');
             }
+        }, (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show(this.web3.getErrMsg());
         });
     }
 
     async getClaim(flightNO, flightDate) {
+        this.loadingSer.show('您正在获取理赔金，请确认...');
         const claimCheck = await this.flightDelayService.canClaim(flightNO, flightDate);
         const account = await this.web3.getMainAccount();
         console.log(claimCheck);
         if (claimCheck.checkResult != 0) {
+            this.loadingSer.hide();
             return this.alertSer.show(claimCheck.message);
         }
         // 这里默认使用延误1小时(DelayStatus.delay2)，以后需要弹出model窗让用户选择延误类型
-        this.loadingSer.show();
+
         this.flightDelayService.startClaim(flightNO, flightDate, async (transactionHash) => {
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
@@ -258,6 +273,10 @@ export class HomeComponent implements OnInit {
                 this.loadingSer.hide();
                 this.alertSer.show('获取理赔金成功,如果需要您可以进行领取');
             }
+        }, (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show(this.web3.getErrMsg());
         });
     }
 
@@ -360,7 +379,7 @@ export class HomeComponent implements OnInit {
 
     async withdraw(count) {
         const account = await this.web3.getMainAccount();
-        this.loadingSer.show();
+        this.loadingSer.show('您发起了领取Token操作，请确认...');
         this.flightDelayService.withdraw(count, async (transactionHash) => {
             await this.localActionSer.addAction({
                 transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(),
@@ -374,6 +393,10 @@ export class HomeComponent implements OnInit {
                 this.loadingSer.hide();
                 this.alertSer.show('提取成功');
             }
+        }, (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show(this.web3.getErrMsg());
         });
     }
 

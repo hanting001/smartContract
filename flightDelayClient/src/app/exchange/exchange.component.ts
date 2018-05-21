@@ -72,7 +72,7 @@ export class ExchangeComponent implements OnInit {
 
         const value = Number(inputValue);
         if (value) {
-            this.loadingSer.show();
+            this.loadingSer.show('您发起了兑换Token操作，请确认...');
             const web3 = this.web3Service.instance();
             const confirmApprove = async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 2) {
@@ -86,7 +86,11 @@ export class ExchangeComponent implements OnInit {
                     transactionHash: transactionHash, netType: this.envState.netType,
                     eth: value, tokenCount: this.tokenCount, createdAt: new Date(), type: 'exchange'
                 }, this.account);
-            }, confirmApprove);
+            }, confirmApprove, (err) => {
+                console.log(err);
+                this.loadingSer.hide();
+                this.alertSer.show(this.web3Service.getErrMsg());
+            });
         }
     }
 
@@ -95,10 +99,10 @@ export class ExchangeComponent implements OnInit {
 
         const value = Number(inputValue);
         if (value) {
+            this.loadingSer.show('请先授权合约扣除代币，请确认...');
             this.loadingSer.show();
             const web3 = this.web3Service.instance();
             const valueInWei = web3.utils.toWei(String(value));
-
 
             const confirmApprove = async (confirmationNumber, receipt) => {
                 if (confirmationNumber === 2) {
@@ -113,7 +117,7 @@ export class ExchangeComponent implements OnInit {
                 }, this.envState.account);
             }, async (confirmNumber, receipt) => {
                 if (confirmNumber === 2) {
-
+                    this.loadingSer.show('合约将扣除代币并返回ETH，请确认...');
                     const redeemCheck = await this.flightDelayService.redeemCheck(valueInWei);
                     console.log(redeemCheck);
                     if (redeemCheck.checkResult != 0) {
@@ -125,8 +129,16 @@ export class ExchangeComponent implements OnInit {
                             transactionHash: transactionHash, netType: this.envState.netType,
                             eth: value, tokenCount: this.tokenCount, createdAt: new Date(), type: 'redeem'
                         }, this.account);
-                    }, confirmApprove);
+                    }, confirmApprove, (err) => {
+                        console.log(err);
+                        this.loadingSer.hide();
+                        this.alertSer.show(this.web3Service.getErrMsg());
+                    });
                 }
+            }, (err) => {
+                console.log(err);
+                this.loadingSer.hide();
+                this.alertSer.show(this.web3Service.getErrMsg());
             });
 
             // const valueInWei = web3.utils.toWei(String(value));
