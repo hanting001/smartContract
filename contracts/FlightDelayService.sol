@@ -129,7 +129,7 @@ contract FlightDelayService is Stoppable, Ownable {
         uint payCount = delayPayInfos[uint(status)].payCount;
         if (payCount > 0) {
             withdraws[msg.sender] = withdraws[msg.sender].add(payCount * 1 ether);
-            paidInfos[index][msg.sender] == true;
+            paidInfos[index][msg.sender] = true;
         }
     }
     function withdraw() external stopInEmergency {
