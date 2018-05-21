@@ -189,7 +189,6 @@ export class HomeComponent implements OnInit {
                     }, account);
                 }, async (confirmNum, rec) => {
                     if (confirmNum === 2) {
-
                         model.createdAt = new Date();
                         // const result = await this.localOrderSer.addOrder(model, await this.web3.getMainAccount());
                         // console.log(result);
@@ -313,7 +312,7 @@ export class HomeComponent implements OnInit {
         this.voteInfo = await this.flightDelayService.getCurrentVote();
         console.log(this.voteInfo);
         if (this.voteInfo) {
-
+            this.chartData = null;
             const totalCount = this.voteInfo.voteInfo.noCounts * 1 + this.voteInfo.voteInfo.cancelCounts * 1
                 + this.voteInfo.voteInfo.delay1Counts * 1 + this.voteInfo.voteInfo.delay2Counts * 1
                 + this.voteInfo.voteInfo.delay3Counts * 1;
@@ -326,13 +325,15 @@ export class HomeComponent implements OnInit {
             // this.voteInfo.voteInfo.delay2Percent = (this.voteInfo.voteInfo.delay2Counts * 100 / totalCount).toFixed(0) + '%';
             // this.voteInfo.voteInfo.delay3Percent = (this.voteInfo.voteInfo.delay3Counts * 100 / totalCount).toFixed(0) + '%';
 
-            this.chartData[0] = this.voteInfo.voteInfo.noCounts;
+            const chartData: any = [0, 0, 0, 0, 0];
 
-            this.chartData[1] = this.voteInfo.voteInfo.delay1Counts;
-            this.chartData[2] = this.voteInfo.voteInfo.delay2Counts;
-            this.chartData[3] = this.voteInfo.voteInfo.delay3Counts;
-            this.chartData[4] = this.voteInfo.voteInfo.cancelCounts;
+            chartData[0] = this.voteInfo.voteInfo.noCounts;
+            chartData[1] = this.voteInfo.voteInfo.delay1Counts;
+            chartData[2] = this.voteInfo.voteInfo.delay2Counts;
+            chartData[3] = this.voteInfo.voteInfo.delay3Counts;
+            chartData[4] = this.voteInfo.voteInfo.cancelCounts;
 
+            this.chartData = chartData;
 
             console.log(this.voteInfo);
         }

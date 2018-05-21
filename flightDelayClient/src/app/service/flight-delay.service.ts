@@ -73,7 +73,7 @@ export class FlightDelayService {
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
-            withdraw: withdraw
+            withdraw: web3.utils.fromWei(withdraw)
         };
     }
     async getBalanceByAccount(account) {
@@ -499,6 +499,8 @@ export class FlightDelayService {
                 }
 
                 const result = await this.checkClaim(key);
+
+                console.log(result);
                 checkClaim = result.checkResult;
             }
 

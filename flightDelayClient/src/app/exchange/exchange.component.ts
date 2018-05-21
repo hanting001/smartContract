@@ -107,7 +107,7 @@ export class ExchangeComponent implements OnInit {
 
             this.flightDelayService.approveRedeem(valueInWei, async (transactionHash) => {
                 await this.localActionSer.addAction({
-                    transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'approve'
+                    transactionHash: transactionHash, netType: this.envState.netType, createdAt: new Date(), type: 'approveRedeem'
                 }, this.envState.account);
             }, async (confirmNumber, receipt) => {
                 if (confirmNumber === 2) {
