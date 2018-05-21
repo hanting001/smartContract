@@ -1,22 +1,25 @@
-import { Subject } from 'rxjs/Rx';
+import { Subject } from 'rxjs/Subject';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class LoadingService {
-    private loadingObservable: Subject<Boolean> = new Subject<Boolean>();
+    private loadingObservable: Subject<any> = new Subject<any>();
     constructor() {
 
     }
 
-    show() {
-        this.loadingObservable.next(true);
+    show(text?) {
+        if (!text) {
+            text = 'Sending Transaction';
+        }
+        this.loadingObservable.next({ loading: true, loadingText: text });
     }
 
     hide() {
-        this.loadingObservable.next(false);
+        this.loadingObservable.next({ loading: false });
     }
 
-    getLoadingObservable(): Subject<Boolean> {
+    getLoadingObservable(): Subject<any> {
         return this.loadingObservable;
     }
 

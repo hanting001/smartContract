@@ -73,7 +73,7 @@ export class FlightDelayService {
         return {
             eth: web3.utils.fromWei(eth),
             token: web3.utils.fromWei(token),
-            withdraw: withdraw
+            withdraw: web3.utils.fromWei(withdraw)
         };
     }
     async getBalanceByAccount(account) {
@@ -362,7 +362,7 @@ export class FlightDelayService {
         return sc.methods.testOK().call();
     }
     // 兑换token
-    async exchange(value, onTransactionHash, onConfirmation) {
+    async exchange(value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -384,6 +384,9 @@ export class FlightDelayService {
                 }
             })
             .on('error', (error) => {
+                if (onError) {
+                    onError();
+                }
                 console.log(error);
             });
         // const web3 = this.web3Service.instance();
@@ -419,7 +422,7 @@ export class FlightDelayService {
     }
 
 
-    async redeem(value, onTransactionHash, onConfirmation) {
+    async redeem(value, onTransactionHash, onConfirmation, onError?) {
         const sc = await this.web3Service.getContract('flightDelayService', 'FlightDelayService');
         // const address = await this.web3Service.getAddress('flightDelay');
         // console.log(address);
@@ -440,6 +443,9 @@ export class FlightDelayService {
                 }
             })
             .on('error', (error) => {
+                if (onError) {
+                    onError();
+                }
                 console.log(error);
             });
         // const web3 = this.web3Service.instance();
@@ -499,6 +505,8 @@ export class FlightDelayService {
                 }
 
                 const result = await this.checkClaim(key);
+
+                console.log(result);
                 checkClaim = result.checkResult;
             }
 

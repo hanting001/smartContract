@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col">
             <div class="jumbotron jumbotron-fluid mb-0 p-5" style="background: none;">
-                <div class="container text-white">
+                <div class="container text-dark">
                     <div class="row text-center mb-5">
                         <div class="col">
                             <!-- <img class="rounded" src="assets/images/token.png" width="50%"> -->
@@ -25,13 +25,14 @@
                             <!-- <img class="rounded-circle" src="assets/images/token.png" width="200" height="200"> -->
                             <h2>KOT Voting Token</h2>
                             <p class="text-left">KOT is token for voting system, the purpose of which enables players to vote on match results
-                                in order to gain ETH.
+                                in order to gain ether.
                             </p>
-                            <p class="text-left">Token can be exchanged with ETH at a fixed rate 5.</p>
-                            <p class="text-left">KOT can be
+                            <p class="text-left">Token can be exchanged with ether at a fixed rate.</p>
+                            <p class="text-left">You can get token by exchanging ether, or when you make one bet on a  match, you will be approved to draw one token.</p>
+                            <!-- <p class="text-left">KOT can be
                                 <a class="text-warning" href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting
                                 ETH can be
-                                <a class="text-warning" href="javascript:void(0)" (click)="withdraw()">sent to</a> address as user's metamask selected.</p>
+                                <a class="text-warning" href="javascript:void(0)" (click)="withdraw()">sent to</a> address as user's metamask selected.</p> -->
 
                         </div>
                         <div class="col">
@@ -44,7 +45,7 @@
                             </p>
                             <p class="text-left">Once a game result is comfirmed by voting, all voters who voted correctly will share 5% eth of
                                 the bet by percent.</p>
-                            <p class="text-left">You can gain ETH by holding tokens and actively participating in the voting.</p>
+                            <p class="text-left">You can gain ether by holding tokens and actively participating in the voting.</p>
                         </div>
                     </div>
                     <div class="row">
@@ -115,7 +116,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon3">ETH</span>
                                         </div>
-                                        <input type="number" class="col form-control" (change)="ethChange()" formControlName="ethValue">
+                                        <input type="number" class="col form-control" (keyup)="ethChange()" (change)="ethChange()" formControlName="ethValue">
                                     </div>
                                     <small *ngIf="ethValue.invalid && (ethValue.dirty || ethValue.touched)" class="text-danger">
                                         <div *ngIf="ethValue.errors.required">
@@ -129,7 +130,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon3">KOT</span>
                                         </div>
-                                        <input type="number" class="form-control" (change)="kotChange()" formControlName="kotValue">
+                                        <input type="number" class="form-control" (keyup)="kotChange()" (change)="kotChange()" formControlName="kotValue">
                                     </div>
                                     <small *ngIf="kotValue.invalid && (kotValue.dirty || kotValue.touched)" class="text-danger">
                                         <div *ngIf="kotValue.errors.required">

@@ -60,6 +60,7 @@ contract WccVoter is Ownable, Stoppable{
         }
         return 0;
     }
+    
     event StartVote(bytes32 _gameIndex, string _result);
     /// @author Bob Clampett
     /// @notice judge start vote
