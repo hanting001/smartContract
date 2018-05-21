@@ -843,4 +843,46 @@ export class WCCService {
                 }
             });
     }
+    async gotOneToken(gameIndex, scoreIndex) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const account = await this.web3Service.getMainAccount();
+        return sc.methods.drawList(account, gameIndex, scoreIndex).call();
+    }
+    async userDrawTokenCheck(gameIndex, scoreIndex) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const msgObj = {
+            1: 'user not joind game',
+            2: 'already draw',
+            3: 'exchanger balance not enough'
+        };
+        const checkResult = await sc.methods.drawTokenCheck(gameIndex, scoreIndex).call();
+        console.log(`${gameIndex}   ${scoreIndex}`);
+        return {
+            checkResult: checkResult,
+            message: msgObj[checkResult]
+        };
+    }
+    async userDrawToken(gameIndex, scoreIndex, onTransactionHash, onConfirmation, onError) {
+        const sc = await this.web3Service.getContract('wccExchanger', 'WccExchanger');
+        const options = {
+            from: await this.web3Service.getMainAccount()
+        };
+        sc.methods.drawToken(gameIndex, scoreIndex).send(options)
+            .on('transactionHash', (hash) => {
+                if (onTransactionHash) {
+                    onTransactionHash(hash);
+                }
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                if (onConfirmation) {
+                    onConfirmation(confNumber, receipt);
+                }
+            })
+            .on('error', (error) => {
+                console.log(error);
+                if (onError) {
+                    onError(error);
+                }
+            });
+    }
 }
