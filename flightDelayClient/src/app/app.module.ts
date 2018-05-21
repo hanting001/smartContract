@@ -25,7 +25,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ExchangeComponent } from './exchange/exchange.component';
 import { AdminComponent } from './admin/admin.component';
-import { LoadingModule } from 'ngx-loading';
 import { OrderComponent } from './order/order.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { FaqComponent } from './faq/faq.component';
@@ -71,7 +70,6 @@ import { ChartComponent } from './chart/chart.component';
         ProgressbarModule.forRoot(),
         TimepickerModule.forRoot(),
         FormsModule,
-        LoadingModule,
         AsyncLocalStorageModule,
         ReactiveFormsModule,
         DlDateTimePickerDateModule
