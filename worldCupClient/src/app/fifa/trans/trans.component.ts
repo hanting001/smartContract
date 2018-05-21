@@ -165,11 +165,40 @@ export class TransComponent implements OnInit, OnDestroy {
                 const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(obj.index, obj.gameInfo, scoreIndexes[j]);
                 scoreInfo.shareUrl = encodeURI(`mailto:?subject=Hi! I bet in this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/matches/${obj.index}`) ;
                 if (scoreInfo.value > 0) {
+                    scoreInfo.gameIndex = obj.index;
+                    scoreInfo.scoreIndex = scoreIndexes[j];
+                    this.wccService.gotOneToken(scoreInfo.gameIndex, scoreInfo.scoreIndex).then(result => {
+                        console.log(result);
+                        scoreInfo.canDraw = !result;
+                    });
                     scoreInfos.push(scoreInfo);
                 }
             }
             this.spinner = false;
         }
+    }
+    async getOneToken(obj) {
+        this.loadingSer.show();
+        const gameIndex = obj.gameIndex;
+        const scoreIndex = obj.scoreIndex;
+        const check = await this.wccService.userDrawTokenCheck(gameIndex, scoreIndex);
+        if (check.checkResult != 0) {
+            this.loadingSer.hide();
+            return this.alertSer.show(check.message);
+        }
+        this.wccService.userDrawToken(gameIndex, scoreIndex,  async (transactionHash) => {
+            this.loadingSer.show('Transaction submitted, waiting confirm...');
+        }, async (confirmNum, receipt) => {
+            if (confirmNum == 0) {
+                this.loadingSer.hide();
+                obj.canDraw = false;
+                this.alertSer.show('You got one token, check your balance!');
+            }
+        }, async (err) => {
+            console.log(err);
+            this.loadingSer.hide();
+            this.alertSer.show('User denied transaction signature');
+        });
     }
     async winBet(gameInfo, bet) {
         // this.loadingSer.show('Sending Transaction');

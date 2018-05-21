@@ -80,9 +80,10 @@
                                     {{bet.win}}
                                 </td>
                                 <td>
-                                    <button *ngIf="bet.win > 0 && !bet.paid" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-outline-info btn-sm">Claim Bonus</button>
-                                    <button *ngIf="bet.paid" type="button" disabled class="btn btn-outline-secondary btn-sm">Already Claimed</button>
-                                    <a [href]="bet.shareUrl" class=""><i class="icon-share"></i></a>
+                                    <button *ngIf="bet.win > 0 && !bet.paid" type="button" (click)="winBet(info.gameInfo,bet)" class="btn btn-outline-info btn-sm"><i class="icon-trophy"></i> Claim Bonus</button>
+                                    <button *ngIf="bet.paid" type="button" disabled class="btn btn-outline-secondary btn-sm">Claimed</button>
+                                    <a [href]="bet.shareUrl" class="btn btn-outline-secondary btn-sm"><i class="icon-share"></i> Share Bet</a>
+                                    <button *ngIf="bet.canDraw" type="button" (click)="getOneToken(bet)" class="btn btn-outline-secondary btn-sm"><i class="icon-gift"></i> Get One Token</button>
                                 </td>
                             </tr>
                         </tbody>
