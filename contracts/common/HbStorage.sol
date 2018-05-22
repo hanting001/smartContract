@@ -283,6 +283,14 @@ contract HbStorage is Ownable {
         arrayRemove(currentVotes, 0);
     }
 
+     function getCurrentVotes() external returns(bytes32[]){
+        return currentVotes;
+    }
+
+
+
+    /** utilities */
+
     function arrayRemove(bytes32[] storage array, uint index) internal {
         if (index >= array.length) return;
         for (uint i = index; i<array.length-1; i++){
