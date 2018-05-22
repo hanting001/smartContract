@@ -74,12 +74,6 @@ contract FlightDelay is Ownable, Stoppable {
     //     require(!flightNO.toSlice().empty());
     //     return hbs.canBuy(msg.sender, flightNO);
     // }
-    // /** @dev 获取当前处于投票中的航班信息
-    //   */
-    // function getCurrentVote() public view returns (bytes32) {
-    //     bytes32 currentVote = hbs.currentVote();
-    //     return currentVote;
-    // }
 
 
     /** @dev 用户加入航班计划 
@@ -132,6 +126,8 @@ contract FlightDelay is Ownable, Stoppable {
         require(token.transferFrom(msg.sender, this, tokenCount));
 
         hbs.addMemberToSF(sfIndex, flightNO, flightDate, msg.sender, votedSfIndex, vote, price);
+        
+        //maybe we should also judge votedSfIndex is valid or not??
         if (votedSfIndex != bytes32("")) {
             hbs.updateVote(votedSfIndex, vote);
             if (checkCanEndByVote(votedSfIndex)) {

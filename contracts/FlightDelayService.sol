@@ -87,12 +87,10 @@ contract FlightDelayService is Stoppable, Ownable {
         hbs.changeSFStatus(index, HbStorage.SFStatus.claiming);
         // 增加一条投票记录
         // hbs.updateVote(index, vote);
-        bytes32 currentVote = hbs.currentVote();
-        var (,,,,,,isCurrentVoteValued) = hbs.voteInfos(currentVote);
-        if (!isCurrentVoteValued) {
-            //当前还没有进行中的投票就设置一个
-            hbs.setCurrentVote(index);
-        }
+
+        hbs.addVote(index);
+
+
         testOK = block.number;
     }
 
@@ -129,7 +127,7 @@ contract FlightDelayService is Stoppable, Ownable {
         uint payCount = delayPayInfos[uint(status)].payCount;
         if (payCount > 0) {
             withdraws[msg.sender] = withdraws[msg.sender].add(payCount * 1 ether);
-            paidInfos[index][msg.sender] == true;
+            paidInfos[index][msg.sender] = true;
         }
     }
     function withdraw() external stopInEmergency {
@@ -163,5 +161,15 @@ contract FlightDelayService is Stoppable, Ownable {
         if(token.transferFrom(msg.sender, this, tokenValue)) {
             msg.sender.transfer(eth);
         }
+    }
+
+
+    //remove a element from array
+    function arrayRemove(bytes32[] storage array, uint index) internal {
+        if (index >= array.length) return;
+        for (uint i = index; i<array.length-1; i++){
+            array[i] = array[i+1];
+        }
+        array.length--;
     }
 } 

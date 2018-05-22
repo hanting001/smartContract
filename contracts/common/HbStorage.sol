@@ -80,7 +80,7 @@ contract HbStorage is Ownable {
     //记录航班的投票信息 {keccak256(航班号+日期): [VoteInfo]}
     mapping(bytes32 => VoteInfo)  public voteInfos;
     //当前需要投票的航班，该投票结束后清零或者赋值下一个需要投票的航班
-    bytes32 public  currentVote;
+    bytes32[] public  currentVotes;
     //记录航班的历史延误信息 {keccak256(航班号+日期): SFHistroy}
     mapping(bytes32 => SFHistroy) public sfHistroy;
     //记录用户的航班信息
@@ -127,7 +127,7 @@ contract HbStorage is Ownable {
         return scheduledFlights[_sfIndex].count;
     }
     function getScheduledFlights() external view returns (bytes32[]) {
-       return memberSFs[msg.sender];
+        return memberSFs[msg.sender];
     }
     function addMemberToSF(bytes32 _sfIndex, string _flightNO, string _flightDate, address _member, bytes32 _votedSFIndex, DelayStatus _vote,uint _price) public onlyAdmin {
         if (!scheduledFlights[_sfIndex].isValued) {
@@ -220,14 +220,14 @@ contract HbStorage is Ownable {
         scheduledFlights[index].status = SFStatus.ended;
         voteInfos[index].ended = true;
         voteInfos[index].ender = user;
-        delete currentVote;
+        toNextVote();
     }
     function endVoteByAdmin(bytes32 index) external onlyOwner {
         require(checkCanEndByAdmin(index));
         scheduledFlights[index].status = SFStatus.ended;
         voteInfos[index].ended = true;
         voteInfos[index].ender = msg.sender;
-        delete currentVote;
+        toNextVote();
     }
      /** @dev 判段管理员是否可以结束投票 
       * @param _sfIndex 航班索引
@@ -240,7 +240,9 @@ contract HbStorage is Ownable {
         } else {
             return false;
         }
-    }  
+    }
+
+    //vote a vote
     function updateVote(bytes32 _sfIndex, DelayStatus vote) external onlyAdmin{
         VoteInfo storage voteInfo = voteInfos[_sfIndex];
         if (!voteInfo.isValued) {
@@ -263,7 +265,30 @@ contract HbStorage is Ownable {
             voteInfo.cancelCounts += 1;
         }
     }
-    function setCurrentVote(bytes32 _sfIndex) external onlyAdmin {
-        currentVote = _sfIndex;
+
+    //add a new vote process
+    //when duplicate, do nothing    
+    function addVote(bytes32 _sfIndex) external onlyAdmin {
+        for (uint i = 0; i<currentVotes.length; i++){
+            if(currentVotes[i] == _sfIndex){
+                return;
+            }
+        }
+        currentVotes.push(_sfIndex);
+        return;
     }
+
+    //step to next vote process
+    function toNextVote() internal {
+        arrayRemove(currentVotes, 0);
+    }
+
+    function arrayRemove(bytes32[] storage array, uint index) internal {
+        if (index >= array.length) return;
+        for (uint i = index; i<array.length-1; i++){
+            array[i] = array[i+1];
+        }
+        array.length--;
+    }
+
 }

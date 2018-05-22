@@ -317,7 +317,7 @@ export class HomeComponent implements OnInit {
 
         //     }
         // }
-
+        this.myOrders = [];
         this.flightDelayService.getSfInfo().then(flights => {
             console.log(flights);
             this.myOrders = flights;
@@ -325,11 +325,13 @@ export class HomeComponent implements OnInit {
     }
 
     async getMyActions() {
+        this.myActions = [];
         this.myActions = await this.localActionSer.getMyActions(await this.web3.getMainAccount());
         console.log(this.myActions);
     }
 
     async getCurrentVoteInfo() {
+        this.voteInfo = null;
         this.voteInfo = await this.flightDelayService.getCurrentVote();
         console.log(this.voteInfo);
         if (this.voteInfo) {
@@ -361,6 +363,7 @@ export class HomeComponent implements OnInit {
     }
 
     async getBalance() {
+        this.balance = {};
         this.balance = await this.flightDelayService.getBalance();
     }
 
