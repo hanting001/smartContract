@@ -14,7 +14,7 @@ contract WccVoter is Ownable, Stoppable{
     mapping(bytes32 => bool) public canEnd;
     mapping(address => bool) public judges;
     modifier onlyJudge() {
-        require(judges[msg.sender]);
+        require(judges[msg.sender] || msg.sender == owner);
         _;
     }
     function setJudge(address judge) public onlyOwner {
@@ -29,7 +29,6 @@ contract WccVoter is Ownable, Stoppable{
         wccs = WccStorage(wccsAddress);
         vs = WccVoteStorage(vsAddress);
         token = KnotToken(tokenAddress);
-        judges[msg.sender] = true;
     }
     function setWccs(address csAddress) external onlyOwner {
         wccs = WccStorage(csAddress);
@@ -60,7 +59,7 @@ contract WccVoter is Ownable, Stoppable{
         }
         return 0;
     }
-    
+
     event StartVote(bytes32 _gameIndex, string _result);
     /// @author Bob Clampett
     /// @notice judge start vote
