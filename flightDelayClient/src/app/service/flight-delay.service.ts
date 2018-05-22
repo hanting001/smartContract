@@ -30,7 +30,7 @@ export class FlightDelayService {
     // 获取当前投票信息
     async getCurrentVote() {
         const storage = await this.web3Service.getContract('hbStorage', 'HbStorage');
-        const currentVotes = await storage.methods.currentVotes().call();
+        const currentVotes = await storage.methods.getCurrentVotes().call();
         if (!currentVotes || currentVotes.length == 0) {
             return null;
         }

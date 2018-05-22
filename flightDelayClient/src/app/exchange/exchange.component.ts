@@ -78,6 +78,7 @@ export class ExchangeComponent implements OnInit {
                 if (confirmationNumber === 2) {
                     this.getBalance();
                     this.loadingSer.hide();
+                    this.alertSer.show('兑换成功');
                 }
             };
             const valueInWei = web3.utils.toWei(String(value));
@@ -107,6 +108,7 @@ export class ExchangeComponent implements OnInit {
                 if (confirmationNumber === 2) {
                     this.getBalance();
                     this.loadingSer.hide();
+                    this.alertSer.show('赎回成功');
                 }
             };
 
