@@ -35,7 +35,9 @@ export class FlightDelayService {
             return null;
         }
         const currentVote = currentVotes[0];
-        if (currentVote == '0x0000000000000000000000000000000000000000000000000000000000000000') {
+        console.log(currentVote);
+        const web3 = this.web3Service.instance();
+        if (!currentVote || web3.utils.toBN(currentVote).toString() == '0') {
             return null;
         }
 
