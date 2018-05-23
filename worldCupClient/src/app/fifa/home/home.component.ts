@@ -441,7 +441,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }, (err) => {
                 console.log(err);
                 this.loadingSer.hide();
-                this.alertSer.show('User denied transaction signature');
+                this.alertSer.show('User denied Transaction was not mined within 750 seconds');
             });
         }
     }
@@ -485,7 +485,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }, async (err) => {
                 console.log(err);
                 this.loadingSer.hide();
-                this.alertSer.show('User denied transaction signature');
+                this.alertSer.show('User denied Transaction was not mined within 750 seconds');
             });
 
 
