@@ -21,21 +21,22 @@
                         </div>
                     </div>
                     <div class="row text-center mt-5">
-                        <div class="col">
+                        <div class="col-sm-12 col-md-6">
                             <!-- <img class="rounded-circle" src="assets/images/token.png" width="200" height="200"> -->
                             <h2>KOT Voting Token</h2>
                             <p class="text-left">KOT is token for voting system, the purpose of which enables players to vote on match results
                                 in order to gain ether.
                             </p>
                             <p class="text-left">Token can be exchanged with ether at a fixed rate.</p>
-                            <p class="text-left">You can get token by exchanging ether, or when you make one bet on a  match, you will be approved to draw one token.</p>
+                            <p class="text-left">You can get token by exchanging ether, or when you make one bet on a match, you will be approved
+                                to draw one token.</p>
                             <!-- <p class="text-left">KOT can be
                                 <a class="text-warning" href="javascript:void(0)" (click)="showWModal()" [ngx-scroll-to]="'inputForm'">converted back</a> to ETH at anytime at the same exact rate it was exchanged. The resulting
                                 ETH can be
                                 <a class="text-warning" href="javascript:void(0)" (click)="withdraw()">sent to</a> address as user's metamask selected.</p> -->
 
                         </div>
-                        <div class="col">
+                        <div class="col-sm-12 col-md-6">
                             <!-- <img class="rounded-circle" src="assets/images/vote.jpg" width="200" height="200"> -->
                             <h2>Join us as a partner and GET PAID!</h2>
                             <p class="text-left">Our project want to be more open and more transparent.
@@ -61,10 +62,10 @@
     </div>
     <div class="row mt-5" id="inputForm">
         <div class="col">
-            <div class="jumbotron jumbotron-fluid" style="background: none;">
-                <div class="container">
-                    <form (ngSubmit)="exchange()" class="form pt-5 " [formGroup]="form">
-                        <div class="card bg-c-light text-center m-5">
+            <div class="jumbotron jumbotron-fluid" style="background:none;">
+                <div class="container-fluid ">
+                    <form (ngSubmit)="exchange()" class="form pt-5" [formGroup]="form">
+                        <div class="card bg-c-light  col-md-10 offset-md-1 col-sm-12 p-0">
                             <div class="card-header" [hidden]="withdrawFlag">
                                 <div class=" text-center" id="chartDiv" align="center">
                                     <div class="row text-center">
@@ -93,26 +94,26 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group row align-items-center">
-                                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Wallet Address</label>
-                                    <div class="col-9">
-                                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{envState.account}}">
+                                    <label class="col-md-3 col-sm-6 col-form-label text-main text-right" style="font-size:1.2rem">Wallet Address</label>
+                                    <div class="col-md-9 col-sm-6">
+                                        <input type="text" style="text-overflow:ellipsis;" readonly class="form-control-plaintext" value="{{envState.account}}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of ETH</label>
-                                    <div class="col-9">
-                                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.eth}}">
+                                    <label class="col-md-3 col-sm-6 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of ETH</label>
+                                    <div class="col-md-9 col-sm-6">
+                                        <input type="text" style="text-overflow:ellipsis;" readonly class="form-control-plaintext" value="{{balance.eth}}">
                                     </div>
 
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-3 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of KOT</label>
-                                    <div class="col-9">
-                                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{balance.token}}">
+                                    <label class="col-md-3 col-sm-6 col-form-label text-main text-right" style="font-size:1.2rem">Balance Of KOT</label>
+                                    <div class="col-md-9 col-sm-6">
+                                        <input type="text" style="text-overflow:ellipsis;" readonly class="form-control-plaintext" value="{{balance.token}}">
                                     </div>
                                 </div>
                                 <div *ngIf="!withdrawFlag" class="form-group row pt-3 align-items-center justify-content-center">
-                                    <div class="input-group col-3 text-center">
+                                    <div class="input-group col-md-3 col-sm-12 text-center">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon3">ETH</span>
                                         </div>
@@ -123,10 +124,10 @@
                                             required
                                         </div>
                                     </small>
-                                    <div class="col-1">
+                                    <div class="col-md-1 col-sm-12 text-center">
                                         <p class="icon-arrow-right icon-large"></p>
                                     </div>
-                                    <div class="input-group col-3  text-cente">
+                                    <div class="input-group col-md-3 col-sm-12  text-center">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon3">KOT</span>
                                         </div>
