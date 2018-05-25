@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isSupportBrowser = this.getIsSupportBrowser();
         this.loadingSer.getLoadingObservable().subscribe((data: any) => {
             if (data.loading) {
-                $('.backdrop').css({ 'height': $(document).height() }).show();
+                $('.backdrop').css({ 'height': $(document).height(), 'width': $(document).width() }).show();
             } else {
                 $('.backdrop').hide();
             }
