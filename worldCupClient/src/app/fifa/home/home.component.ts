@@ -12,6 +12,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { Chart } from 'chart.js';
 import * as moment from 'moment';
+import { ChartComponent } from '../chart/chart.component';
 
 @Component({
     selector: 'app-home',
@@ -47,8 +48,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     matchGroup = 1;
     splitDate = moment('2018-06-14').valueOf();
     showGames;
+    chartsFlag: Boolean = false;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
+    chartsComponent: ChartComponent;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
     chartData;
@@ -201,9 +204,9 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     }
     setShowStageObj() {
         this.stageObj = {};
-        for (let i = 0; i < this.showGames.length; i ++) {
+        for (let i = 0; i < this.showGames.length; i++) {
             const gameInfos = this.showGames[i].courts;
-            for (let j = 0; j < gameInfos.length; j ++) {
+            for (let j = 0; j < gameInfos.length; j++) {
                 if (!this.stageObj.groupPhase && gameInfos[j].gameType == '0') {
                     this.setShow(0, i);
                 } else if (!this.stageObj.roundOf16Flag && gameInfos[j].gameType == '1') {
@@ -284,7 +287,14 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     //     }
     // }
 
-
+    async refreshCharts(type) {
+        this.chartsComponent.generateChart(type);
+        this.chartsFlag = !this.chartsFlag;
+    }
+    setChartsComponent(component: ChartComponent) {
+        this.chartsComponent = component;
+        console.log(this.chartsComponent);
+    }
     async show(court, index?) {
         this.court = court;
         // console.log(court);

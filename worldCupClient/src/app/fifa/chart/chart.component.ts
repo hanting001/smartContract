@@ -39,7 +39,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
     click: EventEmitter<any> = new EventEmitter();
 
     @Output()
-    getData: EventEmitter<any> = new EventEmitter();
+    getCharts: EventEmitter<any> = new EventEmitter();
 
     chart: any;
     labelColors: string[];
@@ -55,16 +55,17 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.generateChart();
+        this.getCharts.emit(this);
     }
-    async generateChart() {
+    async generateChart(flag?) {
         const gameInfo = this.chartData.currentGameInfo;
         const gameIndex = this.chartData.currentGameIndex;
         // this.validateChart(gameInfo);
-        if (gameInfo.status == 0 || gameInfo.status == 1) {
+        if (flag == 0 || gameInfo.status == 0 || gameInfo.status == 1) {
             // get bets info
             await this.getBetsInfo(gameInfo, gameIndex);
             this.betChart();
-        } else if (gameInfo.status == 2 || gameInfo.status == 3) {
+        } else if (flag == 1 || gameInfo.status == 2 || gameInfo.status == 3) {
             this.pieChart();
         }
     }
@@ -105,7 +106,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             return vB - vA;
         };
         betInfos = betInfos.sort(sortScore1);
-        this.getData.emit(betInfos);
+        // this.getData.emit(betInfos);
         const web3 = this.web3Service.instance();
         this.chartLabels = [];
         const totalValue = web3.utils.fromWei(gameInfo.totalValue);

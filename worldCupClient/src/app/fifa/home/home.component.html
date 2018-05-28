@@ -327,8 +327,13 @@
             </div>
         </div>
         <div id="chartDiv" align="center">
-            <chartjs-component [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'>
+            <chartjs-component (getCharts)="setChartsComponent($event)" [chartType]="'line'" [dataSetLabel]="dataSetLable" [chartData]='chartData' [chartLabels]='chartLabels'>
             </chartjs-component>
+            <div class="row">
+                <div [hidden]="chartsFlag" class="col">
+                    <button type="button" (click)="refreshCharts(0)" class="btn btn-link">Bets Info</button>
+                </div>
+            </div>
         </div>
 
         <form (ngSubmit)="vote()" [formGroup]="voteForm">
