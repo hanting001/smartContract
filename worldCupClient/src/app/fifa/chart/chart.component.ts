@@ -41,6 +41,9 @@ export class ChartComponent implements OnInit, AfterViewInit {
     @Output()
     getCharts: EventEmitter<any> = new EventEmitter();
 
+    @Output()
+    getData: EventEmitter<any> = new EventEmitter();
+
     chart: any;
     labelColors: string[];
     loadingProgress: Number = 0;
@@ -106,7 +109,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
             return vB - vA;
         };
         betInfos = betInfos.sort(sortScore1);
-        // this.getData.emit(betInfos);
+        this.getData.emit(betInfos);
         const web3 = this.web3Service.instance();
         this.chartLabels = [];
         const totalValue = web3.utils.fromWei(gameInfo.totalValue);
