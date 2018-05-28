@@ -54,13 +54,13 @@
 
 </div>
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="changePage">
+<div *ngIf="envState.checkEnv" class="jumbotron   bg-c-light  text-center " id="changePage">
     <h1>参加互助</h1>
     <p class="lead">参加说明</p>
     <div class="row justify-content-md-center">
         <form (ngSubmit)="confirm()" [formGroup]="form" class="col-sm-12">
 
-            <div class="card text-center bg-info" style="border: none;">
+            <div class="card text-center " style="border: none;">
                 <div class="card-body">
                     <div class="form-group row">
                         <label for="staticEmail" class="col-3 col-form-label text-right" style="font-size:1.2rem">当前网络：</label>
@@ -101,7 +101,7 @@
 
                 </div>
             </div>
-            <div *ngIf="voteInfo" class="card text-center bg-info" style="margin-top:15px">
+            <div *ngIf="voteInfo" class="card text-center " style="margin-top:15px">
                 <div class="card-header  text-left">
                     请先投票
                 </div>
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="card text-center bg-info" style="margin-top:15px;">
+            <div class="card text-center bg-c-light " style="margin-top:15px;">
                 <div class="card-header  text-left">
                     您的航班
                 </div>
@@ -190,8 +190,9 @@
 
 </div>
 
+<hr class="my-4">
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myOrder">
+<div *ngIf="envState.checkEnv" class="jumbotron bg-c-light  text-center " id="myOrder">
     <h1>我的订单</h1>
     <div class="row justify-content-md-center">
         <p *ngIf="!myOrders||myOrders.length==0">您还未加入航班延迟互助计划</p>
@@ -229,8 +230,9 @@
     </div>
 </div>
 
+<hr class="my-4">
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="myAction">
+<div *ngIf="envState.checkEnv" class="jumbotron bg-c-light  text-center " id="myAction">
     <h1>交易记录</h1>
     <div class="row justify-content-md-center">
         <p *ngIf="!myActions||myActions.length==0">没有操作记录</p>
@@ -252,14 +254,18 @@
     </div>
 </div>
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="aboutus">
+<hr class="my-4">
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-c-light  text-center " id="aboutus">
     <h1>关于我们</h1>
     <div class="row justify-content-md-center">
 
     </div>
 </div>
 
-<div *ngIf="envState.checkEnv" class="jumbotron bg-info text-center " id="faq">
+<hr class="my-4">
+
+<div *ngIf="envState.checkEnv" class="jumbotron bg-c-light  text-center " id="faq">
     <h1>常见问题</h1>
     <div class="row justify-content-md-center">
 

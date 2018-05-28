@@ -143,6 +143,11 @@ img::-moz-selection {
     color: #fec503;
 }
 
+jumbotron.bg-c-light,
+.bg-c-light {
+    background-image: url(assets/images/pattern.png);
+}
+
 #mainNav .navbar-nav .nav-item .nav-link {
     font-size: 90%;
     font-weight: 400;
