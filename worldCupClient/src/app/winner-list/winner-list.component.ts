@@ -61,4 +61,7 @@ export class WinnerListComponent implements OnInit, OnDestroy {
         }
         this.loadingProgress = 0;
     }
+    installWallet() {
+        window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+    }
 }
