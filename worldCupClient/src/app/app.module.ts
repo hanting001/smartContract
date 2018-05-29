@@ -47,7 +47,7 @@ import { ContactComponent } from './fifa/contact/contact.component';
 import { FaqComponent } from './fifa/faq/faq.component';
 import { HomeComponent } from './home/home.component';
 import { WinnerListComponent } from './winner-list/winner-list.component';
-
+import { FacebookService } from 'ngx-facebook';
 
 @NgModule({
     declarations: [
@@ -93,7 +93,7 @@ import { WinnerListComponent } from './winner-list/winner-list.component';
         ReactiveFormsModule,
         DlDateTimePickerDateModule
     ],
-    providers: [Web3Service, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService],
+    providers: [Web3Service, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService, FacebookService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

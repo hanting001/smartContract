@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WCCService } from '../../service/wcc.service';
 import { TabDirective } from 'ngx-bootstrap/tabs';
 import { Web3Service, LoadingService, AlertService, LocalActionService } from '../../service/index';
+import { FacebookService, InitParams, UIParams, UIResponse } from 'ngx-facebook';
 
 @Component({
     selector: 'app-trans',
@@ -24,7 +25,17 @@ export class TransComponent implements OnInit, OnDestroy {
         public localActionSer: LocalActionService,
         public loadingSer: LoadingService,
         public alertSer: AlertService,
-        private loading: LoadingService) { }
+        private loading: LoadingService,
+        private fb: FacebookService) {
+        const initParams: InitParams = {
+            appId: '1289817027815263',
+            status: true,
+            cookie: true,
+            xfbml: true,
+            version: 'v3.0'
+        };
+        this.fb.init(initParams);
+    }
 
     ngOnInit() {
         this.subscription = this.web3.getCheckEnvSubject().subscribe((tempEnvState: any) => {
@@ -115,16 +126,16 @@ export class TransComponent implements OnInit, OnDestroy {
         this.wccService.claimByVoter(info.gameIndex, hash => {
             this.loadingSer.show('Transaction submitted, waiting confirm...');
         },
-        async (confirmNum, receipt) => {
-            if (confirmNum == 0) {
-                info.voteInfo.paid = true;
+            async (confirmNum, receipt) => {
+                if (confirmNum == 0) {
+                    info.voteInfo.paid = true;
+                    this.loadingSer.hide();
+                    this.alertSer.show('Success!');
+                }
+            }, async (err) => {
                 this.loadingSer.hide();
-                this.alertSer.show('Success!');
-            }
-        }, async (err) => {
-            this.loadingSer.hide();
-            this.alertSer.show('Transaction error or user denied');
-        });
+                this.alertSer.show('Transaction error or user denied');
+            });
     }
     async getBetInfos() {
         if (this.betInfos && this.betInfos.length > 0) {
@@ -163,7 +174,12 @@ export class TransComponent implements OnInit, OnDestroy {
             obj.scoreInfos = scoreInfos;
             for (let j = 0; j < scoreIndexes.length; j++) {
                 const scoreInfo = await this.wccService.getUserJoinedGameScoreInfo(obj.index, obj.gameInfo, scoreIndexes[j]);
-                scoreInfo.shareUrl = encodeURI(`mailto:?subject=Hi! I bet in this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/matches/${obj.index}`) ;
+                scoreInfo.mailUrl = encodeURI(`mailto:?subject=Hi! I bet on this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/matches/${obj.index}`);
+                scoreInfo.shareUrl = encodeURI(`https://bet-d.app/wc/matches/${obj.index}`);
+                const text = encodeURI(`I bet on this match with score: ${scoreInfo.score}. The website is`);
+                const url = `https://bet-d.app/wc/matches/${obj.index}`;
+                // const url = 'https://bet-d.app/';
+                scoreInfo.tweetUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
                 if (scoreInfo.value > 0) {
                     scoreInfo.gameIndex = obj.index;
                     scoreInfo.scoreIndex = scoreIndexes[j];
@@ -186,7 +202,7 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
-        this.wccService.userDrawToken(gameIndex, scoreIndex,  async (transactionHash) => {
+        this.wccService.userDrawToken(gameIndex, scoreIndex, async (transactionHash) => {
             this.loadingSer.show('Transaction submitted, waiting confirm...');
         }, async (confirmNum, receipt) => {
             if (confirmNum == 0) {
@@ -241,7 +257,7 @@ export class TransComponent implements OnInit, OnDestroy {
             this.loadingSer.hide();
             return this.alertSer.show(check.message);
         }
-        this.wccService.withdraw( hash => {
+        this.wccService.withdraw(hash => {
             this.loadingSer.show('Transaction submitted, waiting confirm...');
         }, async (confirmNum, receipt) => {
             if (confirmNum == 0) {
@@ -264,5 +280,27 @@ export class TransComponent implements OnInit, OnDestroy {
         } else if (type === 3) {
             this.getBalanceAndWithdraw();
         }
+    }
+    async shareFacebook(bet) {
+        console.log(bet.shareUrl);
+        const params: UIParams = {
+            href: bet.shareUrl,
+            method: 'share'
+        };
+        try {
+            const res: UIResponse = await this.fb.ui(params);
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
+        // bet.showGetToken = true;
+    }
+    shareMail(bet) {
+        window.location.href = bet.mailUrl;
+        // bet.showGetToken = true;
+    }
+    shareTweet(bet) {
+        // window.location = bet.tweetUrl;
+        bet.showGetToken = true;
     }
 }
