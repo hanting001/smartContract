@@ -46,6 +46,7 @@ import { TransComponent } from './fifa/trans/trans.component';
 import { ContactComponent } from './fifa/contact/contact.component';
 import { FaqComponent } from './fifa/faq/faq.component';
 import { HomeComponent } from './home/home.component';
+import { WinnerListComponent } from './winner-list/winner-list.component';
 
 
 @NgModule({
@@ -69,7 +70,8 @@ import { HomeComponent } from './home/home.component';
         TransComponent,
         ContactComponent,
         FaqComponent,
-        HomeComponent
+        HomeComponent,
+        WinnerListComponent
     ],
     imports: [
         BrowserModule,

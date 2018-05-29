@@ -1,0 +1,58 @@
+<div [hidden]="envState.checkWeb3" class="jumbotron bg-warning text-center">
+    <h1>Wanna play?</h1>
+    <p class="lead">You’ll need a safe place to store all of your bets! The perfect place is in a secure wallet like MetaMask. This will
+        also act as your login to the game (no extra password needed).</p>
+    <button type="button" class="btn btn-primary" (click)="installWallet()">
+        Install MetaMask
+    </button>
+</div>
+
+<div [hidden]="!envState.checkWeb3||envState.checkAccount" class="jumbotron bg-warning text-center">
+    <h1>Your MetaMask is locked</h1>
+    <p class="lead">Simply open MetaMask and follow the instructions to unlock it</p>
+</div>
+<div [hidden]="!envState.checkEnv" class="container-fluid mt-5">
+    <div [hidden]="loadingProgress == 0" class="progress" style="height: 1px;">
+        <!-- <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="{{loadingProgress}}" aria-valuemin="0" aria-valuemax="100"></div> -->
+        <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
+    </div>
+    <div class="card bg-c-light p-3 mt-3">
+        <p *ngIf="!showDatas || showDatas.length == 0"> No winner claimed bonus, now.</p>
+        <table *ngIf="showDatas && showDatas.length > 0" class="table table-striped table-sm mb-4">
+            <thead class="">
+                <tr class="row">
+                    <th class="col-6">
+                        Tx
+                    </th>
+                    <th class="col-4">
+                        game
+                    </th>
+                    <th class="col-1">
+                        bet
+                    </th>
+                    <th class="col-1">
+                        win
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let log of showDatas" class="row align-items-center">
+                    <td class="col-6 border-0">
+                      <a [href]="log.url"><p class="small m-0">{{log.tx}}</p></a>
+                    </td>
+                    <td class="col-4 border-0">
+                      <img [src]="log.gameInfo.s_p1 || log.gameInfo.p1|nationFlag:contries" height="50%" [alt]="log.gameInfo.p1" style="border:1px solid #c7c6c6;"> VS <img [src]="log.gameInfo.s_p2 || log.gameInfo.p2|nationFlag:contries" height="50%" [alt]="log.gameInfo.p2" style="border:1px solid #c7c6c6;">
+                      <!-- <br>{{log.gameInfo.s_p1 || log.gameInfo.p1}}  {{log.gameInfo.s_p2 || log.gameInfo.p2}} -->
+                    </td>
+                    <td class="col-1 border-0">
+                        {{log.scoreInfo.value | fromWei}}<small>Ether</small>
+                    </td>
+                    <td class="col-1 border-0">
+                      {{log.value | fromWei}}<small>Ether</small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

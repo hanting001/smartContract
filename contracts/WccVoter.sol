@@ -60,7 +60,7 @@ contract WccVoter is Ownable, Stoppable{
         return 0;
     }
 
-    event StartVote(bytes32 _gameIndex, string _result);
+    event StartVote(bytes32 indexed _gameIndex, string _result);
     /// @author Bob Clampett
     /// @notice judge start vote
     /// @param _gameIndex game index
@@ -74,7 +74,7 @@ contract WccVoter is Ownable, Stoppable{
         // testOK = block.number;
         StartVote(_gameIndex, _result);
     }
-    event ChangeVote(bytes32 _gameIndex, string _result);
+    event ChangeVote(bytes32 indexed _gameIndex, string _result);
     /// @author Bob Clampett
     /// @notice judge change vote target
     /// @param _gameIndex game index
@@ -116,7 +116,7 @@ contract WccVoter is Ownable, Stoppable{
         }
         return 0;
     }
-    event UserVote(bytes32 _gameIndex, bool yesOrNo, address user);
+    event UserVote(bytes32 indexed _gameIndex, bool yesOrNo, address user);
     /// @author Bob Clampett
     /// @notice user vote
     /// @param _gameIndex game index

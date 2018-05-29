@@ -3,10 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, HostListener, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
-import { Web3Service } from '../../service/index';
-import { LoadingService } from '../../service/loading.service';
-import { AlertService } from '../../service/alert.service';
-import { WCCService } from '../../service/wcc.service';
+import { Web3Service, WCCService, LoadingService, AlertService  } from '../../service/index';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -451,7 +448,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }, (err) => {
                 console.log(err);
                 this.loadingSer.hide();
-                this.alertSer.show('User denied Transaction was not mined within 750 seconds');
+                this.alertSer.show('User denied or Transaction was not mined within 750 seconds');
             });
         }
     }

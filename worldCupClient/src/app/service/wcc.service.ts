@@ -515,6 +515,10 @@ export class WCCService {
         }
         return scoreInfo;
     }
+    async getUserScoreInfo(gameIndex, scoreIndex, user) {
+        const sc = await this.web3Service.getContract('wccStorage', 'WccStorage');
+        return sc.methods.joinedGamesScoreInfo(gameIndex, user, scoreIndex).call();
+    }
     async isVoterWin(gameIndex) {
         const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
         return sc.methods.isVoterWin(gameIndex).call();
@@ -884,5 +888,14 @@ export class WCCService {
                     onError(error);
                 }
             });
+    }
+    async getWccClaimEvents() {
+        const sc = await this.web3Service.getContract('wccPlayer', 'WccPlayer');
+        // const scOld = await this.web3Service.getOldContract('wccPlayer', 'WccPlayer', 'back');
+        // const oldList = await scOld.getPastEvents('allEvents', {fromBlock: 5576979, toBlock: 'latest'});
+        // const tlist = await sc.getPastEvents('allEvents', {fromBlock: 5694814, toBlock: 'latest'});
+        // console.log(tlist);
+        const list = await sc.getPastEvents('UserClaim', {fromBlock: 5694814, toBlock: 'latest'});
+        return list;
     }
 }

@@ -116,7 +116,7 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
-    event UserClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
+    event UserClaim(bytes32 indexed _gameIndex, bytes32 _scoreIndex, address user, uint value);
     /// @author Bob Clampett
     /// @notice user claim win value
     /// @param _gameIndex game index
@@ -127,7 +127,7 @@ contract WccPlayer is Ownable, Stoppable{
         wccs.setUserScorePaid(_gameIndex, _scoreIndex, msg.sender);
         withdraws[msg.sender] = withdraws[msg.sender].add(winValue);
         // testOK = keccak256(block.number);
-        UserClaim(_gameIndex, _scoreIndex, msg.sender);
+        UserClaim(_gameIndex, _scoreIndex, msg.sender, winValue);
     }
     function setWithdraw(address user, uint value) external onlyOwner {
         withdraws[user] = value;
@@ -161,7 +161,7 @@ contract WccPlayer is Ownable, Stoppable{
         }
         return 0;
     }
-    event VoterClaim(bytes32 _gameIndex, bytes32 _scoreIndex, address user);
+    event VoterClaim(bytes32 indexed _gameIndex, address user, uint value);
 
     /// @author Bob Clampett
     /// @notice voter user claim bonus
@@ -174,12 +174,14 @@ contract WccPlayer is Ownable, Stoppable{
         uint totalValue = wccs.getGameTotalValue(_gameIndex);
         // uint totalCount = yesCount.add(noCount);
         // (totalValue / 20) * value / (yesCount + noCount)
-        withdraws[msg.sender] = withdraws[msg.sender].add(totalValue.div(20).mul(value).div(yesCount));
+        uint winValue = totalValue.div(20).mul(value).div(yesCount);
+        withdraws[msg.sender] = withdraws[msg.sender].add(winValue);
+        VoterClaim(_gameIndex, msg.sender, winValue);
     }
     function() public payable { 
         withdraws[owner] = withdraws[owner].add(msg.value);
     }
-    event UserWithdraw(address user, uint value);
+    event UserWithdraw(address indexed user, uint value);
     function withdrawCheck(address user) public view returns(uint) {
         uint value = withdraws[user];
         uint trueValue = value.div(100).mul(85);

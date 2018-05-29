@@ -11,7 +11,7 @@ import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { TransComponent } from './fifa/trans/trans.component';
 import { ContactComponent } from './fifa/contact/contact.component';
 import { FaqComponent } from './fifa/faq/faq.component';
-
+import { WinnerListComponent } from './winner-list/winner-list.component';
 import { BalanceResolver, BalanceWithAccountResolver } from './shared/resolver';
 
 const routes: Routes = [
@@ -20,6 +20,7 @@ const routes: Routes = [
     { path: 'matches', component: FifaHomeComponent },
     { path: 'matches/:initGame', component: FifaHomeComponent },
     { path: 'admin', component: FifaAdminComponent },
+    { path: 'winners', component: WinnerListComponent },
     { path: 'exchange', component: ExchangeComponent },
     { path: 'contact', component: ContactComponent },
     { path: 'faq', component: FaqComponent },

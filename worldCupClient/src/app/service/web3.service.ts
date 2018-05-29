@@ -82,6 +82,12 @@ export class Web3Service {
         // const db = require('../../../../migrations/db');
         return db[name].address;
     }
+    async getOldAddress(name, suffix) {
+        const net = await this.web3.eth.net.getNetworkType();
+        const db = await this.http.get<any>(`assets/db/${net}.json.${suffix}?` + new Date().getTime()).toPromise();
+        // const db = require('../../../../migrations/db');
+        return db[name].address;
+    }
     async getContract(name, scName) {
         if (this.contracts[name]) {
             return this.contracts[name];
@@ -91,6 +97,17 @@ export class Web3Service {
         console.log(`sc ${name} address: ${address}`);
         const sc = new this.web3.eth.Contract(abi, address);
         this.contracts[name] = sc;
+        return sc;
+    }
+    async getOldContract(name, scName, suffix) {
+        if (this.contracts[name + suffix]) {
+            return this.contracts[name + suffix];
+        }
+        const abi = await this.getABI(scName, null);
+        const address = await this.getOldAddress(name, suffix);
+        console.log(`sc ${name} address: ${address}`);
+        const sc = new this.web3.eth.Contract(abi, address);
+        this.contracts[name + suffix] = sc;
         return sc;
     }
     clearContract() {
