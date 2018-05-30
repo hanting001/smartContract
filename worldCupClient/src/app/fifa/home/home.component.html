@@ -37,7 +37,7 @@
                 <div class="col text-center pl-0 pr-0">
                     <table class="table m-0 table-responsive table-sm rounded">
                         <tr>
-                            <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="game.date"
+                            <td (mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)" [ngx-scroll-to-offset]="-310" [ngx-scroll-to]="game.date"
                                 *ngFor="let game of showGames" class="text-center p-0">
                                 <table class="table-sm " style="boder:solid green 1px;">
                                     <tr>
@@ -62,27 +62,27 @@
                 <div class="col text-center">
                     <ul class="nav" *ngIf="showGames&&showGames.length>0">
                         <li *ngIf="stageObj.groupPhaseFlag" class="nav-item" (click)="firstStageFlag=1" [ngClass]="{'active':firstStageFlag==1,'default':firstStageFlag!=1}"
-                            [ngx-scroll-to-offset]="-250" [ngx-scroll-to]="showGames[0].date">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="showGames[0].date">
                             Group Phase
                         </li>
                         <li *ngIf="stageObj.roundOf16Flag" class="nav-item default" (click)="firstStageFlag=2" [ngClass]="{'active':firstStageFlag==2,'default':firstStageFlag!=2}"
-                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.roundOf16'">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="'stageObj.roundOf16'">
                             Round of 16
                         </li>
                         <li *ngIf="stageObj.quarterFinalFlag" class="nav-item default" (click)="firstStageFlag=3" [ngClass]="{'active':firstStageFlag==3,'default':firstStageFlag!=3}"
-                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.quarterFinal'">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="'stageObj.quarterFinal'">
                             Quarter-final
                         </li>
                         <li *ngIf="stageObj.semiFinalFlag" class="nav-item default" (click)="firstStageFlag=4" [ngClass]="{'active':firstStageFlag==4,'default':firstStageFlag!=4}"
-                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.semiFinal'">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="'stageObj.semiFinal'">
                             Semi-final
                         </li>
                         <li *ngIf="stageObj.playOffForThirdPlaceFlag" class="nav-item default" (click)="firstStageFlag=5" [ngClass]="{'active':firstStageFlag==5,'default':firstStageFlag!=5}"
-                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="'stageObj.playOffForThirdPlace'">
                             Play-off for third place
                         </li>
                         <li *ngIf="stageObj.final" class="nav-item default" (click)="firstStageFlag=6" [ngClass]="{'active':firstStageFlag==6,'default':firstStageFlag!=6}"
-                            [ngx-scroll-to-offset]="-270" [ngx-scroll-to]="'stageObj.final'">
+                            [ngx-scroll-to-offset]="-300" [ngx-scroll-to]="'stageObj.final'">
                             Final
                         </li>
                     </ul>
