@@ -55,7 +55,17 @@ export class FaqComponent implements OnInit {
         ];
         this.abouts = [
             {
-                question: 'How to win ETH?',
+                question: '<b>How to bet?</b>',
+                title: 'Select a match you want to wager on. Take note of details like the Smart Contract Value and minimum buy-in price. Click on your match and you’ll be taken to the modal page where you can make your predictions and wager amount.',
+                answers: [
+                    'You can bet only before the match starts.',
+                    'The minimum bet value is 0.01ETH',
+                    'You can bet multiple times, even on the same score.'
+                ],
+                other: this.sanitizer.bypassSecurityTrustHtml('<iframe width="787" height="315" src="https://www.youtube-nocookie.com/embed/91E1cFkWsdk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>')
+            },
+            {
+                question: '<b>How to win ETH?</b>',
                 title: 'There are two ways to win ETH in the game.',
                 answers: [
                     'By predicting the score of the match. If your bet score is guessed right, you are win. All the winner will <span class="text-primary">share the total amount of the entire bets value</span>.',
@@ -77,15 +87,6 @@ export class FaqComponent implements OnInit {
                     'For the betting players, the bonus = the proportion of your bet in all the winners * the total betting value of the game.',
                     'For the voting player, the bonus = the proportion of token balance you hold in total balance of all the winners * 5% of the total game\'s bets.'
                 ]
-            }, {
-                question: 'How to bet?',
-                title: 'Select a match you want to wager on. Take note of details like the Smart Contract Value and minimum buy-in price. Click on your match and you’ll be taken to the modal page where you can make your predictions and wager amount.',
-                answers: [
-                    'You can bet only before the match starts.',
-                    'The minimum bet is 0.01ETH',
-                    'You can bet multiple times on the same match.'
-                ],
-                other: '<img class="img-fluid" src="assets/images/screenshot1.png">'
             }, {
                 question: 'How to determine the weight of the vote?',
                 title: '',
