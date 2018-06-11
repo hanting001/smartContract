@@ -248,12 +248,19 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.localStorage.setItem('games', this.games).toPromise();
     }
     async refreshOneGameData(gameIndex) {
+        // console.log(`gameIndex: ${gameIndex}`);
         const web3 = this.web3.instance();
+        let doFlag = true;
         for (let i = 0; i < this.games.length; i++) {
             const obj = this.games[i];
+            if (!doFlag) {
+                break;
+            }
             for (let j = 0; j < obj.courts.length; j++) {
                 const index = this.wccSer.getGameIndex(obj.courts[j].p1, obj.courts[j].p2, obj.courts[j].gameType);
+                // console.log(`index: ${index}`);
                 if (gameIndex == index) {
+                    // console.log('get new info');
                     const info = await this.wccSer.getGameFreshDetail(index);
                     obj.courts[j] = info.gameInfo;
                     if (info.voteInfo) {
@@ -262,6 +269,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
                             + Number(web3.utils.fromWei(info.voteInfo.noCount));
                         obj.courts[j].score = info.voteInfo.target;
                     }
+                    doFlag = false;
+                    break;
                 }
             }
         }
