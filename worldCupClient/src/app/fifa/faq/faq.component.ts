@@ -102,7 +102,10 @@ export class FaqComponent implements OnInit {
                     'When withdrawing ETH, the smart contract will deduct 15% of the processing fee, so the ETH received will be less than the prize amount.',
                     'The prize can be collected only within <span class="text-primary">90 days</span> after the end of voting.'
                 ],
-                other: '<img class="img-fluid" src="assets/images/screenshot2.png">'
+                other: this.sanitizer.bypassSecurityTrustHtml('<iframe width="787" height="315" src="https://www.youtube-nocookie.com/embed/t3V0PxXV4DA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>')
+            }, {
+                question: 'How to get token?',
+                other: this.sanitizer.bypassSecurityTrustHtml('<iframe width="787" height="315" src="https://www.youtube-nocookie.com/embed/nMwRs5UWEMo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>')
             }, {
                 question: 'Why ETHSB takes 15% of the total prize?',
                 title: 'Remember that the voter will take 5% as their rewards. Likewise, Our team developed program, and support game running, so we will take 10% as rewards.',
@@ -126,7 +129,8 @@ export class FaqComponent implements OnInit {
                 answers: [
                     'We want to make the game as fair as possible.',
                     'No one can control the game to decide who is the winner.'
-                ]
+                ],
+                other: this.sanitizer.bypassSecurityTrustHtml('<iframe width="787" height="315" src="https://www.youtube-nocookie.com/embed/3TWg8_VmxsI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>')
             }
         ];
     }
