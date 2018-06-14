@@ -46,6 +46,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     splitDate = moment('2018-06-14').valueOf();
     showGames;
     chartsFlag: Boolean = false;
+    finalPredictionIndex;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
     chartsComponent: ChartComponent;
@@ -148,6 +149,8 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             }
             // console.log(this.stageObj);
             console.log('from local storage');
+            this.finalPredictionIndex = await this.localStorage.getItem<any>('finalPredictionIndex').toPromise();
+            console.log(this.finalPredictionIndex);
         } else {
             this.gameCount = 0;
             const sortNumber = function (a, b) {
@@ -160,7 +163,13 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
             this.loading = true;
             for (let i = 0; i < indexes.length; i++) {
                 const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
-                temps.push(gameInfo);
+                if (gameInfo.p1 == 'champion' && gameInfo.p2 == 'champion') {
+                    this.finalPredictionIndex = indexes[i];
+                    this.localStorage.setItem('finalPredictionIndex', this.finalPredictionIndex).toPromise();
+                    console.log(this.finalPredictionIndex);
+                } else {
+                    temps.push(gameInfo);
+                }
                 this.setGameData(temps, sortNumber, indexes.length);
                 this.gameCount++;
             }
