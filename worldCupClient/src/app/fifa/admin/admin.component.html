@@ -202,7 +202,7 @@
                             <td style="border:0;width:40%" class="text-left align-middle">
                                 <img [src]="selectedGame.s_p2 || selectedGame.p2|nationFlag" style="border:1px solid #c7c6c6">&nbsp;&nbsp;&nbsp;&nbsp;{{selectedGame.s_p2 || selectedGame.p2}}</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="selectedGame.p1 != 'champion'">
                             <td style="border:0">
                                 <select class=" form-control" formControlName="homeScore" aria-describedby="scoreHelpBlock">
                                     <option value="0">0</option>
@@ -235,7 +235,14 @@
                                     <option value=">10">>10</option>
                                 </select>
                             </td>
-
+                        </tr>
+                        <tr *ngIf="selectedGame.p1 == 'champion'">
+                            <td style="border:0">
+                                <input type="text" class="form-control" formControlName="homeScore" placeholder="Enter champion player name">
+                            </td>
+                            <td style="border:0">
+                                <input type="text" readonly="true" class="form-control" formControlName="awayScore" value="0" placeholder="Enter champion player name">
+                            </td>>
                         </tr>
                     </table>
                     <div class="row p-2">

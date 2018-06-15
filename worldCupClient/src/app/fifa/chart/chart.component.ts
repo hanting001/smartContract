@@ -55,7 +55,6 @@ export class ChartComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
     }
-
     ngAfterViewInit() {
         this.generateChart();
         this.getCharts.emit(this);
@@ -64,11 +63,11 @@ export class ChartComponent implements OnInit, AfterViewInit {
         const gameInfo = this.chartData.currentGameInfo;
         const gameIndex = this.chartData.currentGameIndex;
         // this.validateChart(gameInfo);
-        if (flag == 0 || gameInfo.status == 0 || gameInfo.status == 1) {
+        if ((flag == 0 || gameInfo.status == 0 || gameInfo.status == 1)) {
             // get bets info
             await this.getBetsInfo(gameInfo, gameIndex);
             this.betChart();
-        } else if (flag == 1 || gameInfo.status == 2 || gameInfo.status == 3) {
+        } else if ((flag == 1 || gameInfo.status == 2 || gameInfo.status == 3)) {
             this.pieChart();
         }
     }
@@ -207,7 +206,7 @@ export class ChartComponent implements OnInit, AfterViewInit {
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Score'
+                            labelString: 'Bet'
                         }
                     }],
                     yAxes: [{

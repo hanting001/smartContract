@@ -33,11 +33,11 @@ import { TransactionUrlPipe } from './service/pipe/transaction-url.pipe';
 import { ClaimStatusPipe } from './service/pipe/claim-status.pipe';
 import { FifaHomeComponent } from './fifa/home/home.component';
 import { FifaAdminComponent } from './fifa/admin/admin.component';
+import { ChampionComponent } from './fifa/champion/champion.component';
 import { GameTypePipe } from './service/pipe/game-type.pipe';
 import { GameStatusPipe } from './service/pipe/game-status.pipe';
 import { WeekdayPipe } from './service/pipe/weekday.pipe';
 import { FromWeiPipe } from './service/pipe/fromWei.pipe';
-import { OrderComponent } from './fifa/order/order.component';
 import { ExchangeComponent } from './fifa/exchange/exchange.component';
 import { ShowDatePipe } from './service/pipe/show-date.pipe';
 import { NationFlagPipe } from './service/pipe/nation-flag.pipe';
@@ -48,6 +48,7 @@ import { FaqComponent } from './fifa/faq/faq.component';
 import { HomeComponent } from './home/home.component';
 import { WinnerListComponent } from './winner-list/winner-list.component';
 import { FacebookService } from 'ngx-facebook';
+import { NgxSelectModule } from 'ngx-select-ex';
 
 @NgModule({
     declarations: [
@@ -62,7 +63,6 @@ import { FacebookService } from 'ngx-facebook';
         GameTypePipe,
         GameStatusPipe,
         WeekdayPipe,
-        OrderComponent,
         ExchangeComponent,
         ShowDatePipe,
         NationFlagPipe,
@@ -71,7 +71,8 @@ import { FacebookService } from 'ngx-facebook';
         ContactComponent,
         FaqComponent,
         HomeComponent,
-        WinnerListComponent
+        WinnerListComponent,
+        ChampionComponent
     ],
     imports: [
         BrowserModule,
@@ -91,7 +92,8 @@ import { FacebookService } from 'ngx-facebook';
         FormsModule,
         LocalStorageModule,
         ReactiveFormsModule,
-        DlDateTimePickerDateModule
+        DlDateTimePickerDateModule,
+        NgxSelectModule
     ],
     providers: [Web3Service, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService, FacebookService],
     bootstrap: [AppComponent]

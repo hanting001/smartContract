@@ -1,9 +1,9 @@
-import { LocalActionService } from '../../service/local-action.service';
+
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, HostListener, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
-import { Web3Service, WCCService, LoadingService, AlertService  } from '../../service/index';
+import { Web3Service, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -47,8 +47,10 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     showGames;
     chartsFlag: Boolean = false;
     finalPredictionIndex;
+    willWinChampionPlayers;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     @ViewChild('voteTemplate') voteTemplate: TemplateRef<any>;
+    @ViewChild('championTemplate') championTemplate: TemplateRef<any>;
     chartsComponent: ChartComponent;
 
     chartLabels: string[] = ['Column1', 'Column2', 'Column3'];
@@ -385,6 +387,77 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         }
 
         this.loadingSer.hide();
+    }
+    async showChampionPrediction() {
+        const index = this.finalPredictionIndex;
+        if (!index) {
+            return;
+        }
+        const limit = await this.wccSer.getBetLimit();
+        this.router.navigate(['champion', index, 'limit', limit], { skipLocationChange: true });
+        // const web3 = this.web3.instance();
+        // const currentGameInfo = await this.wccSer.getGameInfo(index);
+        // // console.log(currenGameInfo);
+        // if (currentGameInfo.time == 0) {
+        //     return;
+        // }
+        // this.willWinChampionPlayers = this.getPlayerWillWinChampion();
+        // if (currentGameInfo.status == '0' || currentGameInfo.status == '1') {
+        //     this.chartData = {};
+        //
+        //     this.buyForm = this.fb.group({
+        //         homeScore: ['0', [Validators.required]],
+        //         awayScore: ['0', [Validators.required]],
+        //         eth: ['0.01', [Validators.required, Validators.min(limit)]]
+        //     });
+        //     this.web3.currenPrice().then(obj => {
+        //         // console.log(obj.result);
+        //         this.price = obj.result.ethusd;
+        //         // console.log(this.price);
+        //         const model: any = this.buyForm.value;
+        //         if (model.eth) {
+        //             this.getUSDValue({ target: { value: model.eth } });
+        //         }
+        //     });
+        //     this.web3.getBalance().then(balance => {
+        //         console.log(balance);
+        //         this.balance = balance;
+        //     });
+
+        //     // this.buyForm.controls('eth').setValidators([Validators.required, Validators.min(limit)]);
+        //     const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
+        //     const totalBets = currentGameInfo.totalBets;
+        //     this.chartTitle = {
+        //         totalValue: Number(totalValue).toFixed(6),
+        //         totalBets: totalBets,
+        //         avg: totalBets > 0 ? (totalValue / totalBets).toFixed(6) : 0
+        //     };
+        //     this.chartData.currentGameInfo = currentGameInfo;
+        //     this.chartData.currentGameIndex = index;
+        //     this.chartData.limit = limit;
+        //     this.buyModalRef = this.openModal(this.championTemplate);
+
+        // } else if (currentGameInfo.status == '2' || currentGameInfo.status == '3') {
+        //     this.chartData = {};
+        //     const voteInfo = await this.wccSer.getVoteInfo(index);
+        //     console.log(voteInfo);
+        //     this.chartData.target = voteInfo.target.split(':');
+        //     console.log(this.chartData.target);
+        //     const totalValue = web3.utils.fromWei(currentGameInfo.totalValue);
+        //     const totalBets = currentGameInfo.totalBets;
+        //     this.chartTitle = {
+        //         totalCount: Number(web3.utils.fromWei(voteInfo.yesCount)) + Number(web3.utils.fromWei(voteInfo.noCount)),
+        //         yesCount: web3.utils.fromWei(voteInfo.yesCount),
+        //         noCount: web3.utils.fromWei(voteInfo.noCount)
+        //     };
+        //     this.chartData.currentGameInfo = currentGameInfo;
+        //     this.chartData.currentGameIndex = index;
+        //     this.chartData.data = [Number(web3.utils.fromWei(voteInfo.yesCount)), Number(web3.utils.fromWei(voteInfo.noCount))];
+        //     this.chartData.labels = ['yesCount', 'noCount'];
+        //     this.voteModalRef = this.openModal(this.voteTemplate);
+        // }
+
+        // this.loadingSer.hide();
     }
     getChartsData(betInfos) {
         this.chartData.betInfos = betInfos;

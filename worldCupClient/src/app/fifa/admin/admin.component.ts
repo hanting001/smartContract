@@ -100,6 +100,9 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
             this.gameInfos = plays;
         } else {
             this.gameInfos = await this.wccSer.getAllPlayers();
+            this.gameInfos = this.gameInfos.sort((a, b) => {
+                return a.gameType > b.gameType;
+            });
             this.localStorage.setItem('plays', this.gameInfos).toPromise();
         }
     }
@@ -123,6 +126,9 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     async refreshCache() {
         this.loadingSer.show('refresh...');
         await this.wccSer.refreshCache();
+        await this.localStorage.removeItem('contries').toPromise();
+        await this.localStorage.removeItem('plays').toPromise();
+        this.checkEnv();
         this.loadingSer.hide();
     }
     async addAllPlayers() {
@@ -303,7 +309,12 @@ export class FifaAdminComponent implements OnInit, OnDestroy {
     async startVote(game) {
         if (this.startVoteForm.valid) {
             const gameIndex = this.wccSer.getGameIndex(game.p1, game.p2, game.gameType);
-            const score = this.startVoteForm.value.homeScore + ':' + this.startVoteForm.value.awayScore;
+            let score;
+            if (game.p1 != 'champion') {
+                score = this.startVoteForm.value.homeScore + ':' + this.startVoteForm.value.awayScore;
+            } else {
+                score = this.startVoteForm.value.homeScore;
+            }
             if (confirm(`${game.p1}:${game.p2} Vote target is ${score}, submit?`)) {
                 const check = await this.wccSer.startVoteCheck(gameIndex);
                 this.loadingSer.show();
