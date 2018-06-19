@@ -97,7 +97,8 @@ export class ChampionComponent implements OnInit, OnDestroy {
             const courts = games[i].courts;
             for (let j = 0; j < courts.length; j++) {
                 const game = courts[j];
-                if (game.status == 0) {
+                // if (game.status == 0) { // add after group phase
+                if (game.gameType == 0) {
                     let name = game.s_p1 || game.p1;
                     if (name.length > 2) {
                         players.add(name);
@@ -280,12 +281,12 @@ export class ChampionComponent implements OnInit, OnDestroy {
     }
     getUSDValue(event) {
         // if (this.buyForm.valid) {
-            if (this.price > 0) {
-                this.USDPrice = event.target.value * this.price;
-            } else {
-                this.USDPrice = 0;
-            }
-            this.calculat();
+        if (this.price > 0) {
+            this.USDPrice = event.target.value * this.price;
+        } else {
+            this.USDPrice = 0;
+        }
+        this.calculat();
         // }
     }
     get eth() { return this.buyForm.get('eth'); }

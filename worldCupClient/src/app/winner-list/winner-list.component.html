@@ -16,7 +16,8 @@
         <progressbar class="progress-striped active" [value]="loadingProgress" type="info"></progressbar>
     </div>
     <div class="card bg-c-light p-3 mt-3">
-        <p *ngIf="!showDatas || showDatas.length == 0"> No winner claimed bonus, now.</p>
+        <p *ngIf="noData"> No winner claimed bonus, now.</p>
+        <p *ngIf="loading"> Loading data...</p>
         <table *ngIf="showDatas && showDatas.length > 0" class="table table-striped table-sm mb-4">
             <thead class="">
                 <tr class="row">

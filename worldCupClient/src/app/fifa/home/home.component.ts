@@ -1,6 +1,6 @@
 
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
 import { Web3Service, WCCService, LoadingService, AlertService, LocalActionService } from '../../service/index';
@@ -10,13 +10,14 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { Chart } from 'chart.js';
 import * as moment from 'moment';
 import { ChartComponent } from '../chart/chart.component';
+import { ScrollToService, ScrollToConfigOptions } from '@nicky-lenaers/ngx-scroll-to';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
-export class FifaHomeComponent implements OnInit, OnDestroy {
+export class FifaHomeComponent implements OnInit, OnDestroy, AfterViewInit {
     envState: any = { checkWeb3: true, checkAccount: true };
     gameInfos: any = [];
     title: string;
@@ -46,6 +47,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
     splitDate = moment('2018-06-14').valueOf();
     showGames;
     chartsFlag: Boolean = false;
+    scrollFlag = true;
     finalPredictionIndex;
     willWinChampionPlayers;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
@@ -72,6 +74,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         private modalService: BsModalService,
         public localActionSer: LocalActionService,
         private localStorage: LocalStorage,
+        private scrollToService: ScrollToService,
         private route: ActivatedRoute) {
         this.voteForm = this.fb.group({
             voteOption: ['1', [Validators.required]]
@@ -139,6 +142,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         const contries = await this.localStorage.getItem<any>('contries').toPromise();
         if (!isGameUpdated && games && games.length > 0 && contries) {
             this.games = games;
+            // console.log(this.games);
             this.contries = contries;
             if (this.contries['secondStageStartDate']) {
                 this.secondStageStartDate = this.contries['secondStageStartDate'];
@@ -186,8 +190,25 @@ export class FifaHomeComponent implements OnInit, OnDestroy {
         this.filtGames();
         this.refreshGameData();
     }
+    ngAfterViewInit() {
+        // this.scrollToCurrent();
+        // this.gameLabel.changes.subscribe(() => this.scrollToCurrent());
+    }
+    scrollToCurrent() {
+        if (this.scrollFlag) {
+            const now = moment();
+            const date = now.format('YYYY-MM-DD');
+            // console.log(date);
+            const config: ScrollToConfigOptions = {
+                target: date,
+                offset: -310
+            };
+            this.scrollToService.scrollTo(config);
+            this.scrollFlag = false;
+        }
+    }
     filtGames() {
-        console.log(this.games);
+        // console.log(this.games);
         this.showGames = this.games.filter(item => {
             const time = moment(item.date).valueOf();
             if (this.matchGroup == 0) {

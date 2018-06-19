@@ -11,6 +11,8 @@ export class WinnerListComponent implements OnInit, OnDestroy {
     subscription;
     showDatas: any[];
     loadingProgress: Number = 0;
+    noData = false;
+    loading = true;
     contries: any;
     constructor(
         private web3: Web3Service,
@@ -42,6 +44,10 @@ export class WinnerListComponent implements OnInit, OnDestroy {
     async getWinners() {
         const list = await this.wccService.getWccClaimEvents();
         this.showDatas = [];
+        if (list.length == 0) {
+            this.noData = true;
+        }
+        this.loading = false;
         for (let i = 0; i < list.length; i++) {
             const log = list[i].returnValues;
             log.tx = list[i].transactionHash;
