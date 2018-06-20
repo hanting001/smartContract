@@ -89,7 +89,7 @@ export class AdminComponent implements OnInit {
         console.log(from);
         const tokenSC = await this.web3Service.getContract('knotToken', 'KnotToken');
         this.loadingSer.show();
-        tokenSC.methods.transfer(this.account, web3.utils.toWei('10000')).send({ from: from })
+        tokenSC.methods.transfer(this.account, web3.utils.toWei('1000')).send({ from: from })
             .on('confirmation', async (confNumber, receipt) => {
                 const raw = await this.flightDelayService.getBalanceByAccount(this.account);
                 this.balance = JSON.stringify(raw);

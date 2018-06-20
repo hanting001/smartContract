@@ -1,3 +1,4 @@
+import { PayService } from '../service/pay.service';
 import { LocalActionService } from '../service';
 import { AlertService } from '../service/alert.service';
 import { LoadingService } from '../service/loading.service';
@@ -26,9 +27,10 @@ export class ExchangeComponent implements OnInit {
         private route: ActivatedRoute,
         public loadingSer: LoadingService,
         public alertSer: AlertService,
+        public paySer: PayService,
         protected localActionSer: LocalActionService) { }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.web3Service.getCheckEnvSubject().subscribe((tempEnvState: any) => {
             console.log(tempEnvState);
             if (tempEnvState.checkEnv) {
@@ -49,7 +51,26 @@ export class ExchangeComponent implements OnInit {
             this.envState = tempEnvState;
         });
         this.web3Service.check();
+
+        this.zfb();
     }
+
+    async zfb() {
+        const order: any = await this.paySer.createOrder(10);
+        console.log(order);
+        const oid = order.data.oid;
+
+        const orderInfo: any = await this.paySer.getOrderInfo(oid);
+
+        console.log(orderInfo);
+
+        const result: any = await this.paySer.zfbPay(orderInfo.data.order[0].oid, orderInfo.data.order[0].accountName);
+
+        console.log(result);
+
+        // window.location.href = result.data.url;
+    }
+
     async countToken($event) {
         if (!this.rate) {
             this.rate = await this.flightDelayService.getRate();

@@ -16,7 +16,7 @@ import { DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
 
 import {
     Web3Service, FlightDelayService, LoadingService, LocalOrderService,
-    WCCService, LocalActionService, AlertService
+    WCCService, LocalActionService, AlertService, PayService
 } from './service/index';
 
 import { DelayRatePipe } from './shared/pipes';
@@ -74,7 +74,10 @@ import { ChartComponent } from './chart/chart.component';
         ReactiveFormsModule,
         DlDateTimePickerDateModule
     ],
-    providers: [Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService, LocalActionService, AlertService],
+    providers: [
+        Web3Service, FlightDelayService, LoadingService, LocalOrderService, WCCService,
+        LocalActionService, AlertService, PayService
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

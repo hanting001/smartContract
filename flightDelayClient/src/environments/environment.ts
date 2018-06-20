@@ -4,5 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    tiger: 'https://testpay.99bx.cn/',
+    panda: 'https://testpanda.99bx.cn/'
 };

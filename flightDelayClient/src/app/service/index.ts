@@ -7,3 +7,5 @@ export { LocalOrderService } from './local-order.service';
 export { LocalActionService } from './local-action.service';
 // 测试wc用
 export { WCCService } from './wcc.service';
+export { PayService } from './pay.service';
+
