@@ -388,6 +388,7 @@ export class FifaHomeComponent implements OnInit, OnDestroy, AfterViewInit {
             this.buyModalRef = this.openModal(this.buyTemplate);
 
         } else if (currentGameInfo.status == '2' || currentGameInfo.status == '3') {
+            this.chartsFlag = false;
             this.chartData = {};
             const voteInfo = await this.wccSer.getVoteInfo(index);
             console.log(voteInfo);
