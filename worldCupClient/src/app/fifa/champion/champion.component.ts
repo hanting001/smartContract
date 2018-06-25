@@ -26,6 +26,7 @@ export class ChampionComponent implements OnInit, OnDestroy {
     showFlag = -1;
     chartsComponent: ChartComponent;
     chartsFlag: Boolean = false;
+    loadingProgress = 0;
     @ViewChild('buyTemplate') buyTemplate: TemplateRef<any>;
     dataSetLable = {
         valueData: 'ETH Value',
@@ -93,22 +94,48 @@ export class ChampionComponent implements OnInit, OnDestroy {
         const players = new Set();
         const games = await this.localStorage.getItem<any[]>('games').toPromise();
         this.contries = await this.localStorage.getItem<any>('contries').toPromise();
-        for (let i = 0; i < games.length; i++) {
-            const courts = games[i].courts;
-            for (let j = 0; j < courts.length; j++) {
-                const game = courts[j];
-                // if (game.status == 0) { // add after group phase
-                if (game.gameType == 0) {
-                    let name = game.s_p1 || game.p1;
-                    if (name.length > 2) {
-                        players.add(name);
-                    }
-                    name = game.s_p2 || game.p2;
-                    if (name.length > 2) {
-                        players.add(name);
+        if (games) {
+            for (let i = 0; i < games.length; i++) {
+                const courts = games[i].courts;
+                for (let j = 0; j < courts.length; j++) {
+                    const game = courts[j];
+                    // if (game.status == 0) { // add after group phase
+                    if (game.gameType == 0) {
+                        let name = game.s_p1 || game.p1;
+                        if (name.length > 2) {
+                            players.add(name);
+                        }
+                        name = game.s_p2 || game.p2;
+                        if (name.length > 2) {
+                            players.add(name);
+                        }
                     }
                 }
             }
+        } else {
+            this.loadingSer.show('loading game info...');
+            const indexes = await this.wccSer.getAllGameIndexes();
+            for (let i = 0; i < indexes.length; i++) {
+                const gameInfo = await this.wccSer.getGameInfo(indexes[i]);
+                if (gameInfo.p1 == 'champion' && gameInfo.p2 == 'champion') {
+                    continue;
+                } else {
+                    if (gameInfo.gameType == 0) {
+                        let name = gameInfo.s_p1 || gameInfo.p1;
+                        if (name.length > 2) {
+                            players.add(name);
+                        }
+                        name = gameInfo.s_p2 || gameInfo.p2;
+                        if (name.length > 2) {
+                            players.add(name);
+                        }
+                        players.add(name);
+                    }
+                }
+                this.loadingProgress = Number((i / indexes.length).toFixed(2)) * 100;
+            }
+            this.loadingProgress = 0;
+            this.loadingSer.hide();
         }
         return Array.from(players);
     }
