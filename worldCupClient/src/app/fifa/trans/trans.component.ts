@@ -162,7 +162,7 @@ export class TransComponent implements OnInit, OnDestroy {
             //     scoreInfos.push(scoreInfo);
             // }
             this.loadingProgress = Number((this.betInfos.length / joinedGameIndexes.length).toFixed(2)) * 100;
-            console.log(this.betInfos);
+            // console.log(this.betInfos);
         }
         this.loadingProgress = 0;
     }
@@ -177,14 +177,21 @@ export class TransComponent implements OnInit, OnDestroy {
                 scoreInfo.mailUrl = encodeURI(`mailto:?subject=Hi! I bet on this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/matches/${obj.index}`);
                 scoreInfo.shareUrl = encodeURI(`https://bet-d.app/wc/matches/${obj.index}`);
                 const text = encodeURI(`I bet on this match with score: ${scoreInfo.score}. The website is`);
-                const url = `https://bet-d.app/wc/matches/${obj.index}`;
-                // const url = 'https://bet-d.app/';
+                let url = `https://bet-d.app/wc/matches/${obj.index}`;
+                // console.log(obj);
+                if (obj.gameInfo.p1 == 'champion') {
+                    const limit = await this.wccService.getBetLimit();
+                    url = `https://bet-d.app/wc/champion/${obj.index}/limit/${limit}`;
+                    scoreInfo.mailUrl = encodeURI(`mailto:?subject=Hi! I bet on this match with score ${scoreInfo.score}. You come too!&body=https://bet-d.app/wc/champion/${obj.index}/limit/${limit}`);
+                    scoreInfo.shareUrl = encodeURI(`https://bet-d.app/wc/champion/${obj.index}/limit/${limit}`);
+                }
                 scoreInfo.tweetUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                // const url = 'https://bet-d.app/';
                 if (scoreInfo.value > 0) {
                     scoreInfo.gameIndex = obj.index;
                     scoreInfo.scoreIndex = scoreIndexes[j];
                     this.wccService.gotOneToken(scoreInfo.gameIndex, scoreInfo.scoreIndex).then(result => {
-                        console.log(result);
+                        // console.log(result);
                         scoreInfo.canDraw = !result;
                     });
                     scoreInfos.push(scoreInfo);
