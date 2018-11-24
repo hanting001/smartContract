@@ -7,8 +7,8 @@
         "host": "121.40.82.99",
         "database": "WEBDB",
         "options": {
-            "user": "web",
-            "pass": "1qaz2wsx",
+            "user": "user",
+            "pass": "pass",
             "useMongoClient": true
         }
     },
