@@ -4,7 +4,7 @@
     "apiHost": "http://localhost:8080",
     "pass": "56c6b79fe1fa42209c4e8711e5219553",
     "databaseConfig": {
-        "host": "121.40.82.99",
+        "host": "121.*.*.99",
         "database": "WEBDB",
         "options": {
             "user": "user",
